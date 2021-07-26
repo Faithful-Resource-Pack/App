@@ -1,0 +1,27 @@
+{
+  "name": "App",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "pm2 start \"node app.js\" --name \"APP\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Compliance-Resource-Pack/App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Compliance-Resource-Pack/App/issues"
+  },
+  "homepage": "https://github.com/Compliance-Resource-Pack/App#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "twin-bcrypt": "^2.1.1"
+  }
+}
