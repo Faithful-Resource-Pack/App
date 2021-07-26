@@ -20,19 +20,21 @@ module.exports = {
   },
 
   search: function(username, type) {
-    /** @type{import('../helpers/firestorm').SearchOption[]} */
+    /** @type {import('../helpers/firestorm').SearchOption[]} */
+
     const searchOptions = [{
       field: 'username',
       criteria: 'includes',
       value: username || ''
     }]
 
-    if(type)
+    if (type) {
       searchOptions.push({
         field: 'type',
         criteria: 'array-contains-any',
         value: [type, type.toLowerCase(), type.toUpperCase()]
       })
+    }
 
     return firestorm_users.search(searchOptions)
   },

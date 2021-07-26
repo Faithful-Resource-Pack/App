@@ -64,12 +64,24 @@ export default {
             </v-list-item-action>
           </v-list-item>
         </v-col></v-row>
+
+        <v-btn 
+          :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
+          :disabled="displayedResults >= Object.keys(textures).length"
+          block
+          @click="showMore()" 
+          :v-if="displayedResults < Object.keys(textures).length"
+          elevation="2"
+        >LOAD MORE</v-btn>
+
       </v-list>
       <div v-else><i>No results found.</i></div>
       </div>
     </div>
   </v-container>`,
   data() {
+    const INCREMENT = 250
+
     return {
       recompute: false,
       types: [],
@@ -80,7 +92,8 @@ export default {
       remove: {
         confirm: false,
         data: {}
-      }
+      },
+      displayedResults: INCREMENT,
     }
   },
   computed: {
@@ -98,15 +111,18 @@ export default {
     },
     splittedResults: function () {
       let res = []
-      for (let col = 0; col < (Object.keys(this.textures).length > 1 ? 2 : 1); ++col) {
+      const keys = Object.keys(this.textures)
+      const len = keys.length
+
+      for (let col = 0; col < (len > 1 ? 2 : 1); ++col) {
         res.push([])
       }
 
       let arrayIndex = 0;
 
-      for (const textureID in this.textures) {
-        res[arrayIndex].push(this.textures[textureID])
-        arrayIndex = (arrayIndex + 1) % (Object.keys(this.textures).length > 1 ? 2 : 1)
+      for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+        res[arrayIndex].push(this.textures[keys[i]])
+        arrayIndex = (arrayIndex + 1) % res.length
       }
       
       return res
@@ -183,6 +199,11 @@ export default {
     update: function () {
       this.getTypes()
       this.getTextures()
+    },
+    showMore: function () {
+      this.displayedResults += 100
+      this.update()
+      return
     }
   },
   watch: {
