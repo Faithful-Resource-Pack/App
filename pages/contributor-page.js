@@ -102,7 +102,7 @@ export default {
     send() {
       const data = JSON.parse(JSON.stringify(this.formData))
       
-      axios.post('http://localhost:3000/contributor', data)
+      axios.post('/contributor', data)
       .then(function (response) {
         console.log(response);
       })
