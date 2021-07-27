@@ -6,21 +6,19 @@
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <link rel="shortcut icon" href="https://compliancepack.net/favicon.ico" type="image/x-icon">
-  <title>CompliBot - Web Interface</title>
+  <title>Compliance Web Application</title>
 </head>
 <body>
   <v-app id="app">
     <v-app-bar flat dense bar app v-if="isUserLogged" :color="bg">
       <span class="mr-2 d-flex noselect">
-        <img src="https://compliancepack.net/image/home/logo.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
+        <img src="https://compliancepack.net/image/icon/compliance_32x.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
       </span>
       <v-tabs>
         <v-tab v-for="(tab, index) in validsTabs" :key="tab.to" :to="tab.to">{{ tab.label }}</v-tab>
       </v-tabs>
       
       <div>
-        
-        
         <v-tooltip 
           bottom
           color="red"
@@ -51,20 +49,30 @@
     <v-main>
     <router-view v-if="isUserLogged"></router-view>
 
-    <div v-else>
+    <div v-else
+      :style="{
+        'display': 'flex',
+        'justify-content': 'center',
+        'align-items': 'center',
+        'height': '100%',
+        'flex-direction': 'column'
+      }"
+    >
+      <img src="https://compliancepack.net/image/icon/compliance_32x.png"
+        :style="{
+          'height': '256px',
+          'image-rendering': 'pixelated'
+        }"
+      >
+      <h2 class="compliance-font" align="center" style="text-shadow: 2px 2px rgba(0,0,0,.7); margin-bottom: 20px;">COMPLIANCE WEB<br>APPLICATION</h2>
       <v-btn 
         href="/api/discord/login" 
         :style="{
-          'background': 'hsl(235,85.6%,64.7%)',
-          'color': '#FFF',
-          'margin': '0',
-          'position': 'absolute',
-          'top': '50%',
-          'left': '50%',
-          '-ms-transform': 'translate(-50%, -50%)',
-          'transform': 'translate(-50%, -50%)'
+          'background': 'hsl(235,85.6%,64.7%) !important',
+          'color': '#FFF'
         }"
       >
+        <v-icon left>mdi-discord</v-icon>
         Login via Discord
       </v-btn>
     </div>

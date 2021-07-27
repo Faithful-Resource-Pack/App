@@ -1,3 +1,8 @@
+@font-face {
+  font-family: Compliance;
+  src: url("https://compliancepack.net/data/font/Compliance.ttf") format("truetype");
+}
+
 a { text-decoration: none; }
 
 .noselect, .noselect * {
@@ -80,4 +85,12 @@ a { text-decoration: none; }
 }
 .v-chip__content > .v-avatar {
   border-radius: 0 !important;
+}
+
+.compliance-font {
+  font-family: Compliance;
+}
+
+h2.compliance-font {
+  font-weight: 600;
 }
