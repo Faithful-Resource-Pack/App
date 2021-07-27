@@ -37,11 +37,20 @@ let v = new Vue({
   data: {
     user: EMPTY_USER,
     tabs: [
-      { to: "/profile/", label: "Profile" },
-      { to: "/contributions/", label: "Contributions", roles: ["Developer", "Administrator"] },
-      { to: "/contributors/", label: "Contributors", roles: ["Developer", "Administrator"] },
-      { to: "/contributions-stats/", label: "Contributions Stats" },
-      { to: "/textures/", label: "Textures", roles: ["Developer", "Administrator"] }
+      { 
+        label: 'User', subtabs: [
+          { to: "/profile/", label: "Profile" },
+          { to: "/contributions-stats/", label: "Contributions Stats" },
+        ]
+      },
+      {
+        label: 'Admin/Dev', subtabs: [
+          { to: "/contributions/", label: "Contributions" },
+          { to: "/contributors/", label: "Contributors" },
+          { to: "/textures/", label: "Textures" }
+        ],
+        roles: [ "Developer", "Administrator" ]
+      }
     ],
     bg: 'transparent',
     snackbar: {

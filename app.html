@@ -10,15 +10,30 @@
 </head>
 <body>
   <v-app id="app">
-    <v-app-bar flat dense bar app v-if="isUserLogged" :color="bg">
+    <v-app-bar flat dense bar app v-if="isUserLogged">
       <span class="mr-2 d-flex noselect">
         <img src="https://compliancepack.net/image/icon/compliance_32x.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
       </span>
-      <v-tabs>
-        <v-tab v-for="(tab, index) in validsTabs" :key="tab.to" :to="tab.to">{{ tab.label }}</v-tab>
-      </v-tabs>
-      
-      <div>
+      <template v-for="tab in validsTabs">
+        <div class="text-center">
+          <v-menu 
+            offset-y
+            rounded="0"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn dark v-bind="attrs" v-on="on" style="height: 32px; box-shadow: none !important; border-radius: 0px; text-transform: capitalize !important;">
+                {{ tab.label }}
+              </v-btn>
+            </template>
+            <v-list style="border-radius: 0px!important;">
+              <v-list-item v-for="(subtab, index) in tab.subtabs" :key="index" style="padding: 0px !important; align-items: baseline !important; min-height: inherit !important;">
+                <router-link :to="subtab.to" class="router-link" style="text-transform: capitalize;">{{ subtab.label }}</router-link>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+      </template>
+      <div style="margin-left: auto;">
         <v-tooltip 
           bottom
           color="red"
@@ -43,9 +58,7 @@
         </v-tooltip>
         <v-avatar size="32" rounded :style="{ 'margin-left': '5px' }"><img :src="user.avatar" :alt="user.username"></v-avatar>
       </div>
-      
     </v-app-bar>
-
     <v-main>
     <router-view v-if="isUserLogged"></router-view>
 
