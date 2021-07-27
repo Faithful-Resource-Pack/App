@@ -32,11 +32,11 @@ export default {
       </div>
 
     <div>
-      <v-btn block color="secondary" @click="openDialog()">Add new Texture <v-icon right dark>mdi-plus</v-icon></v-btn>
+      <v-btn block @click="openDialog()">Add new Texture <v-icon right dark>mdi-plus</v-icon></v-btn>
 
       <div class="my-2 text-h5">Texture results</div>
       <v-list v-if="Object.keys(textures).length" two-line color="rgba(255, 255, 255, 0.08)" >
-        <v-row><v-col :cols="Object.keys(textures).length > 1 ? 6 : 12" xs="1"
+        <v-row><v-col :cols="12/listColumns" xs="1"
             v-for="(textures_arr, index) in splittedResults"
             :key="index"
           >
@@ -45,7 +45,7 @@ export default {
             :key="texture.id"
           >
             <v-list-item-content :style="{ 'display': 'contents' }">
-              <v-list-item-avatar tile :style="{ 'background': '#4e4e4e', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ texture.id }}</v-list-item-avatar>
+              <v-list-item-avatar tile :style="{ 'height': '64px !important', 'min-width': '64px !important', 'background': 'rgba(39, 39, 39, 0.8)', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ texture.id }}</v-list-item-avatar>
               <v-list-item-title>
                 {{ texture.name }}
                 <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
@@ -109,12 +109,27 @@ export default {
       if (this.type !== undefined) return this.$route.params.name
       return this.$route.params.type
     },
+    listColumns: function () {
+      let columns = 1
+
+      if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
+        columns = 2
+        if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
+          columns = 3
+        }
+      }
+
+      if (Object.keys(this.textures).length == 1) columns = 1
+
+      return columns
+    },
     splittedResults: function () {
       let res = []
+
       const keys = Object.keys(this.textures)
       const len = keys.length
 
-      for (let col = 0; col < (len > 1 ? 2 : 1); ++col) {
+      for (let col = 0; col < this.listColumns; ++col) {
         res.push([])
       }
 
@@ -122,11 +137,30 @@ export default {
 
       for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
         res[arrayIndex].push(this.textures[keys[i]])
-        arrayIndex = (arrayIndex + 1) % res.length
+        arrayIndex = (arrayIndex + 1) % this.listColumns
       }
-      
+
       return res
-    }
+    },
+
+    // splittedResults: function () {
+    //   let res = []
+    //   const keys = Object.keys(this.textures)
+    //   const len = keys.length
+
+    //   for (let col = 0; col < (len > 1 ? 2 : 1); ++col) {
+    //     res.push([])
+    //   }
+
+    //   let arrayIndex = 0;
+
+    //   for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+    //     res[arrayIndex].push(this.textures[keys[i]])
+    //     arrayIndex = (arrayIndex + 1) % res.length
+    //   }
+      
+    //   return res
+    // }
   },
   methods: {
     textureURL(t) {

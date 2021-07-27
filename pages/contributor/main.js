@@ -45,9 +45,16 @@ export default {
               v-for="contrib in contrib_arr"
               :key="contrib.id"
             >
-              <v-list-item-avatar>
+              <v-list-item-avatar
+                :style="{
+                  'height': '64px',
+                  'width': '64px',
+                  'min-width': '64px',
+                  'border-radius': '10px'
+                }"
+              >
                 <v-img v-if="contrib.uuid" :src="'https://visage.surgeplay.com/head/48/' + contrib.uuid" />
-                <v-icon v-else style="background: #4e4e4e">mdi-account</v-icon>
+                <v-icon large v-else style="background: rgba(39, 39, 39, 0.8);">mdi-account</v-icon>
               </v-list-item-avatar>
 
               <v-list-item-content>

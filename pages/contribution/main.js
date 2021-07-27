@@ -78,7 +78,7 @@ export default {
         </template>
       </template>
     </v-autocomplete>
-    <v-btn block color="secondary" @click="startSearch()" :disabled="searchDisabled">Search contributions<v-icon right dark>mdi-magnify</v-icon></v-btn>
+    <v-btn block @click="startSearch()" :disabled="searchDisabled">Search contributions<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
     <v-list v-if="search.search_results.length" two-line color="rgba(255, 255, 255, 0.08)" class="mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
@@ -89,9 +89,15 @@ export default {
           v-for="contrib in contrib_arr"
           :key="contrib.id"
         >
-          <v-list-item-avatar tile>
-            <v-img v-if="contrib.url" :src="contrib.url" />
-            <v-img v-else :src="'https://compliancepack.net/image/icon/compliance_' + contrib.res.slice(1) + 'x.png'" />
+          <v-list-item-avatar tile
+            :style="{
+              'height': '64px',
+              'width': '64px',
+              'min-width': '64px'
+            }"
+          >
+            <v-img class="texture-img" v-if="contrib.url" :src="contrib.url" />
+            <v-img class="texture-img" v-else :src="'https://compliancepack.net/image/icon/compliance_' + contrib.res.slice(1) + 'x.png'" />
           </v-list-item-avatar>
 
           <v-list-item-content>

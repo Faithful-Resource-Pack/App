@@ -43,10 +43,41 @@ a { text-decoration: none; }
   background: transparent;
 }
 
+.v-list {
+  border-radius: 15px !important;
+}
+
 .v-list, .v-input__slot {
-	backdrop-filter: blur(10px);
+	backdrop-filter: blur(30%);
 }
 .v-btn {
 	background: rgba(39, 39, 39, 0.8) !important;
 	backdrop-filter: blur(10px);
+}
+.banner-btn span {
+  text-shadow: 2px 2px #000;
+}
+
+.v-text-field__slot input {
+  padding: 8px 0 8px 8px;
+}
+
+.v-text-field__slot label {
+  padding-left: 8px;
+}
+
+.v-label--active {
+  top: 2px !important;
+}
+
+.texture-img > .v-image__image {
+  background-size: contain !important;
+  image-rendering: pixelated;
+}
+
+.v-chip {
+  border-radius: 4px !important;
+}
+.v-chip__content > .v-avatar {
+  border-radius: 0 !important;
 }

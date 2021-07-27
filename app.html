@@ -10,7 +10,7 @@
 </head>
 <body>
   <v-app id="app">
-    <v-app-bar flat dense bar app :color="bg" v-if="isUserLogged">
+    <v-app-bar flat dense bar app v-if="isUserLogged" :color="bg">
       <span class="mr-2 d-flex noselect">
         <img src="https://compliancepack.net/image/home/logo.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
       </span>
@@ -28,16 +28,16 @@
           <template v-slot:activator="{ on, attrs }">
             <v-btn 
               :style="{
-                'background-image': 'url(' + user.banner + ') ',
-                'background-size': 'cover',
+                'background-image': 'url(' + user.banner + ') !important',
+                'background-size': 'cover !important',
                 'height': '32px'
               }"
               v-bind="attrs"
               v-on="on"
+              class="banner-btn"
 
               @click="logout"
             >
-              
               {{ user.username }}
             </v-btn>
           </template>
