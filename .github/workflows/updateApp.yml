@@ -19,6 +19,7 @@ jobs:
         KEY: ${{ secrets.SSH }}
         script: |
           cd /${{ secrets.USERNAME }}/WebApp/
+          git stash
           git pull
-          npm install
+          npm install --save
           pm2 restart "APP"
