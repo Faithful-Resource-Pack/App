@@ -1,6 +1,6 @@
 /* global axios, d3, moment */
-const ContributorModal = () => import('./contributor-modal.js')
-const ContributorRemoveConfirm = () => import('./contributor-remove-confirm.js')
+const ContributorModal = () => import('../contributor/modal.js')
+const ContributorRemoveConfirm = () => import('../contributor/remove-confirm.js')
 
 export default {
 	name: 'contributor-page',

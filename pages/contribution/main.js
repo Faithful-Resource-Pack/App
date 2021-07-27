@@ -114,7 +114,7 @@ export default {
       all_res: 'all',
       resolutions: {},
       contributors: [],
-      contributors_selected: ['207471947662098432'],
+      contributors_selected: [],
       search: {
         searching: false,
         search_results: []
@@ -208,5 +208,9 @@ export default {
   mounted: function() {
     this.getRes()
     this.getAuthors()
+
+    this.contributors_selected = [ this.$root.user.id ]
+
+    console.log(this.contributors_selected)
   }
 }

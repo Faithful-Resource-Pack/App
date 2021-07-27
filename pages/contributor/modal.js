@@ -1,4 +1,5 @@
 /* global axios, TwinBcrypt, Vue */
+
 export default {
 	name: 'contributor-modal',
 	template: `
@@ -15,7 +16,7 @@ export default {
               <img alt="avatar" style="width: 100%; max-width: 250" :src="($vuetify.breakpoint.mdAndUp ? 'https://visage.surgeplay.com/full/256/' : 'https://visage.surgeplay.com/head/128/') + formData.uuid" />
             </v-col><v-col :class="'col-' + formData.uuid ? '10' : '12'" :sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12">
               <v-form ref="form" lazy-validation>
-              <v-text-field required :readonly="add == false" v-model="formData.id" label="Discord ID"></v-text-field>
+                <v-text-field required :readonly="add == false" v-model="formData.id" label="Discord ID"></v-text-field>
 
                 <v-text-field required clearable v-model="formData.username" label="Username"></v-text-field>
 
@@ -101,7 +102,7 @@ export default {
       })
       .catch(error => {
         console.error(error)
-        this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
+        this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
       });
     }
   },

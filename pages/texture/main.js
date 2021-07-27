@@ -1,6 +1,6 @@
 /* global axios, Vue */
 
-const TextureModal = () => import('./texture-modal.js')
+const TextureModal = () => import('./modal.js')
 
 export default {
   name: 'texture-page',

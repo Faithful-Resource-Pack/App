@@ -1,36 +1,125 @@
 /* global __dirname */
 
-const path = require('path')
+require('dotenv').config()
+
 const express = require('express')
-// const contributions = require('./backend/contribution')
-const contributions_backend = require('./backend/contributions')
+const path = require('path')
+const fetch = require('node-fetch')
+const port = 80
+const app = express()
+const compliapp_url = '/compliapp';
+
 const contributors_backend = require('./backend/contributor')
+const contributions_backend = require('./backend/contributions')
+// const contributions = require('./backend/contribution')
 const contributionsStats_backend = require('./backend/contributions-stats')
 const textures_backend = require('./backend/textures')
 const uses_backend = require('./backend/uses')
 const TwinBcrypt = require('twin-bcrypt')
-require('dotenv').config()
-
-const port = 80;
-const app  = express()
 
 app.use(express.urlencoded({
   extended: true
 }))
 app.use(express.json());
 
-const webapp_url = '/webapp';
-
-app.listen(port, () => {
-  console.log(`listening at http://localhost:${port}`)
-  console.log(`Web app at http://localhost:${port}${webapp_url}`)
-})
-
-app.get(webapp_url, function(req, res) {
+app.get(compliapp_url, (req, res) => {
   res.sendFile(path.join(__dirname, './app.html'))
 })
 
+app.listen(port, () => {
+  console.log(`listening at http://localhost:${port}`)
+  console.log(`Web app at http://localhost:${port}${compliapp_url}/`)
+})
+
 app.use(express.static('.'))
+app.use('/api/discord', require('./api/discord'))
+
+app.post('/profile/set', function(req, res) {
+  if (!req.body.access_token) {
+    res.status(400)
+    res.end()
+  }
+
+  fetch('https://discord.com/api/users/@me', {
+    headers: {
+      authorization: `Bearer ${req.body.access_token}`
+    }
+  })
+  .then(response => response.json())
+  .then(json => {
+    let data = req.body
+    data.id = json.id
+
+    contributors_backend.change(data)
+    .then(() => {
+      res.status(200)
+    })
+    .catch(err => {
+      res.status(500)
+      res.send(err)
+    })
+    .finally(() => {
+      res.end()
+    })
+  })
+})
+
+app.post('/profile/get', function(req, res) {
+  if (!req.body.access_token) {
+    res.status(400)
+    res.end()
+  }
+
+  fetch('https://discord.com/api/users/@me', {
+    headers: {
+      authorization: `Bearer ${req.body.access_token}`
+    }
+  })
+  .then(response => response.json())
+  .then(json => {
+    contributors_backend.search([{ field: 'id', criteria: '==', 'value': json.id }])
+    .then(contributor => {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(contributor)
+    })
+    .catch(err => {
+      res.status(500)
+      res.send(err)
+    })
+    .finally(() => {
+      res.end()
+    })
+  })
+})
+
+app.post('/profile/roles', function (req, res) {
+  if (!req.body.access_token) {
+    res.status(400)
+    res.end()
+  }
+
+  fetch('https://discord.com/api/users/@me', {
+    headers: {
+      authorization: `Bearer ${req.body.access_token}`
+    }
+  })
+  .then(response => response.json())
+  .then(json => {
+    contributors_backend.search([{ field: 'id', criteria: '==', value: json.id}])
+    .then(contributor => {
+      res.setHeader('Content-Type', 'application/json')
+      res.send(contributor[0].type)
+    })
+    .catch(err => {
+      res.status(500)
+      res.send(err)
+    })
+    .finally(() => {
+      res.end()
+    })
+  })
+
+})
 
 app.post('/contributor', function(req, res) {
   console.log(req.body)
@@ -114,8 +203,22 @@ app.get('/contributors/:type/:name?/?', function(req, res) {
     type = req.params.type
   if('name' in req.params && req.params.name) // check if field and value not undefined
     username = req.params.name
+
+  const searchOptions = [{
+    field: 'username',
+    criteria: 'includes',
+    value: username || ''
+  }]
+
+  if (type) {
+    searchOptions.push({
+      field: 'type',
+      criteria: 'array-contains-any',
+      value: [type, type.toLowerCase(), type.toUpperCase()]
+    })
+  }
   
-  contributors_backend.search(username, type)
+  contributors_backend.search(searchOptions)
   .then(val => {
     res.setHeader('Content-Type', 'application/json')
     res.send(val)

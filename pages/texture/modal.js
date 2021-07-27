@@ -1,6 +1,6 @@
 /* global axios, TwinBcrypt, Vue */
 
-const AddUseModal = () => import('./texture-add-use-modal.js')
+const AddUseModal = () => import('./modal_add_use.js')
 
 export default {
   name: 'texture-modal',

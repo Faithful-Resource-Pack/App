@@ -6,23 +6,68 @@
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <link rel="shortcut icon" href="https://compliancepack.net/favicon.ico" type="image/x-icon">
-  <title>CompliBot - Web interface</title>
+  <title>CompliBot - Web Interface</title>
 </head>
 <body>
   <v-app id="app">
-    <v-app-bar flat dense bar app :color="bg">
+    <v-app-bar flat dense bar app :color="bg" v-if="isUserLogged">
       <span class="mr-2 d-flex noselect">
-        <img src="https://compliancepack.net/image/home/logo.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);"><span class="px-2 subtitle-1"> Web App</span>
+        <img src="https://compliancepack.net/image/home/logo.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
       </span>
-      <v-tabs v-model="currenttab" :value="tabselected">
-        <v-tab v-for="(tab, index) in tabs" :key="tab.to" :to="tab.to">{{ tab.label }}</v-tab>
+      <v-tabs>
+        <v-tab v-for="(tab, index) in validsTabs" :key="tab.to" :to="tab.to">{{ tab.label }}</v-tab>
       </v-tabs>
+      
+      <div>
+        
+        
+        <v-tooltip 
+          bottom
+          color="red"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn 
+              :style="{
+                'background-image': 'url(' + user.banner + ') ',
+                'background-size': 'cover',
+                'height': '32px'
+              }"
+              v-bind="attrs"
+              v-on="on"
+
+              @click="logout"
+            >
+              
+              {{ user.username }}
+            </v-btn>
+          </template>
+          <span>Logout</span>
+        </v-tooltip>
+        <v-avatar size="32" rounded :style="{ 'margin-left': '5px' }"><img :src="user.avatar" :alt="user.username"></v-avatar>
+      </div>
+      
     </v-app-bar>
 
     <v-main>
-      <div>
-        <router-view></router-view>
-      </div>
+    <router-view v-if="isUserLogged"></router-view>
+
+    <div v-else>
+      <v-btn 
+        href="/api/discord/login" 
+        :style="{
+          'background': 'hsl(235,85.6%,64.7%)',
+          'color': '#FFF',
+          'margin': '0',
+          'position': 'absolute',
+          'top': '50%',
+          'left': '50%',
+          '-ms-transform': 'translate(-50%, -50%)',
+          'transform': 'translate(-50%, -50%)'
+        }"
+      >
+        Login trough Discord
+      </v-btn>
+    </div>
     </v-main>
 
     <v-bottom-navigation height="42px" id="bottom" style="box-shadow: none">
@@ -45,8 +90,7 @@
   <script src="https://cdn.jsdelivr.net/npm/twin-bcrypt@2/twin-bcrypt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.1/dist/vue-router.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <!-- <script src="https://unpkg.com/vue-scroll-loader"></script> -->
-  <link rel="stylesheet" href="/webapp.css">
-  <script src="/webapp.js" type="module"></script>
+  <link rel="stylesheet" href="/compliapp.css">
+  <script src="/compliapp.js" type="module"></script>
 </body>
 </html>

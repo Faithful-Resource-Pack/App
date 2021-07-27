@@ -18,27 +18,9 @@ module.exports = {
         return types
       })
   },
-
-  search: function(username, type) {
-    /** @type {import('../helpers/firestorm').SearchOption[]} */
-
-    const searchOptions = [{
-      field: 'username',
-      criteria: 'includes',
-      value: username || ''
-    }]
-
-    if (type) {
-      searchOptions.push({
-        field: 'type',
-        criteria: 'array-contains-any',
-        value: [type, type.toLowerCase(), type.toUpperCase()]
-      })
-    }
-
+  search: function(searchOptions) {
     return firestorm_users.search(searchOptions)
   },
-
   change: function(body) {
     const element_id = body.id
 

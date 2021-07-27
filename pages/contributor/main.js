@@ -1,6 +1,6 @@
 /* global axios, Vue */
-const ContributorModal = () => import('./contributor-modal.js')
-const ContributorRemoveConfirm = () => import('./contributor-remove-confirm.js')
+const ContributorModal = () => import('./modal.js')
+const ContributorRemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
 	name: 'contributor-page',
