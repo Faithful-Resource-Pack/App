@@ -10,7 +10,7 @@ const CLIENT_TOKEN = process.env.OAUTH2_TOKEN
 const REDIRECT_URI = `${process.env.REDIRECT_DOMAIN}/api/discord/callback`
 
 router.get('/login', (req, res) => {
-  res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A5153&response_type=code&scope=identify%20email%20guilds%20connections&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`)
+  res.redirect(`https://discord.com/api/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=http%3A%2F%2Flocalhost%3A5153&response_type=code&scope=identify&redirect_uri=${encodeURIComponent(REDIRECT_URI)}`)
 })
 
 router.get('/callback', (req, res) => {
