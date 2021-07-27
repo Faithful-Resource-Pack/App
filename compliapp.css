@@ -42,3 +42,11 @@ a { text-decoration: none; }
   line-height: 42px;
   background: transparent;
 }
+
+.v-list, .v-input__slot {
+	backdrop-filter: blur(10px);
+}
+.v-btn {
+	background: rgba(39, 39, 39, 0.8) !important;
+	backdrop-filter: blur(10px);
+}

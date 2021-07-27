@@ -33,7 +33,7 @@ export default {
           ></v-text-field>
         </div>
 
-        <v-btn block color="secondary" @click="openDialog()">Add new Contributor <v-icon right dark>mdi-plus</v-icon></v-btn>
+        <v-btn block @click="openDialog()">Add new Contributor <v-icon right dark>mdi-plus</v-icon></v-btn>
 
         <div class="my-2 text-h5">Contributor results</div>
         <v-list v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
