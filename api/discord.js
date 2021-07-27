@@ -14,7 +14,10 @@ router.get('/login', (req, res) => {
 })
 
 router.get('/callback', (req, res) => {
-  if (!req.query.code) throw new Error('NoCodeProvided')
+  if (!req.query.code) {
+    res.redirect('/compliapp/')
+    return
+  }
 
   const params = new URLSearchParams();
   params.append('client_id', CLIENT_ID)
