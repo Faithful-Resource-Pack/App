@@ -13,7 +13,6 @@ export default {
         <v-card-text>
           <v-form ref="form" lazy-validation>
             <p>Do you want to delete {{ data.username }}#{{ data.id }}?</p>
-            <v-text-field required clearable type="password" v-model="formData.password" label="Security password" hint="must match .env password"></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -52,7 +51,6 @@ export default {
 	data() {
 		return {
       formData: {
-        password: ''
       }
 		}
 	},
@@ -68,7 +66,6 @@ export default {
     deleteContributor: function() {
       const data = JSON.parse(JSON.stringify(this.formData))
       data.id = this.id
-      data.password = TwinBcrypt.hashSync(data.password)
       
       axios.post('/contributors/remove', data)
       .then(() => {

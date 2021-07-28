@@ -27,9 +27,6 @@ export default {
 
               <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">Add new Path <v-icon right dark>mdi-plus</v-icon></v-btn>
 
-              <v-divider class="my-2"></v-divider>
-
-              <v-text-field required clearable type="password" v-model="subFormData.password" label="Security password" hint="must match .env password"></v-text-field>
             </v-form>
           </v-col>
         </v-row>
@@ -96,7 +93,6 @@ export default {
   methods: {
     send: function () {
       const data = JSON.parse(JSON.stringify(this.formData))
-      data.password = TwinBcrypt.hashSync(data.password)
 
       axios.post(`${this.add ? '/uses/add' : '/uses/change'}`, data)
       .then(() => {
@@ -112,12 +108,8 @@ export default {
   watch: {
     dialog: function (newValue, oldValue) {
       if (oldValue != newValue && newValue == true) {
-        const pass = this.formData.password
         Vue.nextTick(() => {
           this.$refs.form.reset()
-          Vue.nextTick(() => {
-            this.formData.password = pass
-          })
 
           if (!this.add) {
             this.formData.editions = this.data.editions

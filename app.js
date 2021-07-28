@@ -234,12 +234,6 @@ app.get('/contributors/:type/:name?/?', function(req, res) {
 })
 
 app.post('/contributors/change', function(req, res) {
-  if(!req.body.password || !process.env.WEBAPP_PASSWORD || !TwinBcrypt.compareSync(process.env.WEBAPP_PASSWORD, req.body.password)) {
-    res.status(400)
-    res.end()
-    return
-  }
-  
   contributors_backend.change(req.body)
   .then(() => {
     res.status(200)
@@ -253,12 +247,6 @@ app.post('/contributors/change', function(req, res) {
 })
 
 app.post('/contributors/add', function(req, res) {
-  if(!req.body.password || !process.env.WEBAPP_PASSWORD || !TwinBcrypt.compareSync(process.env.WEBAPP_PASSWORD, req.body.password)) {
-    res.status(400)
-    res.end()
-    return
-  }
-  
   contributors_backend.add(req.body)
   .then(() => {
     res.status(200)
@@ -272,12 +260,6 @@ app.post('/contributors/add', function(req, res) {
 })
 
 app.post('/contributors/remove', function(req, res) {
-  if(!req.body.password || !process.env.WEBAPP_PASSWORD || !TwinBcrypt.compareSync(process.env.WEBAPP_PASSWORD, req.body.password) || !req.body.id) {
-    res.status(400)
-    res.end()
-    return
-  }
-
   contributors_backend.remove(req.body.id)
   .then(() => {
     res.status(200)
@@ -363,12 +345,6 @@ app.get('/textures/:type/:name?/?', function (req, res) {
 })
 
 app.post('/textures/change', function (req, res) {
-  if (!req.body.password || !process.env.WEBAPP_PASSWORD || !TwinBcrypt.compareSync(process.env.WEBAPP_PASSWORD, req.body.password)) {
-    res.status(400)
-    res.end()
-    return
-  }
-
   textures_backend.change(req.body)
     .then(() => {
       res.status(200)
