@@ -23,10 +23,22 @@ export default {
           </v-list-item-content>
         </v-list-item>
 
-        <v-form ref="form" lazy-validation :style="{ 'padding-left': '20px', 'padding-right': '20px' }">
-          <v-text-field required clearable v-model="localUser.uuid" label="Minecraft profile UUID"></v-text-field>
-          <v-text-field required clearable v-model="localUser.username" label="Website Username"></v-text-field>
-        </v-form>
+        <v-row
+          :style="{
+            'align-items': 'center',
+            'flex-direction': $vuetify.breakpoint.mdAndUp ? 'row' : 'column'
+          }"
+        >
+          <v-col v-if="localUser.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2" style="max-width: 100%;">
+            <img alt="avatar" style="display: block; margin-left: auto; margin-right: auto; height: 100%;" :src="($vuetify.breakpoint.mdAndUp ? 'https://visage.surgeplay.com/full/256/' : 'https://visage.surgeplay.com/head/128/') + localUser.uuid" />
+          </v-col>
+          <v-col :class="'col-' + localUser.uuid ? '10' : '12'" :sm="localUser.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
+            <v-form ref="form" lazy-validation :style="{ 'padding-right': localUser.uuid ? 'auto' : '20px', 'padding-left': localUser.uuid ? 'auto' : '20px' }">
+              <v-text-field style="margin-bottom: 50px" required clearable v-model="localUser.uuid" label="Minecraft profile UUID" hint="Your skin will be displayed on your pages"></v-text-field>
+              <v-text-field required clearable v-model="localUser.username" label="Website Username"></v-text-field>
+            </v-form>
+          </v-col>
+        </v-row>
 
         <div 
           :style="{ 'display': 'flex', 'justify-content': 'center' }"
