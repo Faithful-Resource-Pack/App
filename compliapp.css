@@ -64,6 +64,14 @@ a { text-decoration: none; }
   text-shadow: 2px 2px #000;
 }
 
+.v-text-field {
+  margin-bottom: 24px;
+}
+
+.v-messages {
+  padding-left: 8px;
+}
+
 .v-text-field__slot input {
   padding: 8px 0 8px 8px;
 }

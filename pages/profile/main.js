@@ -34,7 +34,7 @@ export default {
           </v-col>
           <v-col :class="'col-' + localUser.uuid ? '10' : '12'" :sm="localUser.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
             <v-form ref="form" lazy-validation :style="{ 'padding-right': localUser.uuid ? 'auto' : '20px', 'padding-left': localUser.uuid ? 'auto' : '20px' }">
-              <v-text-field style="margin-bottom: 50px" required clearable v-model="localUser.uuid" label="Minecraft profile UUID" hint="Your skin will be displayed on your pages"></v-text-field>
+              <v-text-field required clearable v-model="localUser.uuid" label="Minecraft profile UUID" hint="Your skin will be displayed on your pages"></v-text-field>
               <v-text-field required clearable v-model="localUser.username" label="Website Username"></v-text-field>
             </v-form>
           </v-col>
