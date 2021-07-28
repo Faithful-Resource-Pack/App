@@ -53,7 +53,7 @@ a { text-decoration: none; }
 }
 
 .v-list, .v-input__slot {
-	backdrop-filter: blur(30%);
+	backdrop-filter: blur(10px);
 }
 .v-btn {
 	background: rgba(39, 39, 39, 0.8) !important;
