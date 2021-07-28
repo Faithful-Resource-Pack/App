@@ -164,13 +164,9 @@ let v = new Vue({
       .then(response => response.json())
       .then(json => {
 
-        /**
-         * TODO: add verification for animated banner/avatar and replace .png with .gif if it is animated
-         */
-
         auth.id = json.id
-        auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}.png?size=1024`
-        auth.banner = `https://cdn.discordapp.com/banners/${json.id}/${json.banner}.png?size=1024`
+        auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
+        auth.banner = `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024`
         auth.email = json.email
         auth.username = `${json.username}#${json.discriminator}`
 
