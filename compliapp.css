@@ -22,6 +22,7 @@ a { text-decoration: none; }
 
 #app {
   background: #120E19 url(https://compliancepack.net/image/background/the_end.jpg) no-repeat center;
+  background-size: cover;
   background-attachment: fixed;
 }
 

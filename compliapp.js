@@ -166,7 +166,7 @@ let v = new Vue({
 
         auth.id = json.id
         auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
-        auth.banner = `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024`
+        auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://raw.githubusercontent.com/Compliance-Resource-Pack/Branding/main/banner/forest.png'
         auth.email = json.email
         auth.username = `${json.username}#${json.discriminator}`
 
