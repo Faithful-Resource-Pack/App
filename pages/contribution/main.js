@@ -215,8 +215,7 @@ export default {
     this.getRes()
     this.getAuthors()
 
+    // use the logged user as default selected contributor
     this.contributors_selected = [ this.$root.user.id ]
-
-    console.log(this.contributors_selected)
   }
 }

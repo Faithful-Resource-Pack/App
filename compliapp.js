@@ -9,14 +9,7 @@ const ProfilePage = () => import('./pages/profile/main.js')
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
 const routes = [
-  { path: '/', redirect: '/profile/' },
-  { path: '/profile/', component: ProfilePage },
-	{ path: '/contributions/', component: ContributionPage },
-	{ path: '/contributors/', redirect: '/contributors/all/' },
-  { path: '/contributors/:type?/:name?/', component: ContributorPage },
-  { path: '/contributions-stats/', component: ContributorStatsPage },
-  { path: '/textures/', redirect: '/textures/all/' },
-  { path: '/textures/:type?/:name?/', component: TexturePage }
+  { path: '/', redirect: '/profile/' }
 ]
 
 const router = new VueRouter({ routes })
@@ -39,15 +32,15 @@ let v = new Vue({
     tabs: [
       { 
         label: 'User', subtabs: [
-          { to: "/profile/", label: "Profile" },
-          { to: "/contributions-stats/", label: "Contributions Stats" },
+          { to: "/profile/", label: "Profile", routes: [{ path: '/profile/', component: ProfilePage }] },
+          { to: "/contributions-stats/", label: "Contributions Stats", routes: [{ path: '/contributions-stats/', component: ContributorStatsPage }] },
         ]
       },
       {
         label: 'Admin/Dev', subtabs: [
-          { to: "/contributions/", label: "Contributions" },
-          { to: "/contributors/", label: "Contributors" },
-          { to: "/textures/", label: "Textures" }
+          { to: "/contributions/", label: "Contributions", routes: [{ path: '/contributions/', component: ContributionPage }] },
+          { to: "/contributors/", label: "Contributors", routes: [{ path: '/contributors/', redirect: '/contributors/all/' }, { path: '/contributors/:type?/:name?/', component: ContributorPage }] },
+          { to: "/textures/", label: "Textures", routes: [{ path: '/textures/', redirect: '/textures/all/' }, { path: '/textures/:type?/:name?/', component: TexturePage }] }
         ],
         roles: [ "Developer", "Administrator" ]
       }
@@ -61,9 +54,13 @@ let v = new Vue({
     }
   },
   computed: {
+    /**
+     * Check user perms & add (or not) tabs & routes following user perms
+     * @returns all tabs to be added in the html
+     */
     validsTabs: function() {
       let res = [];
-      let roles = this.user.roles
+      let roles = this.userRoles
 
       for (let i = 0; i < this.tabs.length; i++) {
         let found = false
@@ -74,8 +71,14 @@ let v = new Vue({
           })
         } else found = true
 
-        if (found)
+        if (found) {
           res.push(this.tabs[i])
+          this.tabs[i].subtabs.forEach(subtab => {
+            subtab.routes.forEach(route => {
+              router.addRoute(route)
+            })
+          })
+        }
       }
       
       return res;
@@ -83,24 +86,22 @@ let v = new Vue({
     year: function() {
       return new Date().getFullYear()
     },
+    /**
+     * Tell if the user is logged
+     * @returns true if the user is logged
+     */
     isUserLogged: function() {
       return this.user && this.user.id != 0 && this.user.id != null
     },
+    /**
+     * Get in real time the roles of a user
+     * @returns user discord roles
+     */
     userRoles: function() {
       return this.user.roles
     }
   },
   methods: {
-    changeColor() {
-      if (
-        document.body.scrollTop > 100 ||
-        document.documentElement.scrollTop > 100
-      ) {
-        this.bg = '';
-      } else {
-        this.bg = 'transparent';
-      }
-    },
     showSnackBar: function(message, color = '#222', timeout = 2000) {
       this.snackbar.message = message
       this.snackbar.color = color
@@ -138,16 +139,19 @@ let v = new Vue({
         this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
       })
     },
+    /**
+     * Use this function in sub-components to check perms
+     */
+    checkPermissions: function() {
+      console.log(this.$route)
+      console.log(this.$router.options.routes)
+    },
     update: function() {
       this.logUser()
       this.fetchRoles()
     }
   },
   mounted: function() {
-    window.onscroll = () => {
-      this.changeColor()
-    }
-
     const urlSearchParams = new URLSearchParams(window.location.search)
     let auth = Object.fromEntries(urlSearchParams.entries())
 

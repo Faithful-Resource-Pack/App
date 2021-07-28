@@ -45,7 +45,16 @@ export default {
             :key="texture.id"
           >
             <v-list-item-content :style="{ 'display': 'contents' }">
-              <v-list-item-avatar tile :style="{ 'height': '64px !important', 'min-width': '64px !important', 'background': 'rgba(39, 39, 39, 0.8)', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ texture.id }}</v-list-item-avatar>
+              <v-list-item-avatar tile :style="{ 
+                  'height': '64px !important', 
+                  'min-width': '64px !important', 
+                  'background': 'rgba(39, 39, 39, 0.8)', 
+                  'max-width': 'fit-content', 
+                  'padding': '0 10px 0 10px', 
+                  'border-radius': '4px !important', 
+                  'flex': 'auto' 
+                }" 
+              >#{{ texture.id }}</v-list-item-avatar>
               <v-list-item-title>
                 {{ texture.name }}
                 <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
