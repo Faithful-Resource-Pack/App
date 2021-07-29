@@ -36,6 +36,12 @@ app.use(express.static('.', {
 }))
 app.use('/api/discord', require('./api/discord'))
 
+/**
+ * ==========================================
+ *                   PROFILE
+ * ==========================================
+ */
+
 app.post('/profile/set', function(req, res) {
 	if (!req.body.access_token) {
 		res.status(400)

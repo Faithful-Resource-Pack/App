@@ -59,10 +59,15 @@ module.exports = {
     return paths.read_raw() // this cannot be done without a read/write raw :'(
     .then(allPaths => {
       for (const pathID in allPaths) {
-        // remove old value
-        allPaths[pathID].versions = allPaths[pathID].versions.filter(el => el != oldVersion)
-        // add the new
-        allPaths[pathID].versions.push(newVersion)
+        if (!allPaths[pathID].versions || allPaths[pathID].versions == []) continue
+
+        if (allPaths[pathID].versions.includes(oldVersion)) {
+          // remove old value
+          allPaths[pathID].versions = allPaths[pathID].versions.filter(el => el != oldVersion)
+          // add the new
+          allPaths[pathID].versions.push(newVersion)
+        }
+
         // sort versions
         allPaths[pathID].versions = allPaths[pathID].versions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
         // remove duplicate (if so)
