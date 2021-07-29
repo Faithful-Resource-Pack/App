@@ -22,7 +22,7 @@ export default {
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
           <v-row>
-            <v-col :class="'col-12'" :sm="12">
+            <v-col class="col-12" sm="12">
               <v-form ref="form">
                 <v-text-field hint="⚠️ Changing the ID can break everything" required :readonly="add == false" v-model="formData.id" label="Texture ID"></v-text-field>
                 <v-text-field required clearable v-model="formData.name" label="Texture Name"></v-text-field>

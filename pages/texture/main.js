@@ -1,15 +1,20 @@
 /* global axios, Vue */
 
-const TextureModal = () => import('./modal.js')
+const TextureModal = () => import('./modal_texture.js')
+const MCVersionModal = () => import('./modal_mc_version.js')
 
 export default {
   name: 'texture-page',
   components: {
-    TextureModal
+    'texture-modal': TextureModal,
+    'version-modal': MCVersionModal
   },
   template: `
   <v-container>
+    
     <texture-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
+    <version-modal :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
+    
     <div class="text-h4 py-4">
       Textures
     </div>
@@ -46,7 +51,7 @@ export default {
           <v-btn disabled block @click="openNewMCDialog()">Add new Minecraft Version <v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn disabled block @click="openModifyMCDialog()">Modify a Minecraft Version<v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openModifyMCDialog()">Modify a Minecraft Version<v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
@@ -113,6 +118,7 @@ export default {
       textures: {},
       search: '',
       dialogOpen: false,
+      MCDialogOpen: false,
       dialogData: {},
       remove: {
         confirm: false,
@@ -208,6 +214,12 @@ export default {
         this.getTypes()
         this.getTextures()
       }
+    },
+    openModifyMCDialog: function () {
+      this.MCDialogOpen = true
+    },
+    disableMCDialog: function () {
+      this.MCDialogOpen = false
     },
     askRemove: function (data) {
       this.remove.data = data

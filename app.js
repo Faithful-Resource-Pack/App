@@ -459,6 +459,19 @@ app.post('/paths/change', function (req, res) {
 		})
 })
 
+app.post('/paths/version-update/', function (req, res) {
+	paths_backend.update(req.body.actual, req.body.new)
+		.then(() => {
+			res.status(200)
+			res.end()
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.end()
+		})
+})
+
 app.post('/paths/add', function (req, res) {
 	paths_backend.add(req.body)
 		.then(() => {
