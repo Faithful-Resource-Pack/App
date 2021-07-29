@@ -2,6 +2,7 @@
 
 const pathModal = () => import('./modal_path.js')
 const removeConfirm = () => import('./remove-confirm.js')
+const SUFFIX = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
 
 export default {
   name: 'use-modal',
@@ -16,7 +17,7 @@ export default {
     max-width="600"
   >
     <path-modal :subPathDialog="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>
-    <remove-confirm type="path" :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false }" :data="remove.data"></remove-confirm>
+    <remove-confirm type="path" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
     
     <v-card>
       <v-card-title class="headline" v-text="subDialogTitle"></v-card-title>
@@ -144,15 +145,21 @@ export default {
       this.subPathDialogOpen = true
       this.subPathDialogData = data
     },
-    disableSubPathDialog: function (refresh = false) {
+    disableSubPathDialog: function () {
       this.subPathDialogOpen = false
+      this.getPaths(this.subFormData.id)
+      this.$forceUpdate()
+    },
+    closeAndUpdate: function() {
+      this.remove.confirm = false
+      this.getPaths(this.subFormData.id)
+      this.$forceUpdate()
     },
     send: function () {
       let newData = JSON.parse(JSON.stringify(this.subFormData))
       
-      const suffix = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
       if (this.add) {
-        newData.id = this.textureID + suffix[this.usesLength]
+        newData.id = this.textureID + SUFFIX[this.usesLength]
         newData.textureID = parseInt(this.textureID, 10)
       }
 

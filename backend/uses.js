@@ -64,11 +64,9 @@ module.exports = {
       }])
       .then(pathsObj => {
         let keyToDelete = []
-
         for (const path in pathsObj) {
           keyToDelete.push(pathsObj[path].id)
         }
-
         paths.removeBulk(keyToDelete)
       })
     }

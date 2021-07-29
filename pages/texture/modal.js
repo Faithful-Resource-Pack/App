@@ -16,7 +16,7 @@ export default {
       max-width="600"
     >
       <use-modal :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
-      <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false }" :data="remove.data"></remove-confirm>
+      <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
       
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
@@ -136,8 +136,15 @@ export default {
       this.subDialogOpen = true
       this.subDialogData = data
     },
-    disableSubDialog: function (refresh = false) {
+    disableSubDialog: function () {
       this.subDialogOpen = false
+      this.getUses(this.formData.id)
+      this.$forceUpdate()
+    },
+    closeAndUpdate: function () {
+      this.remove.confirm = false
+      this.getUses(this.formData.id)
+      this.$forceUpdate()
     },
     send: function() {
       const data = JSON.parse(JSON.stringify(this.formData))

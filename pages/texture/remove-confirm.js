@@ -14,7 +14,7 @@ export default {
           <v-form ref="form" lazy-validation>
             <p>Do you want to delete this {{ type }}?</p>
 
-            <v-checkbox v-if="type == 'use'" v-model="deletePaths" label="Delete all paths attached"></v-checkbox>
+            <v-checkbox v-if="type == 'use'" v-model="deletePaths" label="Delete all paths attached (Highly Recommended)"></v-checkbox>
             <blockquote v-if="type == 'use'">
               <v-btn
                 text
@@ -104,7 +104,6 @@ export default {
       })
     },
     deleteData: function() {
-
       const data = {
         id: this.data.id,
         deletePaths: this.deletePaths,
