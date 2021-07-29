@@ -17,13 +17,9 @@ export default {
             </v-col><v-col :class="'col-' + formData.uuid ? '10' : '12'" :sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12">
               <v-form ref="form" lazy-validation>
                 <v-text-field required :readonly="add == false" v-model="formData.id" label="Discord ID"></v-text-field>
-
                 <v-text-field required clearable v-model="formData.username" label="Username"></v-text-field>
-
                 <v-select required multiple v-model="formData.type" :items="types" label="Contributor type"></v-select>
-        
                 <v-text-field required clearable v-model="formData.uuid" label="Minecraft profile UUID"></v-text-field>
-
               </v-form>
             </v-col>
           </v-row>
@@ -31,7 +27,7 @@ export default {
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="grey darken-1"
+            color="red darken-1"
             text
             @click="disableDialog"
           >

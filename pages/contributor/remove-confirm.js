@@ -1,4 +1,4 @@
-/* global axios, TwinBcrypt */
+/* global axios */
 
 export default {
 	name: 'contributor-remove-confirm',
@@ -69,14 +69,14 @@ export default {
       
       axios.post('/contributors/remove', data)
       .then(() => {
-        this.$root.showSnackBar('Ended successully', 'success')
+        this.$root.showSnackBar('Ended successfully', 'success')
         this.disableDialog(true)
       })
       .catch(error => {
         console.error(error)
         this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
         this.disableDialog(true)
-      });
+      })
     }
   }
 }

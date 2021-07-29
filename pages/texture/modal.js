@@ -1,11 +1,13 @@
-/* global axios, TwinBcrypt, Vue */
+/* global axios, Vue */
 
-const AddUseModal = () => import('./modal_add_use.js')
+const useModal = () => import('./modal_use.js')
+const removeConfirm = () => import('./remove-confirm.js')
 
 export default {
   name: 'texture-modal',
   components: {
-    AddUseModal
+    useModal,
+    removeConfirm
   },
   template: `
   <v-dialog
@@ -13,19 +15,20 @@ export default {
       persistent
       max-width="600"
     >
-      <add-use-modal :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :data="subDialogData"></add-use-modal>
+      <use-modal :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
+      <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false }" :data="remove.data"></remove-confirm>
+      
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
           <v-row>
             <v-col :class="'col-12'" :sm="12">
-              <v-form ref="form" lazy-validation>
-              <v-text-field hint="changing the ID can break everything" required :readonly="add == false" v-model="formData.id" label="Texture ID"></v-text-field>
-
+              <v-form ref="form">
+                <v-text-field hint="⚠️ Changing the ID can break everything" required :readonly="add == false" v-model="formData.id" label="Texture ID"></v-text-field>
                 <v-text-field required clearable v-model="formData.name" label="Texture Name"></v-text-field>
-
                 <v-select required multiple v-model="formData.type" :items="types" label="Texture Types"></v-select>
 
+                <h2 class="title" >Uses</h2>
                 <v-list v-if="Object.keys(formData.uses).length" label="Texture Uses">
                   <v-row>
                   <v-list-item
@@ -36,7 +39,7 @@ export default {
                   <v-list-item-content :style="{ 'display': 'contents' }">
                     <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ index }}</v-list-item-avatar>
                     <v-list-item-title>
-                      <v-list-item :style="{ 'display': 'contents' }" v-if="use.textureUseName != ''">{{ use.textureUseName}}</v-list-item>
+                      <v-list-item :style="{ 'display': 'contents' }" v-if="use.textureUseName">{{ use.textureUseName}}</v-list-item>
                       <v-list-item :style="{ 'display': 'contents' }" v-else><i>Nameless</i></v-list-item>
                       <v-list-item-subtitle v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
                     </v-list-item-title>
@@ -49,7 +52,7 @@ export default {
                   </v-list-item-action>
                   <v-list-item-action>
                     <v-btn icon @click="askRemoveUse(use)">
-                      <v-icon color="white lighten-1">mdi-delete</v-icon>
+                      <v-icon color="red lighten-1">mdi-delete</v-icon>
                     </v-btn>
                   </v-list-item-action>
 
@@ -66,7 +69,7 @@ export default {
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="grey darken-1"
+            color="red darken-1"
             text
             @click="disableDialog"
           >
@@ -112,16 +115,20 @@ export default {
       formData: {
         name: '',
         type: [],
-        id: -1,
+        id: '',
         uses: {}
       },
       subDialogOpen: false,
-      subDialogData: {}
+      subDialogData: {},
+      remove: {
+        confirm: false,
+        data: {}
+      }
     }
   },
   computed: {
     dialogTitle: function() {
-      return `${this.add ? 'Add new' : 'Change'} texture`
+      return `${this.add ? 'Add a new' : 'Edit'} texture`
     }
   },
   methods: {
@@ -135,7 +142,7 @@ export default {
     send: function() {
       const data = JSON.parse(JSON.stringify(this.formData))
 
-      axios.post(`${this.add ? '/textures/add' : '/textures/change' }`, data)
+      axios.post(`/textures/${this.add ? 'add' : 'change' }`, data)
       .then(() => {
         this.$root.showSnackBar('Ended successfully', 'success')
         this.disableDialog(true)
@@ -162,20 +169,25 @@ export default {
       .catch(function (err) {
         console.error(err)
       })
+    },
+    askRemoveUse: function (data) {
+      this.remove.data = data
+      this.remove.confirm = true
     }
   },
   watch: {
     dialog: function(newValue, oldValue) {
       if (oldValue != newValue && newValue == true) {
         Vue.nextTick(() => {
-          this.$refs.form.reset()
+          if (this.add) this.$refs.form.reset()
 
           if (!this.add) {
             this.formData.name = this.data.name
-            this.formData.id = this.data.id
             this.formData.type = this.data.type
+            this.formData.id = this.data.id
             this.getUses(this.data.id)
           }
+          
         })
       }
     }

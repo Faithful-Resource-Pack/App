@@ -37,7 +37,7 @@ let v = new Vue({
         ]
       },
       {
-        label: 'Admin/Dev', subtabs: [
+        label: 'Database', subtabs: [
           { to: "/contributions/", label: "Contributions", routes: [{ path: '/contributions/', component: ContributionPage }] },
           { to: "/contributors/", label: "Contributors", routes: [{ path: '/contributors/', redirect: '/contributors/all/' }, { path: '/contributors/:type?/:name?/', component: ContributorPage }] },
           { to: "/textures/", label: "Textures", routes: [{ path: '/textures/', redirect: '/textures/all/' }, { path: '/textures/:type?/:name?/', component: TexturePage }] }

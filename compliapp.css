@@ -68,7 +68,7 @@ a { text-decoration: none; }
   margin-bottom: 24px;
 }
 
-.v-messages {
+.v-messages, .v-select__selection {
   padding-left: 8px;
 }
 
@@ -76,7 +76,7 @@ a { text-decoration: none; }
   padding: 8px 0 8px 8px;
 }
 
-.v-text-field__slot label {
+.v-text-field__slot label, .v-select__slot label {
   padding-left: 8px;
 }
 
@@ -111,4 +111,10 @@ h2.compliance-font {
 
 .router-link:hover {
   background-color: rgba(255,255,255,.3);
+}
+
+blockquote {
+  margin-left: 15px;
+  border-left: 5px solid rgba(255,255,255,.3) ;
+  padding-left: 10px;
 }

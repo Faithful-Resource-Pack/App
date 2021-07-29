@@ -32,7 +32,23 @@ export default {
       </div>
 
     <div>
-      <v-btn block @click="openDialog()">Add new Texture <v-icon right dark>mdi-plus</v-icon></v-btn>
+      <v-row>
+        <v-col>
+          <v-btn disabled block @click="openDialog()">Add new Texture <v-icon right dark>mdi-plus</v-icon></v-btn>
+        </v-col>
+        <v-col>
+          <v-btn disabled block @click="openNewMCDialog()">Add multiple textures <v-icon right dark>mdi-plus</v-icon></v-btn>
+        </v-col>
+      </v-row>
+      <br>
+      <v-row>
+        <v-col>
+          <v-btn disabled block @click="openNewMCDialog()">Add new Minecraft Version <v-icon right dark>mdi-plus</v-icon></v-btn>
+        </v-col>
+        <v-col>
+          <v-btn disabled block @click="openModifyMCDialog()">Modify a Minecraft Version<v-icon right dark>mdi-plus</v-icon></v-btn>
+        </v-col>
+      </v-row>
 
       <div class="my-2 text-h5">Texture results</div>
       <v-list v-if="Object.keys(textures).length" two-line color="rgba(255, 255, 255, 0.08)" >
@@ -67,8 +83,8 @@ export default {
               </v-btn>
             </v-list-item-action>
             <v-list-item-action>
-              <v-btn icon @click="askRemove(texture)">
-                <v-icon color="white lighten-1">mdi-delete</v-icon>
+              <v-btn disabled icon @click="askRemove(texture)">
+                <v-icon color="red lighten-1">mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
@@ -151,25 +167,6 @@ export default {
 
       return res
     },
-
-    // splittedResults: function () {
-    //   let res = []
-    //   const keys = Object.keys(this.textures)
-    //   const len = keys.length
-
-    //   for (let col = 0; col < (len > 1 ? 2 : 1); ++col) {
-    //     res.push([])
-    //   }
-
-    //   let arrayIndex = 0;
-
-    //   for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-    //     res[arrayIndex].push(this.textures[keys[i]])
-    //     arrayIndex = (arrayIndex + 1) % res.length
-    //   }
-      
-    //   return res
-    // }
   },
   methods: {
     textureURL(t) {
