@@ -5,7 +5,7 @@ require('dotenv').config()
 const express = require('express')
 const path = require('path')
 const fetch = require('node-fetch')
-const port = 80
+const port = process.env.PORT
 const app = express()
 const compliapp_url = '/compliapp';
 
