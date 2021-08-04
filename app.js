@@ -7,7 +7,7 @@ const path = require('path')
 const fetch = require('node-fetch')
 const port = process.env.PORT
 const app = express()
-const compliapp_url = '/compliapp';
+const compliapp_url = '/';
 
 const contributors_backend = require('./backend/contributor')
 const contributions_backend = require('./backend/contributions')
@@ -23,7 +23,7 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 app.get(compliapp_url, (req, res) => {
-	res.sendFile(path.join(__dirname, './app.html'))
+	res.sendFile(path.join(__dirname, './index.html'))
 })
 
 app.listen(port, () => {

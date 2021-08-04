@@ -15,7 +15,7 @@ router.get('/login', (req, res) => {
 
 router.get('/callback', (req, res) => {
   if (!req.query.code) {
-    res.redirect('/compliapp/')
+    res.redirect('/')
     return
   }
 
@@ -33,7 +33,7 @@ router.get('/callback', (req, res) => {
   })
   .then(response => response.json())
   .then(json => {
-    res.redirect(`/compliapp?access_token=${encodeURIComponent(json.access_token)}&refresh_token=${encodeURIComponent(json.refresh_token)}`)
+    res.redirect(`/?access_token=${encodeURIComponent(json.access_token)}&refresh_token=${encodeURIComponent(json.refresh_token)}`)
   })
   .catch(err => {
     res.status(400)
