@@ -1,6 +1,6 @@
 @font-face {
   font-family: Compliance;
-  src: url("https://compliancepack.net/data/font/Compliance.ttf") format("truetype");
+  src: url("./Compliance.ttf") format("truetype");
 }
 
 a { text-decoration: none; }
