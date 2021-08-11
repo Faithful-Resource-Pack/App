@@ -25,7 +25,7 @@ module.exports = {
     const element_id = body.id
 
     const obj = {}
-    const f_arr = ['username', 'type', 'uuid']
+    const f_arr = ['username', 'type', 'uuid', 'media']
     f_arr.forEach(field_kept => {
       if(field_kept in body)
         obj[field_kept] = body[field_kept]

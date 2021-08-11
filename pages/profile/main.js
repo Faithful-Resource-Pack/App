@@ -19,31 +19,168 @@ export default {
           <v-list-item-content>
             <v-list-item-title v-text="$root.user.username"></v-list-item-title>
 
-            <v-list-item-subtitle v-text="($root.user.roles||[]).join(', ')"></v-list-item-subtitle>
+            <v-list-item-subtitle v-text="($root.user.roles||[]).join(' | ')"></v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
+        <!-- 
+        ================ GENERAL SETTINGS ================
+        -->
+        <v-list-item>
         <v-row
           :style="{
-            'align-items': 'center',
-            'flex-direction': $vuetify.breakpoint.mdAndUp ? 'row' : 'column'
+            'margin-top': '20px',
+            'align-items': $vuetify.breakpoint.mdAndUp ? 'flex-start' : 'center',
+            'flex-direction': $vuetify.breakpoint.mdAndUp ? 'row' : 'column',
+            'justify-content': 'space-between'
           }"
         >
-          <v-col v-if="localUser.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2" style="max-width: 100%;">
-            <img alt="avatar" style="display: block; margin-left: auto; margin-right: auto; height: 100%;" :src="($vuetify.breakpoint.mdAndUp ? 'https://visage.surgeplay.com/full/256/' : 'https://visage.surgeplay.com/head/128/') + localUser.uuid" />
+          <v-col v-if="localUser.uuid && localUser.uuid.length == uuidMaxLength" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2" style="max-width: 250px;">
+            <img 
+              alt="avatar" 
+              :style="{
+                'display': 'block',
+                'margin-left': 'auto',
+                'margin-right': $vuetify.breakpoint.mdAndUp ? 'inherit' : 'auto',
+                'height': '100%'
+              }"
+              :src="($vuetify.breakpoint.mdAndUp ? 'https://visage.surgeplay.com/full/256/' : 'https://visage.surgeplay.com/head/128/') + localUser.uuid"
+            />
           </v-col>
-          <v-col :class="'col-' + localUser.uuid ? '10' : '12'" :sm="localUser.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
-            <v-form ref="form" lazy-validation :style="{ 'padding-right': localUser.uuid ? 'auto' : '20px', 'padding-left': localUser.uuid ? 'auto' : '20px' }">
-              <v-text-field required clearable v-model="localUser.uuid" label="Minecraft profile UUID" hint="Your skin will be displayed on your pages"></v-text-field>
-              <v-text-field required clearable v-model="localUser.username" label="Website Username"></v-text-field>
+          <v-col :class="'col-' + (localUser.uuid && localUser.uuid.length == uuidMaxLength) ? '10' : '12'" :sm="(localUser.uuid && localUser.uuid.length == uuidMaxLength) ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
+            <v-form ref="form" lazy-validation>
+              <div class="text-h6">General</div>
+              <v-list class="profileList">
+                <v-row>
+                  <v-list-item class="height-90">
+                    <v-list-item-content>
+                      <v-col>
+                      <v-text-field
+                        placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33" 
+                        :rules="uuidRules" 
+                        :counter="uuidMaxLength" 
+                        clearable 
+                        v-model="localUser.uuid" 
+                        label="Minecraft profile UUID" 
+                        hint="Your skin will be displayed on your pages"
+                      ></v-text-field>
+                      </v-col>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-row>
+                <v-row>
+                  <v-list-item class="height-90">
+                    <v-list-item-content>
+                      <v-col>
+                      <v-text-field 
+                        required 
+                        :rules="usernameRules" 
+                        :counter="usernameMaxLength" 
+                        clearable 
+                        v-model="localUser.username" 
+                        label="Website Username" 
+                        hint="Your username will be displayed and used on the Website for contributions, add-ons and more..."
+                      ></v-text-field>
+                      </v-col>
+                    </v-list-item-content>
+                  </v-list-item>
+                </v-row>
+              </v-list>
             </v-form>
           </v-col>
         </v-row>
+        </v-list-item>
 
-        <div 
-          :style="{ 'display': 'flex', 'justify-content': 'center' }"
-        >
-          <v-btn @click="send" >
+        <br>
+        
+        <!--
+        ================ SOCIAL SETTINGS ================
+        -->
+        <v-list-item>
+        <v-row><v-col>
+          <v-form lazy-validation>
+            <div class="text-h6">Social links</div>
+            <v-list class="profileList">
+              <v-row v-if="localUser.media && Object.keys(localUser.media).length">
+                <v-list-item
+                  v-for="(socialMedia, index) in localUser.media"
+                  :key="index"
+                  class="height-90"
+                >
+                  <v-list-item-content>
+                    <v-col>
+                      <v-text-field
+                        clearable
+                        style="margin-bottom: 10px"
+                        v-model="socialMedia.link"
+                        :rules="urlRules"
+                        :label="'Edit ' + socialMedia.type + ' URL'"
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-list-item-content>
+                  <v-col
+                    style="max-width: 250px; max-height: 48px; padding: 0; padding-left: 20px"
+                  >
+                    <v-select
+                      :items="media"
+                      label="Select media"
+                      v-model="socialMedia.type"
+                      solo
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-list-item-action>
+                    <v-btn icon @click="removeSocialMedia(index)" style="margin-right: 8px">
+                      <v-icon color="red lighten-1">mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-row>
+
+              <v-row>
+                <v-list-item class="height-90">
+                  <v-list-item-content>
+                    <v-col>
+                      <v-text-field
+                        clearable
+                        placeholder="https://www.example.com/"
+                        label="New social media:"
+                        style="margin-bottom: 10px"
+                        v-model="newMedia.link"
+                        :rules="urlAddRules"
+                      >
+                      </v-text-field>
+                    </v-col>
+                  </v-list-item-content>
+                  <v-col
+                    style="max-width: 250px; max-height: 48px; padding: 0; padding-left: 20px"
+                  >
+                    <v-select
+                      :items="media"
+                      label="Select media"
+                      v-model="newMedia.type"
+                      solo
+                    >
+                    </v-select>
+                  </v-col>
+                  <v-list-item-action>
+                    <v-btn icon @click="addSocialMedia()" :disabled="isMediaOk()" style="margin-right: 8px">
+                      <v-icon color="white lighten-1">mdi-plus</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-row>
+            </v-list>
+          </v-form>
+        </v-col></v-row>
+        </v-list-item>
+
+        <div :style="{'display': 'flex', 'justify-content': 'center', 'padding-right': '20px'}">
+          <v-btn
+            @click="send"
+            :disabled="!everythingIsOk"
+          >
             Save
           </v-btn>
         </div>
@@ -54,10 +191,71 @@ export default {
   `,
   data() {
     return {
+      uuidMaxLength: 36,
+      usernameMaxLength: 24,
+      everythingIsOk: false,
+      newMedia: {
+        type: '',
+        link: ''
+      },
+      media: [
+        "CurseForge", "GitHub", "Planet Minecraft", "PSN", "Reddit", "Steam", "Twitter", "Website", "Xbox", "YouTube", "Other"
+      ],
+      urlAddRules: [
+        u => this.validForm(this.validURL(u) || u == '', 'URL must be valid.')
+      ],
+      urlRules: [
+        u => this.validForm(this.validURL(u), 'URL must be valid.')
+      ],
+      uuidRules: [
+        u => this.validForm((u && (u.length == this.uuidMaxLength)) || !u, 'The UUID needs to be 36 characters long.')
+      ],
+      usernameRules: [
+        u => this.validForm(!!u, 'Username is required.'),
+        u => this.validForm(u && u.length <= this.usernameMaxLength, `Username must be less than ${this.usernameMaxLength} characters.`)
+      ],
       localUser: {}
     }
   },
   methods: {
+    isMediaOk: function() {
+      if (this.newMedia.type != '' && this.newMedia.link != '') return false
+      return true
+    },
+    validURL: function(str) {
+      var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+      return !!pattern.test(str);
+    },
+    removeSocialMedia: function(index) {
+      this.localUser.media.splice(index, 1)
+    },
+    addSocialMedia: function() {
+      if (!this.localUser.media) this.localUser.media = new Array()
+
+      this.localUser.media.push({
+        type: this.newMedia.type,
+        link: this.newMedia.link
+      })
+
+      this.newMedia = {
+        type: '',
+        link: ''
+      }
+    },
+    validForm: function(boolResult, sentence) {
+      if (boolResult) {
+        this.everythingIsOk = true
+        return true
+      }
+      
+      this.everythingIsOk = false
+      return sentence.toString()
+    },
     send: function() {
       if (!this.$root.isUserLogged) return
 
