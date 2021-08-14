@@ -9,7 +9,7 @@ export default {
     </div>
 
     <div class="my-2 text-h5">
-      <v-list two-line color="rgba(255, 255, 255, 0.08)" >
+      <v-list two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
 
         <v-list-item>
           <v-list-item-avatar>
@@ -176,7 +176,7 @@ export default {
         </v-col></v-row>
         </v-list-item>
 
-        <div :style="{'display': 'flex', 'justify-content': 'center', 'padding-right': '20px'}">
+        <div :style="{'display': 'flex', 'justify-content': 'center'}">
           <v-btn
             @click="send"
             :disabled="!everythingIsOk"
@@ -199,7 +199,7 @@ export default {
         link: ''
       },
       media: [
-        "CurseForge", "GitHub", "Planet Minecraft", "PSN", "Reddit", "Steam", "Twitter", "Website", "Xbox", "YouTube", "Other"
+        "CurseForge", "GitHub", "Patreon", "Paypal", "Planet Minecraft", "PSN", "Reddit", "Steam", "Twitter", "Website", "Xbox", "YouTube", "Other"
       ],
       urlAddRules: [
         u => this.validForm(this.validURL(u) || u == '', 'URL must be valid.')

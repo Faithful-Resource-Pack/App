@@ -26,7 +26,7 @@ export default {
               <v-form ref="form">
                 <v-text-field hint="⚠️ Changing the ID can break everything" required :readonly="add == false" v-model="formData.id" label="Texture ID"></v-text-field>
                 <v-text-field required clearable v-model="formData.name" label="Texture Name"></v-text-field>
-                <v-select required multiple v-model="formData.type" :items="types" label="Texture Types"></v-select>
+                <v-select required multiple small-chips v-model="formData.type" :items="types" label="Texture Types"></v-select>
 
                 <h2 class="title" >Uses</h2>
                 <v-list v-if="Object.keys(formData.uses).length" label="Texture Uses">
@@ -147,17 +147,18 @@ export default {
       this.$forceUpdate()
     },
     send: function() {
+      if (!this.$root.isUserLogged) return
       const data = JSON.parse(JSON.stringify(this.formData))
 
       axios.post(`/textures/${this.add ? 'add' : 'change' }`, data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+        .then(() => {
+          this.$root.showSnackBar('Ended successfully', 'success')
+          this.disableDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     },
     getUses: function (textureID) {
       axios.get('/uses/search', {

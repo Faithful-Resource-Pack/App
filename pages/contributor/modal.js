@@ -18,7 +18,7 @@ export default {
               <v-form ref="form" lazy-validation>
                 <v-text-field required :readonly="add == false" v-model="formData.id" label="Discord ID"></v-text-field>
                 <v-text-field required clearable v-model="formData.username" label="Username"></v-text-field>
-                <v-select required multiple v-model="formData.type" :items="types" label="Contributor type"></v-select>
+                <v-select required multiple small-chips v-model="formData.type" :items="types" label="Contributor type"></v-select>
                 <v-text-field required clearable v-model="formData.uuid" label="Minecraft profile UUID"></v-text-field>
               </v-form>
             </v-col>

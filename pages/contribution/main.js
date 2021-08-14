@@ -21,7 +21,7 @@ export default {
       ></v-checkbox>
     </v-btn>
     <div class="my-2 text-h5">Contributor</div>
-      <v-autocomplete
+    <v-autocomplete
       v-model="contributors_selected"
       :items="contributors"
       :loading="contributors.length == 0"
@@ -31,36 +31,36 @@ export default {
       multiple
       chips
     >
-        <!-- SELECTED THINGY -->
-        <template v-slot:selection="data">
-          <v-chip
-            :key="data.item.id"
-            v-bind="data.attrs"
-            :input-value="data.selected"
-            :disabled="data.disabled"
-            close
-            @click:close="remove(data.item.id)"
+      <!-- SELECTED THINGY -->
+      <template v-slot:selection="data">
+        <v-chip
+          :key="data.item.id"
+          v-bind="data.attrs"
+          :input-value="data.selected"
+          :disabled="data.disabled"
+          close
+          @click:close="remove(data.item.id)"
+        >
+          <v-avatar
+            :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
+            left
           >
-            <v-avatar
-              :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
-              left
-            >
-              <template v-if="data.item.uuid != undefined">
-                <v-img eager
-                  :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
-                  :alt="data.item.username.slice(0, 1).toUpperCase()"
-                />
-              </template>
-              <template v-else>
-                {{ data.item.username.slice(0, 1) }}
-              </template>
-            </v-avatar>
-            {{ data.item.username }}
-          </v-chip>
-        </template>
+            <template v-if="data.item.uuid != undefined">
+              <v-img eager
+                :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
+                :alt="data.item.username.slice(0, 1).toUpperCase()"
+              />
+            </template>
+            <template v-else>
+              {{ data.item.username.slice(0, 1) }}
+            </template>
+          </v-avatar>
+          {{ data.item.username }}
+        </v-chip>
+      </template>
 
-        <!-- LIST ITEM PART -->
-        <template v-slot:item="data">
+      <!-- LIST ITEM PART -->
+      <template v-slot:item="data">
         <template v-if="typeof data.item !== 'object'">
           <v-list-item-content v-text="data.item"></v-list-item-content>
         </template>
@@ -73,7 +73,7 @@ export default {
             <template v-if="data.item.uuid">
               <v-img eager :src="'https://visage.surgeplay.com/head/48/' + data.item.uuid" />
             </template>
-            <div v-else>{{ data.item.username.slice(0, 1) }}</div>
+            <div v-else>{{ data.item.username.slice(0, 1).toUpperCase() }}</div>
           </v-list-item-avatar>
         </template>
       </template>

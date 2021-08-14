@@ -1,0 +1,117 @@
+/* global axios */
+
+const AddonRemoveConfirm = () => import('./remove-confirm.js')
+
+export default {
+  name: 'own-addon-page',
+  components: {
+    AddonRemoveConfirm
+  },
+  template: `
+  <v-container>
+    <div class="text-h4 py-4">
+      Your Add-ons
+      <v-progress-circular
+        v-if="Object.keys(addons).length == 0"
+        indeterminate
+      />
+    </div>
+    <div class="my-2 text-h5">
+      <v-row>
+        <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-if="Object.keys(addons).length != 0" v-for="(addon, index) in addons" :key="index">
+
+          <v-card style="background-color: rgba(255,255,255,.05)">
+            <v-img
+              style="border-radius: 5px"
+              :src="addon.images.header"
+              :aspect-ratio="16/9"
+            />
+            <v-card-title v-text="addon.title" />
+            <v-card-subtitle v-text="addon.type.join(', ')" />
+            <v-card-text>
+              {{ addon.description.length > 32 ? addon.description.substring(0, 32) + '...' : addon.description }}
+            </v-card-text>
+            <v-card-text style="height: 60px">
+              <v-badge
+                dot
+                inline
+                :color="addon.status == 'approved' ? 'green' : (addon.status == 'pending' ? 'yellow' : 'red')"
+              />
+              {{ addon.status }}
+              <v-btn
+                v-if="addon.status == 'approved'"
+                color="blue"
+                :href="'https://www.compliancepack.net/addons#/' + addon.id"
+                target="_blank"
+                icon
+                small
+              >
+                <v-icon small>mdi-open-in-new</v-icon>
+              </v-btn>
+            </v-card-text>
+
+            <v-card-actions style="justify-content: flex-end;">
+              <v-btn
+                color="white"
+                text
+                disabled
+                @click="editAddon(addon)"
+              >
+                Edit
+              </v-btn>
+              <v-btn
+                color="red"
+                text
+                @click="deleteAddon(addon)"
+              >
+                Delete
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+              
+        </v-col>
+      </v-row>
+    </div>
+    <addon-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></addon-remove-confirm>
+  </v-container>
+  `,
+  data() {
+    return {
+      addons: {},
+      remove: {
+        confirm: false,
+        data: {}
+      }
+    }
+  },
+  methods: {
+    editAddon: function(addon) {
+      return
+    },
+    deleteAddon: function (addon) {
+      this.remove.data = addon
+      this.remove.confirm = true
+    },
+    getAddons: function (authorID) {
+      axios.get('/addons/search/author', {
+        params: {
+          authorID: authorID
+        }
+      })
+        .then((res) => {
+          this.addons = res.data
+          this.$forceUpdate()
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+    },
+    update: function() {
+      this.getAddons(this.$root.user.id)
+      this.$forceUpdate()
+    }
+  },
+  mounted() {
+    this.getAddons(this.$root.user.id)
+  }
+}

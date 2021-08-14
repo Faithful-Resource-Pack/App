@@ -16,11 +16,13 @@ const contributionsStats_backend = require('./backend/contributions-stats')
 const textures_backend = require('./backend/textures')
 const uses_backend = require('./backend/uses')
 const paths_backend = require('./backend/paths')
+const addons_backend = require('./backend/addons')
 
 app.use(express.urlencoded({
-	extended: true
+	extended: true,
+	limit: '50mb'
 }))
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }))
 
 app.get(compliapp_url, (req, res) => {
 	res.sendFile(path.join(__dirname, './index.html'))
@@ -35,6 +37,73 @@ app.use(express.static('.', {
 	extensions: [ 'html', 'xml' ]
 }))
 app.use('/api/discord', require('./api/discord'))
+
+/**
+ * ==========================================
+ *                   ADD-ONS
+ * ==========================================
+ */
+
+app.post('/addons/submit', function(req, res) {
+	addons_backend.submit(req.body)
+		.then(() => {
+			res.status(200)
+			res.end()
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.end()
+		})
+})
+
+app.get('/addons/search/author', function (req, res) {
+	const params = req.query
+	const authorID = params.authorID
+
+	addons_backend.search(authorID, 'author')
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.get('/addons/get/all', function (req, res) {
+	addons_backend.get()
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.trace(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.post('/addons/remove', function (req, res) {
+	addons_backend.remove(req.body.id)
+		.then(() => {
+			res.status(200)
+			res.end()
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.end()
+		})
+})
 
 /**
  * ==========================================

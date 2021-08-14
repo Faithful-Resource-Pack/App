@@ -61,7 +61,7 @@ a { text-decoration: none; }
   border-radius: 15px !important;
 }
 
-.v-list, .v-input__slot {
+.v-list, .v-input__slot, .v-card {
 	backdrop-filter: blur(10px);
 }
 .v-btn {
@@ -73,14 +73,14 @@ a { text-decoration: none; }
 }
 
 .v-text-field {
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 
 .v-messages, .v-select__selection {
   padding-left: 8px;
 }
 
-.v-text-field__slot input {
+.v-text-field__slot input, .v-text-field__slot textarea {
   padding: 8px 0 8px 8px;
 }
 
@@ -141,4 +141,36 @@ blockquote {
 
 .height-90 {
   max-height: 90px !important;
+}
+
+.transparent-input > .v-input__control > .v-input__slot{
+  backdrop-filter: none !important;
+}
+
+.container {
+  max-width: 60%;
+}
+
+@media (max-width: 1080px) {
+  .container {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 720) {
+  .container {
+    max-width: 100%;
+  }
+}
+
+.v-application--is-ltr .v-text-field .v-input__append-inner {
+  margin-right: 4px;
+}
+
+.v-input--selection-controls {
+  margin-top: 0px !important;
+}
+
+.v-btn__content > .v-input--selection-controls {
+  margin-top: 16px !important;
 }

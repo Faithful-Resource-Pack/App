@@ -5,6 +5,10 @@ const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
 const TexturePage = () => import('./pages/texture/main.js')
 const AuthPage = () => import('./pages/auth/main.js')
 const ProfilePage = () => import('./pages/profile/main.js')
+const AddonNewPage = () => import('./pages/addon/new_addon.js')
+const AddonOwnPage = () => import('./pages/addon/own_addons.js')
+const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
+const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
@@ -37,6 +41,19 @@ let v = new Vue({
         ]
       },
       {
+        label: 'Add-ons', subtabs: [
+          { to: "/addons/new", label: "Submit Add-on", routes: [{ path: '/addons/new', component: AddonNewPage }] },
+          { to: "/addons/own", label: "Your Add-ons", routes: [{ path: '/addons/own', component: AddonOwnPage }] }
+        ]
+      },
+      // {
+      //   label: 'Review', subtabs: [
+      //     { to: "/review/addons", label: "Add-ons", routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
+      //     { to: "/review/translations", label: "Translations", routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
+      //   ],
+      //   roles: [ "Administrator" ]
+      // },
+      {
         label: 'Database', subtabs: [
           { to: "/contributions/", label: "Contributions", routes: [{ path: '/contributions/', component: ContributionPage }] },
           { to: "/contributors/", label: "Contributors", routes: [{ path: '/contributors/', redirect: '/contributors/all/' }, { path: '/contributors/:type?/:name?/', component: ContributorPage }] },
@@ -50,7 +67,7 @@ let v = new Vue({
       show: false,
       message: '',
       color: '#222',
-      timeout: 20000
+      timeout: 4000
     }
   },
   computed: {
@@ -102,7 +119,7 @@ let v = new Vue({
     }
   },
   methods: {
-    showSnackBar: function(message, color = '#222', timeout = 2000) {
+    showSnackBar: function(message, color = '#222', timeout = 4000) {
       this.snackbar.message = message
       this.snackbar.color = color
       this.snackbar.timeout = timeout

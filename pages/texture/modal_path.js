@@ -17,7 +17,7 @@ export default {
               <v-text-field v-if="add == false" hint="⚠️ Changing the Path ID can break everything" v-model="subPathFormData.id" label="Path ID"></v-text-field>
               <v-text-field v-if="add == false" hint="⚠️ Changing the Use ID can break everything" v-model="subPathFormData.useID" label="Use ID"></v-text-field>
               <v-text-field hint="The path should start from the root directory (ex: assets/...)" v-model="subPathFormData.path" label="Path"></v-text-field>
-              <v-select required multiple v-model="subPathFormData.versions" :items="versions" label="MC Versions"></v-select>
+              <v-select required multiple small-chips v-model="subPathFormData.versions" :items="versions" label="MC Versions"></v-select>
             </v-form>
           </v-col>
         </v-row>
