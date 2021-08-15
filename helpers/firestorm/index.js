@@ -15,6 +15,11 @@ const { default: axios } = require("axios")
  * @property {String | Number | Boolean | Array } [value] // the value you want to compare
  */
 
+/**
+ * @typedef {Object} SelectOption
+ * @property {Array<String>} fields Chosen fields to eventually return
+ */
+
 let _address = undefined
 let _token = undefined
 
@@ -104,6 +109,22 @@ class Collection {
    * @returns {Promise<T[]>}
    */
   search(searchOptions) {
+    if(!Array.isArray(searchOptions))
+      return Promise.reject(new Error('searchOptions shall be an array'))
+
+    searchOptions.forEach(searchOption => {
+      if(!searchOption.field || !searchOption.criteria || !searchOption.value)
+        return Promise.reject(new Error('Missing fields in searchOptions array'))
+
+      if(typeof searchOption.field !== 'string')
+        return Promise.reject(new Error(`${JSON.stringify(searchOption)} search option field is not a string`))
+
+      if(searchOption.criteria == 'in' && !Array.isArray(searchOption.value))
+        return Promise.reject(new Error('in takes an array of values'))
+
+      //TODO: add more strict value field warnings in JS and PHP
+    })
+
     return new Promise((resolve, reject) => {
       this.__extract_data(axios.get(readAddress(), {
         data: {
@@ -113,6 +134,7 @@ class Collection {
         }
       })).then(res => {
         const arr = []
+
         Object.keys(res).forEach(contribID => {
           const tmp = res[contribID]
           tmp[ID_FIELD_NAME] = contribID
@@ -180,6 +202,32 @@ class Collection {
   }
 
   /**
+   * Upgraded read raw with field selection
+   * @param {SelectOption} selectOption Select options
+   */
+  select(selectOption) {
+    if(!selectOption) selectOption = {}
+    return new Promise((resolve, reject) => {
+      this.__extract_data(axios.get(readAddress(), {
+        data: {
+          'collection': this.collectionName,
+          'command': 'select',
+          'select': selectOption
+        }
+      }))
+      .then(data => {
+        Object.keys(data).forEach(key => {
+          data[key][ID_FIELD_NAME] = key
+          this.addMethods(data[key])
+        })
+
+        resolve(data)
+      })
+      .catch(reject)
+    })
+  }
+
+  /**
    * 
    * @param {String} command The write command you want
    * @param {Object?} value The value for this command 
@@ -192,14 +240,14 @@ class Collection {
       "collection": this.collectionName,
       "command": command
     }
-    if(multiple === true) {
+    if(multiple === true && Array.isArray(value)) { // solves errors with undefined and null values
       value.forEach(v => {
-        delete v[ID_FIELD_NAME]
+        if(typeof value != 'number' && typeof value != 'string' && !Array.isArray(value)) 
+          delete v[ID_FIELD_NAME]
       })
-    } else if(multiple === false) {
+    } else if(multiple === false && value != null && value != undefined && typeof value != 'number' && typeof value != 'string' && !Array.isArray(value)) { // solves errors with undefined and null values
       delete value[ID_FIELD_NAME]
     }
-
     if(value) {
       if(multiple)
         obj["values"] = value
@@ -216,6 +264,9 @@ class Collection {
    * @returns {Promise<any>}
    */
   write_raw(value) {
+    if(value === undefined || value === null) {
+      return Promise.reject(new Error('write_raw value must not be undefined or null'))
+    }
     return this.__extract_data(axios.post(writeAddress(), this.__write_data('write_raw', value)))
   }
 
@@ -226,11 +277,17 @@ class Collection {
    */
   add(value) {
     return new Promise((resolve, reject) => {
-      this.__extract_data(axios.post(writeAddress(), this.__write_data('add', value)))
+      axios.post(writeAddress(), this.__write_data('add', value))
         .then(res => {
+          return this.__extract_data(Promise.resolve(res))
+        })
+        .then(res => {
+          if(typeof res != 'object' || !('id' in res) || typeof res.id != 'string') throw(new Error('Incorrect result'))
           resolve(res.id)
         })
-        .catch(reject)
+        .catch(err => {
+          reject(err)
+        })
     })
   }
 
@@ -297,7 +354,7 @@ class Collection {
    * @returns {Promise<any>}
    */
   editField(obj) {
-    const data = this.__write_data('editField', obj, undefined)
+    const data = this.__write_data('editField', obj, null)
     return this.__extract_data(axios.post(writeAddress(), data))
   }
 
@@ -308,7 +365,7 @@ class Collection {
    */
   editFieldBulk(objArray) {
     const data = this.__write_data('editFieldBulk', objArray, undefined)
-    return this.__extract_data(axios.post(writeAddress(), data))
+    return this.__extract_data(axios.post(writeAddress()), data)
   }
 }
 

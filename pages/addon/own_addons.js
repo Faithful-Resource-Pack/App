@@ -1,11 +1,13 @@
 /* global axios */
 
-const AddonRemoveConfirm = () => import('./remove-confirm.js')
+const addonEditModal = () => import('./modal_edit.js')
+const addonRemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
   name: 'own-addon-page',
   components: {
-    AddonRemoveConfirm
+    addonEditModal,
+    addonRemoveConfirm
   },
   template: `
   <v-container>
@@ -16,6 +18,8 @@ export default {
         indeterminate
       />
     </div>
+
+
     <div class="my-2 text-h5">
       <v-row>
         <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-if="Object.keys(addons).length != 0" v-for="(addon, index) in addons" :key="index">
@@ -28,9 +32,6 @@ export default {
             />
             <v-card-title v-text="addon.title" />
             <v-card-subtitle v-text="addon.type.join(', ')" />
-            <v-card-text>
-              {{ addon.description.length > 32 ? addon.description.substring(0, 32) + '...' : addon.description }}
-            </v-card-text>
             <v-card-text style="height: 60px">
               <v-badge
                 dot
@@ -54,7 +55,7 @@ export default {
               <v-btn
                 color="white"
                 text
-                disabled
+                :disabled="addon.status != 'approved'"
                 @click="editAddon(addon)"
               >
                 Edit
@@ -73,6 +74,13 @@ export default {
       </v-row>
     </div>
     <addon-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></addon-remove-confirm>
+
+    <addon-edit-modal
+      :dialog="dialogOpen"
+      :disableDialog="closeDialog"
+      :data="dialogAddon"
+    ></addon-edit-modal>
+
   </v-container>
   `,
   data() {
@@ -81,12 +89,20 @@ export default {
       remove: {
         confirm: false,
         data: {}
-      }
+      },
+      dialogAddon: {},
+      dialogOpen: false
     }
   },
   methods: {
+    closeDialog: function() {
+      this.dialogOpen = false
+      this.dialogAddon = {}
+      this.update()
+    },
     editAddon: function(addon) {
-      return
+      this.dialogAddon = addon
+      this.dialogOpen = true
     },
     deleteAddon: function (addon) {
       this.remove.data = addon

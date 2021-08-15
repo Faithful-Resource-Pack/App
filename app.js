@@ -44,7 +44,7 @@ app.use('/api/discord', require('./api/discord'))
  * ==========================================
  */
 
-app.post('/addons/submit', function(req, res) {
+app.post('/addons/submit', function (req, res) {
 	addons_backend.submit(req.body)
 		.then(() => {
 			res.status(200)
@@ -52,6 +52,19 @@ app.post('/addons/submit', function(req, res) {
 		})
 		.catch(err => {
 			console.error(err)
+			res.status(400)
+			res.end()
+		})
+})
+
+app.post('/addons/edit', function (req, res) {
+	addons_backend.edit(req.body)
+		.then(() => {
+			res.status(200)
+			res.end()
+		})
+		.catch(err => {
+			console.trace(err)
 			res.status(400)
 			res.end()
 		})
@@ -76,8 +89,8 @@ app.get('/addons/search/author', function (req, res) {
 		})
 })
 
-app.get('/addons/get/all', function (req, res) {
-	addons_backend.get()
+app.get('/addons/get/titles', function (req, res) {
+	addons_backend.get(["title"])
 		.then(val => {
 			res.setHeader('Content-Type', 'application/json')
 			res.send(val)
