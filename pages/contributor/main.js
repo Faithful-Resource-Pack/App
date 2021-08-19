@@ -36,7 +36,7 @@ export default {
         <v-btn block @click="openDialog()">Add new Contributor <v-icon right dark>mdi-plus</v-icon></v-btn>
 
         <div class="my-2 text-h5">Contributor results</div>
-        <v-list v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
+        <v-list rounded v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
           <v-row><v-col :cols="12/listColumns" xs="1"
               v-for="(contrib_arr, index) in splittedContributors"
               :key="index"

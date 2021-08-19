@@ -13,6 +13,14 @@ module.exports = {
         criteria: 'array-contains',
         value: el
       })
+    }
+
+    if (type == 'status') {
+      searchOptions.push({
+        field: 'status',
+        criteria: '==',
+        value: el
+      })
     } 
 
     return addons.search(searchOptions)

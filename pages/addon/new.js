@@ -5,14 +5,14 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Submit a new Add-on
+      Upload a new Add-on
       <v-progress-circular
         v-if="titles.length == 0"
         indeterminate
       />
     </div>
     <div class="my-2 text-h5">
-      <v-list v-if="titles.length > 0" two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
+      <v-list rounded v-if="titles.length > 0" two-line color="rgba(255, 255, 255, 0.05)">
         <v-list-item>
           <v-row>
             <v-col>
@@ -373,7 +373,7 @@ export default {
       axios.post(`/addons/submit`, data)
         .then(() => {
           this.$root.showSnackBar('Ended successfully', 'success')
-          this.$router.push("own")
+          this.$router.push("submissions")
         })
         .catch(err => {
           console.error(err)

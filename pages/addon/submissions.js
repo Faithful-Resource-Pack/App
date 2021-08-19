@@ -12,7 +12,7 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Your Add-ons
+      Submissions
       <v-progress-circular
         v-if="Object.keys(addons).length == 0"
         indeterminate

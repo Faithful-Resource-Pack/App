@@ -5,11 +5,11 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Your Profile
+      Profile
     </div>
 
     <div class="my-2 text-h5">
-      <v-list two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
+      <v-list rounded two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
 
         <v-list-item>
           <v-list-item-avatar>

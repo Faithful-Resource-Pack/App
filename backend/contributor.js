@@ -56,5 +56,8 @@ module.exports = {
   },
   remove: function(user_id) {
     return firestorm_users.remove(user_id)
+  },
+  get: function() {
+    return firestorm_users.read_raw()
   }
 }

@@ -113,7 +113,7 @@ class Collection {
       return Promise.reject(new Error('searchOptions shall be an array'))
 
     searchOptions.forEach(searchOption => {
-      if(!searchOption.field || !searchOption.criteria || !searchOption.value)
+      if(!searchOption.field || !searchOption.criteria || searchOption.value === undefined)
         return Promise.reject(new Error('Missing fields in searchOptions array'))
 
       if(typeof searchOption.field !== 'string')

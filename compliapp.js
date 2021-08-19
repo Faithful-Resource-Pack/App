@@ -5,8 +5,8 @@ const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
 const TexturePage = () => import('./pages/texture/main.js')
 const AuthPage = () => import('./pages/auth/main.js')
 const ProfilePage = () => import('./pages/profile/main.js')
-const AddonNewPage = () => import('./pages/addon/new_addon.js')
-const AddonOwnPage = () => import('./pages/addon/own_addons.js')
+const AddonNewPage = () => import('./pages/addon/new.js')
+const AddonOwnPage = () => import('./pages/addon/submissions.js')
 const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
 const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
 
@@ -32,32 +32,36 @@ let v = new Vue({
 	router,
 	el: '#app',
   data: {
+    window: {
+      width: window.innerWidth,
+      height: window.innerHeight
+    },
     user: EMPTY_USER,
     tabs: [
       { 
-        label: 'User', subtabs: [
-          { to: "/profile/", label: "Profile", routes: [{ path: '/profile/', component: ProfilePage }] },
-          { to: "/contributions-stats/", label: "Contributions Stats", routes: [{ path: '/contributions-stats/', component: ContributorStatsPage }] },
+        label: 'user', subtabs: [
+          { icon: 'mdi-account', to: "/profile/", label: "profile", routes: [{ path: '/profile/', component: ProfilePage }] },
+          { icon: 'mdi-chart-timeline-variant', to: "/contributions-stats/", label: "statistics", routes: [{ path: '/contributions-stats/', component: ContributorStatsPage }] },
         ]
       },
       {
-        label: 'Add-ons', subtabs: [
-          { to: "/addons/new", label: "Submit Add-on", routes: [{ path: '/addons/new', component: AddonNewPage }] },
-          { to: "/addons/own", label: "Your Add-ons", routes: [{ path: '/addons/own', component: AddonOwnPage }] }
+        label: 'add-ons', subtabs: [
+          { icon: 'mdi-folder-multiple', to: "/addons/submissions", label: "submissions", routes: [{ path: '/addons/submissions', component: AddonOwnPage }] },
+          { icon: 'mdi-upload', to: "/addons/new", label: "upload", routes: [{ path: '/addons/new', component: AddonNewPage }] }
         ]
       },
-      // {
-      //   label: 'Review', subtabs: [
-      //     { to: "/review/addons", label: "Add-ons", routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
-      //     { to: "/review/translations", label: "Translations", routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
-      //   ],
-      //   roles: [ "Administrator" ]
-      // },
       {
-        label: 'Database', subtabs: [
-          { to: "/contributions/", label: "Contributions", routes: [{ path: '/contributions/', component: ContributionPage }] },
-          { to: "/contributors/", label: "Contributors", routes: [{ path: '/contributors/', redirect: '/contributors/all/' }, { path: '/contributors/:type?/:name?/', component: ContributorPage }] },
-          { to: "/textures/", label: "Textures", routes: [{ path: '/textures/', redirect: '/textures/all/' }, { path: '/textures/:type?/:name?/', component: TexturePage }] }
+        label: 'review', subtabs: [
+          { icon: 'mdi-puzzle', to: "/review/addons", label: "add-ons", routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
+          { icon: 'mdi-translate', to: "/review/translations", label: "translations", routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
+        ],
+        roles: [ "Administrator" ]
+      },
+      {
+        label: 'database', subtabs: [
+          { icon: 'mdi-file-multiple', to: "/contributions/", label: "contributions", routes: [{ path: '/contributions/', component: ContributionPage }] },
+          { icon: 'mdi-account-multiple', to: "/contributors/", label: "contributors", routes: [{ path: '/contributors/', redirect: '/contributors/all/' }, { path: '/contributors/:type?/:name?/', component: ContributorPage }] },
+          { icon: 'mdi-texture', to: "/textures/", label: "textures", routes: [{ path: '/textures/', redirect: '/textures/all/' }, { path: '/textures/:type?/:name?/', component: TexturePage }] }
         ],
         roles: [ "Developer", "Administrator" ]
       }
@@ -68,7 +72,8 @@ let v = new Vue({
       message: '',
       color: '#222',
       timeout: 4000
-    }
+    },
+    drawer: false
   },
   computed: {
     /**
@@ -171,6 +176,11 @@ let v = new Vue({
   mounted: function() {
     const urlSearchParams = new URLSearchParams(window.location.search)
     let auth = Object.fromEntries(urlSearchParams.entries())
+
+    window.addEventListener('resize', () => {
+      this.window.width = window.innerWidth
+      this.window.height = window.innerHeight
+    })
 
     if (auth.access_token && auth.refresh_token) {
       fetch('https://discord.com/api/users/@me', {

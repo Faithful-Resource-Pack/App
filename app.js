@@ -30,7 +30,7 @@ app.get(compliapp_url, (req, res) => {
 
 app.listen(port, () => {
 	console.log(`listening at http://localhost:${port}`)
-	console.log(`Web app at http://localhost:${port}${compliapp_url}/`)
+	console.log(`Web app at http://localhost:${port}${compliapp_url}`)
 })
 
 app.use(express.static('.', {
@@ -75,6 +75,38 @@ app.get('/addons/search/author', function (req, res) {
 	const authorID = params.authorID
 
 	addons_backend.search(authorID, 'author')
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.get('/addons/search/pending', function (req, res) {
+	addons_backend.search('pending', 'status')
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.get('/addons/search/titles', function (req, res) {
+	addons_backend.search('approved', 'status')
 		.then(val => {
 			res.setHeader('Content-Type', 'application/json')
 			res.send(val)

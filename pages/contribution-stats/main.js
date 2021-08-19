@@ -11,7 +11,7 @@ export default {
 	template: `
     <v-container>
       <div class="text-h4 py-4">
-        Contributions stats
+        Contributions Statistics
       </div>
 
       <div class="text-center mb-4">

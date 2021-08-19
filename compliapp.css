@@ -13,7 +13,6 @@ a { text-decoration: none; }
   user-select: none;
 }
 
-
 * {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -55,10 +54,6 @@ a { text-decoration: none; }
   overflow: hidden;
   line-height: 42px;
   background: transparent;
-}
-
-.v-list {
-  border-radius: 15px !important;
 }
 
 .v-list, .v-input__slot, .v-card {
@@ -173,4 +168,8 @@ blockquote {
 
 .v-btn__content > .v-input--selection-controls {
   margin-top: 16px !important;
+}
+
+.small-appbar > * {
+  justify-content: space-between;
 }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="EN">
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
@@ -10,29 +10,35 @@
 </head>
 <body>
   <v-app id="app">
-    <v-app-bar flat dense bar app v-if="isUserLogged">
+    <v-app-bar flat dense bar app v-if="isUserLogged && window.width > 700">
       <span class="mr-2 d-flex noselect">
         <img src="https://compliancepack.net/image/icon/compliance_32x.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
       </span>
-      <template v-for="tab in validsTabs">
-        <div class="text-center">
-          <v-menu 
-            offset-y
-            rounded="0"
+
+      <v-menu
+        v-for="(tab, tabIndex) in validsTabs"
+        offset-y
+        rounded="sm"
+        :key="tabIndex"
+      >
+        <template v-slot:activator="{ attrs, on }">
+          <v-btn
+            text
+            v-bind="attrs"
+            v-on="on"
+            v-text="tab.label"
+          />
+        </template>
+        <v-list>
+          <v-list-item
+            v-for="(subtab, index) in tab.subtabs" :key="index" link :to="subtab.to"
           >
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn dark v-bind="attrs" v-on="on" style="height: 32px; box-shadow: none !important; border-radius: 0px; text-transform: capitalize !important;">
-                {{ tab.label }}
-              </v-btn>
-            </template>
-            <v-list style="border-radius: 0px!important;">
-              <v-list-item v-for="(subtab, index) in tab.subtabs" :key="index" style="padding: 0px !important; align-items: baseline !important; min-height: inherit !important;">
-                <router-link :to="subtab.to" class="router-link" style="text-transform: capitalize;">{{ subtab.label }}</router-link>
-              </v-list-item>
-            </v-list>
-          </v-menu>
-        </div>
-      </template>
+            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small v-text="subtab.icon"/></v-list-item-icon>
+            <v-list-item-content><v-list-item-title v-text="subtab.label" style="text-transform: uppercase; letter-spacing: .0892857143em; font-weight: 500; font-size: .775rem;"/></v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+      
       <div style="margin-left: auto;">
         <v-tooltip 
           bottom
@@ -59,36 +65,94 @@
         <v-avatar size="32" rounded :style="{ 'margin-left': '5px' }"><img :src="user.avatar" :alt="user.username"></v-avatar>
       </div>
     </v-app-bar>
-    <v-main>
-    <router-view v-if="isUserLogged"></router-view>
 
-    <div v-else
-      :style="{
-        'display': 'flex',
-        'justify-content': 'center',
-        'align-items': 'center',
-        'height': '100%',
-        'flex-direction': 'column'
-      }"
-    >
-      <img src="https://compliancepack.net/image/icon/compliance_32x.png"
+    <v-app-bar flat dense bar app v-if="isUserLogged && window.width <= 700" class="small-appbar">
+      <span class="mr-2 d-flex noselect">
+        <v-app-bar-nav-icon small @click="drawer = true"></v-app-bar-nav-icon>
+      </span>
+
+      <span class="mr-2 d-flex noselect">
+        <img src="https://compliancepack.net/image/icon/compliance_32x.png"
+          style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
+      </span>
+    </v-app-bar>
+
+    <v-navigation-drawer width="320" absolute v-model="drawer" v-if="isUserLogged && window.width <= 700" absolute temporary>
+
+      <v-card>
+        <v-img height="128" :src="user.banner">
+          <v-card-title class="banner-btn">
+            <v-avatar size="48" style="margin-right: 10px">
+              <img
+                alt="user"
+                :src="user.avatar"
+              >
+            </v-avatar>
+            <span>{{ user.username }}</span>
+          </v-card-title>
+          <v-card-actions style="justify-content: flex-end">
+            <v-btn small color="red" @click="logout">
+              Logout
+            </v-btn>
+          </v-card-actions>
+        </v-img>
+      </v-card>
+
+      <template
+        v-for="(tab, tabIndex) in validsTabs"
+      >
+        <v-list
+          dense
+          nav
+        >
+          <v-list-item-title style="text-transform: uppercase; letter-spacing: .0892857143em; font-weight: 500;">
+            {{ tab.label }}
+          </v-list-item-title>
+
+          <v-list-item v-for="(subtab, subtabIndex) in tab.subtabs" :to="subtab.to"  style="text-transform: uppercase; letter-spacing: .0892857143em; font-weight: 500">
+            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;">
+              <v-icon small>{{ subtab.icon }}</v-icon>
+            </v-list-item-icon>
+            <v-list-item-content>
+              <v-list-item-title v-text="subtab.label"
+                style="text-transform: uppercase; letter-spacing: .0892857143em; font-weight: 500; font-size: .775rem;" />
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+        <v-divider style="margin-bottom: 10px" />
+      </template>
+    </v-navigation-drawer>
+
+    <v-main>
+      <router-view v-if="isUserLogged"></router-view>
+
+      <div v-else
         :style="{
-          'height': '256px',
-          'image-rendering': 'pixelated'
+          'display': 'flex',
+          'justify-content': 'center',
+          'align-items': 'center',
+          'height': '100%',
+          'flex-direction': 'column'
         }"
       >
-      <h2 class="compliance-font" align="center" style="text-shadow: 2px 2px rgba(0,0,0,.7); margin-bottom: 20px;">COMPLIANCE WEB<br>APPLICATION</h2>
-      <v-btn 
-        href="/api/discord/login" 
-        :style="{
-          'background': 'hsl(235,85.6%,64.7%) !important',
-          'color': '#FFF'
-        }"
-      >
-        <v-icon left>mdi-discord</v-icon>
-        Login via Discord
-      </v-btn>
-    </div>
+        <img src="https://compliancepack.net/image/icon/compliance_32x.png"
+          :style="{
+            'height': '256px',
+            'image-rendering': 'pixelated'
+          }"
+        >
+        <h2 class="compliance-font" align="center" style="text-shadow: 2px 2px rgba(0,0,0,.7); margin-bottom: 20px;">COMPLIANCE WEB<br>APPLICATION</h2>
+        <v-btn 
+          href="/api/discord/login" 
+          :style="{
+            'background': 'hsl(235,85.6%,64.7%) !important',
+            'color': '#FFF'
+          }"
+        >
+          <v-icon left>mdi-discord</v-icon>
+          Login via Discord
+        </v-btn>
+      </div>
     </v-main>
 
     <v-bottom-navigation height="42px" id="bottom" style="box-shadow: none">
