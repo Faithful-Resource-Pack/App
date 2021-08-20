@@ -39,6 +39,15 @@ app.use(express.static('.', {
 app.use('/api/discord', require('./api/discord'))
 
 /**
+ * @param {String} token  Discord access token
+ * @param {String} role Role necessary to get authed
+ * @returns Resolves if authed correctly
+ */
+const verifyAuth = function(token, role = 'Developer') {
+	return Promise.reject(new Error('Not implemented'))
+}
+
+/**
  * ==========================================
  *                   ADD-ONS
  * ==========================================
@@ -460,6 +469,38 @@ app.get('/textures/types', function (req, res) {
 		})
 })
 
+app.get('/textures/editions', function (req, res) {
+	textures_backend.textureEditions()
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.get('/textures/versions', function (req, res) {
+	textures_backend.textureVersions()
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
 app.get('/textures/:type/:name?/?', function (req, res) {
 	let name, type
 
@@ -494,6 +535,24 @@ app.post('/textures/change', function (req, res) {
 			res.status(400)
 			res.end()
 		})
+})
+
+app.post('/textures/add', function (req, res) {
+	verifyAuth(req.body.token, 'developer')
+	.then(() => {
+		return textures_backend.addTextures(req.body.data)
+	})
+	.then(() => {
+		res.status(200)
+		res.end()
+	})
+	.catch(err => {
+		console.error(err)
+		res.status(400).send({
+			error: '' + (err.message || err)
+	 })
+		res.end()
+	})
 })
 
 /**

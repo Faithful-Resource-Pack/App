@@ -2,18 +2,21 @@
 
 const TextureModal = () => import('./modal_texture.js')
 const MCVersionModal = () => import('./modal_mc_version.js')
+const TextureModalMultipleAdd = () => import('./modal_texture_multiple_add.js')
 
 export default {
   name: 'texture-page',
   components: {
     'texture-modal': TextureModal,
-    'version-modal': MCVersionModal
+    'version-modal': MCVersionModal,
+    'add-multiple-texture': TextureModalMultipleAdd
   },
   template: `
   <v-container>
     
     <texture-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
     <version-modal :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
+    <add-multiple-texture :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     
     <div class="text-h4 py-4">
       Textures
@@ -39,10 +42,7 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn disabled block @click="openDialog()">Add new Texture <v-icon right dark>mdi-plus</v-icon></v-btn>
-        </v-col>
-        <v-col>
-          <v-btn disabled block @click="openNewMCDialog()">Add multiple textures <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openNewMCDialog()">Add textures <v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
@@ -113,8 +113,11 @@ export default {
     const INCREMENT = 250
 
     return {
+      addMultiple: false,
       recompute: false,
       types: [],
+      editions: [],
+      versions: [],
       textures: {},
       search: '',
       dialogOpen: false,
@@ -212,7 +215,9 @@ export default {
 
       if (refresh) {
         this.getTypes()
+        this.getEditions()
         this.getTextures()
+        this.getVersions()
       }
     },
     openModifyMCDialog: function () {
@@ -220,6 +225,9 @@ export default {
     },
     disableMCDialog: function () {
       this.MCDialogOpen = false
+    },
+    openNewMCDialog: function() {
+      this.addMultiple = true
     },
     askRemove: function (data) {
       this.remove.data = data
@@ -239,6 +247,24 @@ export default {
         })
       })
     },
+    getEditions: function() {
+      axios.get('/textures/editions')
+        .then((res) => {
+          this.editions = res.data
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+    },
+    getVersions: function() {
+      axios.get('/textures/versions')
+        .then((res) => {
+          this.versions = res.data
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
+    },
     getTextures: function() {
       axios.get(this.$route.path)
         .then((res) => {
@@ -251,6 +277,8 @@ export default {
     update: function () {
       this.getTypes()
       this.getTextures()
+      this.getEditions()
+      this.getVersions()
     },
     showMore: function () {
       this.displayedResults += 100
