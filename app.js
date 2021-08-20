@@ -37,6 +37,15 @@ app.use(express.static('.', {
 app.use('/api/discord', require('./api/discord'))
 
 /**
+ * @param {String} token  Discord access token
+ * @param {String} role Role necessary to get authed
+ * @returns Resolves if authed correctly
+ */
+const verifyAuth = function(token, role = 'Developer') {
+	return Promise.reject(new Error('Not implemented'))
+}
+
+/**
  * ==========================================
  *                   PROFILE
  * ==========================================
