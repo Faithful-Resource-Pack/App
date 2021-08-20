@@ -1,7 +1,7 @@
 const textures = require('../helpers/firestorm/texture.js')
 const uses = require('../helpers/firestorm/texture_use.js')
 const paths = require('../helpers/firestorm/texture_paths.js')
-const { single, textureSchema } = require('../validator.js')
+const { single, textureSchema, validator } = require('../validator.js')
 
 module.exports = {
   textures: function() {
@@ -146,6 +146,49 @@ module.exports = {
       })
 
       return paths.addBulk(pathsToAdd)
+    })
+  },
+  addNewMinecraftVersion: function(data) {
+    return this.textureEditions()
+    .then(editions => {
+      validator(data, [{
+        name: 'edition',
+        type: 'string',
+        validator: function(value) {
+          if(!editions.includes(value)) throw new Error('Invalid edition')
+        }
+      }])
+
+      return Promise.all([this.textureVersions(), uses.search([{
+        field: 'editions',
+        criteria: 'array-contains',
+        value: data.edition
+      }])])
+    })
+    .then((versions, useIDs) => {
+      validator(data, [{
+        name: 'version',
+        type: 'string',
+        validator: function(value) {
+          if(!versions.includes(value)) throw new Error('Invalid version')
+        }
+      }, {
+        name: 'newVersion',
+        type: 'string',
+        validator: function(value) {
+          if(value.match(/^[0-9]+\.[0-9]+(\.[0-9]+)?$/gm) === null) throw new Error('Invalid new version syntax')
+        }
+      }])
+
+      return paths.search([{
+        field: 'versions',
+        criteria: 'array-contains',
+        value: data.version
+      }, {
+        field: 'useID',
+        criteria: 'in',
+        values: useIDs
+      }])
     })
   }
 }

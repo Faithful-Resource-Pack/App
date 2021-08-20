@@ -441,6 +441,24 @@ app.post('/textures/add', function (req, res) {
 	})
 })
 
+app.post('/textures/versions/add', function (req, res) {
+	verifyAuth(req.body.token, 'developer')
+	.then(() => {
+		return textures_backend.addNewMinecraftVersion(req.body.data)
+	})
+	.then(() => {
+		res.status(200)
+		res.end()
+	})
+	.catch(err => {
+		console.error(err)
+		res.status(400).send({
+			error: '' + (err.message || err)
+	 })
+		res.end()
+	})
+})
+
 /**
  * ==========================================
  *                    USES
