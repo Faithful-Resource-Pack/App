@@ -355,6 +355,38 @@ app.get('/textures/types', function (req, res) {
 		})
 })
 
+app.get('/textures/editions', function (req, res) {
+	textures_backend.textureEditions()
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
+app.get('/textures/versions', function (req, res) {
+	textures_backend.textureVersions()
+		.then(val => {
+			res.setHeader('Content-Type', 'application/json')
+			res.send(val)
+		})
+		.catch(err => {
+			console.error(err)
+			res.status(400)
+			res.send(err)
+		})
+		.finally(() => {
+			res.end()
+		})
+})
+
 app.get('/textures/:type/:name?/?', function (req, res) {
 	let name, type
 
@@ -389,6 +421,24 @@ app.post('/textures/change', function (req, res) {
 			res.status(400)
 			res.end()
 		})
+})
+
+app.post('/textures/add', function (req, res) {
+	verifyAuth(req.body.token, 'developer')
+	.then(() => {
+		return textures_backend.addTextures(req.body.data)
+	})
+	.then(() => {
+		res.status(200)
+		res.end()
+	})
+	.catch(err => {
+		console.error(err)
+		res.status(400).send({
+			error: '' + (err.message || err)
+	 })
+		res.end()
+	})
 })
 
 /**
