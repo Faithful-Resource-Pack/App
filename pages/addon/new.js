@@ -33,8 +33,13 @@ export default {
                   clearable
                   v-model="form.description"
                   label="Add-on description"
-                  hint="You can use Markdown balises to improve your description!"
+                  hint="You can use Markdown syntax to improve your description!"
                 ></v-textarea>
+                <v-container v-if="form.description.length != 0" class="markdown" style="background-color: rgb(33,33,33); border-radius: 5px" v-html="compiledMarkdown(form.description)">
+                </v-container>
+                <v-container v-else class="markdown text--secondary" style="background-color: rgb(33,33,33); border-radius: 5px"><p style="margin-bottom: 0">Markdown will be rendered here, if you find any issue, please contact a Developer</p></v-container>
+
+                <br>
 
                 <v-autocomplete
                   v-model="form.authors"
@@ -532,6 +537,9 @@ export default {
     remove(id) {
       const index = this.form.authors.indexOf(id)
       if (index >= 0) this.form.authors.splice(index, 1)
+    },
+    compiledMarkdown(markdown) {
+      return marked(markdown, { sanitize: true })
     }
   },
   mounted: function () {
