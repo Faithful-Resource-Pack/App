@@ -26,6 +26,8 @@ export default {
                   hint="You can use Markdown balises to improve your description!"
                 ></v-textarea>
 
+                <v-container class="text--secondary" style="margin-bottom: 10px; background-color: rgb(66,66,66); border-radius: 5px" v-html="$root.compiledMarkdown(addon.description)"></v-container>
+
                 <v-autocomplete
                   v-model="addon.authors"
                   :items="contributors"
@@ -369,6 +371,7 @@ export default {
           this.$root.showSnackBar('Ended successfully', 'success')
           this.disableDialog()
           this.submitted = false
+          this.$forceUpdate()
         })
         .catch(err => {
           console.error(err)

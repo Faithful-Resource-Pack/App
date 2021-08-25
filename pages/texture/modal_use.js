@@ -157,6 +157,7 @@ export default {
     },
     send: function () {
       let newData = JSON.parse(JSON.stringify(this.subFormData))
+      newData.token = this.$root.user.access_token
       
       if (this.add) {
         newData.id = this.textureID + SUFFIX[this.usesLength]

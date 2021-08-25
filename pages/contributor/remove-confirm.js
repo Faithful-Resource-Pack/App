@@ -64,8 +64,9 @@ export default {
   },
   methods: {
     deleteContributor: function() {
-      const data = JSON.parse(JSON.stringify(this.formData))
+      let data = JSON.parse(JSON.stringify(this.formData))
       data.id = this.id
+      data.token = this.$root.user.access_token
       
       axios.post('/contributors/remove', data)
       .then(() => {

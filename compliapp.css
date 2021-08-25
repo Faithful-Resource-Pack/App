@@ -181,10 +181,6 @@ blockquote {
   border-radius: 4px;
 }
 
-.child-break-line > * {
-  overflow-wrap: break-word;
-}
-
 .uppercased {
   text-transform: uppercase;
   letter-spacing: .0892857143em;
@@ -198,26 +194,29 @@ blockquote {
   font-weight: 500;
 }
 
-.markdown > * {
-  font-family: Compliance;
-}
 .markdown > h1 {
   font-size: 1.3em;
+  padding-bottom: 8px;
 }
 .markdown > h2 {
   font-size: 1.2em;
+  padding-bottom: 6px;
 }
 .markdown > h3 {
   font-size: 1.1em;
+  padding-bottom: 5px;
 }
 .markdown > h4 {
   font-size: 1em;
+  padding-bottom: 4px;
 }
 .markdown > h5 {
   font-size: .9em;
+  padding-bottom: 3px;
 }
 .markdown > h6 {
   font-size: .8em;
+  padding-bottom: 2px;
 }
 .markdown > p, .markdown > blockquote > p, .markdown > * > li,
 .markdown > table > * > * > * {

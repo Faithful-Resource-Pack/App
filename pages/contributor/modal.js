@@ -85,7 +85,9 @@ export default {
   },
   methods: {
     send: function() {
-      const data = JSON.parse(JSON.stringify(this.formData))
+      let data = JSON.parse(JSON.stringify(this.formData))
+      data.token = this.$root.user.access_token,
+
       axios.post(this.add ? '/contributors/add' : '/contributors/change', data)
       .then(() => {
         this.$root.showSnackBar('Ended successully', 'success')

@@ -57,5 +57,26 @@ module.exports = {
     obj.status = 'pending' // set the object to "pending" each time someone modify the addon
 
     return addons.set(obj.id, obj)
+  },
+  approval: function (approval, status, id) {
+    let obj = {}
+    const fArr = [ 'author', 'reason' ]
+
+    fArr.forEach(field_kept => {
+      if (field_kept in approval) obj[field_kept] = approval[field_kept]
+    })
+
+    return addons.editFieldBulk([{
+      id: id,
+      operation: 'set',
+      field: 'status',
+      value: status
+    }, 
+    {
+      id: id,
+      operation: 'set',
+      field: 'approval',
+      value: obj
+    }])
   }
 }

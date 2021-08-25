@@ -168,6 +168,9 @@ let v = new Vue({
       console.log(this.$route)
       console.log(this.$router.options.routes)
     },
+    compiledMarkdown: function (markdown) {
+      return marked(markdown, { sanitize: true })
+    },
     update: function() {
       this.logUser()
       this.fetchRoles()

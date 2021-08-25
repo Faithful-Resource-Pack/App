@@ -109,7 +109,7 @@
             {{ tab.label }}
           </v-list-item-title>
 
-          <v-list-item v-for="(subtab, subtabIndex) in tab.subtabs" :to="subtab.to"  class="uppercased-unsized">
+          <v-list-item v-for="(subtab, subtabIndex) in tab.subtabs" :key="subtabIndex" :to="subtab.to"  class="uppercased-unsized">
             <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;">
               <v-icon small>{{ subtab.icon }}</v-icon>
             </v-list-item-icon>

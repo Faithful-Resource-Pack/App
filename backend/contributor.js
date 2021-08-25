@@ -21,6 +21,17 @@ module.exports = {
   search: function(searchOptions) {
     return firestorm_users.search(searchOptions)
   },
+  /**
+   * @param {String} id Discord User ID
+   * @returns {Promise<import('../helpers/firestorm/users').User>}
+   */
+  getUser: function(id) {
+    return firestorm_users.search([{
+      field: "id",
+      criteria: "==",
+      value: id
+    }])
+  },
   change: function(body) {
     const element_id = body.id
 

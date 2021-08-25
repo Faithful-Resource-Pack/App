@@ -32,7 +32,7 @@ export default {
             />
             <v-card-title v-text="addon.title" />
             <v-card-subtitle v-text="addon.type.join(', ')" />
-            <v-card-text style="height: 60px">
+            <v-card-text style="height: 60px; text-transform: capitalize">
               <v-badge
                 dot
                 inline
@@ -55,7 +55,7 @@ export default {
               <v-btn
                 color="white"
                 text
-                :disabled="addon.status != 'approved'"
+                :disabled="addon.status != 'approved' && addon.status != 'denied'"
                 @click="editAddon(addon)"
               >
                 Edit

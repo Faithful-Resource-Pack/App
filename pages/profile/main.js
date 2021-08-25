@@ -259,7 +259,7 @@ export default {
     send: function() {
       if (!this.$root.isUserLogged) return
 
-      const data = JSON.parse(JSON.stringify(this.localUser))
+      let data = JSON.parse(JSON.stringify(this.localUser))
       data.access_token = this.$root.user.access_token
 
       axios.post('/profile/set', data)
@@ -275,7 +275,8 @@ export default {
     getUserInfo: function() {
       if (!this.$root.isUserLogged) return
 
-      const data = JSON.parse(JSON.stringify(this.$root.user))
+      let data = JSON.parse(JSON.stringify(this.$root.user))
+      data.token = this.$root.user.access_token
 
       axios.post('/profile/get', data)
       .then((res) => {

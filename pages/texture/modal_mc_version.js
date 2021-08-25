@@ -68,7 +68,8 @@ export default {
   },
   methods: {
     send: function () {
-      const data = JSON.parse(JSON.stringify(this.form))
+      let data = JSON.parse(JSON.stringify(this.form))
+      data.token = this.$root.user.access_token
 
       axios.post(`/paths/version-update/`, data)
       .then(() => {

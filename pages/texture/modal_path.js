@@ -90,6 +90,8 @@ export default {
   methods: {
     send: function() {
       let newData = JSON.parse(JSON.stringify(this.subPathFormData))
+      newData.token = this.$root.user.access_token
+      
       if (this.add) newData.useID = this.useID
 
       axios.post(`/paths/${this.add ? `add` : `change`}`, newData)

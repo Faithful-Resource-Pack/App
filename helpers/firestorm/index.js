@@ -365,7 +365,7 @@ class Collection {
    */
   editFieldBulk(objArray) {
     const data = this.__write_data('editFieldBulk', objArray, undefined)
-    return this.__extract_data(axios.post(writeAddress()), data)
+    return this.__extract_data(axios.post(writeAddress(), data))
   }
 }
 

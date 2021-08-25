@@ -107,7 +107,8 @@ export default {
       return "/contributors/" + t  + '/' + (this.name || '')
     },
     send() {
-      const data = JSON.parse(JSON.stringify(this.formData))
+      let data = JSON.parse(JSON.stringify(this.formData))
+      data.token = this.$root.user.access_token
       
       axios.post('/contributor', data)
       .then(function (response) {

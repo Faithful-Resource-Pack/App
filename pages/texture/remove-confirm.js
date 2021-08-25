@@ -107,6 +107,7 @@ export default {
       const data = {
         id: this.data.id,
         deletePaths: this.deletePaths,
+        token: this.$root.user.access_token
       }
 
       axios.post(`/${this.type}s/remove`, data)
