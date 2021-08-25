@@ -32,7 +32,7 @@ export default {
 
       <v-expansion-panel-content style="background: rgba(255, 255, 255, 0.05); padding-top: 10px;">
         <v-row>
-          <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12">
+          <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="padding-left: 0">
             <v-list-item>
               <v-list-item-content>
                 <v-list-item-title v-text="'Author(s)'" class="uppercased" />
@@ -47,11 +47,11 @@ export default {
                 <div class="text--secondary" style="margin-bottom: 10px;">
                   <template v-for="(links, key, index) in addon.downloads">
                     {{ key }}:
-                    <v-list>
-                      <v-list-item v-for="(link, indexLink) :key="indexLink" in links">
-                        <a :href="link" style="overflow-wrap: break-word;">{{ link }} <v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
-                      </v-list-item>
-                    </v-list>
+                    <ul>
+                      <li v-for="(link, indexLink) in links" :key="indexLink" style="background-color: transparent">
+                        <a :href="link" class="text--secondary">Link {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
+                      </li>
+                    </ul>
                     <br>
                   </template>
                 </div>
@@ -87,10 +87,18 @@ export default {
         </v-row>
 
         <v-row v-if="addon.status == 'approved' && addon.approval.author != null">
-          <v-col><p class="text--secondary">Approved by: {{ getUsername(addon.approval.author) }}</p></v-col>
+          <v-col style="padding-left: 16px">
+            <v-list-item-title v-text="'Approved by'" class="uppercased"/>
+            <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
+          </v-col>
         </v-row>
         <v-row v-if="addon.status == 'denied'">
-          <v-col><p class="text--secondary">Denied by: {{ getUsername(addon.approval.author) }}<br>Reason: {{ addon.approval.reason }}</p></v-col>
+          <v-col style="padding-left: 16px">
+            <v-list-item-title v-text="'Denied by'" class="uppercased"/>
+            <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
+            <v-list-item-title v-text="'Reason'" class="uppercased"/>
+            <p class="text--secondary">{{ addon.approval.reason }}</p>
+          </v-col>
         </v-row>
         <v-row style="margin-bottom: 0; justify-content: flex-end;">
           <v-col>
@@ -138,10 +146,8 @@ export default {
   methods: {
     getUsername: function(id) {
       if (id == null || !id) return "Old add-ons, no one approved it."
-      else {
-        let filteredContributors = this.contributors
-        return filteredContributors.filter(el => el.id == id)[0].username
-      }
+
+      return this.contributors.filter(el => el.id == id)[0]?.username
     }
   }
 }

@@ -31,9 +31,9 @@
         </template>
         <v-list>
           <v-list-item
-            v-for="(subtab, index) in tab.subtabs" :key="index" link :to="subtab.to"
+            v-for="(subtab, index) in tab.subtabs" :key="index" link :to="subtab.to" :disabled="!subtab.enabled"
           >
-            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small v-text="subtab.icon"/></v-list-item-icon>
+            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small :color="!subtab.enabled ? 'rgba(255,255,255,.3)' : white" v-text="subtab.icon"/></v-list-item-icon>
             <v-list-item-content><v-list-item-title v-text="subtab.label" class="uppercased"/></v-list-item-content>
           </v-list-item>
         </v-list>
