@@ -130,7 +130,7 @@ export default {
       path: 'Path',
       path_id: 'Path ID',
       versions: 'Versions',
-      no_path_found: 'No paths found for this texture.',
+      no_path_found: 'No paths found for this use.',
       no_use_found: 'No uses found for this texture.',
       actual_mc_version: 'Actual MC Version',
       new_mc_version: 'New MC Version'
@@ -149,11 +149,13 @@ export default {
     titles: {
       addons: 'Review Add-ons',
       translation: 'Review Translations(Soon)',
-      pending: 'Pending Approval'
+      pending: 'Pending Approval',
+      denied: 'Denied',
+      approved: 'Approved'
     },
     deny_window: {
       label: 'Write a reason...',
-      rule: 'Any reason needs to be given'
+      rule: 'Any reason can be given'
     },
     labels: {
       pending: 'There is currently no Pending add-ons!',
@@ -189,7 +191,7 @@ export default {
         label: 'Add-on title',
         hint: 'The title can\'t be changed after the submission!',
         rules: {
-          title_required: 'A title is required',
+          title_required: 'A title is required.',
           title_too_big: 'Title must be less than %s characters.',
           title_unavailable: 'This title is already taken!'
         }
@@ -198,7 +200,7 @@ export default {
         label: 'Add-on description',
         hint: 'You can use Markdown balises to improve your description!',
         rules: {
-          description_required: 'The description is required',
+          description_required: 'The description is required.',
           description_too_big: 'Description must be less than %s characters.'
         }
       },
@@ -217,7 +219,7 @@ export default {
         rules: {
           image_size: 'Image should be less than %s KB!',
           image_ratio: 'Wrong Ratio: The provided image doesn\'t have a 16:9 ratio.',
-          image_required: 'A header image is required'
+          image_required: 'A header image is required.'
         }
       },
       carousel: {
@@ -251,8 +253,8 @@ export default {
         placeholder: 'CurseForge, GitHub...',
         label: 'Name',
         rules: {
-          name_required: 'Title is required',
-          name_cannot_be_empty: 'Title can\'t be empty'
+          name_required: 'A name is required.',
+          name_cannot_be_empty: 'Name can\'t be empty.'
         }
       },
       link: {
@@ -281,10 +283,10 @@ export default {
       title: 'General',
       uuid: {
         label: 'Minecraft profile UUID',
-        hint: 'Your skin will be displayed on your pages'
+        hint: 'Your skin will be displayed on your pages.'
       },
       username: {
-        label: 'Website Username',
+        label: 'Username',
         hint: 'Your username will be displayed and used on the Website for contributions, add-ons and more...'
       }
     },

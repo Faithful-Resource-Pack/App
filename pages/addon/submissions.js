@@ -12,7 +12,7 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      {{ $root.lang().addons.title }}
+      {{ $root.lang().addons.titles.submissions }}
       <v-progress-circular
         v-if="Object.keys(addons).length == 0"
         indeterminate

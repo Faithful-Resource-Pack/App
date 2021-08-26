@@ -34,7 +34,7 @@ export default {
     <template v-else><v-container>{{ $root.lang().review.labels.pending }}</v-container></template>
     <br>
 
-    <v-badge inline dot left color="red darken-4"><h5 class="text-h5" style="margin-left: 5px;">Denied</h5></v-badge>
+    <v-badge inline dot left color="red darken-4"><h5 class="text-h5" style="margin-left: 5px;">{{ $root.lang().review.titles.denied }}</h5></v-badge>
     <v-expansion-panels v-if="deniedAddons.length != 0" style="margin-top: 5px;" multiple>
       <exp-panel
         :contributors="contributors"
@@ -47,7 +47,7 @@ export default {
     <template v-else><v-container>{{ $root.lang().review.labels.denied }}</v-container></template>
     <br>
 
-    <v-badge inline dot left color="teal"><h5 class="text-h5" style="margin-left: 5px;">Approved</h5></v-badge>
+    <v-badge inline dot left color="teal"><h5 class="text-h5" style="margin-left: 5px;">{{ $root.lang().review.titles.approved }}</h5></v-badge>
     <v-expansion-panels v-if="approvedAddons.length != 0" style="margin-top: 5px;" multiple>
       <exp-panel
         :contributors="contributors"
