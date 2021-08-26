@@ -3,13 +3,15 @@
 const TextureModal = () => import('./modal_texture.js')
 const MCVersionModal = () => import('./modal_mc_version.js')
 const TextureModalMultipleAdd = () => import('./modal_texture_multiple_add.js')
+const ModalVersionAdd = () => import('./modal_version_add.js')
 
 export default {
   name: 'texture-page',
   components: {
     'texture-modal': TextureModal,
     'version-modal': MCVersionModal,
-    'add-multiple-texture': TextureModalMultipleAdd
+    'add-multiple-texture': TextureModalMultipleAdd,
+    'add-minecraft-version': ModalVersionAdd
   },
   template: `
   <v-container>
@@ -17,6 +19,7 @@ export default {
     <texture-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
     <version-modal :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
     <add-multiple-texture :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
+    <add-minecraft-version :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     
     <div class="text-h4 py-4">
       Textures
@@ -48,7 +51,7 @@ export default {
       <br>
       <v-row>
         <v-col>
-          <v-btn disabled block @click="openNewMCDialog()">Add new Minecraft Version <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="() => { newVersionModal = true }">Add new Minecraft Version <v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
           <v-btn block @click="openModifyMCDialog()">Modify a Minecraft Version<v-icon right dark>mdi-plus</v-icon></v-btn>
@@ -113,6 +116,7 @@ export default {
     const INCREMENT = 250
 
     return {
+      newVersionModal: false,
       addMultiple: false,
       recompute: false,
       types: [],
