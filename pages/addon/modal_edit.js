@@ -1,4 +1,4 @@
-/* global axios, Vue */
+/* global axios, Vue, FileReader, Image */
 
 export default {
   name: 'addon-edit-modal',
@@ -22,8 +22,8 @@ export default {
                   :counter="descriptionMaxLength"
                   clearable
                   v-model="addon.description"
-                  label="Add-on description"
-                  hint="You can use Markdown balises to improve your description!"
+                  :label="$root.lang().addons.general.description.label"
+                  :hint="$root.lang().addons.general.description.hint"
                 ></v-textarea>
 
                 <v-container class="text--secondary" style="margin-bottom: 10px; background-color: rgb(66,66,66); border-radius: 5px" v-html="$root.compiledMarkdown(addon.description)"></v-container>
@@ -34,8 +34,8 @@ export default {
                   :loading="contributors.length == 0"
                   item-text="username"
                   item-value="id"
-                  label="Select authors for that add-on"
-                  hint="Any authors can modify the Add-on once it is submitted | If you don't find someone in the list, contact an Administrator/Developer"
+                  :label="$root.lang().addons.general.authors.label"
+                  :hint="$root.lang().addons.general.authors.hint"
                   multiple
                   chips
                 >
@@ -100,7 +100,7 @@ export default {
                   counter="1"
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  label="Replace header image"
+                  :label="$root.lang().addons.images.header.labels.replace"
                   :rules="headerImageRules"
                   prepend-icon="mdi-image"
                   v-model="header_img"
@@ -138,7 +138,7 @@ export default {
                   show-size
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  label="Replace additional image(s)"
+                  :label="$root.lang().addons.images.carousel.labels.replace"
                   prepend-icon="mdi-image-multiple"
                   v-model="carousel_img"
                   @change="validateCarousel"
@@ -147,13 +147,13 @@ export default {
                 <v-checkbox
                   class="transparent-input"
                   v-model="addon.comments"
-                  label="Enable comments"
+                  :label="$root.lang().addons.options.comments.label"
                 ></v-checkbox>
 
                 <v-checkbox
                   class="transparent-input"
                   v-model="addon.optifine"
-                  label="Requires OptiFine"
+                  :label="$root.lang().addons.options.optifine.label"
                 ></v-checkbox>
 
                 <v-row>
@@ -163,7 +163,7 @@ export default {
                       small-chips
                       v-model="selectedEditions"
                       :items="editions"
-                      label="Supported edition(s)"
+                      :label="$root.lang().addons.options.editions.label"
                       :rules="editionsRules"
                       @change="validateType"
                     ></v-select>
@@ -175,7 +175,7 @@ export default {
                       small-chips
                       v-model="selectedRes"
                       :items="res"
-                      label="Supported resolution(s)"
+                      :label="$root.lang().addons.options.resolutions.label"
                       :rules="resRules"
                       @change="validateType"
                     ></v-select>
@@ -190,8 +190,8 @@ export default {
                   <v-col cols="3">
                     <v-text-field
                       clearable
-                      placeholder="CurseForge, GitHub..."
-                      label="Name"
+                      :placeholder="$root.lang().addons.downloads.name.placeholder"
+                      :label="$root.lang().addons.downloads.name.label"
                       v-model="obj.key"
                       :rules="downloadTitleRules"
                       @change="updateDownloadForm()"
@@ -209,8 +209,8 @@ export default {
                       <v-col :cols="index == 0 ? 11 : 10">
                         <v-text-field
                           clearable
-                          placeholder="https://www.example.com/"
-                          label="Link"
+                          :placeholder="$root.lang().addons.downloads.link.placeholder"
+                          :label="$root.lang().addons.downloads.link.label"
                           v-model="obj.links[indexLinks]"
                           :rules="downloadLinkRules"
                           @change="updateDownloadForm()"
@@ -237,7 +237,7 @@ export default {
                 <v-row>
                   <v-col>
                     <v-btn block @click="addNewDownload()">
-                      Add download <v-icon color="white lighten-1">mdi-plus</v-icon>
+                      {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -253,7 +253,7 @@ export default {
             text
             @click="disableDialog"
           >
-            Cancel
+            {{ $root.lang().global.btn.cancel }}
           </v-btn>
           <v-btn
             color="yellow darken-1"
@@ -266,7 +266,7 @@ export default {
                 indeterminate
               />
             </template>
-            {{ !submitted ? 'Save' : '' }}
+            {{ !submitted ? $root.lang().global.btn.save : '' }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -289,15 +289,15 @@ export default {
     resAvailable: {
       type: Array,
       required: false,
-      default: function() { return ['Java', 'Bedrock'] }
+      default: function () { return ['Java', 'Bedrock'] }
     },
     editionAvailable: {
       type: Array,
       required: false,
-      default: function() { return ['32x', '64x'] }
+      default: function () { return ['32x', '64x'] }
     }
   },
-  data() {
+  data () {
     return {
       addon: {
         title: '',
@@ -317,28 +317,28 @@ export default {
       carousel_img: [],
       descriptionMaxLength: 4096,
       descriptionRules: [
-        u => !!u || 'The description is required',
-        u => (u && u.length <= this.descriptionMaxLength) || `Description must be less than ${this.descriptionMaxLength} characters.`
+        u => !!u || this.$root.lang().addons.general.description.rules.description_required,
+        u => (u && u.length <= this.descriptionMaxLength) || this.$root.lang().addons.general.description.rules.description_too_big.replace('%s', this.descriptionMaxLength)
       ],
       headerImageRules: [
-        u => (!u || u?.size < 500000) || 'Image should be less than 500 KB!',
+        u => (!u || u?.size < 500000) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
       ],
       editions: ['Java', 'Bedrock'],
       selectedEditions: [],
       editionsRules: [
-        u => (u && u.length > 0) || 'You need to select at least 1 edition.'
+        u => (u && u.length > 0) || this.$root.lang().addons.options.editions.rule
       ],
       res: ['32x', '64x'],
       selectedRes: [],
       resRules: [
-        u => (u && u.length > 0) || 'You need to select at least 1 resolution.'
+        u => (u && u.length > 0) || this.$root.lang().addons.options.resolutions.rule
       ],
       downloadTitleRules: [
-        u => !!u || 'Title is required',
-        u => u != ' ' || 'Title can\'t be empty'
+        u => !!u || this.$root.lang().addons.downloads.name.rules.name_required,
+        u => u !== ' ' || this.$root.lang().addons.downloads.name.rules.name_cannot_be_empty
       ],
       downloadLinkRules: [
-        u => this.validURL(u) || 'URL must be valid.'
+        u => this.validURL(u) || this.$root.lang().addons.downloads.link.rule
       ],
       downloads: [
         {
@@ -366,9 +366,9 @@ export default {
       this.submitted = true
       const data = JSON.parse(JSON.stringify(this.addon))
 
-      axios.post(`/addons/edit`, data)
+      axios.post('/addons/edit', data)
         .then(() => {
-          this.$root.showSnackBar('Ended successfully', 'success')
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog()
           this.submitted = false
           this.$forceUpdate()
@@ -382,19 +382,19 @@ export default {
     everythingIsOk: function () {
       let downloadsAreValid = true
       this.downloads.forEach(download => {
-        if (download.key == '') downloadsAreValid = false
+        if (download.key === '') downloadsAreValid = false
 
         download.links.forEach(link => {
-          if (link == '' || !this.validURL(link)) downloadsAreValid = false
+          if (link === '' || !this.validURL(link)) downloadsAreValid = false
         })
       })
 
       return !(
-        this.addon.description != '' && this.addon.description.length <= this.descriptionMaxLength &&
-        this.addon.authors.length != 0 && this.addon.authors.includes(this.$root.user.id) &&
-        this.addon.images.header != '' &&
+        this.addon.description !== '' && this.addon.description.length <= this.descriptionMaxLength &&
+        this.addon.authors.length !== 0 && this.addon.authors.includes(this.$root.user.id) &&
+        this.addon.images.header !== '' &&
         this.addon.type.length > 1 &&
-        Object.keys(this.addon.downloads).length != 0 && downloadsAreValid
+        Object.keys(this.addon.downloads).length !== 0 && downloadsAreValid
       )
     },
     addNewDownload: function () {
@@ -435,50 +435,46 @@ export default {
         return
       }
 
-      let that = this
+      const that = this
       const reader = new FileReader()
       reader.onload = function (e) {
-
-        let image = new Image()
+        const image = new Image()
         image.src = e.target.result
 
         image.onload = function () {
           // 'this' refer to the image and 'that' to Vue
-          if ((this.width / this.height).toFixed(2) == 1.78) {
+          if ((this.width / this.height).toFixed(2) === 1.78) {
             that.addon.images.header = e.target.result
             that.$forceUpdate()
-          }
-          else {
-            that.$root.showSnackBar(`Wrong Ratio: The provided image doesn't have a 16:9 ratio.`, 'error')
+          } else {
+            that.$root.showSnackBar(this.$root.lang().addons.images.header.rules.image_ratio, 'error')
             that.header_img = undefined
           }
         }
       }
       reader.readAsDataURL(this.header_img)
-
     },
     validateCarousel: function () {
       this.addon.images.carousel = []
 
-      if (this.carousel_img.length == 0) return
+      if (this.carousel_img.length === 0) return
 
       const that = this
       this.carousel_img.forEach(file => {
-        let reader = new FileReader()
+        const reader = new FileReader()
 
         reader.onload = function (e) {
-          let image = new Image()
+          const image = new Image()
           image.src = e.target.result
 
           image.onload = function () {
             // 'this' refer to the image and 'that' to Vue
-            if ((this.width / this.height).toFixed(2) == 1.78) {
+            if ((this.width / this.height).toFixed(2) === 1.78) {
               that.addon.images.carousel.push(e.target.result)
               that.$forceUpdate()
-            }
-            else {
+            } else {
               that.carousel_img.splice(that.carousel_img.indexOf(file), 1)
-              that.$root.showSnackBar(`Wrong Ratio: Image(s) with non 16:9 ratio have been removed.`, 'error')
+              that.$root.showSnackBar(this.lang.addons.images.carousel.rule, 'error')
               that.$forceUpdate()
             }
           }
@@ -486,24 +482,23 @@ export default {
 
         reader.readAsDataURL(file)
       })
-
     },
     validURL: function (str) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-      return !!pattern.test(str);
-    },
+        '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+      return !!pattern.test(str)
+    }
   },
   mounted: function () {
     this.getAuthors()
   },
   watch: {
     dialog: function (newValue, oldValue) {
-      if (oldValue != newValue && newValue == true) {
+      if (oldValue !== newValue && newValue === true) {
         Vue.nextTick(() => {
           this.addon = this.data
 
@@ -517,7 +512,7 @@ export default {
               links: this.addon.downloads[key]
             })
           }
-          
+
           this.addon.type.forEach(type => {
             if (this.res.includes(type)) this.selectedRes.push(type)
             if (this.editions.includes(type)) this.selectedEditions.push(type)

@@ -12,7 +12,7 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Submissions
+      {{ $root.lang().addons.title }}
       <v-progress-circular
         v-if="Object.keys(addons).length == 0"
         indeterminate
@@ -32,13 +32,13 @@ export default {
             />
             <v-card-title v-text="addon.title" />
             <v-card-subtitle v-text="addon.type.join(', ')" />
-            <v-card-text style="height: 60px; text-transform: capitalize">
+            <v-card-text style="height: 60px;">
               <v-badge
                 dot
                 inline
                 :color="addon.status == 'approved' ? 'green' : (addon.status == 'pending' ? 'yellow' : 'red')"
               />
-              {{ addon.status }}
+              {{ $root.lang().addons.status[addon.status] }}
               <v-btn
                 v-if="addon.status == 'approved'"
                 color="blue"
@@ -58,14 +58,14 @@ export default {
                 :disabled="addon.status != 'approved' && addon.status != 'denied'"
                 @click="editAddon(addon)"
               >
-                Edit
+                {{ $root.lang().global.btn.edit }}
               </v-btn>
               <v-btn
                 color="red"
                 text
                 @click="deleteAddon(addon)"
               >
-                Delete
+                {{ $root.lang().global.btn.delete }}
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -83,7 +83,7 @@ export default {
 
   </v-container>
   `,
-  data() {
+  data () {
     return {
       addons: {},
       remove: {
@@ -95,12 +95,12 @@ export default {
     }
   },
   methods: {
-    closeDialog: function() {
+    closeDialog: function () {
       this.dialogOpen = false
       this.dialogAddon = {}
       this.update()
     },
-    editAddon: function(addon) {
+    editAddon: function (addon) {
       this.dialogAddon = addon
       this.dialogOpen = true
     },
@@ -122,12 +122,12 @@ export default {
           console.error(err)
         })
     },
-    update: function() {
+    update: function () {
       this.getAddons(this.$root.user.id)
       this.$forceUpdate()
     }
   },
-  mounted() {
+  mounted () {
     this.getAddons(this.$root.user.id)
   }
 }

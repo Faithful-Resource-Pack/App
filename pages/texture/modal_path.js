@@ -14,10 +14,10 @@ export default {
         <v-row>
           <v-col class="col-12" :sm="12">
             <v-form ref="form">
-              <v-text-field v-if="add == false" hint="⚠️ Changing the Path ID can break everything" v-model="subPathFormData.id" label="Path ID"></v-text-field>
-              <v-text-field v-if="add == false" hint="⚠️ Changing the Use ID can break everything" v-model="subPathFormData.useID" label="Use ID"></v-text-field>
-              <v-text-field hint="The path should start from the root directory (ex: assets/...)" v-model="subPathFormData.path" label="Path"></v-text-field>
-              <v-select required multiple small-chips v-model="subPathFormData.versions" :items="versions" label="MC Versions"></v-select>
+              <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.path_id" v-model="subPathFormData.id" :label="$root.lang().database.labels.path_id"></v-text-field>
+              <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.useID" :label="$root.lang().database.labels.use_id"></v-text-field>
+              <v-text-field :hint="$root.lang().database.hints.path" v-model="subPathFormData.path" :label="$root.lang().database.labels.path"></v-text-field>
+              <v-select required multiple small-chips v-model="subPathFormData.versions" :items="versions" :label="$root.lang().database.labels.versions"></v-select>
             </v-form>
           </v-col>
         </v-row>
@@ -29,14 +29,14 @@ export default {
           text
           @click="disableSubPathDialog"
         >
-          Cancel
+          {{ $root.lang().global.btn.cancel }}
         </v-btn>
         <v-btn
           color="darken-1"
           text
           @click="send"
         >
-          Save
+          {{ $root.lang().global.btn.save }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -63,7 +63,7 @@ export default {
       type: Array,
       required: false,
       default: function () {
-        return ['dungeons-master', '1.17.1', '1.17.0', '1.16.5', '1.16.220', '1.16.210', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4', '1.8.9', '1.7.10', '1.6.4', '1.5.2' ]
+        return ['dungeons-master', '1.17.1', '1.17.0', '1.16.5', '1.16.220', '1.16.210', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4', '1.8.9', '1.7.10', '1.6.4', '1.5.2']
       }
     },
     useID: {
@@ -71,7 +71,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       // those var names does not make any sens anymore lmao
       subPathFormData: {
@@ -83,40 +83,37 @@ export default {
     }
   },
   computed: {
-    subPathDialogTitle: function() {
-      return `${this.add ? `Add a new` : `Edit`} path`
+    subPathDialogTitle: function () {
+      return this.add ? this.$root.lang().database.titles.add_path : this.$root.lang().database.titles.change_path
     }
   },
   methods: {
-    send: function() {
-      let newData = JSON.parse(JSON.stringify(this.subPathFormData))
+    send: function () {
+      const newData = JSON.parse(JSON.stringify(this.subPathFormData))
       newData.token = this.$root.user.access_token
-      
+
       if (this.add) newData.useID = this.useID
 
-      axios.post(`/paths/${this.add ? `add` : `change`}`, newData)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableSubPathDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+      axios.post(`/paths/${this.add ? 'add' : 'change'}`, newData)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableSubPathDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     }
   },
   watch: {
     subPathDialog: function () {
       Vue.nextTick(() => {
-
         if (!this.add) {
           this.subPathFormData.versions = this.pathData.versions
           this.subPathFormData.id = this.pathData.id
           this.subPathFormData.path = this.pathData.path
           this.subPathFormData.useID = this.pathData.useID
-        }
-        else this.$refs.form.reset()
-        
+        } else this.$refs.form.reset()
       })
     }
   }

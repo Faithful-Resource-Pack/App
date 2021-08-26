@@ -1,11 +1,11 @@
-/* global axios */
+/* global axios, marked, FileReader, Image */
 
 export default {
   name: 'new-addon-page',
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Upload a new Add-on
+      {{ $root.lang().addons.titles.submit }}
       <v-progress-circular
         v-if="titles.length == 0"
         indeterminate
@@ -18,13 +18,14 @@ export default {
             <v-col>
               <v-form ref="form" lazy-validation>
 
-                <div class="text-h5">General</div>
+                <div class="text-h5">{{ $root.lang().addons.general.title }}</div>
                 <v-text-field
                   :rules="titleRules"
                   :counter="titleMaxLength"
                   clearable
                   v-model="form.title"
-                  label="Add-on title"
+                  :label="$root.lang().addons.general.addon_title.label"
+                  :hint="$root.lang().addons.general.addon_title.hint"
                 ></v-text-field>
 
                 <v-textarea
@@ -32,13 +33,11 @@ export default {
                   :counter="descriptionMaxLength"
                   clearable
                   v-model="form.description"
-                  label="Add-on description"
-                  hint="You can use Markdown syntax to improve your description!"
+                  :label="$root.lang().addons.general.description.label"
+                  :hint="$root.lang().addons.general.description.hint"
                 ></v-textarea>
                 <v-container v-if="form.description.length != 0" class="markdown" style="background-color: rgb(33,33,33); border-radius: 5px" v-html="compiledMarkdown(form.description)">
                 </v-container>
-                <v-container v-else class="markdown text--secondary" style="background-color: rgb(33,33,33); border-radius: 5px"><p style="margin-bottom: 0">Markdown will be rendered here, if you find any issue, please contact a Developer</p></v-container>
-
                 <br>
 
                 <v-autocomplete
@@ -47,8 +46,8 @@ export default {
                   :loading="contributors.length == 0"
                   item-text="username"
                   item-value="id"
-                  label="Select authors for that add-on"
-                  hint="Any authors can modify the Add-on once it is submitted | If you don't find someone in the list, contact an Administrator/Developer"
+                  :label="$root.lang().addons.general.authors.label"
+                  :hint="$root.lang().addons.general.authors.hint"
                   multiple
                   chips
                 >
@@ -107,7 +106,7 @@ export default {
           <v-row>
             <v-col>
               <v-form>
-                <div class="text-h5">Screenshots</div>
+                <div class="text-h5">{{ $root.lang().addons.images.title }}</div>
 
                 <div v-if="form.images?.header" style="margin: 10px;">
                 <v-img
@@ -123,7 +122,7 @@ export default {
                   counter="1"
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  label="Header image"
+                  :label="$root.lang().addons.images.header.labels.normal"
                   :rules="headerImageRules"
                   prepend-icon="mdi-image"
                   v-model="header_img"
@@ -161,7 +160,7 @@ export default {
                   show-size
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  label="Additional image(s)"
+                  :label="$root.lang().addons.images.carousel.labels.normal"
                   prepend-icon="mdi-image-multiple"
                   v-model="carousel_img"
                   @change="validateCarousel"
@@ -180,13 +179,13 @@ export default {
                 <v-checkbox
                   class="transparent-input"
                   v-model="form.comments"
-                  label="Enable comments"
+                  :label="$root.lang().addons.options.comments.label"
                 ></v-checkbox>
 
                 <v-checkbox
                   class="transparent-input"
                   v-model="form.optifine"
-                  label="Requires OptiFine"
+                  :label="$root.lang().addons.options.optifine.label"
                 ></v-checkbox>
 
                 <v-row>
@@ -196,7 +195,7 @@ export default {
                       small-chips
                       v-model="selectedEditions"
                       :items="editions"
-                      label="Supported edition(s)"
+                      :label="$root.lang().addons.options.editions.label"
                       :rules="editionsRules"
                       @change="validateType"
                     ></v-select>
@@ -208,7 +207,7 @@ export default {
                       small-chips
                       v-model="selectedRes"
                       :items="res"
-                      label="Supported resolution(s)"
+                      :label="$root.lang().addons.options.resolutions.label"
                       :rules="resRules"
                       @change="validateType"
                     ></v-select>
@@ -225,7 +224,7 @@ export default {
           <v-row>
             <v-col>
               <v-form>
-                <div class="text-h5">Downloads</div>
+                <div class="text-h5">{{ $root.lang().addons.downloads.title }}</div>
 
                 <v-row 
                   v-for="(obj, index) in downloads"
@@ -235,8 +234,8 @@ export default {
                   <v-col cols="3">
                     <v-text-field
                       clearable
-                      placeholder="CurseForge, GitHub..."
-                      label="Name"
+                      :placeholder="$root.lang().addons.downloads.name.placeholder"
+                      :label="$root.lang().addons.downloads.name.label"
                       v-model="obj.key"
                       :rules="downloadTitleRules"
                       @change="updateDownloadForm()"
@@ -254,8 +253,8 @@ export default {
                       <v-col :cols="index == 0 ? 11 : 10">
                         <v-text-field
                           clearable
-                          placeholder="https://www.example.com/"
-                          label="Link"
+                          :placeholder="$root.lang().addons.downloads.link.placeholder"
+                          :label="$root.lang().addons.downloads.link.label"
                           v-model="obj.links[indexLinks]"
                           :rules="downloadLinkRules"
                           @change="updateDownloadForm()"
@@ -282,7 +281,7 @@ export default {
                 <v-row>
                   <v-col>
                     <v-btn block @click="addNewDownload()">
-                      Add download <v-icon color="white lighten-1">mdi-plus</v-icon>
+                      {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>
@@ -300,47 +299,47 @@ export default {
                 indeterminate
               />
             </template>
-            {{ !submitted ? 'Submit' : '' }}
+            {{ !submitted ? $root.lang().global.btn.submit : '' }}
           </v-btn>
         </div>
       </v-list>
     </div>
   </v-container>
   `,
-  data() {
+  data () {
     return {
       titleMaxLength: 24,
       titles: [],
       titleRules: [
-        u => !!u || 'A title is required',
-        u => (u && u.length <= this.titleMaxLength) || `Title must be less than ${this.titleMaxLength} characters.`,
-        u => (u && this.isTitleAvailable(u)) || 'This title is already taken!'
+        u => !!u || this.$root.lang().addons.general.addon_title.rules.title_required,
+        u => (u && u.length <= this.titleMaxLength) || this.$root.lang().addons.general.addon_title.rules.title_too_big.replace('%s', this.titleMaxLength),
+        u => (u && this.isTitleAvailable(u)) || this.$root.lang().addons.general.addon_title.rules.title_unavailable
       ],
       descriptionMaxLength: 4096,
       descriptionRules: [
-        u => !!u || 'The description is required',
-        u => (u && u.length <= this.descriptionMaxLength) || `Description must be less than ${this.descriptionMaxLength} characters.`
+        u => !!u || this.$root.lang().addons.general.description.rules.description_required,
+        u => (u && u.length <= this.descriptionMaxLength) || this.$root.lang().addons.general.description.rules.description_too_big.replace('%s', this.descriptionMaxLength)
       ],
       headerImageRules: [
-        u => !!u || 'A header image is required',
-        u => (u && u.size < 500000) || 'Image should be less than 500 KB!',
+        u => !!u || this.$root.lang().addons.images.header.rules.image_required,
+        u => (u && u.size < 500000) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
       ],
       editions: ['Java', 'Bedrock'],
       selectedEditions: [],
       editionsRules: [
-        u => (u && u.length > 0) || 'You need to select at least 1 edition.'
+        u => (u && u.length > 0) || this.$root.lang().addons.options.editions.rule
       ],
       res: ['32x', '64x'],
       selectedRes: [],
       resRules: [
-        u => (u && u.length > 0) || 'You need to select at least 1 resolution.'
+        u => (u && u.length > 0) || this.$root.lang().addons.options.resolutions.rule
       ],
       downloadTitleRules: [
-        u => !!u || 'Title is required',
-        u => u != ' ' || 'Title can\'t be empty'
+        u => !!u || this.$root.lang().addons.downloads.name.rules.name_required,
+        u => u !== ' ' || this.$root.lang().addons.downloads.name.rules.name_cannot_be_empty
       ],
       downloadLinkRules: [
-        u => this.validURL(u) || 'URL must be valid.'
+        u => this.validURL(u) || this.$root.lang().addons.downloads.link.rule
       ],
       contributors: [],
       form: {
@@ -375,10 +374,10 @@ export default {
       this.submitted = true
       const data = JSON.parse(JSON.stringify(this.form))
 
-      axios.post(`/addons/submit`, data)
+      axios.post('/addons/submit', data)
         .then(() => {
-          this.$root.showSnackBar('Ended successfully', 'success')
-          this.$router.push("submissions")
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.$router.push('submissions')
         })
         .catch(err => {
           console.error(err)
@@ -386,48 +385,46 @@ export default {
         })
     },
     isTitleAvailable: function (title) {
-      if (title == '') return true
+      if (title === '') return true
       if (this.titles.includes(title)) return false
-      
       return true
     },
-    everythingIsOk: function() {
-
+    everythingIsOk: function () {
       let downloadsAreValid = true
       this.downloads.forEach(download => {
-        if (download.key == '') downloadsAreValid = false
+        if (download.key === '') downloadsAreValid = false
 
         download.links.forEach(link => {
-          if (link == '' || !this.validURL(link)) downloadsAreValid = false
+          if (link === '' || !this.validURL(link)) downloadsAreValid = false
         })
       })
 
       return !(
-        this.form.title != '' && this.form.title.length <= this.titleMaxLength && this.isTitleAvailable(this.form.title) &&
-        this.form.description != '' && this.form.description.length <= this.descriptionMaxLength &&
-        this.form.authors.length != 0 && this.form.authors.includes(this.$root.user.id) &&
-        this.form.images.header != '' &&
+        this.form.title !== '' && this.form.title.length <= this.titleMaxLength && this.isTitleAvailable(this.form.title) &&
+        this.form.description !== '' && this.form.description.length <= this.descriptionMaxLength &&
+        this.form.authors.length !== 0 && this.form.authors.includes(this.$root.user.id) &&
+        this.form.images.header !== '' &&
         this.form.type.length > 1 &&
-        Object.keys(this.form.downloads).length != 0 && downloadsAreValid
+        Object.keys(this.form.downloads).length !== 0 && downloadsAreValid
       )
     },
-    addNewDownload: function() {
+    addNewDownload: function () {
       this.downloads.push({ key: '', links: [''] })
     },
-    deleteLink: function(index, indexLink) {
+    deleteLink: function (index, indexLink) {
       this.downloads[index].links.splice(indexLink, 1)
       this.updateDownloadForm()
     },
-    addLink: function(index) {
+    addLink: function (index) {
       this.downloads[index].links.push('')
       this.updateDownloadForm()
     },
-    deleteDownload: function(index) {
+    deleteDownload: function (index) {
       this.downloads.splice(index, 1)
       this.updateDownloadForm()
       this.$forceUpdate()
     },
-    updateDownloadForm: function() {
+    updateDownloadForm: function () {
       this.form.downloads = {}
 
       this.downloads.forEach(download => {
@@ -440,59 +437,55 @@ export default {
       this.form.images.carousel.splice(index, 1)
       this.carousel_img.splice(index, 1)
     },
-    validateType: function() {
-      this.form.type = [ ...this.selectedEditions, ...this.selectedRes ]
+    validateType: function () {
+      this.form.type = [...this.selectedEditions, ...this.selectedRes]
     },
-    validateHeader: function() {
+    validateHeader: function () {
       if (!this.header_img) {
         this.form.images.header = ''
         return
       }
 
-      let that = this
+      const that = this
       const reader = new FileReader()
-      reader.onload = function(e) {
-
-        let image = new Image()
+      reader.onload = function (e) {
+        const image = new Image()
         image.src = e.target.result
 
-        image.onload = function() {
-            // 'this' refer to the image and 'that' to Vue
-          if ((this.width / this.height).toFixed(2) == 1.78) {
+        image.onload = function () {
+          // 'this' refer to the image and 'that' to Vue
+          if ((this.width / this.height).toFixed(2) === 1.78) {
             that.form.images.header = e.target.result
             that.$forceUpdate()
-          }
-          else {
-            that.$root.showSnackBar(`Wrong Ratio: The provided image doesn't have a 16:9 ratio.`, 'error')
+          } else {
+            that.$root.showSnackBar(this.$root.lang().addons.images.header.rules.image_ratio, 'error')
             that.header_img = undefined
           }
         }
       }
       reader.readAsDataURL(this.header_img)
-
     },
     validateCarousel: function () {
       this.form.images.carousel = []
 
-      if (this.carousel_img.length == 0) return
+      if (this.carousel_img.length === 0) return
 
       const that = this
       this.carousel_img.forEach(file => {
-        let reader = new FileReader()
+        const reader = new FileReader()
 
-        reader.onload = function(e) {
-          let image = new Image()
+        reader.onload = function (e) {
+          const image = new Image()
           image.src = e.target.result
 
-          image.onload = function() {
+          image.onload = function () {
             // 'this' refer to the image and 'that' to Vue
-            if ((this.width / this.height).toFixed(2) == 1.78) {
+            if ((this.width / this.height).toFixed(2) === 1.78) {
               that.form.images.carousel.push(e.target.result)
               that.$forceUpdate()
-            }
-            else {
+            } else {
               that.carousel_img.splice(that.carousel_img.indexOf(file), 1)
-              that.$root.showSnackBar(`Wrong Ratio: Image(s) with non 16:9 ratio have been removed.`, 'error')
+              that.$root.showSnackBar('Wrong Ratio: Image(s) with non 16:9 ratio have been removed.', 'error')
               that.$forceUpdate()
             }
           }
@@ -500,16 +493,15 @@ export default {
 
         reader.readAsDataURL(file)
       })
-      
     },
     validURL: function (str) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-      return !!pattern.test(str);
+        '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+      return !!pattern.test(str)
     },
     getAuthors: function () {
       axios.get('/contributions/authors/')
@@ -521,7 +513,7 @@ export default {
           console.trace(err)
         })
     },
-    getAddonsTitle: function() {
+    getAddonsTitle: function () {
       axios.get('/addons/get/titles')
         .then(res => {
           this.titles = []
@@ -534,17 +526,17 @@ export default {
           console.trace(err)
         })
     },
-    remove(id) {
+    remove: function (id) {
       const index = this.form.authors.indexOf(id)
       if (index >= 0) this.form.authors.splice(index, 1)
     },
-    compiledMarkdown(markdown) {
+    compiledMarkdown: function (markdown) {
       return marked(markdown, { sanitize: true })
     }
   },
   mounted: function () {
     this.getAuthors()
     this.getAddonsTitle()
-    this.form.authors = [ this.$root.user.id ]
+    this.form.authors = [this.$root.user.id]
   }
 }

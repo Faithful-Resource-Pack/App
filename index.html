@@ -26,15 +26,15 @@
             text
             v-bind="attrs"
             v-on="on"
-            v-text="tab.label"
+            v-text="tab.labelText"
           />
         </template>
         <v-list>
           <v-list-item
             v-for="(subtab, index) in tab.subtabs" :key="index" link :to="subtab.to" :disabled="!subtab.enabled"
           >
-            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small :color="!subtab.enabled ? 'rgba(255,255,255,.3)' : white" v-text="subtab.icon"/></v-list-item-icon>
-            <v-list-item-content><v-list-item-title v-text="subtab.label" class="uppercased"/></v-list-item-content>
+            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small :color="!subtab.enabled ? 'rgba(255,255,255,.3)' : 'white'" v-text="subtab.icon"/></v-list-item-icon>
+            <v-list-item-content><v-list-item-title v-text="subtab.labelText" class="uppercased"/></v-list-item-content>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -60,7 +60,7 @@
               {{ user.username }}
             </v-btn>
           </template>
-          <span>Logout</span>
+          <span>{{ $root.lang().global.logout }}</span>
         </v-tooltip>
         <v-avatar size="32" rounded :style="{ 'margin-left': '5px' }"><img :src="user.avatar" :alt="user.username"></v-avatar>
       </div>
@@ -92,7 +92,7 @@
           </v-card-title>
           <v-card-actions style="justify-content: flex-end">
             <v-btn small color="red" @click="logout">
-              Logout
+              {{ $root.lang().global.logout }}
             </v-btn>
           </v-card-actions>
         </v-img>
@@ -106,7 +106,7 @@
           nav
         >
           <v-list-item-title class="uppercased-unsized">
-            {{ tab.label }}
+            {{ tab.labelText }}
           </v-list-item-title>
 
           <v-list-item v-for="(subtab, subtabIndex) in tab.subtabs" :key="subtabIndex" :to="subtab.to"  class="uppercased-unsized">
@@ -114,7 +114,7 @@
               <v-icon small>{{ subtab.icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="subtab.label" class="uppercased"/>
+              <v-list-item-title v-text="subtab.labelText" class="uppercased"/>
             </v-list-item-content>
           </v-list-item>
         </v-list>
@@ -140,7 +140,7 @@
             'image-rendering': 'pixelated'
           }"
         >
-        <h2 class="compliance-font" align="center" style="text-shadow: 2px 2px rgba(0,0,0,.7); margin-bottom: 20px;">COMPLIANCE WEB<br>APPLICATION</h2>
+        <h2 class="compliance-font uppercased-unsized" align="center" style="width: 200px; text-shadow: 2px 2px rgba(0,0,0,.7); margin-bottom: 20px;">{{ $root.lang().global.name }}</h2>
         <v-btn 
           href="/api/discord/login" 
           :style="{
@@ -149,7 +149,7 @@
           }"
         >
           <v-icon left>mdi-discord</v-icon>
-          Login via Discord
+          {{ $root.lang().global.login }}
         </v-btn>
       </div>
     </v-main>
@@ -157,6 +157,10 @@
     <v-bottom-navigation height="42px" id="bottom" style="box-shadow: none">
       &copy; Compliance Team {{ year }}
     </v-bottom-navigation>
+    <v-radio-group row v-model="selectedLang" style="margin-left: auto; margin-right: auto;">
+      <v-radio class="uppercased" v-for="(lang, key) in langs" :key="key" :label="key" :value="key">
+      </v-radio>
+    </v-radio-group>
 
     <v-snackbar
       v-model="snackbar.show"

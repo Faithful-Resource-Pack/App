@@ -1,13 +1,13 @@
 /* global axios */
 
 export default {
-	name: 'contribution-page',
-	template: `
+  name: 'contribution-page',
+  template: `
   <v-container>
     <div class="text-h4 py-4">
-      Contributions
+      {{ $root.lang().database.titles.contributions }}
     </div>
-    <div class="my-2 text-h5">Resolution</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
     <v-btn
       v-for="(resobj, index) in form.resolutions"
       :key="resobj.key"
@@ -20,14 +20,14 @@ export default {
         :id="resobj.key"
       ></v-checkbox>
     </v-btn>
-    <div class="my-2 text-h5">Contributor</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.contributor }}</div>
     <v-autocomplete
       v-model="contributors_selected"
       :items="contributors"
       :loading="contributors.length == 0"
       item-text="username"
       item-value="id"
-      label="Please choose at least one contributor"
+      :label="$root.lang().database.labels.one_contributor"
       multiple
       chips
     >
@@ -78,7 +78,7 @@ export default {
         </template>
       </template>
     </v-autocomplete>
-    <v-btn block @click="startSearch()" :disabled="searchDisabled">Search contributions<v-icon right dark>mdi-magnify</v-icon></v-btn>
+    <v-btn block @click="startSearch()" :disabled="searchDisabled">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
     <v-list rounded v-if="search.search_results.length" two-line color="rgba(255, 255, 255, 0.08)" class="mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
@@ -109,10 +109,10 @@ export default {
         </v-list-item>
       </v-col></v-row>
     </v-list>
-    <div v-else><i>No results found.</i></div>
+    <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
   </v-container>`,
-	data() {
-		return {
+  data () {
+    return {
       maxheight: 170,
       form: {
         resolutions: [] // [{key: 'all', selected: true }]
@@ -126,17 +126,17 @@ export default {
         search_results: []
       }
     }
-	},
+  },
   computed: {
-    searchDisabled: function() {
-      const res_selected = this.form.resolutions.reduce((a, c) => a || c.selected, false) == false
-      const result = this.search.searching || res_selected || this.contributors_selected.length == 0
+    searchDisabled: function () {
+      const resSelected = this.form.resolutions.reduce((a, c) => a || c.selected, false) === false
+      const result = this.search.searching || resSelected || this.contributors_selected.length === 0
       return result
     },
-    listColumns: function() {
+    listColumns: function () {
       let columns = 1
 
-      if(this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
+      if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
         columns = 2
         if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
           columns = 3
@@ -145,13 +145,13 @@ export default {
 
       return columns
     },
-    splittedResults: function() {
-      let res = []
-      for(let col = 0; col < this.listColumns; ++col) {
+    splittedResults: function () {
+      const res = []
+      for (let col = 0; col < this.listColumns; ++col) {
         res.push([])
       }
 
-      let arrayIndex = 0;
+      let arrayIndex = 0
       this.search.search_results.forEach(contrib => {
         res[arrayIndex].push(contrib)
         arrayIndex = (arrayIndex + 1) % this.listColumns
@@ -161,7 +161,7 @@ export default {
     }
   },
   methods: {
-    getRes: function() {
+    getRes: function () {
       axios.get('/contributions/res')
         .then(res => {
           res.data.forEach(r => {
@@ -169,7 +169,7 @@ export default {
           })
         })
     },
-    getAuthors: function() {
+    getAuthors: function () {
       axios.get('/contributions/authors/')
         .then(res => {
           this.contributors = res.data
@@ -182,40 +182,40 @@ export default {
       const index = this.contributors_selected.indexOf(id)
       if (index >= 0) this.contributors_selected.splice(index, 1)
     },
-    addRes(name, value=false) {
+    addRes (name, value = false) {
       this.form.resolutions.push({
         key: name,
         selected: value
       })
     },
-    startSearch: function() {
+    startSearch: function () {
       this.search.searching = true
       axios({
-        method: "get",
-        url: "/contributions/get/",
+        method: 'get',
+        url: '/contributions/get/',
         params: {
           resolutions: this.form.resolutions.filter(r => r.selected).map(r => r.key),
           authors: this.contributors_selected
         }
       })
-      .then(res => {
-        res.data.sort((a, b) => b.date - a.date)
-        this.search.search_results = res.data
-      })
-      .catch(err => { this.$root.showSnackBar(err, 'error') })
-      .finally(() => {
-        this.search.searching = false
-      })
-    },
+        .then(res => {
+          res.data.sort((a, b) => b.date - a.date)
+          this.search.search_results = res.data
+        })
+        .catch(err => { this.$root.showSnackBar(err, 'error') })
+        .finally(() => {
+          this.search.searching = false
+        })
+    }
   },
-  created: function() {
+  created: function () {
     this.addRes(this.all_res, true)
   },
-  mounted: function() {
+  mounted: function () {
     this.getRes()
     this.getAuthors()
 
     // use the logged user as default selected contributor
-    this.contributors_selected = [ this.$root.user.id ]
+    this.contributors_selected = [this.$root.user.id]
   }
 }

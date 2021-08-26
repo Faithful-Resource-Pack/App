@@ -1,8 +1,8 @@
 /* global axios */
 
 export default {
-	name: 'addon-remove-confirm',
-	template: `
+  name: 'addon-remove-confirm',
+  template: `
   <v-dialog
       v-model="confirm"
       persistent
@@ -55,19 +55,19 @@ export default {
     }
   },
   methods: {
-    deleteAddon: function() {
+    deleteAddon: function () {
       const data = JSON.parse(JSON.stringify(this.$props.data))
-      
+
       axios.post('/addons/remove', data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableDialog(true)
-      })
-      .catch(error => {
-        console.error(error)
-        this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
-        this.disableDialog(true)
-      })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(error => {
+          console.error(error)
+          this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
+          this.disableDialog(true)
+        })
     }
   }
 }

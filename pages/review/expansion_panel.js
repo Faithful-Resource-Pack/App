@@ -1,8 +1,6 @@
-/* global axios */
-
 export default {
   name: 'exp-panel',
-  template: 
+  template:
   `
   <v-container>
     <v-expansion-panel
@@ -35,32 +33,32 @@ export default {
           <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="padding-left: 0">
             <v-list-item>
               <v-list-item-content>
-                <v-list-item-title v-text="'Author(s)'" class="uppercased" />
+                <v-list-item-title v-text="$root.lang().review.addon.titles.authors" class="uppercased" />
                 <div class="text--secondary" style="margin-bottom: 10px;" >
                   {{ addon.authors.map(id => getUsername(id)).join(", ") }}
                 </div>
 
-                <v-list-item-title v-text="'Description'" class="uppercased"/>
+                <v-list-item-title v-text="$root.lang().review.addon.titles.description" class="uppercased"/>
                 <v-container class="markdown text--secondary" style="margin-bottom: 10px; background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(addon.description)"></v-container>
 
-                <v-list-item-title v-text="'Links'" class="uppercased"/>
+                <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
                 <div class="text--secondary" style="margin-bottom: 10px;">
                   <template v-for="(links, key, index) in addon.downloads">
                     {{ key }}:
                     <ul>
                       <li v-for="(link, indexLink) in links" :key="indexLink" style="background-color: transparent">
-                        <a :href="link" class="text--secondary">Link {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
+                        <a :href="link" class="text--secondary">{{ $root.lang().review.addon.labels.link }} {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
                       </li>
                     </ul>
                     <br>
                   </template>
                 </div>
                 
-                <v-list-item-title v-text="'Options'" class="uppercased"/>
+                <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
                 <div>
-                  <v-icon small v-text="addon.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> Comments
+                  <v-icon small v-text="addon.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }}
                   <br>
-                  <v-icon small v-text="addon.optifine ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> OptiFine
+                  <v-icon small v-text="addon.optifine ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.optifine }}
                 </div>
 
               </v-list-item-content>
@@ -88,15 +86,15 @@ export default {
 
         <v-row v-if="addon.status == 'approved' && addon.approval.author != null">
           <v-col style="padding-left: 16px">
-            <v-list-item-title v-text="'Approved by'" class="uppercased"/>
+            <v-list-item-title v-text="$root.lang().review.addon.labels.approved_by" class="uppercased"/>
             <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
           </v-col>
         </v-row>
         <v-row v-if="addon.status == 'denied'">
           <v-col style="padding-left: 16px">
-            <v-list-item-title v-text="'Denied by'" class="uppercased"/>
+            <v-list-item-title v-text="$root.lang().review.addon.labels.denied_by" class="uppercased"/>
             <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
-            <v-list-item-title v-text="'Reason'" class="uppercased"/>
+            <v-list-item-title v-text="$root.lang().review.addon.labels.reason" class="uppercased"/>
             <p class="text--secondary">{{ addon.approval.reason }}</p>
           </v-col>
         </v-row>
@@ -108,7 +106,7 @@ export default {
               :disabled="addon.status == 'approved'"
               @click="approveAddon(addon)"
             >
-              Approve
+              {{ $root.lang().global.btn.approve }}
             </v-btn>
             <v-btn
               text
@@ -116,7 +114,7 @@ export default {
               :disabled="addon.status == 'denied'"
               @click="denyAddon(addon)"
             >
-              Deny
+              {{ $root.lang().global.btn.deny }}
             </v-btn>
           </v-col>
         </v-row>
@@ -144,10 +142,10 @@ export default {
     }
   },
   methods: {
-    getUsername: function(id) {
-      if (id == null || !id) return "Old add-ons, no one approved it."
+    getUsername: function (id) {
+      if (id == null || !id) return this.$root.lang().review.addon.labels.old_addon
 
-      return this.contributors.filter(el => el.id == id)[0]?.username
+      return this.contributors.filter(el => el.id === id)[0]?.username
     }
   }
 }

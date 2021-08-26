@@ -1,18 +1,18 @@
 /* global axios */
 
 export default {
-	name: 'contributor-remove-confirm',
-	template: `
+  name: 'contributor-remove-confirm',
+  template: `
   <v-dialog
       v-model="confirm"
       persistent
       max-width="600"
     >
       <v-card>
-        <v-card-title class="headline">Confirm deletion</v-card-title>
+        <v-card-title class="headline">{{ $root.lang().database.titles.confirm_deletion }}</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>Do you want to delete {{ data.username }}#{{ data.id }}?</p>
+            <p>{{ $root.lang().database.labels.ask_deletion.replace('%s', data.username).replace('%d', data.id) }}</p>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -22,13 +22,13 @@ export default {
             text
             @click="disableDialog"
           >
-            Cancel
+            {{ $root.lang().global.btn.cancel }}
           </v-btn>
           <v-btn
             color="error darken-1"
             @click="deleteContributor"
           >
-            Yes
+            {{ $root.lang().global.btn.yes }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -48,36 +48,36 @@ export default {
       required: true
     }
   },
-	data() {
-		return {
+  data () {
+    return {
       formData: {
       }
-		}
-	},
+    }
+  },
   computed: {
     username: function () {
       return this.$props.data.username
     },
-    id: function() {
+    id: function () {
       return this.$props.data.id
     }
   },
   methods: {
-    deleteContributor: function() {
-      let data = JSON.parse(JSON.stringify(this.formData))
+    deleteContributor: function () {
+      const data = JSON.parse(JSON.stringify(this.formData))
       data.id = this.id
       data.token = this.$root.user.access_token
-      
+
       axios.post('/contributors/remove', data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableDialog(true)
-      })
-      .catch(error => {
-        console.error(error)
-        this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
-        this.disableDialog(true)
-      })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(error => {
+          console.error(error)
+          this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
+          this.disableDialog(true)
+        })
     }
   }
 }

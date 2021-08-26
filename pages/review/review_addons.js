@@ -12,7 +12,7 @@ export default {
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Review Add-ons
+      {{ $root.lang().review.titles.addons }}
     </div>
 
     <deny-popup
@@ -21,7 +21,7 @@ export default {
       :validPopup="denyAddon"
     />
 
-    <v-badge inline dot left color="yellow"><h5 class="text-h5" style="margin-left: 5px;">Pending Approval</h5></v-badge>
+    <v-badge inline dot left color="yellow"><h5 class="text-h5" style="margin-left: 5px;">{{ $root.lang().review.titles.pending }}</h5></v-badge>
     <v-expansion-panels v-if="pendingAddons.length != 0" style="margin-top: 5px;" multiple>
       <exp-panel
         :contributors="contributors" 
@@ -30,8 +30,8 @@ export default {
         :denyAddon="openDenyPopup"
       />
     </v-expansion-panels>
-    <template v-else-if="pendingLoading"><v-container>Loading, please wait...</v-container></template>
-    <template v-else><v-container>There is currently no Pending add-ons!</v-container></template>
+    <template v-else-if="pendingLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
+    <template v-else><v-container>{{ $root.lang().review.labels.pending }}</v-container></template>
     <br>
 
     <v-badge inline dot left color="red darken-4"><h5 class="text-h5" style="margin-left: 5px;">Denied</h5></v-badge>
@@ -43,8 +43,8 @@ export default {
         :denyAddon="openDenyPopup"
       />
     </v-expansion-panels>
-    <template v-else-if="deniedLoading"><v-container>Loading, please wait...</v-container></template>
-    <template v-else><v-container>There is currently no Denied add-ons!</v-container></template>
+    <template v-else-if="deniedLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
+    <template v-else><v-container>{{ $root.lang().review.labels.denied }}</v-container></template>
     <br>
 
     <v-badge inline dot left color="teal"><h5 class="text-h5" style="margin-left: 5px;">Approved</h5></v-badge>
@@ -56,11 +56,11 @@ export default {
         :denyAddon="openDenyPopup"
       />
     </v-expansion-panels>
-    <template v-else-if="approvedLoading"><v-container>Loading, please wait...</v-container></template>
-    <template v-else><v-container><v-btn text color="teal" @click="getApprovedAddons()">Load Approved Add-ons</v-btn></v-container></template>
+    <template v-else-if="approvedLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
+    <template v-else><v-container><v-btn text color="teal" @click="getApprovedAddons()">{{ $root.lang().review.labels.load_approved }}</v-btn></v-container></template>
   </v-container>
   `,
-  data() {
+  data () {
     return {
       pendingAddons: [],
       approvedAddons: [],
@@ -72,7 +72,7 @@ export default {
       deniedLoading: true,
 
       showDenyPopup: false,
-      denyReason: "",
+      denyReason: '',
       deniedAddon: {}
     }
   },
@@ -90,15 +90,14 @@ export default {
       }
 
       axios.post('/review/addons/approve', data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.$forceUpdate()
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
-          
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.$forceUpdate()
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     },
     denyAddon: function (reason) {
       if (!this.$root.isUserLogged) return
@@ -113,14 +112,14 @@ export default {
       }
 
       axios.post('/review/addons/deny', data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.$forceUpdate()
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.$forceUpdate()
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
 
       this.closeDenyPopup()
     },
@@ -157,7 +156,7 @@ export default {
           this.deniedAddons.forEach(el => {
             el.type = el.type.sort()
           })
-          
+
           this.deniedLoading = false
 
           this.$forceUpdate()
@@ -168,7 +167,7 @@ export default {
     },
     getApprovedAddons: function () {
       this.approvedLoading = true
-      
+
       axios.get('/addons/search/approved')
         .then(res => {
           this.approvedAddons = res.data
@@ -185,7 +184,7 @@ export default {
           console.trace(err)
         })
     },
-    getContributors: function() {
+    getContributors: function () {
       axios.get('/contributors/all/')
         .then(res => {
           this.contributors = res.data
@@ -199,7 +198,7 @@ export default {
         })
     }
   },
-  mounted() {
+  mounted () {
     this.getContributors()
   }
 }

@@ -1,15 +1,13 @@
-/* global axios */
-
 export default {
   name: 'review-translations-page',
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Review Translations (Soon)
+    {{ $root.lang().review.titles.translation }}
     </div>
   </v-container>
   `,
-  data() {
+  data () {
     return {
       form: {}
     }

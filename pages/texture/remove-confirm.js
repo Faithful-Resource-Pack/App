@@ -75,7 +75,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       formData: {},
       deletePaths: true,
@@ -89,21 +89,21 @@ export default {
           useID: useID
         }
       })
-      .then((res) => {
-        const temp = res.data
-        this.data.paths = {}
+        .then((res) => {
+          const temp = res.data
+          this.data.paths = {}
 
-        for (let i = 0; i < temp.length; i++) {
-          this.data.paths[temp[i].id] = temp[i]
-        }
+          for (let i = 0; i < temp.length; i++) {
+            this.data.paths[temp[i].id] = temp[i]
+          }
 
-        this.$forceUpdate()
-      })
-      .catch(function (err) {
-        console.error(err)
-      })
+          this.$forceUpdate()
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
     },
-    deleteData: function() {
+    deleteData: function () {
       const data = {
         id: this.data.id,
         deletePaths: this.deletePaths,
@@ -111,15 +111,15 @@ export default {
       }
 
       axios.post(`/${this.type}s/remove`, data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
-        this.disableDialog(true)
-      })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+          this.disableDialog(true)
+        })
     }
   }
 }

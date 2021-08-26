@@ -1,11 +1,11 @@
-/* global axios, Vue */
+/* global axios */
 
 export default {
   name: 'profile-page',
   template: `
   <v-container>
     <div class="text-h4 py-4">
-      Profile
+      {{ $root.lang().profile.title }}
     </div>
 
     <div class="my-2 text-h5">
@@ -49,7 +49,7 @@ export default {
           </v-col>
           <v-col :class="'col-' + (localUser.uuid && localUser.uuid.length == uuidMaxLength) ? '10' : '12'" :sm="(localUser.uuid && localUser.uuid.length == uuidMaxLength) ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
             <v-form ref="form" lazy-validation>
-              <div class="text-h6">General</div>
+              <div class="text-h6">{{ $root.lang().profile.general.title }}</div>
               <v-list class="profileList">
                 <v-row>
                   <v-list-item class="height-90">
@@ -61,8 +61,8 @@ export default {
                         :counter="uuidMaxLength" 
                         clearable 
                         v-model="localUser.uuid" 
-                        label="Minecraft profile UUID" 
-                        hint="Your skin will be displayed on your pages"
+                        :label="$root.lang().profile.general.uuid.label" 
+                        :hint="$root.lang().profile.general.uuid.hint"
                       ></v-text-field>
                       </v-col>
                     </v-list-item-content>
@@ -78,8 +78,8 @@ export default {
                         :counter="usernameMaxLength" 
                         clearable 
                         v-model="localUser.username" 
-                        label="Website Username" 
-                        hint="Your username will be displayed and used on the Website for contributions, add-ons and more..."
+                        :label="$root.lang().profile.general.username.label" 
+                        :hint="$root.lang().profile.general.username.hint"
                       ></v-text-field>
                       </v-col>
                     </v-list-item-content>
@@ -99,7 +99,7 @@ export default {
         <v-list-item>
         <v-row><v-col>
           <v-form lazy-validation>
-            <div class="text-h6">Social links</div>
+            <div class="text-h6">{{ $root.lang().profile.social.title }}</div>
             <v-list class="profileList">
               <v-row v-if="localUser.media && Object.keys(localUser.media).length">
                 <v-list-item
@@ -114,7 +114,7 @@ export default {
                         style="margin-bottom: 10px"
                         v-model="socialMedia.link"
                         :rules="urlRules"
-                        :label="'Edit ' + socialMedia.type + ' URL'"
+                        :label="$root.lang().profile.social.edit.label.replace('%s', socialMedia.type)"
                       >
                       </v-text-field>
                     </v-col>
@@ -124,7 +124,7 @@ export default {
                   >
                     <v-select
                       :items="media"
-                      label="Select media"
+                      :label="$root.lang().profile.social.select.label"
                       v-model="socialMedia.type"
                       solo
                     >
@@ -144,8 +144,8 @@ export default {
                     <v-col>
                       <v-text-field
                         clearable
-                        placeholder="https://www.example.com/"
-                        label="New social media:"
+                        :placeholder="$root.lang().profile.social.new.placeholder"
+                        :label="$root.lang().profile.social.new.label"
                         style="margin-bottom: 10px"
                         v-model="newMedia.link"
                         :rules="urlAddRules"
@@ -158,7 +158,7 @@ export default {
                   >
                     <v-select
                       :items="media"
-                      label="Select media"
+                      :label="$root.lang().profile.social.select.label"
                       v-model="newMedia.type"
                       solo
                     >
@@ -181,7 +181,7 @@ export default {
             @click="send"
             :disabled="!everythingIsOk"
           >
-            Save
+            {{ $root.lang().global.btn.save }}
           </v-btn>
         </div>
 
@@ -189,7 +189,7 @@ export default {
     </div>
   </v-container>
   `,
-  data() {
+  data () {
     return {
       uuidMaxLength: 36,
       usernameMaxLength: 24,
@@ -199,16 +199,16 @@ export default {
         link: ''
       },
       media: [
-        "CurseForge", "GitHub", "Patreon", "Paypal", "Planet Minecraft", "PSN", "Reddit", "Steam", "Twitter", "Website", "Xbox", "YouTube", "Other"
+        'CurseForge', 'GitHub', 'Patreon', 'Paypal', 'Planet Minecraft', 'PSN', 'Reddit', 'Steam', 'Twitter', 'Website', 'Xbox', 'YouTube', 'Other'
       ],
       urlAddRules: [
-        u => this.validForm(this.validURL(u) || u == '', 'URL must be valid.')
+        u => this.validForm(this.validURL(u) || u === '', 'URL must be valid.')
       ],
       urlRules: [
         u => this.validForm(this.validURL(u), 'URL must be valid.')
       ],
       uuidRules: [
-        u => this.validForm((u && (u.length == this.uuidMaxLength)) || !u, 'The UUID needs to be 36 characters long.')
+        u => this.validForm((u && (u.length === this.uuidMaxLength)) || !u, 'The UUID needs to be 36 characters long.')
       ],
       usernameRules: [
         u => this.validForm(!!u, 'Username is required.'),
@@ -218,24 +218,24 @@ export default {
     }
   },
   methods: {
-    isMediaOk: function() {
-      if (this.newMedia.type != '' && this.newMedia.link != '') return false
+    isMediaOk: function () {
+      if (this.newMedia.type !== '' && this.newMedia.link !== '') return false
       return true
     },
-    validURL: function(str) {
-      var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+    validURL: function (str) {
+      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
         '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-      return !!pattern.test(str);
+        '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+      return !!pattern.test(str)
     },
-    removeSocialMedia: function(index) {
+    removeSocialMedia: function (index) {
       this.localUser.media.splice(index, 1)
     },
-    addSocialMedia: function() {
-      if (!this.localUser.media) this.localUser.media = new Array()
+    addSocialMedia: function () {
+      if (!this.localUser.media) this.localUser.media = []
 
       this.localUser.media.push({
         type: this.newMedia.type,
@@ -247,51 +247,50 @@ export default {
         link: ''
       }
     },
-    validForm: function(boolResult, sentence) {
+    validForm: function (boolResult, sentence) {
       if (boolResult) {
         this.everythingIsOk = true
         return true
       }
-      
+
       this.everythingIsOk = false
       return sentence.toString()
     },
-    send: function() {
+    send: function () {
       if (!this.$root.isUserLogged) return
 
-      let data = JSON.parse(JSON.stringify(this.localUser))
+      const data = JSON.parse(JSON.stringify(this.localUser))
       data.access_token = this.$root.user.access_token
 
       axios.post('/profile/set', data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-      })
-      .catch(error => {
-        console.error(error)
-        this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
-      })
-
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+        })
+        .catch(error => {
+          console.error(error)
+          this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
+        })
     },
-    getUserInfo: function() {
+    getUserInfo: function () {
       if (!this.$root.isUserLogged) return
 
-      let data = JSON.parse(JSON.stringify(this.$root.user))
+      const data = JSON.parse(JSON.stringify(this.$root.user))
       data.token = this.$root.user.access_token
 
       axios.post('/profile/get', data)
-      .then((res) => {
-        this.localUser = res.data[0]
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+        .then((res) => {
+          this.localUser = res.data[0]
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     },
-    update: function() {
+    update: function () {
       this.getUserInfo()
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.update()
   }
 }

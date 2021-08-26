@@ -22,11 +22,11 @@ export default {
     <add-minecraft-version :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     
     <div class="text-h4 py-4">
-      Textures
+      {{ $root.lang().database.titles.textures }}
     </div>
-    <div class="my-2 text-h5">Select texture type</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_texture_type }}</div>
     <div><v-btn v-for="t in texturesTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="textureURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
-    <div class="my-2 text-h5">Search</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
       <div class="my-2">
         <v-text-field
           v-model="search"
@@ -34,7 +34,7 @@ export default {
           filled
           clear-icon="mdi-close"
           clearable
-          placeholder="Search texture name"
+          :placeholder="$root.lang().database.labels.search_texture"
           type="text"
           v-on:keyup.enter="startSearch"
           @click:append-outer="startSearch"
@@ -45,20 +45,20 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn block @click="openNewMCDialog()">Add textures <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
       <v-row>
         <v-col>
-          <v-btn block @click="() => { newVersionModal = true }">Add new Minecraft Version <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn block @click="openModifyMCDialog()">Modify a Minecraft Version<v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right dark>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
-      <div class="my-2 text-h5">Texture results</div>
+      <div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
       <v-list v-if="Object.keys(textures).length" two-line color="rgba(255, 255, 255, 0.08)" >
         <v-row><v-col :cols="12/listColumns" xs="1"
             v-for="(textures_arr, index) in splittedResults"
@@ -105,14 +105,14 @@ export default {
           @click="showMore()" 
           :v-if="displayedResults < Object.keys(textures).length"
           elevation="2"
-        >LOAD MORE</v-btn>
+        >{{ $root.lang().global.btn.load_more }}</v-btn>
 
       </v-list>
-      <div v-else><i>No results found.</i></div>
+      <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
       </div>
     </div>
   </v-container>`,
-  data() {
+  data () {
     const INCREMENT = 250
 
     return {
@@ -131,16 +131,15 @@ export default {
         confirm: false,
         data: {}
       },
-      displayedResults: INCREMENT,
+      displayedResults: INCREMENT
     }
   },
   computed: {
-    texturesTypes: function() {
+    texturesTypes: function () {
       return ['all', ...this.types]
     },
     type: function () {
-      if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type))
-        return this.$route.params.type
+      if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type)) return this.$route.params.type
       return undefined
     },
     name: function () {
@@ -157,12 +156,12 @@ export default {
         }
       }
 
-      if (Object.keys(this.textures).length == 1) columns = 1
+      if (Object.keys(this.textures).length === 1) columns = 1
 
       return columns
     },
     splittedResults: function () {
-      let res = []
+      const res = []
 
       const keys = Object.keys(this.textures)
       const len = keys.length
@@ -171,7 +170,7 @@ export default {
         res.push([])
       }
 
-      let arrayIndex = 0;
+      let arrayIndex = 0
 
       for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
         res[arrayIndex].push(this.textures[keys[i]])
@@ -179,32 +178,27 @@ export default {
       }
 
       return res
-    },
+    }
   },
   methods: {
-    textureURL(t) {
+    textureURL (t) {
       return this.name ? `/textures/${t}/${this.name}` : `/textures/${t}`
     },
-    startSearch: function() {
+    startSearch: function () {
       let newPath
 
       if (this.name) {
-        var splitted = this.$route.path.split('/')
+        const splitted = this.$route.path.split('/')
         splitted.pop()
         newPath = splitted.join('/')
-      }
-      else
-        newPath = this.$route.path
+      } else newPath = this.$route.path
 
-      if (!newPath.endsWith('/'))
-        newPath += '/'
+      if (!newPath.endsWith('/')) newPath += '/'
 
       newPath += this.search
 
-      if (newPath === this.$route.path)
-        console.warn(newPath)
-      else 
-        this.$router.push(newPath)
+      if (newPath === this.$route.path) console.warn(newPath)
+      else this.$router.push(newPath)
     },
     clearSearch: function () {
       this.search = ''
@@ -214,7 +208,7 @@ export default {
       this.dialogOpen = true
       this.dialogData = data
     },
-    disableDialog: function(refresh = false) {
+    disableDialog: function (refresh = false) {
       this.dialogOpen = false
 
       if (refresh) {
@@ -230,28 +224,28 @@ export default {
     disableMCDialog: function () {
       this.MCDialogOpen = false
     },
-    openNewMCDialog: function() {
+    openNewMCDialog: function () {
       this.addMultiple = true
     },
     askRemove: function (data) {
       this.remove.data = data
       this.remove.confirm = true
     },
-    getTypes: function() {
+    getTypes: function () {
       axios.get('/textures/types')
-      .then((res) => {
-        this.types = res.data
-      })
-      .catch(function (err) {
-        console.error(err)
-      })
-      .finally(() => {
-        Vue.nextTick(() => {
-          this.search = this.name
+        .then((res) => {
+          this.types = res.data
         })
-      })
+        .catch(function (err) {
+          console.error(err)
+        })
+        .finally(() => {
+          Vue.nextTick(() => {
+            this.search = this.name
+          })
+        })
     },
-    getEditions: function() {
+    getEditions: function () {
       axios.get('/textures/editions')
         .then((res) => {
           this.editions = res.data
@@ -260,7 +254,7 @@ export default {
           console.error(err)
         })
     },
-    getVersions: function() {
+    getVersions: function () {
       axios.get('/textures/versions')
         .then((res) => {
           this.versions = res.data
@@ -269,7 +263,7 @@ export default {
           console.error(err)
         })
     },
-    getTextures: function() {
+    getTextures: function () {
       axios.get(this.$route.path)
         .then((res) => {
           this.textures = res.data
@@ -287,15 +281,14 @@ export default {
     showMore: function () {
       this.displayedResults += 100
       this.update()
-      return
     }
   },
   watch: {
-    $route() {
+    $route () {
       this.getTextures()
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.update()
   }
 }
