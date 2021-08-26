@@ -25,12 +25,12 @@ export default {
         <v-row>
           <v-col class="col-12" :sm="12">
             <v-form ref="form">
-              <v-text-field v-model="subFormData.textureUseName" label="Use Name"></v-text-field>
-              <v-text-field v-if="add == false" hint="⚠️ Changing the Use ID can break everything" required v-model="subFormData.id" label="Use ID"></v-text-field>
-              <v-text-field v-if="add == false" hint="⚠️ Changing the Texture ID can break everything" required clearable v-model="subFormData.textureID" label="Texture ID"></v-text-field>
-              <v-select required v-model="subFormData.editions[0]" :items="editions" label="Texture Edition"></v-select>
-              <h2 class="title">Paths</h2>
-              <p v-if="add" align="center" style="color: red">⚠️<br><strong>Use needs to be created before adding paths to it (currently not well supported & kinda buggy), adding path before creating the use is planned.</strong></p>
+              <v-text-field v-model="subFormData.textureUseName" :label="$root.lang().database.labels.use_name"></v-text-field>
+              <v-text-field v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
+              <v-text-field v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
+              <v-select required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
+              <h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
+              <p v-if="add" align="center" style="color: red">⚠️<br><strong>{{ $root.lang().database.hints.warning_path }}</strong></p>
               <v-list v-if="Object.keys(subFormData.paths).length && add == false" label="Texture Paths">
                 <v-row>
                   <v-list-item
@@ -59,9 +59,9 @@ export default {
                   </v-list-item>
                 </v-row>
               </v-list>
-              <div v-else><template v-if="add == false">No paths found for this texture.</template></div>
+              <div v-else><template v-if="add == false">{{ $root.lang().database.labels.no_path_found }}</template></div>
 
-              <v-btn block :disabled="add" :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubPathDialog()">Add new Path <v-icon right dark>mdi-plus</v-icon></v-btn>
+              <v-btn block :disabled="add" :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubPathDialog()">{{ $root.lang().database.labels.add_new_path }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
             </v-form>
           </v-col>
@@ -74,14 +74,14 @@ export default {
           text
           @click="disableSubDialog"
         >
-          Cancel
+          {{ $root.lang().global.btn.cancel }}
         </v-btn>
         <v-btn
           color="darken-1"
           text
           @click="send"
         >
-          Save
+          {{ $root.lang().global.btn.save }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -107,7 +107,7 @@ export default {
     editions: {
       type: Array,
       required: false,
-      default: function () { return [ 'java', 'bedrock', 'dungeons' ] }
+      default: function () { return ['java', 'bedrock', 'dungeons'] }
     },
     textureID: {
       type: String,
@@ -118,7 +118,7 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       subFormData: {
         editions: [],
@@ -137,7 +137,7 @@ export default {
   },
   computed: {
     subDialogTitle: function () {
-      return `${this.add ? 'Add a new' : 'Edit'} use`
+      return this.add ? this.$root.lang().database.titles.add_use : this.$root.lang().database.titles.change_use
     }
   },
   methods: {
@@ -150,28 +150,29 @@ export default {
       this.getPaths(this.subFormData.id)
       this.$forceUpdate()
     },
-    closeAndUpdate: function() {
+    closeAndUpdate: function () {
       this.remove.confirm = false
       this.getPaths(this.subFormData.id)
       this.$forceUpdate()
     },
     send: function () {
-      let newData = JSON.parse(JSON.stringify(this.subFormData))
-      
+      const newData = JSON.parse(JSON.stringify(this.subFormData))
+      newData.token = this.$root.user.access_token
+
       if (this.add) {
         newData.id = this.textureID + SUFFIX[this.usesLength]
         newData.textureID = parseInt(this.textureID, 10)
       }
 
       axios.post(`/uses/${this.add ? 'add' : 'change'}`, newData)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableSubDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableSubDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     },
     getPaths: function (useID) {
       axios.get('/paths/search', {
@@ -179,19 +180,19 @@ export default {
           useID: useID
         }
       })
-      .then((res) => {
-        const temp = res.data
-        this.subFormData.paths = {}
+        .then((res) => {
+          const temp = res.data
+          this.subFormData.paths = {}
 
-        for (let i = 0; i < temp.length; i++) {
-          this.subFormData.paths[temp[i].id] = temp[i]
-        }
-      })
-      .catch(function (err) {
-        console.error(err)
-      })
+          for (let i = 0; i < temp.length; i++) {
+            this.subFormData.paths[temp[i].id] = temp[i]
+          }
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
     },
-    askRemovePath: function(data) {
+    askRemovePath: function (data) {
       this.remove.data = data
       this.remove.confirm = true
     }
@@ -205,12 +206,10 @@ export default {
           this.subFormData.textureUseName = this.data.textureUseName
           this.subFormData.textureID = this.data.textureID
           this.getPaths(this.data.id)
-        } 
-        else {
+        } else {
           this.$refs.form.reset()
           this.subFormData.paths = {}
         }
-
       })
     }
   }

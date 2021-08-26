@@ -3,21 +3,21 @@ const ContributorModal = () => import('./modal.js')
 const ContributorRemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
-	name: 'contributor-page',
+  name: 'contributor-page',
   components: {
     ContributorModal,
     ContributorRemoveConfirm
   },
-	template: `
+  template: `
     <v-container>
       <contributor-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></contributor-modal>
       <div class="text-h4 py-4">
-        Contributors
+        {{ $root.lang().database.titles.contributors }}
       </div>
       <div>
-        <div class="my-2 text-h5">Select contributor type</div>
+        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_contributor_type }}</div>
         <div><v-btn v-for="t in contributorTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="contributorURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
-        <div class="my-2 text-h5">Search</div>
+        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
         <div class="my-2">
           <v-text-field
             v-model="search"
@@ -25,7 +25,7 @@ export default {
             filled
             clear-icon="mdi-close"
             clearable
-            placeholder="Search username"
+            :placeholder="$root.lang().database.labels.search_username"
             type="text"
             v-on:keyup.enter="startSearch"
             @click:append-outer="startSearch"
@@ -33,10 +33,10 @@ export default {
           ></v-text-field>
         </div>
 
-        <v-btn block @click="openDialog()">Add new Contributor <v-icon right dark>mdi-plus</v-icon></v-btn>
+        <v-btn block @click="openDialog()">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
-        <div class="my-2 text-h5">Contributor results</div>
-        <v-list v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
+        <div class="my-2 text-h5">{{ $root.lang().database.labels.contributors_results }}</div>
+        <v-list rounded v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
           <v-row><v-col :cols="12/listColumns" xs="1"
               v-for="(contrib_arr, index) in splittedContributors"
               :key="index"
@@ -76,13 +76,13 @@ export default {
             </v-list-item>
           </v-col></v-row>
         </v-list>
-        <div v-else><i>No results found.</i></div>
+        <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
         </div>
       </div>
       <contributor-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></contributor-remove-confirm>
     </v-container>`,
-	data() {
-		return {
+  data () {
+    return {
       recompute: false,
       types: [],
       search: '',
@@ -100,132 +100,132 @@ export default {
         confirm: false,
         data: {}
       }
-		}
-	},
+    }
+  },
   methods: {
-    contributorURL(t) {
-      return "/contributors/" + t  + '/' + (this.name || '')
+    contributorURL (t) {
+      return '/contributors/' + t + '/' + (this.name || '')
     },
-    send() {
+    send () {
       const data = JSON.parse(JSON.stringify(this.formData))
-      
+      data.token = this.$root.user.access_token
+
       axios.post('/contributor', data)
-      .then(function (response) {
-        console.log(response);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
+        .then(function (response) {
+          console.log(response)
+        })
+        .catch(function (error) {
+          console.log(error)
+        })
     },
-    startSearch: function() {
+    startSearch: function () {
       // ok so url is /whatever/ => /whatever/<search>
       // ok so url is /whatever/<oldSearch> => /whatever/<search>
       // ok so url is /whatever/<type> =>/whatever/<type>/<search>
       // ok so url is /whatever/<type>/<name> => /whatever/<type>/<search>
       let newPath
-      if(this.name) {
-        var splitted = this.$route.path.split('/')
+      if (this.name) {
+        const splitted = this.$route.path.split('/')
         splitted.pop()
         newPath = splitted.join('/')
       } else {
         newPath = this.$route.path
       }
 
-      if(!newPath.endsWith('/'))
-        newPath += '/'
+      if (!newPath.endsWith('/')) { newPath += '/' }
 
       newPath += this.search
 
-      if(newPath === this.$route.path) {
+      if (newPath === this.$route.path) {
         console.warn(newPath)
       } else {
         this.$router.push(newPath)
       }
     },
-    getTypes: function() {
+    getTypes: function () {
       axios.get('/contributors/types')
-      .then((response) => {
-        this.types = response.data
-      })
-      .catch(function (error) {
-        console.error(error)
-      })
-      .finally(() => {
-        Vue.nextTick(() => {
-          this.search = this.name
+        .then((response) => {
+          this.types = response.data
         })
-      })
+        .catch(function (error) {
+          console.error(error)
+        })
+        .finally(() => {
+          Vue.nextTick(() => {
+            this.search = this.name
+          })
+        })
     },
-    getContributors: function() {
+    getContributors: function () {
       axios.get(this.$route.path)
-      .then((response) => {
-        this.contributors = response.data
-      })
-      .catch(function (error) {
-        console.error(error)
-      })
+        .then((response) => {
+          this.contributors = response.data
+        })
+        .catch(function (error) {
+          console.error(error)
+        })
     },
-    update: function() {
+    update: function () {
       this.getTypes()
       this.getContributors()
     },
-    clearSearch: function() {
+    clearSearch: function () {
       this.search = ''
       this.startSearch()
     },
-    openDialog: function(data = {}) {
+    openDialog: function (data = {}) {
       this.dialogOpen = true
       this.dialogData = data
     },
-    disableDialog: function(refresh = false) {
+    disableDialog: function (refresh = false) {
       this.dialogOpen = false
 
-      if(refresh) {
+      if (refresh) {
         this.getTypes()
         this.getContributors()
       }
     },
-    askRemove: function(data) {
+    askRemove: function (data) {
       this.remove.data = data
       this.remove.confirm = true
     }
   },
   computed: {
-    contributorTypes: function() {
+    contributorTypes: function () {
       return ['all', ...this.types]
     },
-    type: function() {
-      if(this.$route.params.type && this.contributorTypes.includes(this.$route.params.type)) {
+    type: function () {
+      if (this.$route.params.type && this.contributorTypes.includes(this.$route.params.type)) {
         return this.$route.params.type
       }
       return undefined
     },
-    name: function() {
-      if(this.type !== undefined) {
+    name: function () {
+      if (this.type !== undefined) {
         return this.$route.params.name
       }
 
       return this.$route.params.type
     },
-    listColumns: function() {
+    listColumns: function () {
       let columns = 1
 
-      if(this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
+      if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
         columns = 2
-        if(this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
+        if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
           columns = 3
         }
       }
 
       return columns
     },
-    splittedContributors: function() {
-      let res = []
-      for(let col = 0; col < this.listColumns; ++col) {
+    splittedContributors: function () {
+      const res = []
+      for (let col = 0; col < this.listColumns; ++col) {
         res.push([])
       }
 
-      let arrayIndex = 0;
+      let arrayIndex = 0
       this.contributors.forEach(contrib => {
         res[arrayIndex].push(contrib)
         arrayIndex = (arrayIndex + 1) % this.listColumns
@@ -235,11 +235,11 @@ export default {
     }
   },
   watch: {
-    $route() {
+    $route () {
       this.getContributors()
     }
   },
-  mounted: function() {
+  mounted: function () {
     this.update()
   }
 }

@@ -1,4 +1,4 @@
-/* global axios, Vue */
+/* global axios */
 
 export default {
   name: 'version-modal',
@@ -10,22 +10,22 @@ export default {
   >
 
   <v-card>
-    <v-card-title class="headline">Modify a Minecraft Version</v-card-title>
+    <v-card-title class="headline">{{ $root.lang().database.titles.change_mc_version }}</v-card-title>
     <v-card-text>
       <v-row>
         <v-col class="col-12" sm="12">
           <p align="justify">
-            Hm, the whole database is setup to upload texture to the 1.17 branch but there is now a 1.17.1 available, this options is made for you!
+            {{ $root.lang().database.hints.example_scenario }}
             <br><br>
-            <strong style="color: red">Please don't forget to also update all GitHub branches!</strong>
+            <strong style="color: red">{{ $root.lang().database.hints.example_scenario_warn }}</strong>
           </p>
         </v-col>
       </v-row>
       <v-row>
         <v-col class="col-12" sm="12">
           <v-form ref="form">
-            <v-text-field required v-model="form.actual" label="Actual MC Version"></v-text-field>
-            <v-text-field required v-model="form.new" label="New MC Version"></v-text-field>
+            <v-text-field required v-model="form.actual" :label="$root.lang().database.labels.actual_mc_version"></v-text-field>
+            <v-text-field required v-model="form.new" :label="$root.lang().database.labels.new_mc_version"></v-text-field>
           </v-form>
         </v-col>
       </v-row>
@@ -37,13 +37,13 @@ export default {
           text
           @click="disableMCDialog"
         >
-          Cancel
+          {{ $root.lang().global.btn.cancel }}
         </v-btn>
         <v-btn
           color="error darken-1"
           @click="send"
         >
-          Save
+          {{ $root.lang().global.btn.save }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -69,16 +69,17 @@ export default {
   methods: {
     send: function () {
       const data = JSON.parse(JSON.stringify(this.form))
+      data.token = this.$root.user.access_token
 
-      axios.post(`/paths/version-update/`, data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableMCDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+      axios.post('/paths/version-update/', data)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableMCDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     }
   }
 }

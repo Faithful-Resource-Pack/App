@@ -24,12 +24,12 @@ export default {
           <v-row>
             <v-col class="col-12" sm="12">
               <v-form ref="form">
-                <v-text-field hint="⚠️ Changing the ID can break everything" required :readonly="add == false" v-model="formData.id" label="Texture ID"></v-text-field>
-                <v-text-field required clearable v-model="formData.name" label="Texture Name"></v-text-field>
-                <v-select required multiple v-model="formData.type" :items="types" label="Texture Types"></v-select>
+                <v-text-field :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
+                <v-text-field required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
+                <v-select required multiple small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
-                <h2 class="title" >Uses</h2>
-                <v-list v-if="Object.keys(formData.uses).length" label="Texture Uses">
+                <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
+                <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
                   <v-row>
                   <v-list-item
                     v-for="(use, index) in formData.uses"
@@ -40,7 +40,7 @@ export default {
                     <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ index }}</v-list-item-avatar>
                     <v-list-item-title>
                       <v-list-item :style="{ 'display': 'contents' }" v-if="use.textureUseName">{{ use.textureUseName}}</v-list-item>
-                      <v-list-item :style="{ 'display': 'contents' }" v-else><i>Nameless</i></v-list-item>
+                      <v-list-item :style="{ 'display': 'contents' }" v-else><i>{{ $root.lang().database.labels.nameless }}</i></v-list-item>
                       <v-list-item-subtitle v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
                     </v-list-item-title>
                   </v-list-item-content>
@@ -59,9 +59,9 @@ export default {
                   </v-list-item>
                   </v-row>
                 </v-list>
-                <div v-else>No uses found for this texture.</div>
+                <div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-                <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">Add new Use <v-icon right dark>mdi-plus</v-icon></v-btn>
+                <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right dark>mdi-plus</v-icon></v-btn>
               </v-form>
             </v-col>
           </v-row>
@@ -73,14 +73,14 @@ export default {
             text
             @click="disableDialog"
           >
-            Cancel
+            {{ $root.lang().global.btn.cancel }}
           </v-btn>
           <v-btn
             color="darken-1"
             text
             @click="send"
           >
-            Save
+            {{ $root.lang().global.btn.save }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -127,8 +127,8 @@ export default {
     }
   },
   computed: {
-    dialogTitle: function() {
-      return `${this.add ? 'Add a new' : 'Edit'} texture`
+    dialogTitle: function () {
+      return this.add ? this.$root.lang().database.titles.add_texture : this.$root.lang().database.titles.change_texture
     }
   },
   methods: {
@@ -146,18 +146,20 @@ export default {
       this.getUses(this.formData.id)
       this.$forceUpdate()
     },
-    send: function() {
+    send: function () {
+      if (!this.$root.isUserLogged) return
       const data = JSON.parse(JSON.stringify(this.formData))
+      data.token = this.$root.user.access_token
 
-      axios.post(`/textures/${this.add ? 'add' : 'change' }`, data)
-      .then(() => {
-        this.$root.showSnackBar('Ended successfully', 'success')
-        this.disableDialog(true)
-      })
-      .catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-      })
+      axios.post(`/textures/${this.add ? 'add' : 'change'}`, data)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        })
     },
     getUses: function (textureID) {
       axios.get('/uses/search', {
@@ -165,17 +167,17 @@ export default {
           textureID: textureID
         }
       })
-      .then((res) => {
-        const temp = res.data
-        this.formData.uses = {}
+        .then((res) => {
+          const temp = res.data
+          this.formData.uses = {}
 
-        for (let i = 0; i < temp.length; i++) {
-          this.formData.uses[temp[i].id] = temp[i]
-        }
-      })
-      .catch(function (err) {
-        console.error(err)
-      })
+          for (let i = 0; i < temp.length; i++) {
+            this.formData.uses[temp[i].id] = temp[i]
+          }
+        })
+        .catch(function (err) {
+          console.error(err)
+        })
     },
     askRemoveUse: function (data) {
       this.remove.data = data
@@ -183,8 +185,8 @@ export default {
     }
   },
   watch: {
-    dialog: function(newValue, oldValue) {
-      if (oldValue != newValue && newValue == true) {
+    dialog: function (newValue, oldValue) {
+      if (oldValue !== newValue && newValue === true) {
         Vue.nextTick(() => {
           if (this.add) this.$refs.form.reset()
 
@@ -194,7 +196,6 @@ export default {
             this.formData.id = this.data.id
             this.getUses(this.data.id)
           }
-          
         })
       }
     }

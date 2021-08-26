@@ -1,7 +1,7 @@
 /* global axios */
 
 export default {
-  name: 'contributor-remove-confirm',
+  name: 'addon-remove-confirm',
   template: `
   <v-dialog
       v-model="confirm"
@@ -9,10 +9,11 @@ export default {
       max-width="600"
     >
       <v-card>
-        <v-card-title class="headline">{{ $root.lang().database.titles.confirm_deletion }}</v-card-title>
+        <v-card-title class="headline">Confirm deletion</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>{{ $root.lang().database.labels.ask_deletion.replace('%s', data.username).replace('%d', data.id) }}</p>
+            <p>Do you want to delete <strong>{{ data.title }}?</strong></p>
+            <p color="red">You can't undo this operation</p>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -22,13 +23,13 @@ export default {
             text
             @click="disableDialog"
           >
-            {{ $root.lang().global.btn.cancel }}
+            Cancel
           </v-btn>
           <v-btn
             color="error darken-1"
-            @click="deleteContributor"
+            @click="deleteAddon"
           >
-            {{ $root.lang().global.btn.yes }}
+            Yes
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -48,27 +49,16 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      formData: {
-      }
-    }
-  },
   computed: {
-    username: function () {
-      return this.$props.data.username
-    },
-    id: function () {
-      return this.$props.data.id
+    title: function () {
+      return this.$props.data.title
     }
   },
   methods: {
-    deleteContributor: function () {
-      const data = JSON.parse(JSON.stringify(this.formData))
-      data.id = this.id
-      data.token = this.$root.user.access_token
+    deleteAddon: function () {
+      const data = JSON.parse(JSON.stringify(this.$props.data))
 
-      axios.post('/contributors/remove', data)
+      axios.post('/addons/remove', data)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)
