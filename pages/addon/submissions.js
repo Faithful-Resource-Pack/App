@@ -19,7 +19,6 @@ export default {
       />
     </div>
 
-
     <div class="my-2 text-h5">
       <v-row>
         <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-if="Object.keys(addons).length != 0" v-for="(addon, index) in addons" :key="index">
