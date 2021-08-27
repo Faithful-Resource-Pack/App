@@ -9,11 +9,11 @@ export default {
       max-width="600"
     >
       <v-card>
-        <v-card-title class="headline">Confirm deletion</v-card-title>
+        <v-card-title class="headline">{{ $root.lang().addons.remove.title }}</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>Do you want to delete <strong>{{ data.title }}?</strong></p>
-            <p color="red">You can't undo this operation</p>
+            <p>{{ $root.lang().addons.remove.labels.question.replace("%s", data.title) }}</p>
+            <p style="color: red">{{ $root.lang().addons.remove.labels.warning }}</p>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -23,13 +23,13 @@ export default {
             text
             @click="disableDialog"
           >
-            Cancel
+            {{ $root.lang().global.btn.cancel }}
           </v-btn>
           <v-btn
             color="error darken-1"
             @click="deleteAddon"
           >
-            Yes
+            {{ $root.lang().global.btn.yes }}
           </v-btn>
         </v-card-actions>
       </v-card>

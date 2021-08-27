@@ -19,7 +19,7 @@ export default {
       edit: 'Edit',
       delete: 'Delete',
       ok: 'OK',
-      yes: 'yes',
+      yes: 'Yes',
       deny: 'Deny',
       approve: 'Approve',
       load_more: 'Load More'
@@ -184,6 +184,13 @@ export default {
     titles: {
       submit: 'Submit a new Add-on',
       submissions: 'Submissions'
+    },
+    remove: {
+      title: 'Confirm deletion',
+      labels: {
+        question: 'Do you want to delete %s?',
+        warning: 'You can\'t undo this operation.'
+      }
     },
     general: {
       title: 'General',

@@ -454,7 +454,7 @@ export default {
 
         image.onload = function () {
           // 'this' refer to the image and 'that' to Vue
-          if ((this.width / this.height).toFixed(2) === 1.78) {
+          if ((this.width / this.height).toFixed(2) == 1.78) {
             that.form.images.header = e.target.result
             that.$forceUpdate()
           } else {
@@ -480,7 +480,7 @@ export default {
 
           image.onload = function () {
             // 'this' refer to the image and 'that' to Vue
-            if ((this.width / this.height).toFixed(2) === 1.78) {
+            if ((this.width / this.height).toFixed(2) == 1.78) {
               that.form.images.carousel.push(e.target.result)
               that.$forceUpdate()
             } else {

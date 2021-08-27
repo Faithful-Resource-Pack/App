@@ -21,7 +21,7 @@ export default {
       edit: 'Editer',
       delete: 'Supprimer',
       ok: 'OK',
-      yes: 'oui',
+      yes: 'Oui',
       deny: 'Refuser',
       approve: 'Approuver',
       load_more: 'Charger plus'
@@ -186,6 +186,13 @@ export default {
     titles: {
       submit: 'Soumettre un nouveau Add-on',
       submissions: 'Soumissions'
+    },
+    remove: {
+      title: 'Confirmer la suppression',
+      labels: {
+        question: 'Voulez-vous vraiment supprimer %s?',
+        warning: 'Vous ne pouvez pas revenir en arrière après cela.'
+      }
     },
     general: {
       title: 'Général',

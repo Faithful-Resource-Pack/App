@@ -32,7 +32,7 @@ export default {
             />
             <v-card-title v-text="addon.title" />
             <v-card-subtitle v-text="addon.type.join(', ')" />
-            <v-card-text style="height: 60px;">
+            <v-card-text style="height: 60px">
               <v-badge
                 dot
                 inline
@@ -49,6 +49,7 @@ export default {
               >
                 <v-icon small>mdi-open-in-new</v-icon>
               </v-btn>
+              <template v-if="addon.status == 'denied'">: {{ addon.approval?.reason }}</template>
             </v-card-text>
 
             <v-card-actions style="justify-content: flex-end;">
