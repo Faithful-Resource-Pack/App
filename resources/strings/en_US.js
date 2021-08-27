@@ -5,9 +5,9 @@
 export default {
   global: {
     name: 'Compliance Web Application',
-    logout: 'Logout',
-    login: 'Login via Discord',
-    ends_success: 'Ended successfully',
+    logout: 'Log Out',
+    login: 'Log in via Discord',
+    ends_success: 'Completed successfully',
     loading: 'Loading, please wait...',
     no_results: 'No results were found.',
     btn: {
@@ -33,7 +33,7 @@ export default {
         }
       },
       addons: {
-        title: 'add-on',
+        title: 'add-ons',
         subtabs: {
           submissions: 'submissions',
           upload: 'upload'
@@ -47,7 +47,7 @@ export default {
         }
       },
       review: {
-        title: 'review',
+        title: 'reviews',
         subtabs: {
           addons: 'add-ons',
           translations: 'translations'
@@ -91,24 +91,24 @@ export default {
       search: 'Search',
       texture_result: 'Texture results',
       import_json_data: 'Import JSON data',
-      uses: 'Use(s)',
+      uses: 'Usage(s)',
       paths: 'Path(s)'
     },
     labels: {
-      new_mc_version_edition: 'Edition to add version to',
-      new_mc_version_path: 'Path version to add version to',
+      new_mc_version_edition: 'Edition to add the version to',
+      new_mc_version_path: 'Path version to add the version to',
       new_mc_version_name: 'New version name',
       nameless: 'Nameless',
       add_textures_success: 'Added textures successfully',
       add_version_success: 'Added version successfully',
-      add_new_contributor: 'Add new Contributor',
+      add_new_contributor: 'Add new contributor',
       add_new_texture: 'Add new texture',
       add_new_path: 'Add new path',
       add_new_use: 'Add new use',
       add_texture: 'Add textures',
       add_mc_version: 'Add new Minecraft Version',
       ask_deletion: 'Do you want to delete %s (%d)?',
-      contributors_results: 'Contributors results',
+      contributors_results: 'Contributor results',
       contributor_type: 'Contributor type',
       discord_id: 'Discord ID',
       edit_mc_version: 'Modify a Minecraft Version',
@@ -132,23 +132,23 @@ export default {
       versions: 'Versions',
       no_path_found: 'No paths found for this use.',
       no_use_found: 'No uses found for this texture.',
-      actual_mc_version: 'Actual MC Version',
+      actual_mc_version: 'Current MC Version',
       new_mc_version: 'New MC Version'
     },
     hints: {
       texture_id: 'Changing the Texture ID can break everything',
       use_id: 'Changing the Use ID can break everything',
       path_id: 'Changing the Path ID can break everything',
-      warning_path: 'Use needs to be created before adding paths to it (currently not well supported & kinda buggy), adding path before creating the use is planned.',
+      warning_path: 'Use needs to be created before adding paths to it (currently not well supported and a bit buggy), adding path before creating the use is planned.',
       path: 'The path should start from the root directory (ex: assets/...)',
-      example_scenario: 'Hm, the whole database is setup to upload texture to the 1.17 branch but there is now a 1.17.1 available, this options is made for you!',
-      example_scenario_warn: 'Please don\'t forget to also update all GitHub branches!'
+      example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
+      example_scenario_warn: 'Please don\'t forget to update all GitHub branch names as well!'
     }
   },
   review: {
     titles: {
       addons: 'Review Add-ons',
-      translation: 'Review Translations(Soon)',
+      translation: 'Review Translations (Soon)',
       pending: 'Pending Approval',
       denied: 'Denied',
       approved: 'Approved'
@@ -158,9 +158,9 @@ export default {
       rule: 'Any reason can be given'
     },
     labels: {
-      pending: 'There is currently no Pending add-ons!',
-      denied: 'There is currently no Denied add-ons!',
-      load_approved: 'Load Approved Add-ons'
+      pending: 'There are currently no pending add-ons!',
+      denied: 'There are currently no denied add-ons!',
+      load_approved: 'Load approved Add-ons'
     },
     addon: {
       titles: {
@@ -176,7 +176,7 @@ export default {
         approved_by: 'Approved by',
         denied_by: 'Denied by',
         reason: 'Reason',
-        old_addon: 'Old Add-on, no data about it.'
+        old_addon: 'Old Add-on, no data present for it.'
       }
     }
   },
@@ -196,7 +196,7 @@ export default {
       title: 'General',
       addon_title: {
         label: 'Add-on title',
-        hint: 'The title can\'t be changed after the submission!',
+        hint: 'The title can\'t be changed after submission!',
         rules: {
           title_required: 'A title is required.',
           title_too_big: 'Title must be less than %s characters.',
@@ -205,15 +205,15 @@ export default {
       },
       description: {
         label: 'Add-on description',
-        hint: 'You can use Markdown balises to improve your description!',
+        hint: 'You can use Markdown formatting to improve your description!',
         rules: {
           description_required: 'The description is required.',
           description_too_big: 'Description must be less than %s characters.'
         }
       },
       authors: {
-        label: 'Select authors for that add-on',
-        hint: 'Any authors can modify the Add-on once it is submitted | If you don\'t find someone in the list, contact an Administrator/Developer'
+        label: 'Select authors for the add-on',
+        hint: 'Any author can modify the Add-on once it is submitted! | If you can\'t find anybody in the list who\'s supposed to be there, contact an Administrator/Developer'
       }
     },
     images: {
@@ -225,7 +225,7 @@ export default {
         },
         rules: {
           image_size: 'Image should be less than %s KB!',
-          image_ratio: 'Wrong Ratio: The provided image doesn\'t have a 16:9 ratio.',
+          image_ratio: 'Wrong Ratio: The provided image doesn\'t have a 16:9 side ratio.',
           image_required: 'A header image is required.'
         }
       },
@@ -234,7 +234,7 @@ export default {
           normal: 'Additional image(s)',
           replace: 'Replace additional image(s)'
         },
-        rule: 'Wrong Ratio: Image(s) with non 16:9 ratio have been removed.'
+        rule: 'Wrong Ratio: Image(s) without a 16:9 side ratio have been removed.'
       }
     },
     options: {
@@ -277,7 +277,7 @@ export default {
     }
   },
   statistics: {
-    title: 'Contributions Statistics',
+    title: 'Contribution Statistics',
     label: {
       textures: 'Textures',
       contributores: 'Contributors',
@@ -290,11 +290,11 @@ export default {
       title: 'General',
       uuid: {
         label: 'Minecraft profile UUID',
-        hint: 'Your skin will be displayed on your pages.'
+        hint: 'Your skin will be displayed on submissions you authored.'
       },
       username: {
         label: 'Username',
-        hint: 'Your username will be displayed and used on the Website for contributions, add-ons and more...'
+        hint: 'Your username will be displayed and used on the Website for contributions, add-ons etc.'
       }
     },
     social: {
