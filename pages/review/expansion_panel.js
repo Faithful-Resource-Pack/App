@@ -1,8 +1,20 @@
+const AddonEditModal = () => import('./addon_modal_edit.js')
+
 export default {
   name: 'exp-panel',
+  components: {
+    AddonEditModal
+  },
   template:
   `
   <v-container>
+    <addon-edit-modal
+      :dialog="dialogOpen"
+      :disableDialog="closeDialog"
+      :data="dialogAddon"
+      :contributors="contributors"
+    ></addon-edit-modal>
+
     <v-expansion-panel
       v-for="(addon, index) in addons"
       :key="index"
@@ -116,6 +128,13 @@ export default {
             >
               {{ $root.lang().global.btn.deny }}
             </v-btn>
+            <v-btn
+              text
+              color="yellow"
+              @click="openDialog(addon)"
+            >
+              {{ $root.lang().global.btn.edit }}
+            </v-btn>
           </v-col>
         </v-row>
 
@@ -139,9 +158,28 @@ export default {
     contributors: {
       type: Array,
       required: true
+    },
+    update: {
+      type: Function,
+      required: true
+    }
+  },
+  data () {
+    return {
+      dialogAddon: {},
+      dialogOpen: false
     }
   },
   methods: {
+    openDialog: function (addon) {
+      this.dialogAddon = addon
+      this.dialogOpen = true
+    },
+    closeDialog: function () {
+      this.dialogOpen = false
+      this.dialogAddon = {}
+      this.update()
+    },
     getUsername: function (id) {
       if (id == null || !id) return this.$root.lang().review.addon.labels.old_addon
 

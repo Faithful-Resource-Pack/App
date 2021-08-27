@@ -504,7 +504,7 @@ export default {
       return !!pattern.test(str)
     },
     getAuthors: function () {
-      axios.get('/contributions/authors/')
+      axios.get('/contributors/all/')
         .then(res => {
           this.contributors = res.data
           this.$forceUpdate()

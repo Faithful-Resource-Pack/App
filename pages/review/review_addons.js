@@ -28,6 +28,7 @@ export default {
         :addons="pendingAddons"
         :approveAddon="approveAddon"
         :denyAddon="openDenyPopup"
+        :update="update"
       />
     </v-expansion-panels>
     <template v-else-if="pendingLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
@@ -41,6 +42,7 @@ export default {
         :addons="deniedAddons"
         :approveAddon="approveAddon"
         :denyAddon="openDenyPopup"
+        :update="update"
       />
     </v-expansion-panels>
     <template v-else-if="deniedLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
@@ -54,6 +56,7 @@ export default {
         :addons="approvedAddons"
         :approveAddon="approveAddon"
         :denyAddon="openDenyPopup"
+        :update="update"
       />
     </v-expansion-panels>
     <template v-else-if="approvedLoading"><v-container>{{ $root.lang().global.loading }}</v-container></template>
@@ -92,7 +95,7 @@ export default {
       axios.post('/review/addons/approve', data)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.$forceUpdate()
+          this.update()
         })
         .catch(err => {
           console.error(err)
@@ -111,10 +114,15 @@ export default {
         id: this.deniedAddon.id
       }
 
+      // if the addon was approved -> denied
+      let updateApproved = false
+      if (this.deniedAddon.status == 'approved') updateApproved = true
+
       axios.post('/review/addons/deny', data)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.$forceUpdate()
+          this.update()
+          if (updateApproved) this.getApprovedAddons()
         })
         .catch(err => {
           console.error(err)
@@ -188,17 +196,19 @@ export default {
       axios.get('/contributors/all/')
         .then(res => {
           this.contributors = res.data
-
-          this.getPendingAddons()
-          this.getDeniedAddons()
         })
         .catch(err => {
           console.error(err)
           this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
         })
+    },
+    update: function() {
+      this.getContributors()
+      this.getPendingAddons()
+      this.getDeniedAddons()
     }
   },
   mounted () {
-    this.getContributors()
+    this.update()
   }
 }

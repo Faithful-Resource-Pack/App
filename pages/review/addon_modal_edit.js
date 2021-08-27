@@ -47,7 +47,7 @@ export default {
                       :input-value="data.selected"
                       :disabled="data.disabled"
                       close
-                      @click:close="remove(data.item.id)"
+                      @click:close="removeAuthor(data.item.id)"
                     >
                       <v-avatar
                         :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
@@ -295,6 +295,10 @@ export default {
       type: Array,
       required: false,
       default: function () { return ['32x', '64x'] }
+    },
+    contributors: {
+      type: Array,
+      required: true
     }
   },
   data () {
@@ -312,7 +316,6 @@ export default {
         type: [],
         downloads: {}
       },
-      contributors: {},
       header_img: undefined,
       carousel_img: [],
       descriptionMaxLength: 4096,
@@ -350,16 +353,6 @@ export default {
     }
   },
   methods: {
-    getAuthors: function () {
-      axios.get('/contributors/all/')
-        .then(res => {
-          this.contributors = res.data
-          this.$forceUpdate()
-        })
-        .catch(err => {
-          console.trace(err)
-        })
-    },
     send: function () {
       if (!this.$root.isUserLogged) return
 
@@ -391,11 +384,14 @@ export default {
 
       return !(
         this.addon.description !== '' && this.addon.description.length <= this.descriptionMaxLength &&
-        this.addon.authors.length !== 0 && this.addon.authors.includes(this.$root.user.id) &&
+        this.addon.authors.length !== 0 &&
         this.addon.images.header !== '' &&
         this.addon.type.length > 1 &&
         Object.keys(this.addon.downloads).length !== 0 && downloadsAreValid
       )
+    },
+    removeAuthor: function (authorID) {
+      this.addon.authors = this.addon.authors.filter(id => id != authorID)
     },
     addNewDownload: function () {
       this.downloads.push({ key: '', links: [''] })
@@ -492,9 +488,6 @@ export default {
         '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
       return !!pattern.test(str)
     }
-  },
-  mounted: function () {
-    this.getAuthors()
   },
   watch: {
     dialog: function (newValue, oldValue) {
