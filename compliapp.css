@@ -3,6 +3,18 @@
   src: url("./Compliance.ttf") format("truetype");
 }
 
+/* Keep background from #app when the page is loading */
+html {
+  background: #120E19 url(https://compliancepack.net/image/background/the_end.jpg) no-repeat center;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+/* Used to hide the content when the page is loading */
+v-app {
+  display: none;
+}
+
 a { text-decoration: none; }
 
 .noselect, .noselect * {
