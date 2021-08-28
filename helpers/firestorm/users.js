@@ -12,7 +12,6 @@ require('./firestorm_config')()
  * @property {Object} muted Object if user muted on server
  * @property {Number?} muted.start timestamp of the beginning of mute
  * @property {Number?} muted.end timestamp of the end of mute
- * @property {Number} timeout Number if user muted on server
  * @property {String[]} warns List of all reasons warns
  * @property {Function} contributions Gets all contributions of the user
  */

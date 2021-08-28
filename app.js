@@ -45,7 +45,11 @@ app.use('/api/discord', require('./api/discord'))
  * @returns {Promise<void>} Resolves if authed correctly
  */
 const verifyAuth = function (token, roles = []) {
-  if (!token) return Promise.reject(new Error('No Discord Access Token given'))
+  if (!token) {
+    const err = new Error('No Discord Access Token given')
+    err.code = 499
+    return Promise.reject(err)
+  }
 
   roles.push('Developer') // add dev perms for testing purpose
 
@@ -61,7 +65,6 @@ const verifyAuth = function (token, roles = []) {
       return contributorsBackend.getUser(userID)
     })
     .then(user => {
-      user = user[0]
       let i = 0
       while (roles.length >= i) {
         if (user.type.includes(roles[i])) return Promise.resolve()
@@ -243,6 +246,8 @@ app.post('/profile/get', function (req, res) {
     res.end()
   }
 
+  let userID
+
   fetch('https://discord.com/api/users/@me', {
     headers: {
       authorization: `Bearer ${req.body.access_token}`
@@ -250,7 +255,8 @@ app.post('/profile/get', function (req, res) {
   })
     .then(response => response.json())
     .then(json => {
-      contributorsBackend.search([{ field: 'id', criteria: '==', value: json.id }])
+      userID = json.id
+      contributorsBackend.getUser(userID)
         .then(getSuccess(res))
         .catch(err => {
           res.status(500)
@@ -269,6 +275,8 @@ app.post('/profile/roles', function (req, res) {
     res.end()
   }
 
+  let userID
+
   fetch('https://discord.com/api/users/@me', {
     headers: {
       authorization: `Bearer ${req.body.access_token}`
@@ -276,15 +284,38 @@ app.post('/profile/roles', function (req, res) {
   })
     .then(response => response.json())
     .then(json => {
-      contributorsBackend.search([{ field: 'id', criteria: '==', value: json.id }])
+
+      userID = json.id
+      username = json.username
+      
+      contributorsBackend.getUser(userID)
         .then(contributor => {
           res.setHeader('Content-Type', 'application/json')
-          res.send(contributor[0].type)
+          res.send(contributor.type || [])
+          res.end()
         })
         .catch(err => {
-          res.status(500)
-          res.send(err)
-          res.end()
+
+          // if user not found -> does not exist -> add a new one to the db
+          contributorsBackend.add({
+            username: username,
+            type: [],
+            media: [],
+            id: userID
+          })
+          .then(() => {
+            contributorsBackend.getUser(userID)
+              .then(contributor => {
+                res.setHeader('Content-Type', 'application/json')
+                res.send(contributor.type || [])
+                res.end()
+              })
+          })
+          .catch(err => {
+            res.status(500)
+            res.send(err)
+            res.end()
+          })
         })
     })
 })

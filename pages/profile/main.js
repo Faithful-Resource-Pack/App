@@ -279,7 +279,7 @@ export default {
 
       axios.post('/profile/get', data)
         .then((res) => {
-          this.localUser = res.data[0]
+          this.localUser = res.data
         })
         .catch(err => {
           console.error(err)

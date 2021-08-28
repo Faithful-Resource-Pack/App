@@ -2,11 +2,11 @@ const firestorm_users = require('../helpers/firestorm/users')
 
 module.exports = {
   userTypes: function() {
-    return firestorm_users.read_raw()
-      .then((users_array) => {
+    return firestorm_users.select({ fields: [ "type" ] })
+      .then((users) => {
         // create array type
         let types = []
-        Object.values(users_array).forEach(user => {
+        Object.values(users).forEach(user => {
           types = [ ...types, ...(user.type || []) ]
         })
 
@@ -26,20 +26,16 @@ module.exports = {
    * @returns {Promise<import('../helpers/firestorm/users').User>}
    */
   getUser: function(id) {
-    return firestorm_users.search([{
-      field: "id",
-      criteria: "==",
-      value: id
-    }])
+    return firestorm_users.get(id)
   },
   change: function(body) {
     const element_id = body.id
 
     const obj = {}
-    const f_arr = ['username', 'type', 'uuid', 'media']
-    f_arr.forEach(field_kept => {
-      if(field_kept in body)
-        obj[field_kept] = body[field_kept]
+    const f_arr = ['username', 'type', 'uuid', 'media', 'warns', 'muted', 'id']
+    f_arr.forEach(fieldKept => {
+      if(fieldKept in body)
+        obj[fieldKept] = body[fieldKept]
     })
 
     /** @type {import('../helpers/firestorm').EditObject[]} */
@@ -55,15 +51,15 @@ module.exports = {
     return firestorm_users.editFieldBulk(edits)
   },
   add: function(body) {
-    const element_id = body.id
+    const userID = body.id
     const obj = {}
-    const f_arr = ['username', 'type', 'uuid']
-    f_arr.forEach(field_kept => {
-      if(field_kept in body)
-        obj[field_kept] = body[field_kept]
+    const fArr = ['username', 'type', 'uuid', 'media', 'warns', 'muted', 'id']
+    fArr.forEach(fieldKept => {
+      if(fieldKept in body)
+        obj[fieldKept] = body[fieldKept]
     })
 
-    return firestorm_users.set(element_id, obj)
+    return firestorm_users.set(userID, obj)
   },
   remove: function(user_id) {
     return firestorm_users.remove(user_id)

@@ -14,12 +14,15 @@ export default {
     <div class="text-h4 py-4">
       {{ $root.lang().addons.titles.submissions }}
       <v-progress-circular
-        v-if="Object.keys(addons).length == 0"
+        v-if="loading"
         indeterminate
       />
     </div>
 
-    <div class="my-2 text-h5">
+    <div v-if="loading == false && Object.keys(addons).length == 0">
+      {{ $root.lang().global.no_results }}
+    </div>
+    <div v-else class="my-2 text-h5">
       <v-row>
         <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-if="Object.keys(addons).length != 0" v-for="(addon, index) in addons" :key="index">
 
@@ -91,7 +94,8 @@ export default {
         data: {}
       },
       dialogAddon: {},
-      dialogOpen: false
+      dialogOpen: false,
+      loading: true
     }
   },
   methods: {
@@ -116,6 +120,7 @@ export default {
       })
         .then((res) => {
           this.addons = res.data
+          this.loading = false
           this.$forceUpdate()
         })
         .catch(function (err) {
