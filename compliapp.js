@@ -70,7 +70,7 @@ const v = new Vue({
         label: 'modding',
         subtabs: [
           { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod', routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
-          { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack', routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
+          { enabled: true, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack', routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
         ]
       },
       {

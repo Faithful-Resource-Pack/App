@@ -9,7 +9,7 @@ const port = process.env.PORT
 const app = express()
 const compliappURL = '/'
 
-const settings = require('./resources/settings.js')
+const settings = require('./resources/settings')
 
 const contributorsBackend = require('./backend/contributor')
 const contributionsBackend = require('./backend/contributions')
@@ -18,6 +18,7 @@ const texturesBackend = require('./backend/textures')
 const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
 const addonsBackend = require('./backend/addons')
+const modpacksBackend = require('./backend/modpacks')
 
 app.use(express.urlencoded({
   extended: true,
@@ -115,6 +116,19 @@ const getSuccess = function (res) {
     res.end()
   }
 }
+
+/**
+ * ==========================================
+ *                  MODDING
+ * ==========================================
+ */
+// GET
+app.get('/modding/modpacks/download', function (req, res) { 
+  const params = req.query
+  modpacksBackend.manifest(params.id, params.filename)
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
 
 /**
  * ==========================================

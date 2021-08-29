@@ -1,4 +1,3 @@
-const fsprom = require('fs/promises')
 const allCollection = require('../helpers/firestorm/all')
 const { join } = require('path')
 
@@ -30,51 +29,4 @@ module.exports = {
       }).catch(err => reject(err))
     })
   }
-      // fsprom.readFile(join(ROOT_CONTRIB, edition + '.json'))
-      // .then(val => {
-      //   val = JSON.parse(val)
-        
-      //   if(search) {
-      //     let tmp = []
-
-      //     val.forEach(contrib => {
-      //       const versionpaths = Object.values(contrib.version)
-      //       let add = false
-
-      //       // version
-      //       let i = 0
-      //       while(i < versionpaths.length && !add) {
-      //         if(versionpaths[i].includes(search)) {
-      //           add = true
-      //           console.log(contrib)
-      //           tmp.push(contrib)
-      //         }
-      //         ++i
-      //       }
-
-      //       if(add)
-      //         return
-
-      //       // author
-      //       const authors = [...Object.values(contrib.c32), ...Object.values(contrib.c64)]
-
-      //       i = 0
-      //       while(i < authors.length && !add) {
-      //         if(authors[i].includes(search)) {
-      //           add = true
-      //           console.log(contrib)
-      //           tmp.push(contrib)
-      //         }
-      //       }
-      //     })
-
-      //     console.log(tmp);
-
-      //     val = tmp
-      //   }
-
-      //   resolve(val)
-      // })
-      
-   
 }

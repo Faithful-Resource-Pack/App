@@ -22,9 +22,11 @@
     "btoa": "^1.2.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
+    "extract-zip": "^2.0.1",
     "moment": "^2.29.1",
     "node-fetch": "^2.6.1",
     "node-localstorage": "^2.2.1",
+    "tmp": "^0.2.1",
     "twin-bcrypt": "^2.1.1",
     "url": "^0.11.0"
   }
