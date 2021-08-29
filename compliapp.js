@@ -42,7 +42,8 @@ const v = new Vue({
     selectedLang: 'en',
     langs: {
       en: enUS,
-      fr: { ...enUS, ...frFR }
+      fr: { ...enUS, ...frFR },
+      de: { ...enUS, ...deDE }
     },
     window: {
       width: window.innerWidth,
