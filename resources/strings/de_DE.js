@@ -49,7 +49,7 @@ export default {
         }
       },
       review: {
-        title: 'Bewertungen',
+        title: 'Überprüfen',
         subtabs: {
           addons: 'add-ons',
           translations: 'Übersetzungen'
