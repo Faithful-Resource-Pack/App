@@ -222,17 +222,19 @@ export default {
       title: 'Screenshots',
       header: {
         labels: {
+          drop: 'Header-Bild hier ablegen oder zum Auswählen klicken.',
           normal: 'Header-Bild',
           replace: 'Header-Bild ersetzen'
         },
         rules: {
-          image_size: 'Das Bild sollte weniger als %s KB groß sein!',
+          image_size: 'Die Bild sollte weniger als %s KB groß sein! Benutze https://compressor.io/ es zu komprimieren.',
           image_ratio: 'Falsches Seitenverhältnis: Das bereitgestellte Bild hat nicht das Seitenverhältnis 16:9.',
           image_required: 'Ein Header-Bild ist erforderlich.'
         }
       },
       carousel: {
         labels: {
+          drop: 'Weitere Bilder hier ablegen oder zum Auswählen klicken.',
           normal: 'Zusätzliche(s) Bild(er)',
           replace: 'Zusätzliche(s) Bild(er) ersetzen'
         },

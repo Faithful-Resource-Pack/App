@@ -225,7 +225,7 @@ export default {
           replace: 'Replace header image'
         },
         rules: {
-          image_size: 'Image should be less than %s KB!',
+          image_size: 'Image size should be less than %s KB! Use https://compressor.io/ to compress it.',
           image_ratio: 'Wrong Ratio: The provided image doesn\'t have a 16:9 side ratio.',
           image_required: 'A header image is required.'
         }

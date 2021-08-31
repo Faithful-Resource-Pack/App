@@ -227,7 +227,7 @@ export default {
           replace: 'Changer l\'image d\'en-tête'
         },
         rules: {
-          image_size: 'L\'image doit faire moins de %s KB!',
+          image_size: 'L\'image doit faire moins de %s KB! Utilisez https://compressor.io/ pour le compresser.',
           image_ratio: 'Ratio incorrect: L\'image envoyée ne possède pas un ratio en 16/9.',
           image_required: 'Une image d\'en-tête est requise.'
         }
