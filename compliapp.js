@@ -35,12 +35,22 @@ const EMPTY_USER = {
   roles: []
 }
 
+const LANG_KEY = 'lang'
+const LANG_DEFAULT = 'en'
+const _get_lang = function() {
+  return localStorage.getItem(LANG_KEY) || LANG_DEFAULT
+}
+const _set_lang = function(val) {
+  val = String(val)
+  localStorage.setItem(LANG_KEY, val)
+}
+
 // eslint-disable-next-line no-unused-vars
 const v = new Vue({
   router,
   el: '#app',
   data: {
-    selectedLang: 'en',
+    selectedLang: _get_lang(),
     langs: {
       en: enUS,
       fr: { ...enUS, ...frFR },
@@ -101,6 +111,11 @@ const v = new Vue({
       timeout: 4000
     },
     drawer: false
+  },
+  watch: {
+    selectedLang: function(newValue) {
+      if(Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
+    }
   },
   computed: {
     /**
