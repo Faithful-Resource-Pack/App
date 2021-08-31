@@ -1,7 +1,11 @@
 /* global axios, marked, FileReader, Image */
+const upload = () => import('./upload.js')
 
-export default {
+export default {  
   name: 'new-addon-page',
+  components: {
+    upload
+  },
   template: `
   <v-container>
     <div class="text-h4 py-4">
@@ -11,7 +15,7 @@ export default {
         indeterminate
       />
     </div>
-    <div class="my-2 text-h5">
+    <div class="my-2">
       <v-list rounded v-if="titles.length > 0" two-line color="rgba(255, 255, 255, 0.05)">
         <v-list-item>
           <v-row>
@@ -116,18 +120,19 @@ export default {
                 />
                 </div>
 
-                <v-file-input
-                  chips
+                <upload
                   show-size
                   counter="1"
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  :label="$root.lang().addons.images.header.labels.normal"
+                  :label="$root.lang().addons.images.header.labels.drop"
                   :rules="headerImageRules"
                   prepend-icon="mdi-image"
                   v-model="header_img"
                   @change="validateHeader"
-                ></v-file-input>
+                  :on-error="o => $root.showSnackBar(o.message, o.colour)"
+                  dense
+                ></upload>
 
                 <v-row v-if="form.images.carousel.length > 0" style="margin: -2px">
                   <v-col 
@@ -153,19 +158,19 @@ export default {
                     </v-btn>
                   </v-col>
                 </v-row>
-
-                <v-file-input
-                  chips
+                
+                <upload
                   multiple
                   show-size
                   accept="image/jpeg, image/png, image/gif"
                   small-chips
-                  :label="$root.lang().addons.images.carousel.labels.normal"
+                  :label="$root.lang().addons.images.carousel.labels.drop"
                   prepend-icon="mdi-image-multiple"
                   v-model="carousel_img"
                   @change="validateCarousel"
-                ></v-file-input>
-
+                  :on-error="o => $root.showSnackBar(o.message, o.colour)"
+                  dense
+                ></upload>
               </v-form>
             </v-col>
           </v-row>
@@ -355,7 +360,7 @@ export default {
         type: [],
         downloads: {}
       },
-      header_img: undefined,
+      header_img: '',
       carousel_img: [],
       downloads: [
         {
@@ -458,7 +463,7 @@ export default {
             that.form.images.header = e.target.result
             that.$forceUpdate()
           } else {
-            that.$root.showSnackBar(this.$root.lang().addons.images.header.rules.image_ratio, 'error')
+            that.$root.showSnackBar(that.$root.lang().addons.images.header.rules.image_ratio, 'error')
             that.header_img = undefined
           }
         }

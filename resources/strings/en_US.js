@@ -220,6 +220,7 @@ export default {
       title: 'Screenshots',
       header: {
         labels: {
+          drop: 'Drop header image here, or click to select it.',
           normal: 'Header image',
           replace: 'Replace header image'
         },
@@ -231,6 +232,7 @@ export default {
       },
       carousel: {
         labels: {
+          drop: 'Drop additional image(s) here, or click to select them.',
           normal: 'Additional image(s)',
           replace: 'Replace additional image(s)'
         },

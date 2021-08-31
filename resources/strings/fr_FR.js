@@ -222,6 +222,7 @@ export default {
       title: 'Captures d\'écran',
       header: {
         labels: {
+          drop: 'Déposez l\'image d\'en-tête ici, ou cliquez pour la sélectionner.',
           normal: 'Image d\'en-tête',
           replace: 'Changer l\'image d\'en-tête'
         },
@@ -233,6 +234,7 @@ export default {
       },
       carousel: {
         labels: {
+          drop: 'Déposez des image(s) additionelles ici, or cliquez pour les sélectionner.',
           normal: 'Image(s) additionelles',
           replace: 'Remplacer les images additionelles'
         },

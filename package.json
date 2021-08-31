@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "dev": "nodemon app.js -e js,json,css",
     "start": "pm2 start \"node app.js\" --name \"APP\""
   },
   "repository": {
