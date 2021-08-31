@@ -2,6 +2,7 @@
 
 import enUS from './resources/strings/en_US.js'
 import frFR from './resources/strings/fr_FR.js'
+import deDE from './resources/strings/de_DE.js'
 
 const ContributionPage = () => import('./pages/contribution/main.js')
 const ContributorPage = () => import('./pages/contributor/main.js')
@@ -42,7 +43,8 @@ const v = new Vue({
     selectedLang: 'en',
     langs: {
       en: enUS,
-      fr: { ...enUS, ...frFR }
+      fr: { ...enUS, ...frFR },
+      de: { ...enUS, ...deDE }
     },
     window: {
       width: window.innerWidth,
