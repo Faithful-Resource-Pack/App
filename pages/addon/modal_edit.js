@@ -1,7 +1,11 @@
 /* global axios, Vue, FileReader, Image */
+const upload = () => import('./upload.js')
 
 export default {
   name: 'addon-edit-modal',
+  components: {
+    upload
+  },
   template: `
     <v-dialog
       v-model="dialog"
@@ -94,7 +98,7 @@ export default {
                 />
                 </div>
 
-                <v-file-input
+                <upload
                   chips
                   show-size
                   counter="1"
@@ -105,12 +109,13 @@ export default {
                   prepend-icon="mdi-image"
                   v-model="header_img"
                   @change="validateHeader"
-                ></v-file-input>
+                  dense
+                ></upload>
 
                 <v-row v-if="addon.images?.carousel.length > 0" style="margin: -2px">
                   <v-col
-                    v-for="index in addon.images.carousel"
-                    :key="index"
+                    v-for="(index, p_i) in addon.images.carousel"
+                    :key="index + '-' + p_i"
                     :cols="$vuetify.breakpoint.mdAndUp ? 4 : 6"
                     style="margin-bottom: -28px"
                   >
@@ -132,7 +137,7 @@ export default {
                   </v-col>
                 </v-row>
 
-                <v-file-input
+                <upload
                   chips
                   multiple
                   show-size
@@ -142,22 +147,30 @@ export default {
                   prepend-icon="mdi-image-multiple"
                   v-model="carousel_img"
                   @change="validateCarousel"
-                ></v-file-input>
+                  dense
+                ></upload>
 
-                <v-checkbox
-                  class="transparent-input"
-                  v-model="addon.comments"
-                  :label="$root.lang().addons.options.comments.label"
-                ></v-checkbox>
+                <v-row :dense="!$vuetify.breakpoint.mdAndUp" class="mb-4 mb-md-0">
+                  <v-col cols="12" md="6">
+                    <v-checkbox
+                      class="transparent-input"
+                      v-model="addon.comments"
+                      :label="$root.lang().addons.options.comments.label"
+                      hide-details
+                    ></v-checkbox>
+                  </v-col>
+                  <v-col cols="12" md="6">
+                    <v-checkbox
+                      class="transparent-input"
+                      v-model="addon.optifine"
+                      :label="$root.lang().addons.options.optifine.label"
+                      hide-details
+                    ></v-checkbox>
+                  </v-col>
+                </v-row>
 
-                <v-checkbox
-                  class="transparent-input"
-                  v-model="addon.optifine"
-                  :label="$root.lang().addons.options.optifine.label"
-                ></v-checkbox>
-
-                <v-row>
-                  <v-col>
+                <v-row ::no-gutters="!$vuetify.breakpoint.mdAndUp">
+                  <v-col cols="12" md="6">
                     <v-select
                       multiple
                       small-chips
@@ -169,7 +182,7 @@ export default {
                     ></v-select>
                   </v-col>
 
-                  <v-col>
+                  <v-col cols="12" md="6">
                     <v-select
                       multiple
                       small-chips
@@ -183,12 +196,14 @@ export default {
                 </v-row>
 
                 <v-row
+                  :dense="!$vuetify.breakpoint.mdAndUp"
                   v-for="(obj, index) in downloads"
                   :key="index"
                   :style="{'margin-top': index == 0 ? '-12px' : '-32px' }"
                 >
                   <v-col cols="3">
                     <v-text-field
+                      class="my-0"
                       clearable
                       :placeholder="$root.lang().addons.downloads.name.placeholder"
                       :label="$root.lang().addons.downloads.name.label"
@@ -206,8 +221,9 @@ export default {
                         'margin-top': indexLinks != 0 ? '-32px' : '-12px'
                       }"
                     >
-                      <v-col :cols="index == 0 ? 11 : 10">
+                      <v-col class="pr-0">
                         <v-text-field
+                          class="my-0"
                           clearable
                           :placeholder="$root.lang().addons.downloads.link.placeholder"
                           :label="$root.lang().addons.downloads.link.label"
@@ -216,30 +232,28 @@ export default {
                           @change="updateDownloadForm()"
                         ></v-text-field>
                       </v-col>
-                      <v-col cols="1" v-if="indexLinks == 0" style="padding-left: 3px;">
-                        <v-btn icon @click="addLink(index)"">
+                      <v-col class="flex-grow-0 flex-shrink-0">
+                        <v-btn icon @click="addLink(index)" :small="!$vuetify.breakpoint.mdAndUp">
                           <v-icon color="white lighten-1">mdi-plus</v-icon>
                         </v-btn>
                       </v-col>
-                      <v-col cols="1" v-else style="padding-left: 3px;">
-                        <v-btn icon @click="deleteLink(index, indexLinks)"">
+                      <v-col class="flex-grow-0 flex-shrink-0" v-else style="padding-left: 3px;">
+                        <v-btn icon @click="deleteLink(index, indexLinks)" :small="!$vuetify.breakpoint.mdAndUp">
                           <v-icon color="red lighten-1">mdi-minus</v-icon>
                         </v-btn>
                       </v-col>
-                      <v-col cols="1" v-if="index != 0 && indexLinks == 0" style="padding-left: 3px;">
-                        <v-btn icon @click="deleteDownload(index)"">
+                      <v-col class="flex-grow-0 flex-shrink-0" v-if="index != 0 && indexLinks == 0" style="padding-left: 3px;">
+                        <v-btn icon @click="deleteDownload(index)" :small="!$vuetify.breakpoint.mdAndUp">
                           <v-icon color="red lighten-1">mdi-delete</v-icon>
                         </v-btn>
                       </v-col>
                     </v-row>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col>
-                    <v-btn block @click="addNewDownload()">
-                      {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
-                    </v-btn>
-                  </v-col>
+                <v-row class="px-2 mt-0">
+                  <v-btn block @click="addNewDownload()" :small="!$vuetify.breakpoint.mdAndUp">
+                    {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
+                  </v-btn>
                 </v-row>
               </v-form>
             </v-col>
@@ -447,7 +461,7 @@ export default {
             that.addon.images.header = e.target.result
             that.$forceUpdate()
           } else {
-            that.$root.showSnackBar(this.$root.lang().addons.images.header.rules.image_ratio, 'error')
+            that.$root.showSnackBar(that.$root.lang().addons.images.header.rules.image_ratio, 'error')
             that.header_img = undefined
           }
         }
