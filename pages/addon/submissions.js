@@ -58,7 +58,6 @@ export default {
               <v-btn
                 color="white"
                 text
-                :disabled="addon.status != 'approved' && addon.status != 'denied'"
                 @click="editAddon(addon)"
               >
                 {{ $root.lang().global.btn.edit }}

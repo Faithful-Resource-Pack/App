@@ -250,3 +250,51 @@ blockquote {
 code {
   background-color: transparent !important;
 }
+
+.upload-file-input .v-card, .upload-file-input .v-card * {
+  transition: all .25s ease;
+}
+.upload-file-input .v-card, .upload-file-input .v-card.error {
+  background: transparent !important;
+}
+.upload-file-input .v-card {
+  border: 2px dashed #eee;
+  border-radius: 5px;
+}
+.upload-file-input .v-card .v-icon {
+  cursor: pointer;
+}
+.upload-file-input .v-card .d-flex .v-icon {
+  margin-top: 16px;
+  margin-bottom: 0;
+}
+.upload-file-input .v-card.dragover {
+  border-color: currentColor;
+}
+
+.upload-file-input .v-card .upload-reset-button {
+  padding-left: 0;
+  padding-right: 0;
+  width: 0;
+  overflow: hidden;
+  transition: all 1s ease;
+}
+.upload-file-input .v-card .upload-reset-button.clear {
+  width: auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  overflow: initial;
+}
+
+.upload-file-input .v-messages {
+  line-height: 1;
+  min-height: auto;
+}
+
+.upload-file-input .v-card.dragover .d-flex .v-icon {
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+.upload-file-input .v-card.dragover .upload-label {
+  color: white;
+}

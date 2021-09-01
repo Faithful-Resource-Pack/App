@@ -222,17 +222,19 @@ export default {
       title: 'Captures d\'écran',
       header: {
         labels: {
+          drop: 'Déposez l\'image d\'en-tête ici, ou cliquez pour la sélectionner.',
           normal: 'Image d\'en-tête',
           replace: 'Changer l\'image d\'en-tête'
         },
         rules: {
-          image_size: 'L\'image doit faire moins de %s KB!',
+          image_size: 'L\'image doit faire moins de %s KB! Utilisez https://compressor.io/ pour le compresser.',
           image_ratio: 'Ratio incorrect: L\'image envoyée ne possède pas un ratio en 16/9.',
           image_required: 'Une image d\'en-tête est requise.'
         }
       },
       carousel: {
         labels: {
+          drop: 'Déposez des image(s) additionelles ici, or cliquez pour les sélectionner.',
           normal: 'Image(s) additionelles',
           replace: 'Remplacer les images additionelles'
         },
