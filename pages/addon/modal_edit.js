@@ -232,7 +232,7 @@ export default {
                           @change="updateDownloadForm()"
                         ></v-text-field>
                       </v-col>
-                      <v-col class="flex-grow-0 flex-shrink-0">
+                      <v-col class="flex-grow-0 flex-shrink-0" v-if="indexLinks == 0">
                         <v-btn icon @click="addLink(index)" :small="!$vuetify.breakpoint.mdAndUp">
                           <v-icon color="white lighten-1">mdi-plus</v-icon>
                         </v-btn>
@@ -404,7 +404,7 @@ export default {
       })
 
       return !(
-        this.addon.description !== '' && this.addon.description.length <= this.descriptionMaxLength &&
+        this.addon.description !== '' && this.addon.description !== null && this.addon.description.length <= this.descriptionMaxLength &&
         this.addon.authors.length !== 0 && this.addon.authors.includes(this.$root.user.id) &&
         this.addon.images.header !== '' &&
         this.addon.type.length > 1 &&

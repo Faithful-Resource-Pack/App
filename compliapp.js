@@ -216,6 +216,7 @@ const v = new Vue({
       console.log(this.$router.options.routes)
     },
     compiledMarkdown: function (markdown) {
+      if (markdown === null || !markdown) return ''
       return marked(markdown, { sanitize: true })
     },
     update: function () {

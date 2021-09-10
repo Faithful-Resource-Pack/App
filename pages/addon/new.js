@@ -40,7 +40,7 @@ export default {
                   :label="$root.lang().addons.general.description.label"
                   :hint="$root.lang().addons.general.description.hint"
                 ></v-textarea>
-                <v-container v-if="form.description.length != 0" class="markdown" style="background-color: rgb(33,33,33); border-radius: 5px" v-html="compiledMarkdown(form.description)">
+                <v-container v-if="form.description != null && form.description.length != 0" class="markdown" style="background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(form.description)">
                 </v-container>
                 <br>
 
@@ -405,8 +405,8 @@ export default {
       })
 
       return !(
-        this.form.title !== '' && this.form.title.length <= this.titleMaxLength && this.isTitleAvailable(this.form.title) &&
-        this.form.description !== '' && this.form.description.length <= this.descriptionMaxLength &&
+        this.form.title !== '' && this.form.title !== null && this.form.title.length <= this.titleMaxLength && this.isTitleAvailable(this.form.title) &&
+        this.form.description !== '' && this.form.description !== null && this.form.description.length <= this.descriptionMaxLength &&
         this.form.authors.length !== 0 && this.form.authors.includes(this.$root.user.id) &&
         this.form.images.header !== '' &&
         this.form.type.length > 1 &&
@@ -534,9 +534,6 @@ export default {
     remove: function (id) {
       const index = this.form.authors.indexOf(id)
       if (index >= 0) this.form.authors.splice(index, 1)
-    },
-    compiledMarkdown: function (markdown) {
-      return marked(markdown, { sanitize: true })
     }
   },
   mounted: function () {

@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const express = require('express')
 const path = require('path')
-const fetch = require('node-fetch')
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const port = process.env.PORT
 const app = express()
 const compliappURL = '/'
