@@ -100,8 +100,9 @@ module.exports = {
     const useValues = []
 
     return Promise.all([this.textureTypes(), this.textureEditions(), this.textureVersions()])
-      .then((types, editions, versions) => {
-        const schema = textureSchema(types, editions, versions, versions)
+      .then(results => {
+        const [types, editions, versions] = results
+        const schema = textureSchema(types, editions, versions)
 
         single(value, schema)
       })

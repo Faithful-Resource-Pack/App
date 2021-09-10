@@ -51,6 +51,7 @@ const verifyAuth = function (token, roles = []) {
     return Promise.reject(err)
   }
 
+  //! Is this supposed to be here?
   roles.push('Developer') // add dev perms for testing purpose
 
   return fetch('https://discord.com/api/users/@me', {
@@ -84,9 +85,13 @@ const verifyAuth = function (token, roles = []) {
  */
 const errorHandler = function (res) {
   return (err) => {
-    console.error(err)
-    res.status(err.code || 400)
-    res.send({ error: `${err.message || err}` })
+    // advance parsing for axios errors and custom codes errors
+    const code = (err.response ? err.response.status : err.code) || 400
+    const message = (err.response && err.response.data ? err.response.data.error : err.message) || err
+    console.error(code, message)
+    console.error(err.stack)
+    res.status(code)
+    res.send({ error: `${message}` })
     res.end()
   }
 }

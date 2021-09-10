@@ -28,7 +28,7 @@ function useSchema(editions, versions) {
     length: { min: 1, max: 1 },
     validator: function(array, parent) {
       array.forEach(edi => {
-        if(!editions.includes(edi)) throw new Error(`Unknown edition in ${JSON.stringify(array)}`)
+        if(!editions.includes(edi)) throw new Error(`Unknown edition "${edi}" in ${JSON.stringify(array)}. Only accepts ${JSON.stringify(editions)}`)
       })
     }
   }, {
@@ -51,7 +51,7 @@ function useSchema(editions, versions) {
         }, pair)
 
         pair[1].forEach(ver => {
-          if(!versions.includes(ver)) throw new Error(`Unknown version in ${JSON.stringify(pair)}`)
+          if(!versions.includes(ver)) throw new Error(`Unknown version "${pair[1]}" in ${JSON.stringify(pair)}. Only accepts ${JSON.stringify(versions)}`)
         })
       })
     }
@@ -71,10 +71,6 @@ function textureSchema(types, editions, versions) {
       length: { min: 1 },
       validator: function(array, parent) {
         array.forEach(type => {
-          single(type, {
-            type: 'string',
-            length: { min: 1 }
-          }, parent)
           if(!types.includes(type)) throw new Error('Unknown type "' + type +'". Only accepts ' + JSON.stringify(types))
         })
       },

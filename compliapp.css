@@ -188,7 +188,7 @@ blockquote {
   outline: none;
 }
 
-.fixed-height {
+.prism-editor-wrapper.fixed-height {
   height: 200px;
   border-radius: 4px;
 }
