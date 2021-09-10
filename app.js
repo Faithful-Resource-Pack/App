@@ -511,6 +511,15 @@ app.get('/textures/:type/:name?/?', function (req, res) {
     .catch(errorHandler(res))
 })
 
+app.post('/textures/remove', function (req, res) {
+  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+    .then(() => {
+      return texturesBackend.removeTextures(req.body.id)
+    })
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
 /**
  * ==========================================
  *                    USES

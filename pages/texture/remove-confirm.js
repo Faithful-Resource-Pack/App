@@ -35,7 +35,13 @@ export default {
                 </v-list-item-title>
               </v-list-item>
             </blockquote>
-
+            <ul v-else>
+              <template v-for="key in Object.keys(data).sort()">
+                <li v-if="typeof data[key] === 'string' || Array.isArray(data[key])">
+                  {{ key }} : {{ Array.isArray(data[key]) ? JSON.stringify(data[key]) : data[key] }}
+                </li>
+              </template>
+            </ul>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -73,6 +79,10 @@ export default {
     type: {
       type: String,
       required: true
+    },
+    onSubmit: {
+      type: Function,
+      default: function() { return Promise.resolve() }
     }
   },
   data () {
@@ -104,22 +114,31 @@ export default {
         })
     },
     deleteData: function () {
-      const data = {
-        id: this.data.id,
-        deletePaths: this.deletePaths,
-        token: this.$root.user.access_token
-      }
-
-      axios.post(`/${this.type}s/remove`, data)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+      if(this.type === 'uses') {
+        const data = {
+          id: this.data.id,
+          deletePaths: this.deletePaths,
+          token: this.$root.user.access_token
+        }
+  
+        axios.post(`/${this.type}s/remove`, data)
+          .then(() => {
+            this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+            this.disableDialog(true)
+          })
+          .catch(err => {
+            console.error(err)
+            this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+            this.disableDialog(true)
+          })
+      } else {
+        this.onSubmit(this.data).then(() => {
           this.disableDialog(true)
-        })
-        .catch(err => {
+        }).catch(err => {
           console.error(err)
           this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
-          this.disableDialog(true)
         })
+      }
     }
   }
 }

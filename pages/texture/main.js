@@ -4,6 +4,7 @@ const TextureModal = () => import('./modal_texture.js')
 const MCVersionModal = () => import('./modal_mc_version.js')
 const TextureModalMultipleAdd = () => import('./modal_texture_multiple_add.js')
 const ModalVersionAdd = () => import('./modal_version_add.js')
+const RemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
   name: 'texture-page',
@@ -11,7 +12,8 @@ export default {
     'texture-modal': TextureModal,
     'version-modal': MCVersionModal,
     'add-multiple-texture': TextureModalMultipleAdd,
-    'add-minecraft-version': ModalVersionAdd
+    'add-minecraft-version': ModalVersionAdd,
+    'remove-confirm': RemoveConfirm,
   },
   template: `
   <v-container>
@@ -20,6 +22,7 @@ export default {
     <version-modal :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
     <add-multiple-texture :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     <add-minecraft-version :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
+    <remove-confirm type="texture" :confirm="remove.confirm" :data="remove.data" :disableDialog="() => { remove.confirm = false; }" :on-submit="removeTexture"></remove-confirm>
     
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.textures }}
@@ -91,7 +94,7 @@ export default {
               </v-btn>
             </v-list-item-action>
             <v-list-item-action>
-              <v-btn disabled icon @click="askRemove(texture)">
+              <v-btn icon @click="askRemove(texture)">
                 <v-icon color="red lighten-1">mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -281,6 +284,14 @@ export default {
     showMore: function () {
       this.displayedResults += 100
       this.update()
+    },
+    removeTexture: function(data) {
+      const body = {
+        id: data.id,
+        token: this.$root.user.access_token
+      }
+
+      return axios.post('/textures/remove', body)
     }
   },
   watch: {

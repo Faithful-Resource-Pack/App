@@ -2,6 +2,8 @@ const textures = require('../helpers/firestorm/texture.js')
 const uses = require('../helpers/firestorm/texture_use.js')
 const paths = require('../helpers/firestorm/texture_paths.js')
 const { single, textureSchema, validator } = require('../validator.js')
+const PromiseEvery = require('../helpers/promiseEvery.js')
+const { ID_FIELD } = require('../helpers/firestorm')
 
 module.exports = {
   textures: function () {
@@ -189,6 +191,46 @@ module.exports = {
           criteria: 'in',
           values: useIDs
         }])
+      })
+  },
+  /**
+   * Delete textures and uses and paths
+   * @param {String|String[]} ids textures ids to delete
+   */
+  removeTextures(ids) {
+    if(!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
+    if(typeof ids === 'string') ids = [ids]
+
+    // type validation for String array
+    single(ids, {
+      type: 'array'
+    })
+    ids.forEach(id => {
+      single(id, {
+        type: 'string'
+      }, ids)
+    })
+
+    // in order to delete everything, we need to get all the paths, all the uses, and the texture
+    let _textures
+    let _uses
+    return textures.searchKeys(ids)
+      .then(result => {
+        _textures = result
+        return PromiseEvery(_textures.map(t => t.uses()))
+      })
+      .then(pe => {
+        _uses = pe.results.filter(r => r !== undefined).reduce((acc, cur) => acc = [...acc, ...cur], [])
+        return PromiseEvery(_uses.map(u => u.paths()))
+      })
+      .then(pe => {
+        _paths = pe.results.filter(r => r !== undefined).reduce((acc, cur) => acc = [...acc, ...cur], [])
+
+        const promises = []
+        promises.push(textures.removeBulk(_textures.map(t => t[ID_FIELD])))
+        promises.push(uses.removeBulk(_uses.map(u => u[ID_FIELD])))
+        promises.push(paths.removeBulk(_paths.map(p => p[ID_FIELD])))
+        return Promise.all(promises)
       })
   }
 }
