@@ -71,7 +71,11 @@ function textureSchema(types, editions, versions) {
       length: { min: 1 },
       validator: function(array, parent) {
         array.forEach(type => {
-          if(!types.includes(type)) throw new Error('Unknown type in ' + JSON.stringify(array))
+          single(type, {
+            type: 'string',
+            length: { min: 1 }
+          }, parent)
+          if(!types.includes(type)) throw new Error('Unknown type "' + type +'". Only accepts ' + JSON.stringify(types))
         })
       },
     }, {
