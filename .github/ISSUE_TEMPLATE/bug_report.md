@@ -1,8 +1,8 @@
 ---
 name: Bug report
 about: Create a report to help us improve
-title: ''
-labels: ''
+title: "[BUG] - SHORT SENTENCE HERE"
+labels: bug
 assignees: ''
 
 ---
@@ -22,6 +22,9 @@ A clear and concise description of what you expected to happen.
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
+
+**Logs**
+If applicable, add screenshots of the console log (`ctrl` + `i` for chrome/edge)
 
 **Desktop (please complete the following information):**
  - OS: [e.g. iOS]
