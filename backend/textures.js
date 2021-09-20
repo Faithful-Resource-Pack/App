@@ -167,12 +167,14 @@ module.exports = {
           value: data.edition
         }])])
       })
-      .then((versions, useIDs) => {
+      .then(results => {
+        const [versions, editionUses] = results
+        const useIDs = editionUses.map(el => el[ID_FIELD])
         validator(data, [{
           name: 'version',
           type: 'string',
           validator: function (value) {
-            if (!versions.includes(value)) throw new Error('Invalid version')
+            if (!versions.includes(value)) throw new Error('Invalid version, expected :' + JSON.stringify(versions) + ', got ' + JSON.stringify(value))
           }
         }, {
           name: 'newVersion',
@@ -189,8 +191,19 @@ module.exports = {
         }, {
           field: 'useID',
           criteria: 'in',
-          values: useIDs
+          value: useIDs
         }])
+      })
+      .then(pathsFound => {
+        const pathIDs = pathsFound.map(path => path[ID_FIELD])
+        const pathEditBulk = pathIDs.map(pathID => { return {
+          id: pathID,
+          field: 'versions',
+          operation: 'array-push',
+          value: data.newVersion
+        }})
+
+        return paths.editFieldBulk(pathEditBulk)
       })
   },
   /**
