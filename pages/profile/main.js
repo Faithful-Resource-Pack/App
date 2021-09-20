@@ -8,8 +8,8 @@ export default {
       {{ $root.lang().profile.title }}
     </div>
 
-    <div class="my-2 text-h5">
-      <v-list rounded two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
+    <div :class="['my-2 text-h5', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]">
+      <v-list :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
 
         <v-list-item>
           <v-list-item-avatar>
@@ -50,42 +50,34 @@ export default {
           <v-col :class="'col-' + (localUser.uuid && localUser.uuid.length == uuidMaxLength) ? '10' : '12'" :sm="(localUser.uuid && localUser.uuid.length == uuidMaxLength) ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12" style="max-width: 100%;">
             <v-form ref="form" lazy-validation>
               <div class="text-h6">{{ $root.lang().profile.general.title }}</div>
-              <v-list class="profileList">
-                <v-row>
-                  <v-list-item class="height-90">
-                    <v-list-item-content>
-                      <v-col>
-                      <v-text-field
-                        placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33" 
-                        :rules="uuidRules" 
-                        :counter="uuidMaxLength" 
-                        clearable 
-                        v-model="localUser.uuid" 
-                        :label="$root.lang().profile.general.uuid.label" 
-                        :hint="$root.lang().profile.general.uuid.hint"
-                      ></v-text-field>
-                      </v-col>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-row>
-                <v-row>
-                  <v-list-item class="height-90">
-                    <v-list-item-content>
-                      <v-col>
+              <v-row class="height-90 mt-2">
+                <v-col>
+                  <v-text-field
+                    placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33"
+                    :rules="uuidRules"
+                    :counter="uuidMaxLength"
+                    clearable
+                    v-model="localUser.uuid"
+                    :label="$root.lang().profile.general.uuid.label" 
+                    :hint="$root.lang().profile.general.uuid.hint"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col>
+                  <v-text-field 
                       <v-text-field 
-                        required 
-                        :rules="usernameRules" 
-                        :counter="usernameMaxLength" 
-                        clearable 
-                        v-model="localUser.username" 
-                        :label="$root.lang().profile.general.username.label" 
-                        :hint="$root.lang().profile.general.username.hint"
-                      ></v-text-field>
-                      </v-col>
-                    </v-list-item-content>
-                  </v-list-item>
-                </v-row>
-              </v-list>
+                  <v-text-field 
+                    required
+                    :rules="usernameRules"
+                    :counter="usernameMaxLength"
+                    clearable 
+                    v-model="localUser.username" 
+                    :label="$root.lang().profile.general.username.label"
+                    :hint="$root.lang().profile.general.username.hint"
+                  ></v-text-field>
+                </v-col>
+              </v-row>
             </v-form>
           </v-col>
         </v-row>
@@ -97,81 +89,81 @@ export default {
         ================ SOCIAL SETTINGS ================
         -->
         <v-list-item>
-        <v-row><v-col>
+        <v-row class="mb-2"><v-col>
           <v-form lazy-validation>
             <div class="text-h6">{{ $root.lang().profile.social.title }}</div>
-            <v-list class="profileList">
-              <v-row v-if="localUser.media && Object.keys(localUser.media).length">
-                <v-list-item
-                  v-for="(socialMedia, index) in localUser.media"
-                  :key="index"
-                  class="height-90"
+            <v-row
+              v-if="localUser.media && Object.keys(localUser.media).length"
+              v-for="(socialMedia, index) in localUser.media"
+              :key="index"
+              align="center"
+              :class="['mt-0', { 'mb-1': !$vuetify.breakpoint.mdAndUp }]"
+            >
+              <v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
+                <v-text-field
+                  clearable
+                  style="margin-bottom: 0px; margin-top: 12px"
+                  v-model="socialMedia.link"
+                  :rules="urlRules"
+                  :label="$root.lang().profile.social.edit.label.replace('%s', socialMedia.type)"
                 >
-                  <v-list-item-content>
-                    <v-col>
-                      <v-text-field
-                        clearable
-                        style="margin-bottom: 10px"
-                        v-model="socialMedia.link"
-                        :rules="urlRules"
-                        :label="$root.lang().profile.social.edit.label.replace('%s', socialMedia.type)"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-list-item-content>
-                  <v-col
-                    style="max-width: 250px; max-height: 48px; padding: 0; padding-left: 20px"
-                  >
+                </v-text-field>
+              </v-col>
+              <v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12" :style="[{ 'max-width': $vuetify.breakpoint.mdAndUp ? '300px' : 'none' }, 'margin-top: 10px']">
+                <v-row align="center">
+                  <v-col :style="{ 'max-width': $vuetify.breakpoint.mdAndUp ? '250px' : 'none' }">
                     <v-select
                       :items="media"
                       :label="$root.lang().profile.social.select.label"
                       v-model="socialMedia.type"
+                      hide-details
                       solo
                     >
                     </v-select>
                   </v-col>
-                  <v-list-item-action>
+                  <v-col class="flex-grow-0 flex-shrink-0">
                     <v-btn icon @click="removeSocialMedia(index)" style="margin-right: 8px">
                       <v-icon color="red lighten-1">mdi-delete</v-icon>
                     </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-row>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
 
-              <v-row>
-                <v-list-item class="height-90">
-                  <v-list-item-content>
-                    <v-col>
-                      <v-text-field
-                        clearable
-                        :placeholder="$root.lang().profile.social.new.placeholder"
-                        :label="$root.lang().profile.social.new.label"
-                        style="margin-bottom: 10px"
-                        v-model="newMedia.link"
-                        :rules="urlAddRules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-list-item-content>
-                  <v-col
-                    style="max-width: 250px; max-height: 48px; padding: 0; padding-left: 20px"
-                  >
+            <v-row
+              class="mt-2"
+              align="center"
+            >
+              <v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
+                <v-text-field
+                  clearable
+                  :placeholder="$root.lang().profile.social.new.placeholder"
+                  :label="$root.lang().profile.social.new.label"
+                  style="margin-bottom: 0px; margin-top: 12px"
+                  v-model="newMedia.link"
+                  :rules="urlAddRules"
+                >
+                </v-text-field>
+              </v-col>
+              <v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12" :style="[{ 'max-width': $vuetify.breakpoint.mdAndUp ? '300px' : 'none' }, 'margin-top: 10px']">
+                <v-row align="center">
+                  <v-col :style="{ 'max-width': $vuetify.breakpoint.mdAndUp ? '250px' : 'none' }">
                     <v-select
                       :items="media"
                       :label="$root.lang().profile.social.select.label"
                       v-model="newMedia.type"
+                      hide-details
                       solo
-                    >
-                    </v-select>
+                    ></v-select>
                   </v-col>
-                  <v-list-item-action>
+                  <v-col class="flex-grow-0 flex-shrink-0">
                     <v-btn icon @click="addSocialMedia()" :disabled="isMediaOk()" style="margin-right: 8px">
                       <v-icon color="white lighten-1">mdi-plus</v-icon>
                     </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
-              </v-row>
-            </v-list>
+                  </v-col>
+                </v-row>
+              </v-col>
+            </v-row>
           </v-form>
         </v-col></v-row>
         </v-list-item>
