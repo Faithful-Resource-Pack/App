@@ -30,20 +30,20 @@ export default {
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_texture_type }}</div>
     <div><v-btn v-for="t in texturesTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="textureURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
-      <div class="my-2">
-        <v-text-field
-          v-model="search"
-          :append-outer-icon="search ? 'mdi-send' : undefined"
-          filled
-          clear-icon="mdi-close"
-          clearable
-          :placeholder="$root.lang().database.labels.search_texture"
-          type="text"
-          v-on:keyup.enter="startSearch"
-          @click:append-outer="startSearch"
-          @click:clear="clearSearch"
-        ></v-text-field>
-      </div>
+    <div class="my-2">
+      <v-text-field
+        v-model="search"
+        :append-outer-icon="search ? 'mdi-send' : undefined"
+        filled
+        clear-icon="mdi-close"
+        clearable
+        :placeholder="$root.lang().database.labels.search_texture"
+        type="text"
+        v-on:keyup.enter="startSearch"
+        @click:append-outer="startSearch"
+        @click:clear="clearSearch"
+      ></v-text-field>
+    </div>
 
     <div>
       <v-row>
@@ -71,7 +71,7 @@ export default {
             v-for="texture in textures_arr"
             :key="texture.id"
           >
-            <v-list-item-content :style="{ 'display': 'contents' }">
+            <v-list-item-content style="display: contents">
               <v-list-item-avatar tile :style="{ 
                   'height': '64px !important', 
                   'min-width': '64px !important', 

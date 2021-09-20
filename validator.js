@@ -88,20 +88,28 @@ function textureSchema(types, editions, versions) {
  * @param {FieldObject} field Field object to verify
  * @param {*?} parent Parent object, helps for error detection
  */
-function single(value, field, parent = undefined) {
+async function single(value, field, parent = undefined) {
   const parentError = parent !== undefined ? ` in ${ JSON.stringify(parent)}` : ''
 
   field.type = (field.type || '').toLowerCase()
   // type
   switch (field.type) {
     case 'string':
-      if(typeof(value) !== 'string') throw new Error(` ${field.name} type is not ${field.type}${parentError}`)
+      if(typeof(value) !== 'string') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'integer':
-      if(typeof(value) !== 'string') throw new Error(` ${field.name} type is not ${field.type}${parentError}`)
+    case 'float':
+    case 'number':
+      if(typeof(value) !== 'number') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'array':
-      if(!Array.isArray(value)) throw new Error(` ${field.name} type is not ${field.type}${parentError}`)
+      if(!Array.isArray(value)) throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
+      break
+    case 'object': 
+      if (typeof (value) !== 'object') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
+      break
+    case 'boolean':
+      if (typeof (value) !== 'boolean') throw new Error(`${field.name || JSON.stringify(value)} type is not ${fied.type}${parentError}`)
       break
     default:
       throw new Error(`Unsupported field type for ${field.name ||'single'}${parentError}`)
@@ -118,14 +126,13 @@ function single(value, field, parent = undefined) {
   // validator
   if('validator' in field) {
     if(typeof field.validator !== 'function') throw new Error(`${field.name} validator is not a function in schema ${JSON.stringify(field)}`)
-
-    field.validator(value, parent)
+    await field.validator(value, parent)
   }
 
   // children
   if(field.type === 'array' && 'children' in field) {
     for(let c_i = 0; c_i < value.length; ++c_i) {
-      validator(value[c_i], field.children)
+      await validator(value[c_i], field.children)
     }
   }
 }
@@ -135,7 +142,7 @@ function single(value, field, parent = undefined) {
  * @param {Object} obj Object to verify
  * @param {Schema} schema Schema array with fields to verify
  */
-function validator(obj, schema) {
+async function validator(obj, schema) {
   if(!Array.isArray(schema)) throw new Error(`Incorrect schema ${JSON.stringify(schema)} for obj ${JSON.stringify(obj)}`)
 
   for(let i = 0; i < schema.length; ++i) {
@@ -145,7 +152,7 @@ function validator(obj, schema) {
 
     const value = obj[field.name]
 
-    single(value, field, obj)
+    await single(value, field, obj)
   }
 }
 

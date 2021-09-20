@@ -357,7 +357,10 @@ export default {
       if (!this.$root.isUserLogged) return
 
       this.submitted = true
-      const data = JSON.parse(JSON.stringify(this.addon))
+      const data = {
+        data: JSON.parse(JSON.stringify(this.addon)),
+        token: this.$root.user.access_token
+      }
 
       axios.post('/addons/edit', data)
         .then(() => {

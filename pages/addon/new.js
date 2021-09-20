@@ -377,7 +377,10 @@ export default {
       if (!this.$root.isUserLogged) return
 
       this.submitted = true
-      const data = JSON.parse(JSON.stringify(this.form))
+      const data = {
+        data: JSON.parse(JSON.stringify(this.form)),
+        token: this.$root.user.access_token
+      }
 
       axios.post('/addons/submit', data)
         .then(() => {

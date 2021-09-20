@@ -18,6 +18,7 @@ const texturesBackend = require('./backend/textures')
 const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
 const addonsBackend = require('./backend/addons')
+const { ID_FIELD } = require('./helpers/firestorm/index.js')
 
 app.use(express.urlencoded({
   extended: true,
@@ -51,8 +52,7 @@ const verifyAuth = function (token, roles = []) {
     return Promise.reject(err)
   }
 
-  //! Is this supposed to be here?
-  roles.push('Developer') // add dev perms for testing purpose
+  if (roles.length) roles.push('Developer') // add dev perms for testing purpose
 
   return fetch('https://discord.com/api/users/@me', {
     headers: {
@@ -66,9 +66,11 @@ const verifyAuth = function (token, roles = []) {
       return contributorsBackend.getUser(userID)
     })
     .then(user => {
+      if (roles.length == 0) return Promise.resolve(user[ID_FIELD])
+
       let i = 0
       while (roles.length >= i) {
-        if (user.type.includes(roles[i])) return Promise.resolve()
+        if (user.type.includes(roles[i])) return Promise.resolve(user[ID_FIELD])
         i++
       }
 
@@ -155,10 +157,14 @@ Object.keys(APPROVAL_NAMES).forEach(approvalKey => {
 
 // POST
 /**
- * Perms: anyone
+ * Perms: only members+ can submit addons
+ * -> to be a member, log in using Discord
  */
 app.post('/addons/submit', function (req, res) {
-  addonsBackend.submit(req.body)
+  verifyAuth(req.body.token)
+    .then(() => {
+      return addonsBackend.submit(req.body.data)
+    })
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
@@ -167,16 +173,23 @@ app.post('/addons/submit', function (req, res) {
  * Perms: anyone
  */
 app.post('/addons/edit', function (req, res) {
-  addonsBackend.edit(req.body)
+  verifyAuth(req.body.token)
+    .then(userID => {
+      return addonsBackend.edit(req.body.data, userID)
+    })
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
 
 /**
  * Perms: anyone
+ * TODO : ONLY AUTHORS & ADMINS CAN EDIT IT
  */
 app.post('/addons/remove', function (req, res) {
-  addonsBackend.remove(req.body.id)
+  verifyAuth(req.body.token)
+    .then(userID => {
+      return addonsBackend.remove(req.body.id, userID)
+    }) 
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
@@ -429,6 +442,12 @@ app.get('/contributions/get/', function (req, res) {
     .catch(errorHandler(res))
 })
 
+app.get('/contributions/all/', function (req, res) {
+  contributionsBackend.contributions()
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
 app.get('/contributions/stats/', function (req, res) {
   contributionsStatsBackend.stats()
     .then(getSuccess(res))
@@ -564,6 +583,12 @@ app.get('/uses/search/', function (req, res) {
     .catch(errorHandler(res))
 })
 
+app.get('/uses/all/', function (req, res) {
+  usesBackend.uses()
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
 /**
  * ==========================================
  *                   PATHS
@@ -613,6 +638,12 @@ app.get('/paths/search/', function (req, res) {
   const useID = params.useID
 
   pathsBackend.search(useID)
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
+app.get('/paths/all/', function (req, res) {
+  pathsBackend.path()
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })

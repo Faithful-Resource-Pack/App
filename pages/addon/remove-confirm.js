@@ -56,7 +56,10 @@ export default {
   },
   methods: {
     deleteAddon: function () {
-      const data = JSON.parse(JSON.stringify(this.$props.data))
+      const data = {
+        id: JSON.parse(JSON.stringify(this.$props.data.id)),
+        token: this.$root.user.access_token
+      }
 
       axios.post('/addons/remove', data)
         .then(() => {
