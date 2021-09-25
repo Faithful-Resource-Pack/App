@@ -9,7 +9,7 @@ export default {
     </div>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
     <v-btn
-      v-for="(resobj, index) in form.resolutions"
+      v-for="(resobj) in form.resolutions"
       :key="resobj.key"
       class="my-2 mr-1"
     >

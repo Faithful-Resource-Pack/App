@@ -9,7 +9,7 @@ export default {
     onError: {
       type: Function,
       required: false,
-      default: function(errObj) {}
+      default: function() {}
     },
     label: {
       type: String,
@@ -24,7 +24,7 @@ export default {
     verify: {
       type: Function,
       required: false,
-      default: function(file) { return true }
+      default: function() { return true }
     },
     prependIcon: {
       type: String,
@@ -221,7 +221,7 @@ export default {
     },
     addFiles(files) {
       try {
-        if (!this.multiple && files.length > 1) throw new Exception('Only one file can be uploaded at a time..')
+        if (!this.multiple && files.length > 1) throw new Error('Only one file can be uploaded at a time..')
 
         let verified = true, i = 0
         while(i < files.length && verified) {
@@ -229,7 +229,7 @@ export default {
           ++i
         }
 
-        if(!verified) throw new Exception('Incorrect file type')
+        if(!verified) throw new Error('Incorrect file type')
       } catch (error) {
         this.onError({
           message: error.message,
@@ -265,7 +265,7 @@ export default {
           if(this.value != undefined)
             input.value = this.value
   
-          input.onchange = _ => {
+          input.onchange = () => {
               let files = Array.from(input.files)
               
               resolve(files)

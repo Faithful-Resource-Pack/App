@@ -26,7 +26,7 @@ function useSchema(editions, versions) {
     name: 'editions',
     type: 'array',
     length: { min: 1, max: 1 },
-    validator: function(array, parent) {
+    validator: function(array) {
       array.forEach(edi => {
         if(!editions.includes(edi)) throw new Error(`Unknown edition "${edi}" in ${JSON.stringify(array)}. Only accepts ${JSON.stringify(editions)}`)
       })
@@ -69,7 +69,7 @@ function textureSchema(types, editions, versions) {
       name: 'type',
       type: 'array',
       length: { min: 1 },
-      validator: function(array, parent) {
+      validator: function(array) {
         array.forEach(type => {
           if(!types.includes(type)) throw new Error('Unknown type "' + type +'". Only accepts ' + JSON.stringify(types))
         })
@@ -109,7 +109,7 @@ async function single(value, field, parent = undefined) {
       if (typeof (value) !== 'object') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'boolean':
-      if (typeof (value) !== 'boolean') throw new Error(`${field.name || JSON.stringify(value)} type is not ${fied.type}${parentError}`)
+      if (typeof (value) !== 'boolean') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     default:
       throw new Error(`Unsupported field type for ${field.name ||'single'}${parentError}`)
@@ -148,7 +148,7 @@ async function validator(obj, schema) {
   for(let i = 0; i < schema.length; ++i) {
     const field = schema[i]
     // presence
-    if(!field.name in obj || obj[field.name] === undefined || obj[field.name] === null) throw new Error(`Missing field ${field.name} in ${JSON.stringify(obj)}`)
+    if(!(field.name in obj) || obj[field.name] === undefined || obj[field.name] === null) throw new Error(`Missing field ${field.name} in ${JSON.stringify(obj)}`)
 
     const value = obj[field.name]
 

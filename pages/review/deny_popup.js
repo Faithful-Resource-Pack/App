@@ -32,7 +32,7 @@ export default {
           <v-btn
             color="red"
             text
-            :disabled="!reason || (reason?.length == 0)"
+            :disabled="!reason || (reason && reason.length == 0)"
             @click="cleanUp('validate')"
           >
             {{ $root.lang().global.btn.ok }}

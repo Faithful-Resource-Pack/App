@@ -23,8 +23,8 @@ export default {
       {{ $root.lang().global.no_results }}
     </div>
     <div v-else class="my-2 text-h5">
-      <v-row>
-        <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-if="Object.keys(addons).length != 0" v-for="(addon, index) in addons" :key="index">
+      <v-row v-if="Object.keys(addons).length != 0">
+        <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-for="(addon, index) in addons" :key="index">
 
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
@@ -51,7 +51,7 @@ export default {
               >
                 <v-icon small>mdi-open-in-new</v-icon>
               </v-btn>
-              <template v-if="addon.status == 'denied'">: {{ addon.approval?.reason }}</template>
+              <template v-if="addon.status == 'denied'">: {{ addon.approval ? addon.approval.reason: '' }}</template>
             </v-card-text>
 
             <v-card-actions style="justify-content: flex-end;">

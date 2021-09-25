@@ -77,7 +77,6 @@ export default {
           </v-col></v-row>
         </v-list>
         <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
-        </div>
       </div>
       <contributor-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></contributor-remove-confirm>
     </v-container>`,

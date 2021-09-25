@@ -55,14 +55,14 @@ export default {
 
                 <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
                 <div class="text--secondary" style="margin-bottom: 10px;">
-                  <template v-for="(links, key, index) in addon.downloads">
-                    {{ key }}:
-                    <ul>
+                  <template v-for="(links, key) in addon.downloads">
+                    <div :key="'title-' + key">{{ key }}:</div>
+                    <ul :key="'ul-' + key">
                       <li v-for="(link, indexLink) in links" :key="indexLink" style="background-color: transparent">
                         <a :href="link" class="text--secondary">{{ $root.lang().review.addon.labels.link }} {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
                       </li>
                     </ul>
-                    <br>
+                    <br :key="'br-' + key">
                   </template>
                 </div>
                 
@@ -82,7 +82,7 @@ export default {
 
         </v-row>
 
-        <v-row v-if="addon.images?.carousel.length > 0">
+        <v-row v-if="addon.images && addon.images.carousel.length > 0">
           <v-col
             v-for="index in addon.images.carousel"
             :key="index"

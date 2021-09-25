@@ -10,7 +10,7 @@
   <title>Compliance Web Application</title>
 </head>
 <body>
-  <v-app id="app">
+  <v-app id="app" ref="app">
     <v-app-bar flat dense bar app v-if="isUserLogged && window.width > 700">
       <span class="mr-2 d-flex noselect">
         <img src="https://compliancepack.net/image/icon/compliance_32x.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
@@ -78,7 +78,7 @@
       </span>
     </v-app-bar>
 
-    <v-navigation-drawer width="320" absolute v-model="drawer" v-if="isUserLogged && window.width <= 700" absolute temporary>
+    <v-navigation-drawer width="320" absolute v-model="drawer" v-if="isUserLogged && window.width <= 700" temporary>
 
       <v-card>
         <v-img height="128" :src="user.banner">
@@ -103,6 +103,7 @@
         v-for="(tab, tabIndex) in validsTabs"
       >
         <v-list
+          :key="'item-' + tabIndex"
           dense
           nav
         >
@@ -119,7 +120,7 @@
             </v-list-item-content>
           </v-list-item>
         </v-list>
-        <v-divider style="margin-bottom: 10px" />
+        <v-divider :key="'divider-' + tabIndex" style="margin-bottom: 10px" />
       </template>
     </v-navigation-drawer>
 

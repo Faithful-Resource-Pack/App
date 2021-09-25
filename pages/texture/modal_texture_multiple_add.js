@@ -1,8 +1,5 @@
 /* global axios, Vue, Prism */
 
-const useModal = () => import('./modal_use.js')
-const removeConfirm = () => import('./remove-confirm.js')
-
 const emptyPath = function () {
   return ['', []]
 }

@@ -65,9 +65,7 @@ export default {
               </v-row>
               <v-row>
                 <v-col>
-                  <v-text-field 
-                      <v-text-field 
-                  <v-text-field 
+                  <v-text-field
                     required
                     :rules="usernameRules"
                     :counter="usernameMaxLength"
@@ -92,8 +90,8 @@ export default {
         <v-row class="mb-2"><v-col>
           <v-form lazy-validation>
             <div class="text-h6">{{ $root.lang().profile.social.title }}</div>
+            <template v-if="localUser.media && Object.keys(localUser.media).length">
             <v-row
-              v-if="localUser.media && Object.keys(localUser.media).length"
               v-for="(socialMedia, index) in localUser.media"
               :key="index"
               align="center"
@@ -129,6 +127,7 @@ export default {
                 </v-row>
               </v-col>
             </v-row>
+            </template>
 
             <v-row
               class="mt-2"

@@ -1,12 +1,7 @@
 /* global axios, d3, moment */
-const ContributorModal = () => import('../contributor/modal.js')
-const ContributorRemoveConfirm = () => import('../contributor/remove-confirm.js')
-
 export default {
   name: 'contributor-page',
   components: {
-    ContributorModal,
-    ContributorRemoveConfirm
   },
   template: `
     <v-container>
@@ -185,7 +180,7 @@ export default {
             .style("left", (event.pageX) + "px")
             .style("top", (event.pageY) + "px")
         })				
-        .on("mouseout", function(d) {		
+        .on("mouseout", function() {		
             div.transition()		
                 .duration(500)		
                 .style("opacity", 0);	

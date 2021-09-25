@@ -1,8 +1,10 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
-import enUS from './resources/strings/en_US.js'
-import frFR from './resources/strings/fr_FR.js'
-import deDE from './resources/strings/de_DE.js'
+const routes = [
+  { path: '/', redirect: '/profile/' }
+]
+
+const router = new VueRouter({ routes })
 
 const ContributionPage = () => import('./pages/contribution/main.js')
 const ContributorPage = () => import('./pages/contributor/main.js')
@@ -18,13 +20,57 @@ const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
 
-Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
-
-const routes = [
-  { path: '/', redirect: '/profile/' }
+const ALL_TABS_ROUTES = [
+  {
+    subtabs: [
+      { routes: [{ path: '/profile', component: ProfilePage }] },
+      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] }
+    ]
+  },
+  {
+    subtabs: [
+      { routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
+      { routes: [{ path: '/addons/new', component: AddonNewPage }] }
+    ]
+  },
+  {
+    subtabs: [
+      { routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
+      { routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
+    ]
+  },
+  {
+    subtabs: [
+      { routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
+      { routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
+    ]
+  },
+  {
+    subtabs: [
+      { routes: [{ path: '/contributions', component: ContributionPage }] },
+      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
+      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
+      { routes: [{ path: '/modding/mods', component: ModsPage }] },
+      { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
+    ]
+  }
 ]
 
-const router = new VueRouter({ routes })
+for(let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
+  const tab = ALL_TABS_ROUTES[i]
+  tab.subtabs.forEach(subtab => {
+    subtab.routes.forEach(route => {
+      router.addRoute(route)
+    })
+  })
+}
+
+// convert-import
+import enUS from './resources/strings/en_US.js'
+import frFR from './resources/strings/fr_FR.js'
+import deDE from './resources/strings/de_DE.js'
+
+Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
 const EMPTY_USER = {
   avatar: '',
@@ -45,11 +91,56 @@ const _set_lang = function(val) {
   localStorage.setItem(LANG_KEY, val)
 }
 
+let ALL_TABS = [
+  {
+    label: 'user',
+    subtabs: [
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile',  },
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' }
+    ]
+  },
+  {
+    label: 'addons',
+    subtabs: [
+      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
+      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
+    ]
+  },
+  {
+    label: 'modding',
+    subtabs: [
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
+    ]
+  },
+  {
+    label: 'review',
+    subtabs: [
+      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
+      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
+    ],
+    roles: ['Administrator']
+  },
+  {
+    label: 'database',
+    subtabs: [
+      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
+      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
+      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
+    ],
+    roles: ['Developer', 'Administrator']
+  }
+]
+// convert-import
+
 // eslint-disable-next-line no-unused-vars
 const v = new Vue({
   router,
   el: '#app',
-  data: {
+  data() {
+    return {
     selectedLang: _get_lang(),
     langs: {
       en: enUS,
@@ -61,48 +152,7 @@ const v = new Vue({
       height: window.innerHeight
     },
     user: EMPTY_USER,
-    tabs: [
-      {
-        label: 'user',
-        subtabs: [
-          { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile', routes: [{ path: '/profile', component: ProfilePage }] },
-          { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics', routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] }
-        ]
-      },
-      {
-        label: 'addons',
-        subtabs: [
-          { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions', routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
-          { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload', routes: [{ path: '/addons/new', component: AddonNewPage }] }
-        ]
-      },
-      {
-        label: 'modding',
-        subtabs: [
-          { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod', routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
-          { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack', routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
-        ]
-      },
-      {
-        label: 'review',
-        subtabs: [
-          { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons', routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
-          { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations', routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
-        ],
-        roles: ['Administrator']
-      },
-      {
-        label: 'database',
-        subtabs: [
-          { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions', routes: [{ path: '/contributions', component: ContributionPage }] },
-          { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors', routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
-          { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures', routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
-          { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods', routes: [{ path: '/modding/mods', component: ModsPage }] },
-          { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks', routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
-        ],
-        roles: ['Developer', 'Administrator']
-      }
-    ],
+    tabs: ALL_TABS,
     bg: 'transparent',
     snackbar: {
       show: false,
@@ -111,6 +161,7 @@ const v = new Vue({
       timeout: 4000
     },
     drawer: false
+  }
   },
   watch: {
     selectedLang: function(newValue) {
@@ -129,7 +180,8 @@ const v = new Vue({
       for (let i = 0; i < this.tabs.length; i++) {
         let found = false
 
-        this.tabs[i].labelText = this.lang().global.tabs[this.tabs[i].label]?.title
+        const tab = this.tabs[i]
+        tab.labelText = this.lang().global.tabs[this.tabs[i].label]?.title
 
         if (this.tabs[i].roles) {
           this.tabs[i].roles.forEach(role => {
@@ -141,9 +193,6 @@ const v = new Vue({
           res.push(this.tabs[i])
           this.tabs[i].subtabs.forEach(subtab => {
             subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label]
-            subtab.routes.forEach(route => {
-              router.addRoute(route)
-            })
           })
         }
       }

@@ -112,7 +112,6 @@ export default {
 
       </v-list>
       <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
-      </div>
     </div>
   </v-container>`,
   data () {

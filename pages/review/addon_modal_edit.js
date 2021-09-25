@@ -86,7 +86,7 @@ export default {
                   </template>
                 </v-autocomplete>
 
-                <div v-if="addon.images?.header" style="margin: 10px;">
+                <div v-if="addon.images && addon.images.header" style="margin: 10px;">
                 <v-img
                   style="border-radius: 10px"
                   :aspect-ratio="16/9"
@@ -107,7 +107,7 @@ export default {
                   @change="validateHeader"
                 ></v-file-input>
 
-                <v-row v-if="addon.images?.carousel.length > 0" style="margin: -2px">
+                <v-row v-if="addon.images && addon.images.carousel.length > 0" style="margin: -2px">
                   <v-col
                     v-for="index in addon.images.carousel"
                     :key="index"
@@ -217,17 +217,17 @@ export default {
                         ></v-text-field>
                       </v-col>
                       <v-col cols="1" v-if="indexLinks == 0" style="padding-left: 3px;">
-                        <v-btn icon @click="addLink(index)"">
+                        <v-btn icon @click="addLink(index)">
                           <v-icon color="white lighten-1">mdi-plus</v-icon>
                         </v-btn>
                       </v-col>
                       <v-col cols="1" v-else style="padding-left: 3px;">
-                        <v-btn icon @click="deleteLink(index, indexLinks)"">
+                        <v-btn icon @click="deleteLink(index, indexLinks)">
                           <v-icon color="red lighten-1">mdi-minus</v-icon>
                         </v-btn>
                       </v-col>
                       <v-col cols="1" v-if="index != 0 && indexLinks == 0" style="padding-left: 3px;">
-                        <v-btn icon @click="deleteDownload(index)"">
+                        <v-btn icon @click="deleteDownload(index)">
                           <v-icon color="red lighten-1">mdi-delete</v-icon>
                         </v-btn>
                       </v-col>

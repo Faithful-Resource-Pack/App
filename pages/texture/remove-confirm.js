@@ -36,8 +36,8 @@ export default {
               </v-list-item>
             </blockquote>
             <ul v-else>
-              <template v-for="key in Object.keys(data).sort()">
-                <li v-if="typeof data[key] === 'string' || Array.isArray(data[key])">
+              <template v-for="(key, index) in Object.keys(data).sort()">
+                <li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="index">
                   {{ key }} : {{ Array.isArray(data[key]) ? JSON.stringify(data[key]) : data[key] }}
                 </li>
               </template>

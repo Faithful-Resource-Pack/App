@@ -90,7 +90,7 @@ export default {
                   </template>
                 </v-autocomplete>
 
-                <div v-if="addon.images?.header" style="margin: 10px;">
+                <div v-if="addon.images && addon.images.header" style="margin: 10px;">
                 <v-img
                   style="border-radius: 10px"
                   :aspect-ratio="16/9"
@@ -112,7 +112,7 @@ export default {
                   dense
                 ></upload>
 
-                <v-row v-if="addon.images?.carousel.length > 0" style="margin: -2px">
+                <v-row v-if="addon.images && addon.images.carousel.length > 0" style="margin: -2px">
                   <v-col
                     v-for="(index, p_i) in addon.images.carousel"
                     :key="index + '-' + p_i"
@@ -335,7 +335,7 @@ export default {
         u => (u && u.length <= this.descriptionMaxLength) || this.$root.lang().addons.general.description.rules.description_too_big.replace('%s', this.descriptionMaxLength)
       ],
       headerImageRules: [
-        u => (!u || u?.size < 500000) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
+        u => (!u || (u.size && u?.size < 500000)) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
       ],
       editions: ['Java', 'Bedrock'],
       selectedEditions: [],
