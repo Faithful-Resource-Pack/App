@@ -69,7 +69,7 @@ export default {
 
                   <!-- LIST ITEM PART -->
                   <template v-slot:item="data">
-                    <template v-if="typeof data.item !== 'object'">
+                    <template v-if="data.item && data.item.contructor && data.item.constructor.name === 'String'">
                       <v-list-item-content v-text="data.item"></v-list-item-content>
                     </template>
                     <template v-else>

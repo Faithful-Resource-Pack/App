@@ -158,6 +158,10 @@ export default {
         .attr('class', 'series')
         .style('fill', (d, i) => colors[i % colors.length])
 
+      const div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0);
+
       groups.selectAll('rect')
         .data(d => d)
         .enter()
@@ -166,6 +170,26 @@ export default {
         .attr('width', xScale.bandwidth())
         .attr('y', d => yScale(d[1]))
         .attr('height', d => height - spacing - yScale(d[1] - d[0]))
+        .on("mouseover", function(...args) {
+          const [event, d] = args
+          console.log(args);
+          div.transition()
+              .duration(200)
+              .style("opacity", .9)
+          div.html(timeFormat(d.data.date) + "<br><b>" + reverseKeys[d[0] === 0 ? 0 : 1] + "</b> contributions<br><span class='number'>"  + (d[1] - d[0]) + '</span>')
+              .style("left", (event.pageX) + "px")
+              .style("top", (event.pageY) + "px")
+          })
+        .on("mousemove", function(event) {
+          div
+            .style("left", (event.pageX) + "px")
+            .style("top", (event.pageY) + "px")
+        })				
+        .on("mouseout", function(d) {		
+            div.transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
 
       const reverseColors = colors.reverse() // Pour présenter les catégories dans le même sens qu'elles sont utilisées
       const reverseKeys = allRes.reverse()

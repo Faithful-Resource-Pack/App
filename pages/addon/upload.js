@@ -134,7 +134,7 @@ export default {
 
       let result = []
       arr.forEach(file => {
-        if(typeof file == 'object' && 'name' in file && 'size' in file && 'lastModified' in file) {
+        if(file && file.contructor && file.constructor.name === 'Object' && 'name' in file && 'size' in file && 'lastModified' in file) {
           result.push(file)
         }
       })
