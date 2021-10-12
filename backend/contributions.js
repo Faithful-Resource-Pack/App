@@ -7,6 +7,9 @@ const firestorm    = require('../helpers/firestorm/')
 const { textureURL } = require('../helpers/textureURL')
 
 module.exports = {
+  contributions: function () {
+    return contri.read_raw()
+  },
   resolutions: function() {
     return Promise.resolve(['c32', 'c64'])
   },

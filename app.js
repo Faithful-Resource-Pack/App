@@ -647,3 +647,45 @@ app.get('/paths/all/', function (req, res) {
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
+
+/**
+ * ==========================================
+ *                  GALLERY
+ * ==========================================
+ */
+
+app.get('/gallery/:type/:edition/:version/:tag/:name?', function (req, res) {
+  let type, edition, version, tag, name
+
+  if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return; else type = req.params.type.toLowerCase()
+  if (!['java', 'bedrock', 'dungeons'].includes(req.params.edition.toLowerCase())) return; else edition = req.params.edition.toLowerCase()
+  version = req.params.version.toLowerCase()
+  tag = req.params.tag.toLowerCase()
+  name = req.params.name
+
+  pathsBackend.versionIDs(version)
+    .then(usesIDs => {
+      return usesBackend.editionIDs(edition, usesIDs)
+    })
+    .then(texturesIDs => {
+      return texturesBackend.tagIDs(tag, texturesIDs)
+    })
+    .then(tagsIDs => {
+      if (name) return texturesBackend.searchIDs(tagsIDs, name)
+      return tagsIDs
+    })
+    .then(texturesID => {
+      switch (type) {
+        case 'textures': return texturesBackend.searchKeys(texturesID)
+        case 'paths': return pathsBackend.searchTextureID(texturesID)
+        case 'uses': 
+          return usesBackend.searchTextureID([{
+            field: "textureID",
+            criteria: "in",
+            value: texturesID
+          }])
+      }
+    })
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})

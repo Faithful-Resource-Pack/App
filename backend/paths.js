@@ -1,8 +1,47 @@
 const paths = require('../helpers/firestorm/texture_paths.js')
+const uses = require('../helpers/firestorm/texture_use.js')
 
 module.exports = {
   path: function() {
-    return paths.read_raw().catch(err => console.trace(err))
+    return paths.read_raw()
+  },
+  searchTextureID (ids) {
+    return uses.search([{
+      field: "textureID",
+      criteria: 'in',
+      value: ids
+    }])
+    .then(uses => {
+      uses = uses.map(use => use.id)
+      return paths.search([{
+        field: "useID",
+        criteria: 'in',
+        value: uses
+      }])
+    })
+  },
+  versionIDs: function (version) {
+    if (version === 'latest') {
+      return paths.read_raw()
+      .then(paths => {
+        const ids = []
+        for (const pathID in paths)
+          ids.push(paths[pathID].useID)
+        return ids
+      })
+    }
+
+    return paths.search([{
+      field: 'versions',
+      criteria: 'array-contains',
+      value: version
+    }])
+    .then(paths => {
+      const ids = []
+      for (const pathID in paths) 
+        ids.push(paths[pathID].useID)
+      return ids
+    })
   },
   search: function (useID) {
     if (!useID) return Promise.reject(new Error('Search function paramater undefined'))

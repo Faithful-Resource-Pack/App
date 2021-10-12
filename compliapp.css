@@ -118,9 +118,20 @@ div.tooltip .number {
   top: 2px !important;
 }
 
+.texture-img {
+  max-height: 256px;
+  max-width: 256px;
+}
+
 .texture-img > .v-image__image {
   background-size: contain !important;
   image-rendering: pixelated;
+}
+
+.texture-background > .v-image__image {
+  image-rendering: pixelated;
+  background-repeat: repeat;
+  background-size: auto;
 }
 
 .v-chip {
@@ -317,3 +328,43 @@ code {
 .upload-file-input .v-card.dragover .upload-label {
   color: white;
 }
+
+.gallery-tags {
+  padding: .2rem .4rem;
+  margin-right: 5px;
+	border-radius: 3px;
+  background-color: #272727;
+}
+
+.v-image__image--preload {
+  filter: none !important;
+  width: 50%;
+  margin-left: 25%;
+}
+
+.v-tooltip__content {
+  padding: 0 0 5px 5px;
+}
+
+.gallery-tooltip {
+  height: 256px;
+  opacity: 1 !important;
+  /* animation: tooltip-openning 1s ease; */
+}
+
+.gallery-tooltip-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;   
+}
+
+/* 
+@keyframes tooltip-openning {
+  from {
+    left: -256px;
+  }
+  to {
+    left: 0;
+  }
+} */

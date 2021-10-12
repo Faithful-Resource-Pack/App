@@ -32,6 +32,9 @@ export default {
           statistics: 'statistics'
         }
       },
+      gallery: {
+        title: 'gallery',
+      },
       addons: {
         title: 'add-ons',
         subtabs: {

@@ -19,6 +19,7 @@ const ModNewPage = () => import('./pages/modding/mods_new.js')
 const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
+const GalleryPage = () => import('./pages/gallery/gallery.js')
 
 const ALL_TABS_ROUTES = [
   {
@@ -56,7 +57,7 @@ const ALL_TABS_ROUTES = [
   }
 ]
 
-for(let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
+for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
   const tab = ALL_TABS_ROUTES[i]
   tab.subtabs.forEach(subtab => {
     subtab.routes.forEach(route => {
@@ -83,10 +84,10 @@ const EMPTY_USER = {
 
 const LANG_KEY = 'lang'
 const LANG_DEFAULT = 'en'
-const _get_lang = function() {
+const _get_lang = function () {
   return localStorage.getItem(LANG_KEY) || LANG_DEFAULT
 }
-const _set_lang = function(val) {
+const _set_lang = function (val) {
   val = String(val)
   localStorage.setItem(LANG_KEY, val)
 }
@@ -95,44 +96,52 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile',  },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' }
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile', routes: [{ path: '/profile', component: ProfilePage }] },
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics', routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] }
     ]
+  },
+  {
+    label: 'gallery',
+    enabled: true,
+    to: '/gallery',
+    icon: 'mdi-texture',
+    routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/all/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:name?', component: GalleryPage }]
   },
   {
     label: 'addons',
     subtabs: [
-      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
-      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
+      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions', routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
+      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload', routes: [{ path: '/addons/new', component: AddonNewPage }] }
     ]
   },
   {
     label: 'modding',
     subtabs: [
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod', routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack', routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
     ]
   },
   {
     label: 'review',
     subtabs: [
-      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
-      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
+      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons', routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
+      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations', routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
     ],
     roles: ['Administrator']
   },
   {
     label: 'database',
     subtabs: [
-      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
-      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
-      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
+      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions', routes: [{ path: '/contributions', component: ContributionPage }] },
+      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors', routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
+      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures', routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods', routes: [{ path: '/modding/mods', component: ModsPage }] },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks', routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
     ],
     roles: ['Developer', 'Administrator']
   }
 ]
+
 // convert-import
 
 // eslint-disable-next-line no-unused-vars
@@ -141,31 +150,31 @@ const v = new Vue({
   el: '#app',
   data() {
     return {
-    selectedLang: _get_lang(),
-    langs: {
-      en: enUS,
-      fr: { ...enUS, ...frFR },
-      de: { ...enUS, ...deDE }
-    },
-    window: {
-      width: window.innerWidth,
-      height: window.innerHeight
-    },
-    user: EMPTY_USER,
-    tabs: ALL_TABS,
-    bg: 'transparent',
-    snackbar: {
-      show: false,
-      message: '',
-      color: '#222',
-      timeout: 4000
-    },
-    drawer: false
-  }
+      selectedLang: _get_lang(),
+      langs: {
+        en: enUS,
+        fr: { ...enUS, ...frFR },
+        de: { ...enUS, ...deDE }
+      },
+      window: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
+      user: EMPTY_USER,
+      tabs: ALL_TABS,
+      bg: 'transparent',
+      snackbar: {
+        show: false,
+        message: '',
+        color: '#222',
+        timeout: 4000
+      },
+      drawer: false
+    }
   },
   watch: {
-    selectedLang: function(newValue) {
-      if(Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
+    selectedLang: function (newValue) {
+      if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
     }
   },
   computed: {
@@ -191,9 +200,15 @@ const v = new Vue({
 
         if (found) {
           res.push(this.tabs[i])
-          this.tabs[i].subtabs.forEach(subtab => {
+          this.tabs[i].subtabs?.forEach(subtab => {
             subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label]
+            subtab.routes.forEach(route => router.addRoute(route))
           })
+
+          if (!this.tabs[i].subtabs) {
+            this.tabs[i].labelText = this.lang().global.tabs[this.tabs[i].label].title
+            this.tabs[i].routes.forEach(route => router.addRoute(route))
+          }
         }
       }
 

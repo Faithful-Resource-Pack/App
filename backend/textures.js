@@ -27,6 +27,31 @@ module.exports = {
         return types
       })
   },
+  searchKeys (ids) {
+    return textures.searchKeys(ids)
+  },
+  searchIDs (ids, name) {
+    return this.searchKeys(ids)
+    .then(all => {
+      const ids = []
+      for (const id in all)
+        if (all[id].name.includes(name)) ids.push(id)
+      return ids
+    })
+  },
+  tagIDs (tag, ids) {
+    return textures.searchKeys(ids)
+    .then(all => {
+      const ids = []
+
+      for (const id in all) {
+        for (let i = 0; i < all[id].type.length; i++) all[id].type[i] = all[id].type[i].toLowerCase()
+        if (all[id].type.includes(tag) || tag === 'all') ids.push(id)
+      }
+
+      return ids
+    })
+  },
   search: function (textureName, textureType) {
     if (!textureName && !textureType) return Promise.reject(new Error('Search function parameters undefined'))
 
