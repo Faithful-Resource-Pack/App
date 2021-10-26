@@ -137,8 +137,12 @@ let ALL_TABS = [
 ]
 // convert-import
 
-// eslint-disable-next-line no-unused-vars
-const v = new Vue({
+window.v = undefined
+axios.get('./resources/settings.json')
+.then(res => {
+  window.settings = res.data
+}).then(() => {
+  let ins = new Vue({
   router,
   el: '#app',
   data() {
@@ -320,11 +324,10 @@ const v = new Vue({
         }
       }
     }
-  }),
-  created() {
-    axios.get('./resources/settings.json')
-      .then(res => {
-        window.settings = res.data
-      })
+  })
+})
+
+  if(Vue.config.devtools) {
+    window.v = ins
   }
 })
