@@ -3,13 +3,12 @@
 require('dotenv').config()
 
 const express = require('express')
+const fs = require('fs')
 const path = require('path')
-const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
 const app = express()
 const compliappURL = '/'
-
-const settings = require('./resources/settings.js')
 
 const contributorsBackend = require('./backend/contributor')
 const contributionsBackend = require('./backend/contributions')
@@ -18,7 +17,23 @@ const texturesBackend = require('./backend/textures')
 const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
 const addonsBackend = require('./backend/addons')
+const allCollection = require('./helpers/firestorm/all')
+const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
+
+// fetch settings from the database
+const fetchSettings = async () => {
+  fs.writeFileSync(
+    path.join(path.join(process.cwd(), 'resources/'), 'settings.json'),
+    JSON.stringify(await allCollection.settings.read_raw(), null, 0),
+    { flag: 'w', encoding: 'utf-8' }
+  )
+}
+
+fetchSettings()
+setInterval(() => {
+  fetchSettings()
+}, 5000)
 
 app.use(express.urlencoded({
   extended: true,
@@ -36,7 +51,7 @@ app.listen(port, () => {
 })
 
 app.use(express.static('.', {
-  extensions: ['html', 'xml']
+  extensions: ['html', 'xml', 'json']
 }))
 app.use('/api/discord', require('./api/discord'))
 
@@ -45,14 +60,14 @@ app.use('/api/discord', require('./api/discord'))
  * @param {String[]} roles Authorized roles to get access, only 1 of them is necessary
  * @returns {Promise<void>} Resolves if authed correctly
  */
-const verifyAuth = function (token, roles = []) {
+const verifyAuth = (token, roles = []) => {
   if (!token) {
     const err = new Error('No Discord Access Token given')
     err.code = 499
     return Promise.reject(err)
   }
 
-  if (roles.length) roles.push('Developer') // add dev perms for testing purpose
+  if (roles.length) roles.push(settings.roles.dev.name) // add dev perms for testing purpose
 
   return fetch('https://discord.com/api/users/@me', {
     headers: {
@@ -139,8 +154,8 @@ const APPROVAL_NAMES = {
 }
 
 Object.keys(APPROVAL_NAMES).forEach(approvalKey => {
-  app.post('/review/addons/' + approvalKey, function (req, res) {
-    verifyAuth(req.body.token, settings.ADMIN_ROLE)
+  app.post('/review/addons/' + approvalKey, (req, res) => {
+    verifyAuth(req.body.token, [settings.roles.admin.name])
       .then(() => {
         return addonsBackend.approval(req.body.approval, APPROVAL_NAMES[approvalKey], req.body.id)
       })
@@ -189,7 +204,7 @@ app.post('/addons/remove', function (req, res) {
   verifyAuth(req.body.token)
     .then(userID => {
       return addonsBackend.remove(req.body.id, userID)
-    }) 
+    })
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
@@ -305,7 +320,7 @@ app.post('/profile/roles', function (req, res) {
 
       userID = json.id
       username = json.username
-      
+
       contributorsBackend.getUser(userID)
         .then(contributor => {
           res.setHeader('Content-Type', 'application/json')
@@ -321,19 +336,19 @@ app.post('/profile/roles', function (req, res) {
             media: [],
             id: userID
           })
-          .then(() => {
-            contributorsBackend.getUser(userID)
-              .then(contributor => {
-                res.setHeader('Content-Type', 'application/json')
-                res.send(contributor.type || [])
-                res.end()
-              })
-          })
-          .catch(err => {
-            res.status(500)
-            res.send(err)
-            res.end()
-          })
+            .then(() => {
+              contributorsBackend.getUser(userID)
+                .then(contributor => {
+                  res.setHeader('Content-Type', 'application/json')
+                  res.send(contributor.type || [])
+                  res.end()
+                })
+            })
+            .catch(err => {
+              res.status(500)
+              res.send(err)
+              res.end()
+            })
         })
     })
 })
@@ -348,8 +363,8 @@ app.post('/profile/roles', function (req, res) {
 /**
  * Perms: admins + dev
  */
-app.post('/contributors/change', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/contributors/change', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.change(req.body)
     })
@@ -360,8 +375,8 @@ app.post('/contributors/change', function (req, res) {
 /**
  * Perms: admins + dev
  */
-app.post('/contributors/add', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/contributors/add', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.add(req.body)
     })
@@ -372,8 +387,8 @@ app.post('/contributors/add', function (req, res) {
 /**
  * Perms: admins + dev
  */
-app.post('/contributors/remove', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/contributors/remove', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.remove(req.body.id)
     })
@@ -418,7 +433,6 @@ app.get('/contributors/:type/:name?/?', function (req, res) {
  *               CONTRIBUTIONS
  * ==========================================
  */
-
 app.get('/contributions/res/?', function (req, res) {
   contributionsBackend.resolutions()
     .then(getSuccess(res))
@@ -464,8 +478,8 @@ app.get('/contributions/stats/', function (req, res) {
 /**
  * Perms: admins + dev
  */
-app.post('/textures/change', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/textures/change', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return texturesBackend.change(req.body)
     })
@@ -476,8 +490,8 @@ app.post('/textures/change', function (req, res) {
 /**
  * Perms: admins + dev
  */
-app.post('/textures/add', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/textures/add', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return texturesBackend.addTextures(req.body.data)
     })
@@ -485,8 +499,8 @@ app.post('/textures/add', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/textures/versions/add', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/textures/versions/add', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return texturesBackend.addNewMinecraftVersion(req.body.data)
     })
@@ -530,8 +544,8 @@ app.get('/textures/:type/:name?/?', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/textures/remove', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/textures/remove', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return texturesBackend.removeTextures(req.body.id)
     })
@@ -546,8 +560,8 @@ app.post('/textures/remove', function (req, res) {
  */
 
 // POST
-app.post('/uses/change', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/uses/change', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return usesBackend.change(req.body)
     })
@@ -555,8 +569,8 @@ app.post('/uses/change', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/uses/add', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/uses/add', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return usesBackend.add(req.body)
     })
@@ -564,8 +578,8 @@ app.post('/uses/add', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/uses/remove', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/uses/remove', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return usesBackend.remove(req.body.id, req.body.deletePaths)
     })
@@ -596,8 +610,8 @@ app.get('/uses/all/', function (req, res) {
  */
 
 // POST
-app.post('/paths/change', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/paths/change', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return pathsBackend.change(req.body)
     })
@@ -605,8 +619,8 @@ app.post('/paths/change', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/paths/version-update/', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/paths/version-update/', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return pathsBackend.update(req.body.actual, req.body.new)
     })
@@ -614,8 +628,8 @@ app.post('/paths/version-update/', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/paths/add', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/paths/add', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return pathsBackend.add(req.body)
     })
@@ -623,8 +637,8 @@ app.post('/paths/add', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.post('/paths/remove', function (req, res) {
-  verifyAuth(req.body.token, [...settings.ADMIN_ROLE, ...settings.DEV_ROLE])
+app.post('/paths/remove', (req, res) => {
+  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
     .then(() => {
       return pathsBackend.remove(req.body.id)
     })

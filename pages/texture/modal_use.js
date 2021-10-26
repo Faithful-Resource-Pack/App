@@ -2,7 +2,8 @@
 
 const pathModal = () => import('./modal_path.js')
 const removeConfirm = () => import('./remove-confirm.js')
-const SUFFIX = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+
+const SUFFIX = settings.uses.sufix
 
 export default {
   name: 'use-modal',
@@ -118,7 +119,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       subFormData: {
         editions: [],

@@ -1,5 +1,7 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
+window.settings = undefined
+
 const routes = [
   { path: '/', redirect: '/profile/' }
 ]
@@ -56,7 +58,7 @@ const ALL_TABS_ROUTES = [
   }
 ]
 
-for(let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
+for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
   const tab = ALL_TABS_ROUTES[i]
   tab.subtabs.forEach(subtab => {
     subtab.routes.forEach(route => {
@@ -83,10 +85,10 @@ const EMPTY_USER = {
 
 const LANG_KEY = 'lang'
 const LANG_DEFAULT = 'en'
-const _get_lang = function() {
+const _get_lang = function () {
   return localStorage.getItem(LANG_KEY) || LANG_DEFAULT
 }
-const _set_lang = function(val) {
+const _set_lang = function (val) {
   val = String(val)
   localStorage.setItem(LANG_KEY, val)
 }
@@ -95,7 +97,7 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile',  },
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile', },
       { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' }
     ]
   },
@@ -141,31 +143,31 @@ const v = new Vue({
   el: '#app',
   data() {
     return {
-    selectedLang: _get_lang(),
-    langs: {
-      en: enUS,
-      fr: { ...enUS, ...frFR },
-      de: { ...enUS, ...deDE }
-    },
-    window: {
-      width: window.innerWidth,
-      height: window.innerHeight
-    },
-    user: EMPTY_USER,
-    tabs: ALL_TABS,
-    bg: 'transparent',
-    snackbar: {
-      show: false,
-      message: '',
-      color: '#222',
-      timeout: 4000
-    },
-    drawer: false
-  }
+      selectedLang: _get_lang(),
+      langs: {
+        en: enUS,
+        fr: { ...enUS, ...frFR },
+        de: { ...enUS, ...deDE }
+      },
+      window: {
+        width: window.innerWidth,
+        height: window.innerHeight
+      },
+      user: EMPTY_USER,
+      tabs: ALL_TABS,
+      bg: 'transparent',
+      snackbar: {
+        show: false,
+        message: '',
+        color: '#222',
+        timeout: 4000
+      },
+      drawer: false
+    }
   },
   watch: {
-    selectedLang: function(newValue) {
-      if(Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
+    selectedLang: function (newValue) {
+      if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
     }
   },
   computed: {
@@ -318,5 +320,11 @@ const v = new Vue({
         }
       }
     }
-  })
+  }),
+  created() {
+    axios.get('/resources/settings.json')
+      .then(res => {
+        window.settings = res.data
+      })
+  }
 })

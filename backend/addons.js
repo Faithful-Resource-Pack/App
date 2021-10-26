@@ -1,5 +1,7 @@
 const addons = require('../helpers/firestorm/addons.js')
 const contributors = require('../helpers/firestorm/users.js')
+const settings = require('../resources/settings.json')
+
 const { validator, single } = require('../validator.js')
 
 const ADDON_STATUS_PENDING = 'pending'
@@ -61,8 +63,8 @@ const addonSchematic = [
       min: 2
     },
     validator: (value) => {
-      const editions = ["Bedrock", "Java"]
-      const resolutions = ["32x", "64x"]
+      const editions = settings.editions
+      const resolutions = settings.resolutions
       const valids = [...editions, ...resolutions]
 
       for (let i = 0; i < value.length; i++) {
@@ -109,7 +111,7 @@ const addonSchematic = [
         type: "string",
         length: { min: 1 }
       }])
-    } 
+    }
   },
   {
     name: "description",
@@ -161,22 +163,22 @@ module.exports = {
   },
   submit: function (body) {
     return single(body, { type: "object" })
-    .then(() => {
-      return validator(body, [titleSchematicSubmit, ...addonSchematic])
-    })
-    .then(() => {
-      const obj = {}
-      obj.id = body.title.split(' ').join('_')
-      const fArr = ['title', 'description', 'authors', 'id', 'status', 'comments', 'optifine', 'type', 'downloads', 'images']
-
-      fArr.forEach(fieldKept => {
-        if (fieldKept in body) obj[fieldKept] = body[fieldKept]
+      .then(() => {
+        return validator(body, [titleSchematicSubmit, ...addonSchematic])
       })
+      .then(() => {
+        const obj = {}
+        obj.id = body.title.split(' ').join('_')
+        const fArr = ['title', 'description', 'authors', 'id', 'status', 'comments', 'optifine', 'type', 'downloads', 'images']
 
-      obj.status = ADDON_STATUS_PENDING
+        fArr.forEach(fieldKept => {
+          if (fieldKept in body) obj[fieldKept] = body[fieldKept]
+        })
 
-      return addons.set(obj.id, obj)
-    })
+        obj.status = ADDON_STATUS_PENDING
+
+        return addons.set(obj.id, obj)
+      })
   },
   remove: function (addonID, editorDiscordID) {
     return single(addonID, {
@@ -188,38 +190,38 @@ module.exports = {
         if (!canEdit) throw new Error('Only authors or admins can delete an addon.')
       }
     })
-    .then(() => {
-      return addons.remove(addonID)
-    })
+      .then(() => {
+        return addons.remove(addonID)
+      })
   },
   edit: function (body, editorDiscordID) {
     return single(body, { type: "object" })
-    .then(() => {
-      return single(body.id, {
-        type: "string",
-        validator: async (id) => {
-          const addon = await addons.get(id).catch(err => { throw err })
-          let canEdit = addon.authors.includes(editorDiscordID) ? true : (await contributors.get(editorDiscordID).catch(() => { return {type: []} })).type.includes('Administrator')
-          
-          if (!canEdit) throw new Error ('Only authors or admins can edit an addon.')
-        }
-      })
-    })
-    .then(() => {
-      return validator(body, [titleSchematic, ...addonSchematic])
-    })
-    .then(() => {
-      const obj = {}
-      const fArr = ['title', 'description', 'authors', 'id', 'status', 'comments', 'optifine', 'type', 'downloads', 'images']
-      
-      fArr.forEach(fieldKept => {
-        if (fieldKept in body) obj[fieldKept] = body[fieldKept]
-      })
+      .then(() => {
+        return single(body.id, {
+          type: "string",
+          validator: async (id) => {
+            const addon = await addons.get(id).catch(err => { throw err })
+            let canEdit = addon.authors.includes(editorDiscordID) ? true : (await contributors.get(editorDiscordID).catch(() => { return { type: [] } })).type.includes('Administrator')
 
-      obj.status = ADDON_STATUS_PENDING // set the object to "pending" each time someone modify the addon
+            if (!canEdit) throw new Error('Only authors or admins can edit an addon.')
+          }
+        })
+      })
+      .then(() => {
+        return validator(body, [titleSchematic, ...addonSchematic])
+      })
+      .then(() => {
+        const obj = {}
+        const fArr = ['title', 'description', 'authors', 'id', 'status', 'comments', 'optifine', 'type', 'downloads', 'images']
 
-      return addons.set(obj.id, obj)
-    })
+        fArr.forEach(fieldKept => {
+          if (fieldKept in body) obj[fieldKept] = body[fieldKept]
+        })
+
+        obj.status = ADDON_STATUS_PENDING // set the object to "pending" each time someone modify the addon
+
+        return addons.set(obj.id, obj)
+      })
   },
   approval: function (approval, status, id) {
     const obj = {}

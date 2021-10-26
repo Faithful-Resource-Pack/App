@@ -1,23 +1,24 @@
-const contri       = require('../helpers/firestorm/contributions')
-const users        = require('../helpers/firestorm/users')
-const texture      = require('../helpers/firestorm/texture')
-const uses         = require('../helpers/firestorm/texture_use')
-const paths        = require('../helpers/firestorm/texture_paths')
-const firestorm    = require('../helpers/firestorm/')
+const contri = require('../helpers/firestorm/contributions')
+const users = require('../helpers/firestorm/users')
+const texture = require('../helpers/firestorm/texture')
+const uses = require('../helpers/firestorm/texture_use')
+const paths = require('../helpers/firestorm/texture_paths')
+const firestorm = require('../helpers/firestorm/')
 const { textureURL } = require('../helpers/textureURL')
+const settings = require('../resources/settings.json')
 
 module.exports = {
-  resolutions: function() {
-    return Promise.resolve(['c32', 'c64'])
+  resolutions: function () {
+    return Promise.resolve(settings.compliance_resolutions)
   },
-  authors: function() {
+  authors: function () {
     return contri.read_raw()
       .then((res) => {
         const contribution_contributors = Object.values(res).map(el => el.contributors).flat()
 
         const occurences = {}
         contribution_contributors.forEach(d_id => {
-          if(!occurences[d_id]) occurences[d_id] = 1
+          if (!occurences[d_id]) occurences[d_id] = 1
           else ++occurences[d_id]
         })
 
@@ -43,10 +44,10 @@ module.exports = {
         return result
       })
   },
-  search: function(contributors_arr, resolutions) {
-    if(contributors_arr == undefined && resolutions == undefined)
+  search: function (contributors_arr, resolutions) {
+    if (contributors_arr == undefined && resolutions == undefined)
       return Promise.reject(new Error('Search function parameters undefined'))
-    
+
     /** @type {import('../helpers/firestorm').SearchOption[]} */
     const searchOptions = [{
       field: 'contributors',
@@ -54,7 +55,7 @@ module.exports = {
       value: contributors_arr
     }]
 
-    if(resolutions) {
+    if (resolutions) {
       searchOptions.push({
         field: 'res',
         criteria: 'in',
@@ -88,10 +89,10 @@ module.exports = {
         uses_results = Object.values(uses_object)
 
         let texture_found
-        for(let i = 0; i < contrib_results.length; ++i) {
+        for (let i = 0; i < contrib_results.length; ++i) {
           texture_found = texture_results.filter(r => r[firestorm.ID_FIELD] == contrib_results[i].textureID)[0]
 
-          if(texture_found && texture_found.name) {
+          if (texture_found && texture_found.name) {
             contrib_results[i].textureName = texture_found.name
           }
           contrib_results[i].edition = uses_object[contrib_results[i].textureID].editions[0]
@@ -116,7 +117,7 @@ module.exports = {
           ag[cv.useID] = cv
           return ag
         }, {})
-        
+
         let path, version
         contrib_results.forEach(contrib => {
 

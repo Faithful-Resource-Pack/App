@@ -58,11 +58,11 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       form: {
-        actual: '1.17',
-        new: '1.17.1'
+        actual: settings.versions.java[0],
+        new: settings.versions.java[0]
       }
     }
   },

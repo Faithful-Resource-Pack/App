@@ -63,7 +63,7 @@ export default {
       type: Array,
       required: false,
       default: function () {
-        return ['dungeons-master', '1.17.1', '1.17.0', '1.16.5', '1.16.220', '1.16.210', '1.15.2', '1.14.4', '1.13.2', '1.12.2', '1.11.2', '1.10.2', '1.9.4', '1.8.9', '1.7.10', '1.6.4', '1.5.2']
+        return [...settings.versions.java, ...settings.versions.bedrock, ...settings.versions.dungeons]
       }
     },
     useID: {
@@ -71,7 +71,7 @@ export default {
       required: true
     }
   },
-  data () {
+  data() {
     return {
       // those var names does not make any sens anymore lmao
       subPathFormData: {
