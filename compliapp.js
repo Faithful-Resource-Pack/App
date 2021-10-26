@@ -322,7 +322,7 @@ const v = new Vue({
     }
   }),
   created() {
-    axios.get('/resources/settings.json')
+    axios.get('./resources/settings.json')
       .then(res => {
         window.settings = res.data
       })
