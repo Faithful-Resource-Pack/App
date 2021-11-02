@@ -139,195 +139,233 @@ let ALL_TABS = [
 
 window.v = undefined
 axios.get('./resources/settings.json')
-.then(res => {
-  window.settings = res.data
-}).then(() => {
-  let ins = new Vue({
-  router,
-  el: '#app',
-  data() {
-    return {
-      selectedLang: _get_lang(),
-      langs: {
-        en: enUS,
-        fr: { ...enUS, ...frFR },
-        de: { ...enUS, ...deDE }
-      },
-      window: {
-        width: window.innerWidth,
-        height: window.innerHeight
-      },
-      user: EMPTY_USER,
-      tabs: ALL_TABS,
-      bg: 'transparent',
-      snackbar: {
-        show: false,
-        message: '',
-        color: '#222',
-        timeout: 4000
-      },
-      drawer: false
-    }
-  },
-  watch: {
-    selectedLang: function (newValue) {
-      if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
-    }
-  },
-  computed: {
-    /**
-     * Check user perms & add (or not) tabs & routes following user perms
-     * @returns all tabs to be added in the html
-     */
-    validsTabs: function () {
-      const res = []
-      const roles = this.userRoles
-
-      for (let i = 0; i < this.tabs.length; i++) {
-        let found = false
-
-        const tab = this.tabs[i]
-        tab.labelText = this.lang().global.tabs[this.tabs[i].label]?.title
-
-        if (this.tabs[i].roles) {
-          this.tabs[i].roles.forEach(role => {
-            if (roles.includes(role)) found = true
-          })
-        } else found = true
-
-        if (found) {
-          res.push(this.tabs[i])
-          this.tabs[i].subtabs.forEach(subtab => {
-            subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label]
-          })
+  .then(res => {
+    window.settings = res.data
+  }).then(() => {
+    let ins = new Vue({
+      router,
+      el: '#app',
+      data() {
+        return {
+          selectedLang: _get_lang(),
+          langs: {
+            en: enUS,
+            fr: { ...enUS, ...frFR },
+            de: { ...enUS, ...deDE }
+          },
+          window: {
+            width: window.innerWidth,
+            height: window.innerHeight
+          },
+          user: EMPTY_USER,
+          tabs: ALL_TABS,
+          bg: 'transparent',
+          snackbar: {
+            show: false,
+            message: '',
+            color: '#222',
+            timeout: 4000
+          },
+          drawer: false
         }
-      }
-
-      return res
-    },
-    year: function () {
-      return new Date().getFullYear()
-    },
-    /**
-     * Tell if the user is logged
-     * @returns true if the user is logged
-     */
-    isUserLogged: function () {
-      return this.user && this.user.id !== 0 && this.user.id != null
-    },
-    /**
-     * Get in real time the roles of a user
-     * @returns user discord roles
-     */
-    userRoles: function () {
-      return this.user.roles
-    }
-  },
-  methods: {
-    lang: function () {
-      return this.langs[this.selectedLang]
-    },
-    showSnackBar: function (message, color = '#222', timeout = 4000) {
-      this.snackbar.message = message
-      this.snackbar.color = color
-      this.snackbar.timeout = timeout
-      this.snackbar.show = true
-    },
-    logout: function () {
-      this.user = EMPTY_USER
-      window.localStorage.removeItem('auth')
-
-      this.update()
-    },
-    logUser: function () {
-      let auth
-      try {
-        auth = JSON.parse(window.localStorage.getItem('auth'))
-      } catch (err) {
-        auth = {}
-      }
-
-      this.user = Object.assign({}, this.user, auth)
-    },
-    fetchRoles: function () {
-      if (!this.isUserLogged) return
-
-      const data = JSON.parse(JSON.stringify(this.user))
-
-      axios.post('/profile/roles', data)
-        .then((res) => {
-          this.user.roles = res.data
-        })
-        .catch(err => {
-          console.error(err)
-          this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-        })
-    },
-    /**
-     * Use this function in sub-components to check perms
-     */
-    checkPermissions: function () {
-      console.log(this.$route)
-      console.log(this.$router.options.routes)
-    },
-    compiledMarkdown: function (markdown) {
-      if (markdown === null || !markdown) return ''
-      return marked(markdown, { sanitize: true })
-    },
-    update: function () {
-      this.logUser()
-      this.fetchRoles()
-    }
-  },
-  mounted: function () {
-    const urlSearchParams = new URLSearchParams(window.location.search)
-    const auth = Object.fromEntries(urlSearchParams.entries())
-
-    window.addEventListener('resize', () => {
-      this.window.width = window.innerWidth
-      this.window.height = window.innerHeight
-    })
-
-    if (auth.access_token && auth.refresh_token) {
-      fetch('https://discord.com/api/users/@me', {
-        headers: {
-          authorization: `Bearer ${auth.access_token}`
+      },
+      watch: {
+        selectedLang: function (newValue) {
+          if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
         }
-      })
-        .then(response => response.json())
-        .then(json => {
-          auth.id = json.id
-          auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
-          auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://raw.githubusercontent.com/Compliance-Resource-Pack/Branding/main/banner/forest.png'
-          auth.username = `${json.username}#${json.discriminator}`
+      },
+      computed: {
+        /**
+         * Check user perms & add (or not) tabs & routes following user perms
+         * @returns all tabs to be added in the html
+         */
+        validsTabs: function () {
+          const res = []
+          const roles = this.userRoles
 
-          window.localStorage.setItem('auth', JSON.stringify(auth))
+          for (let i = 0; i < this.tabs.length; i++) {
+            let found = false
+
+            const tab = this.tabs[i]
+            tab.labelText = this.lang().global.tabs[this.tabs[i].label]?.title
+
+            if (this.tabs[i].roles) {
+              this.tabs[i].roles.forEach(role => {
+                if (roles.includes(role)) found = true
+              })
+            } else found = true
+
+            if (found) {
+              res.push(this.tabs[i])
+              this.tabs[i].subtabs.forEach(subtab => {
+                subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label]
+              })
+            }
+          }
+
+          return res
+        },
+        year: function () {
+          return new Date().getFullYear()
+        },
+        /**
+         * Tell if the user is logged
+         * @returns true if the user is logged
+         */
+        isUserLogged: function () {
+          return this.user && this.user.id !== 0 && this.user.id != null
+        },
+        /**
+         * Get in real time the roles of a user
+         * @returns user discord roles
+         */
+        userRoles: function () {
+          return this.user.roles
+        }
+      },
+      methods: {
+        lang: function () {
+          return this.langs[this.selectedLang]
+        },
+        showSnackBar: function (message, color = '#222', timeout = 4000) {
+          this.snackbar.message = message
+          this.snackbar.color = color
+          this.snackbar.timeout = timeout
+          this.snackbar.show = true
+        },
+        logout: function () {
+          this.user = EMPTY_USER
+          window.localStorage.removeItem('auth')
 
           this.update()
-        })
-        .finally(() => {
-          setTimeout(() => {
-            window.location.search = ''
-          }, 20)
-        })
-        .catch(console.error)
-    } else this.update()
-  },
-  vuetify: new Vuetify({
-    theme: {
-      dark: true,
-      themes: {
-        dark: {
-          primary: '#fafafa',
-          accent: '#5e3631',
-          success: '#22a831'
+        },
+        logUser: function () {
+          let auth
+          try {
+            auth = JSON.parse(window.localStorage.getItem('auth'))
+          } catch (err) {
+            auth = {}
+          }
+
+          this.user = Object.assign({}, this.user, auth)
+        },
+        fetchRoles: function () {
+          if (!this.isUserLogged) return
+
+          const data = JSON.parse(JSON.stringify(this.user))
+
+          axios.post('/profile/roles', data)
+            .then((res) => {
+              this.user.roles = res.data
+            })
+            .catch(err => {
+              console.error(err)
+              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+            })
+        },
+        /**
+         * Use this function in sub-components to check perms
+         */
+        checkPermissions: function () {
+          console.log(this.$route)
+          console.log(this.$router.options.routes)
+        },
+        compiledMarkdown: function (markdown) {
+          if (markdown === null || !markdown) return ''
+          return marked(markdown, { sanitize: true })
+        },
+        refreshToken: function () {
+          const authStr = window.localStorage.getItem('auth')
+          const auth = JSON.parse(authStr)
+          const data = { refresh_token: auth.refresh_token }
+
+          axios.post('/api/discord/refresh', data)
+            .then(response => {
+              return response.data
+            })
+            .then(json => {
+              this.tokenCallback(json, auth)
+            })
+            .catch(err => {
+              console.error(err)
+              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+            })
+        },
+        update: function () {
+          this.logUser()
+          this.fetchRoles()
+        },
+        tokenCallback: function (accessJSON, auth = {}) {
+          auth.expires_at = new Date((new Date()).getTime() + (accessJSON.expires_in * 1000) - 60000)
+          auth.refresh_token = accessJSON.refresh_token
+          auth.access_token = accessJSON.access_token
+
+          window.localStorage.setItem('auth', JSON.stringify(auth))
+          window.location.reload()
         }
-      }
+      },
+      created: function () {
+        const authStr = window.localStorage.getItem('auth')
+        if (!authStr) return
+
+        const auth = JSON.parse(authStr)
+        if (!auth.expires_at) return
+
+        const expires_at = new Date(auth.expires_at)
+        if (new Date() > expires_at) return this.refreshToken(auth.refresh_token)
+
+        setTimeout(() => {
+          this.refreshToken(auth.refresh_token)
+        }, Math.max(expires_at - 60000 - new Date(), 0))
+      },
+      mounted: function () {
+        const urlSearchParams = new URLSearchParams(window.location.search)
+        const auth = Object.fromEntries(urlSearchParams.entries())
+
+        window.addEventListener('resize', () => {
+          this.window.width = window.innerWidth
+          this.window.height = window.innerHeight
+        })
+
+        if (auth.access_token && auth.refresh_token && auth.expires_in) {
+
+          fetch('https://discord.com/api/users/@me', {
+            headers: {
+              authorization: `Bearer ${auth.access_token}`
+            }
+          })
+            .then(response => response.json())
+            .then(json => {
+              auth.id = json.id
+              auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
+              auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://raw.githubusercontent.com/Compliance-Resource-Pack/Branding/main/banner/forest.png'
+              auth.username = `${json.username}#${json.discriminator}`
+
+              this.tokenCallback(auth, auth)
+            })
+            .finally(() => {
+              setTimeout(() => {
+                window.location.search = ''
+              }, 20)
+            })
+            .catch(console.error)
+        } else this.update()
+      },
+      vuetify: new Vuetify({
+        theme: {
+          dark: true,
+          themes: {
+            dark: {
+              primary: '#fafafa',
+              accent: '#5e3631',
+              success: '#22a831'
+            }
+          }
+        }
+      })
+    })
+
+    if (Vue.config.devtools) {
+      window.v = ins
     }
   })
-})
-
-  if(Vue.config.devtools) {
-    window.v = ins
-  }
-})
