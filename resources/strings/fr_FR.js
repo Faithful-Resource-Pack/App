@@ -31,11 +31,9 @@ export default {
         title: 'utilisateur',
         subtabs: {
           profile: 'profil',
-          statistics: 'statistiques'
+          statistics: 'statistiques',
+          gallery: 'galerie'
         }
-      },
-      gallery: {
-        title: 'galerie',
       },
       addons: {
         title: 'add-on',
@@ -68,6 +66,31 @@ export default {
           modpacks: 'modpacks'
         }
       }
+    },
+    months: {
+      jan: 'Jan',
+      january: 'Janvier',
+      feb: 'Fév',
+      february: 'Février',
+      mar: 'Mar',
+      march: 'Mars',
+      apr: 'Avr',
+      april: 'Avril',
+      may: 'Mai',
+      jun: 'Juin',
+      june: 'Juin',
+      jul: 'Juil',
+      july: 'Juillet',
+      aug: 'Aoû',
+      august: 'Août',
+      sep: 'Sep',
+      september: 'Septembre',
+      oct: 'Oct',
+      october: 'Octobre',
+      nov: 'Nov',
+      november: 'Novembre',
+      dec: 'Déc',
+      december: 'Décembre'
     }
   },
   database: {
@@ -316,6 +339,28 @@ export default {
         placeholder: 'https://www.exemple.com/',
         label: 'Nouveau réseau social'
       }
+    }
+  },
+  gallery: {
+    title: 'Galerie',
+    loading_message: {
+      general: 'Chargement...',
+      textures: 'Récupération des textures...',
+      paths: 'Récupération des chemins de texture...',
+      uses: 'Récupération des utilisations des textures...',
+      contribution: 'Récupération des contributions...',
+      contributors: 'Récupération des contributeurs...'
+    },
+    error_message: {
+      user_not_found: 'Utilisateur non enregistré dans la base de donée!',
+      contribution_not_found: 'Aucune contribution trouvée dans la base de donée!'
+    },
+    category: {
+      search: 'Rechercher',
+      tags: 'Étiquettes',
+      mc_version: 'Versions Minecraft',
+      edition: 'Édition',
+      resolution: 'Résolution'
     }
   }
 }

@@ -29,11 +29,9 @@ export default {
         title: 'user',
         subtabs: {
           profile: 'profile',
-          statistics: 'statistics'
+          statistics: 'statistics',
+          gallery: 'gallery'
         }
-      },
-      gallery: {
-        title: 'gallery',
       },
       addons: {
         title: 'add-ons',
@@ -66,6 +64,31 @@ export default {
           modpacks: 'modpacks'
         }
       }
+    },
+    months: {
+      jan: 'Jan',
+      january: 'January',
+      feb: 'Feb',
+      february: 'February',
+      mar: 'Mar',
+      march: 'March',
+      apr: 'Apr',
+      april: 'April',
+      may: 'May',
+      jun: 'Jun',
+      june: 'June',
+      jul: 'Jul',
+      july: 'July',
+      aug: 'Aug',
+      august: 'August',
+      sep: 'Sep',
+      september: 'September',
+      oct: 'Oct',
+      october: 'October',
+      nov: 'Nov',
+      november: 'November',
+      dec: 'Dec',
+      december: 'December'
     }
   },
   database: {
@@ -314,6 +337,28 @@ export default {
         placeholder: 'https://www.example.com/',
         label: 'New social media'
       }
+    }
+  },
+  gallery: {
+    title: 'Gallery',
+    loading_message: {
+      general: 'Loading...',
+      textures: 'Getting textures...',
+      paths: 'Getting textures paths...',
+      uses: 'Getting textures uses...',
+      contribution: 'Getting contributions...',
+      contributors: 'Getting contributors...'
+    },
+    error_message: {
+      user_not_found: 'User not registered in database!',
+      contribution_not_found: 'No contributions found in database!'
+    },
+    category: {
+      search: 'Search',
+      tags: 'Tags',
+      mc_version: 'Minecraft Version',
+      edition: 'Edition',
+      resolution: 'Resolution'
     }
   }
 }

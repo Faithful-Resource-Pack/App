@@ -27,30 +27,27 @@ module.exports = {
         return types
       })
   },
-  searchKeys (ids) {
+  searchKeys(ids) {
     return textures.searchKeys(ids)
   },
-  searchIDs (ids, name) {
-    return this.searchKeys(ids)
-    .then(all => {
-      const ids = []
-      for (const id in all)
-        if (all[id].name.includes(name)) ids.push(id)
-      return ids
-    })
-  },
-  tagIDs (tag, ids) {
+  texturesIDsFromSearch(ids, name) {
     return textures.searchKeys(ids)
-    .then(all => {
-      const ids = []
+      .then(res => {
+        return res.filter(el => el.name.includes(name)).map(el => el.id)
+      })
+  },
+  texturesIDsFromTags(tag, ids) {
+    return textures.searchKeys(ids)
+      .then(res => {
+        if (tag.toLowerCase() === 'all') return res.map(e => e.id)
 
-      for (const id in all) {
-        for (let i = 0; i < all[id].type.length; i++) all[id].type[i] = all[id].type[i].toLowerCase()
-        if (all[id].type.includes(tag) || tag === 'all') ids.push(id)
-      }
+        const ids = []
+        res.forEach(t => {
+          if (t.type.includes(tag)) ids.push(t.id)
+        })
 
-      return ids
-    })
+        return ids
+      })
   },
   search: function (textureName, textureType) {
     if (!textureName && !textureType) return Promise.reject(new Error('Search function parameters undefined'))
@@ -221,12 +218,14 @@ module.exports = {
       })
       .then(pathsFound => {
         const pathIDs = pathsFound.map(path => path[ID_FIELD])
-        const pathEditBulk = pathIDs.map(pathID => { return {
-          id: pathID,
-          field: 'versions',
-          operation: 'array-push',
-          value: data.newVersion
-        }})
+        const pathEditBulk = pathIDs.map(pathID => {
+          return {
+            id: pathID,
+            field: 'versions',
+            operation: 'array-push',
+            value: data.newVersion
+          }
+        })
 
         return paths.editFieldBulk(pathEditBulk)
       })
@@ -236,8 +235,8 @@ module.exports = {
    * @param {String|String[]} ids textures ids to delete
    */
   removeTextures(ids) {
-    if(!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
-    if(typeof ids === 'string') ids = [ids]
+    if (!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
+    if (typeof ids === 'string') ids = [ids]
 
     // type validation for String array
     single(ids, {

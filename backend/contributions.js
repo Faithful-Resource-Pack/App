@@ -8,6 +8,9 @@ const { textureURL } = require('../helpers/textureURL')
 const settings = require('../resources/settings.json')
 
 module.exports = {
+  contributions: function () {
+    return contri.read_raw()
+  },
   resolutions: function () {
     return Promise.resolve(settings.compliance_resolutions)
   },

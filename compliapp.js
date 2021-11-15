@@ -27,7 +27,8 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/profile', component: ProfilePage }] },
-      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] }
+      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
+      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search?', component: GalleryPage }] }
     ]
   },
   {
@@ -98,47 +99,41 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile', },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' }
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
+      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
     ]
-  },
-  {
-    label: 'gallery',
-    enabled: true,
-    to: '/gallery',
-    icon: 'mdi-texture',
-    routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/all/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:name?', component: GalleryPage }]
   },
   {
     label: 'addons',
     subtabs: [
-      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions', routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
-      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload', routes: [{ path: '/addons/new', component: AddonNewPage }] }
+      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
+      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
     ]
   },
   {
     label: 'modding',
     subtabs: [
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod', routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack', routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
     ]
   },
   {
     label: 'review',
     subtabs: [
-      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons', routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
-      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations', routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
+      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
+      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
     ],
     roles: ['Administrator']
   },
   {
     label: 'database',
     subtabs: [
-      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions', routes: [{ path: '/contributions', component: ContributionPage }] },
-      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors', routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
-      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures', routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods', routes: [{ path: '/modding/mods', component: ModsPage }] },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks', routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
+      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
+      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
+      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
     ],
     roles: ['Developer', 'Administrator']
   }

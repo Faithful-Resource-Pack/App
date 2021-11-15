@@ -668,31 +668,45 @@ app.get('/paths/all/', function (req, res) {
  * ==========================================
  */
 
-app.get('/gallery/:type/:edition/:version/:tag/:name?', function (req, res) {
-  let type, edition, version, tag, name
+app.get('/gallery/:type/:edition/:version/:tag/:search?', function (req, res) {
+  let type, edition, version, tag, search
 
-  if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return; else type = req.params.type.toLowerCase()
-  if (!['java', 'bedrock', 'dungeons'].includes(req.params.edition.toLowerCase())) return; else edition = req.params.edition.toLowerCase()
-  version = req.params.version.toLowerCase()
-  tag = req.params.tag.toLowerCase()
-  name = req.params.name
+  if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return
+  else type = req.params.type.toLowerCase()
 
-  pathsBackend.versionIDs(version)
+  if (!settings.editions.map(el => el.toLowerCase()).includes(req.params.edition.toLowerCase())) return
+  else edition = req.params.edition.toLowerCase()
+
+  if (req.params.version === 'latest') req.params.version = settings.versions[edition][0]
+
+  if (!settings.versions[edition].includes(req.params.version.toLowerCase())) return
+  else version = req.params.version.toLowerCase()
+
+  tag = req.params.tag || 'all'
+  search = req.params.search || undefined
+
+  pathsBackend.usesIDsFromVersion(version)
     .then(usesIDs => {
-      return usesBackend.editionIDs(edition, usesIDs)
+      if (usesIDs.length > 0) return usesBackend.texturesIDsFromEdition(edition, usesIDs)
+      return usesIDs
     })
     .then(texturesIDs => {
-      return texturesBackend.tagIDs(tag, texturesIDs)
+      if (texturesIDs.length > 0) return texturesBackend.texturesIDsFromTags(tag, texturesIDs)
+      return texturesIDs
     })
-    .then(tagsIDs => {
-      if (name) return texturesBackend.searchIDs(tagsIDs, name)
-      return tagsIDs
+    .then(texturesIDs => {
+      if (texturesIDs.length > 0 && search) return texturesBackend.texturesIDsFromSearch(texturesIDs, search)
+      return texturesIDs
     })
     .then(texturesID => {
+      if (texturesID.length == 0) return undefined
+
       switch (type) {
-        case 'textures': return texturesBackend.searchKeys(texturesID)
-        case 'paths': return pathsBackend.searchTextureID(texturesID)
-        case 'uses': 
+        case 'textures':
+          return texturesBackend.searchKeys(texturesID)
+        case 'paths':
+          return pathsBackend.searchTextureID(texturesID)
+        case 'uses':
           return usesBackend.searchTextureID([{
             field: "textureID",
             criteria: "in",
