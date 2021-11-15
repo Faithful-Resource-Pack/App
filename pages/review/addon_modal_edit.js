@@ -289,19 +289,19 @@ export default {
     resAvailable: {
       type: Array,
       required: false,
-      default: function () { return ['Java', 'Bedrock'] }
+      default: function () { return settings.editions }
     },
     editionAvailable: {
       type: Array,
       required: false,
-      default: function () { return ['32x', '64x'] }
+      default: function () { return settings.resolutions }
     },
     contributors: {
       type: Array,
       required: true
     }
   },
-  data () {
+  data() {
     return {
       addon: {
         title: '',
@@ -326,12 +326,12 @@ export default {
       headerImageRules: [
         u => (!u || u?.size < 500000) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
       ],
-      editions: ['Java', 'Bedrock'],
+      editions: settings.editions,
       selectedEditions: [],
       editionsRules: [
         u => (u && u.length > 0) || this.$root.lang().addons.options.editions.rule
       ],
-      res: ['32x', '64x'],
+      res: settings.resolutions,
       selectedRes: [],
       resRules: [
         u => (u && u.length > 0) || this.$root.lang().addons.options.resolutions.rule

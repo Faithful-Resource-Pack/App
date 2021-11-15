@@ -36,12 +36,15 @@ export default {
                     :key="index"
                   >
 
-                  <v-list-item-content :style="{ 'display': 'contents' }">
-                    <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'max-width': 'fit-content', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ index }}</v-list-item-avatar>
+                  <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ index }}</v-list-item-avatar>
+
+                  <v-list-item-content>
                     <v-list-item-title>
-                      <v-list-item :style="{ 'display': 'contents' }" v-if="use.textureUseName">{{ use.textureUseName}}</v-list-item>
-                      <v-list-item :style="{ 'display': 'contents' }" v-else><i>{{ $root.lang().database.labels.nameless }}</i></v-list-item>
-                      <v-list-item-subtitle v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
+                      <v-list-item style="display: inline; padding: 0 0 0 5px;">
+                        <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
+                        <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
+                      </v-list-item>
+                      <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
                     </v-list-item-title>
                   </v-list-item-content>
 

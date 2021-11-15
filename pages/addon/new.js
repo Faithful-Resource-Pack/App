@@ -1,7 +1,7 @@
 /* global axios, marked, FileReader, Image */
 const upload = () => import('./upload.js')
 
-export default {  
+export default {
   name: 'new-addon-page',
   components: {
     upload
@@ -311,7 +311,7 @@ export default {
     </div>
   </v-container>
   `,
-  data () {
+  data() {
     return {
       titleMaxLength: 24,
       titles: [],
@@ -329,12 +329,12 @@ export default {
         u => !!u || this.$root.lang().addons.images.header.rules.image_required,
         u => (u && u.size < 500000) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', 500)
       ],
-      editions: ['Java', 'Bedrock'],
+      editions: settings.editions,
       selectedEditions: [],
       editionsRules: [
         u => (u && u.length > 0) || this.$root.lang().addons.options.editions.rule
       ],
-      res: ['32x', '64x'],
+      res: settings.resolutions,
       selectedRes: [],
       resRules: [
         u => (u && u.length > 0) || this.$root.lang().addons.options.resolutions.rule

@@ -4,13 +4,16 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
-
     {
       "type": "pwa-node",
       "request": "launch",
       "name": "Launch App",
       "skipFiles": [
         "<node_internals>/**"
+      ],
+      "runtimeArgs": [
+        "--experimental-modules",
+        "--trace-warnings"
       ],
       "program": "${workspaceFolder}\\app.js"
     }

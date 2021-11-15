@@ -82,10 +82,10 @@ export default {
     },
     onSubmit: {
       type: Function,
-      default: function() { return Promise.resolve() }
+      default: function () { return Promise.resolve() }
     }
   },
-  data () {
+  data() {
     return {
       formData: {},
       deletePaths: true,
@@ -114,31 +114,30 @@ export default {
         })
     },
     deleteData: function () {
-      if(this.type === 'uses') {
-        const data = {
-          id: this.data.id,
-          deletePaths: this.deletePaths,
-          token: this.$root.user.access_token
-        }
-  
-        axios.post(`/${this.type}s/remove`, data)
-          .then(() => {
-            this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-            this.disableDialog(true)
-          })
-          .catch(err => {
-            console.error(err)
-            this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
-            this.disableDialog(true)
-          })
-      } else {
-        this.onSubmit(this.data).then(() => {
+      const data = {
+        id: this.data.id,
+        deletePaths: this.deletePaths,
+        token: this.$root.user.access_token
+      }
+
+      axios.post(`/${this.type}s/remove`, data)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)
-        }).catch(err => {
+        })
+        .catch(err => {
           console.error(err)
           this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+          this.disableDialog(true)
         })
-      }
+
+      this.onSubmit(this.data).then(() => {
+        this.disableDialog(true)
+      }).catch(err => {
+        console.error(err)
+        this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+      })
+
     }
   }
 }

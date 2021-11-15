@@ -180,7 +180,7 @@ export default {
     </div>
   </v-container>
   `,
-  data () {
+  data() {
     return {
       uuidMaxLength: 36,
       usernameMaxLength: 24,
@@ -189,9 +189,7 @@ export default {
         type: '',
         link: ''
       },
-      media: [
-        'CurseForge', 'GitHub', 'Patreon', 'Paypal', 'Planet Minecraft', 'PSN', 'Reddit', 'Steam', 'Twitter', 'Website', 'Xbox', 'YouTube', 'Other'
-      ],
+      media: settings.socials,
       urlAddRules: [
         u => this.validForm(this.validURL(u) || u === '', 'URL must be valid.')
       ],

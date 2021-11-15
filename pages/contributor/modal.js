@@ -65,10 +65,10 @@ export default {
     types: {
       type: Array,
       required: false,
-      default: function () { return ['member'] }
+      default: function () { return ['Member'] }
     }
   },
-  data () {
+  data() {
     return {
       formData: {
         username: '',

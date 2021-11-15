@@ -26,15 +26,15 @@ function useSchema(editions, versions) {
     name: 'editions',
     type: 'array',
     length: { min: 1, max: 1 },
-    validator: function(array) {
+    validator: function (array) {
       array.forEach(edi => {
-        if(!editions.includes(edi)) throw new Error(`Unknown edition "${edi}" in ${JSON.stringify(array)}. Only accepts ${JSON.stringify(editions)}`)
+        if (!editions.includes(edi)) throw new Error(`Unknown edition "${edi}" in ${JSON.stringify(array)}. Only accepts ${JSON.stringify(editions)}`)
       })
     }
   }, {
     name: 'paths',
     type: 'array',
-    validator: function(array, parent) {
+    validator: function (array, parent) {
       single(array, {
         type: 'array',
         length: 2
@@ -44,14 +44,14 @@ function useSchema(editions, versions) {
           type: 'string',
           length: { min: 1 }
         }, pair)
-        
+
         single(pair[1], {
           type: 'array',
           length: { min: 1 }
         }, pair)
 
         pair[1].forEach(ver => {
-          if(!versions.includes(ver)) throw new Error(`Unknown version "${pair[1]}" in ${JSON.stringify(pair)}. Only accepts ${JSON.stringify(versions)}`)
+          if (!versions.includes(ver)) throw new Error(`Unknown version "${pair[1]}" in ${JSON.stringify(pair)}. Only accepts ${JSON.stringify(versions)}`)
         })
       })
     }
@@ -69,9 +69,9 @@ function textureSchema(types, editions, versions) {
       name: 'type',
       type: 'array',
       length: { min: 1 },
-      validator: function(array) {
+      validator: function (array) {
         array.forEach(type => {
-          if(!types.includes(type)) throw new Error('Unknown type "' + type +'". Only accepts ' + JSON.stringify(types))
+          if (!types.includes(type)) throw new Error('Unknown type "' + type + '". Only accepts ' + JSON.stringify(types))
         })
       },
     }, {
@@ -89,49 +89,49 @@ function textureSchema(types, editions, versions) {
  * @param {*?} parent Parent object, helps for error detection
  */
 async function single(value, field, parent = undefined) {
-  const parentError = parent !== undefined ? ` in ${ JSON.stringify(parent)}` : ''
+  const parentError = parent !== undefined ? ` in ${JSON.stringify(parent)}` : ''
 
   field.type = (field.type || '').toLowerCase()
   // type
   switch (field.type) {
     case 'string':
-      if(typeof(value) !== 'string') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
+      if (typeof (value) !== 'string') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'integer':
     case 'float':
     case 'number':
-      if(typeof(value) !== 'number') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
+      if (typeof (value) !== 'number') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'array':
-      if(!Array.isArray(value)) throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
+      if (!Array.isArray(value)) throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
-    case 'object': 
+    case 'object':
       if (typeof (value) !== 'object') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     case 'boolean':
       if (typeof (value) !== 'boolean') throw new Error(`${field.name || JSON.stringify(value)} type is not ${field.type}${parentError}`)
       break
     default:
-      throw new Error(`Unsupported field type for ${field.name ||'single'}${parentError}`)
+      throw new Error(`Unsupported field type for ${field.name || 'single'}${parentError}`)
   }
 
   // length
-  if('length' in field && ['string', 'array'].includes(field.type)) {
-    const extremum = typeof(field.length) === 'string' ? { min: field.length, max: field.length }: Object.assign({}, { min: 0 }, field.length)
+  if ('length' in field && ['string', 'array'].includes(field.type)) {
+    const extremum = typeof (field.length) === 'string' ? { min: field.length, max: field.length } : Object.assign({}, { min: 0 }, field.length)
 
-    if(value.length < extremum.min) throw new Error(`${field.name || field.type} length lower than ${extremum.min}${parentError}`)
-    if('max' in extremum && value.length > extremum.max) throw new Error(`${field.name || field.type} length greater than ${extremum.max}${parentError}`)
+    if (value.length < extremum.min) throw new Error(`${field.name || field.type} length lower than ${extremum.min}${parentError}`)
+    if ('max' in extremum && value.length > extremum.max) throw new Error(`${field.name || field.type} length greater than ${extremum.max}${parentError}`)
   }
 
   // validator
-  if('validator' in field) {
-    if(typeof field.validator !== 'function') throw new Error(`${field.name} validator is not a function in schema ${JSON.stringify(field)}`)
+  if ('validator' in field) {
+    if (typeof field.validator !== 'function') throw new Error(`${field.name} validator is not a function in schema ${JSON.stringify(field)}`)
     await field.validator(value, parent)
   }
 
   // children
-  if(field.type === 'array' && 'children' in field) {
-    for(let c_i = 0; c_i < value.length; ++c_i) {
+  if (field.type === 'array' && 'children' in field) {
+    for (let c_i = 0; c_i < value.length; ++c_i) {
       await validator(value[c_i], field.children)
     }
   }
@@ -143,12 +143,12 @@ async function single(value, field, parent = undefined) {
  * @param {Schema} schema Schema array with fields to verify
  */
 async function validator(obj, schema) {
-  if(!Array.isArray(schema)) throw new Error(`Incorrect schema ${JSON.stringify(schema)} for obj ${JSON.stringify(obj)}`)
+  if (!Array.isArray(schema)) throw new Error(`Incorrect schema ${JSON.stringify(schema)} for obj ${JSON.stringify(obj)}`)
 
-  for(let i = 0; i < schema.length; ++i) {
+  for (let i = 0; i < schema.length; ++i) {
     const field = schema[i]
     // presence
-    if(!(field.name in obj) || obj[field.name] === undefined || obj[field.name] === null) throw new Error(`Missing field ${field.name} in ${JSON.stringify(obj)}`)
+    if (!(field.name in obj) || obj[field.name] === undefined || obj[field.name] === null) throw new Error(`Missing field ${field.name} in ${JSON.stringify(obj)}`)
 
     const value = obj[field.name]
 
@@ -157,7 +157,7 @@ async function validator(obj, schema) {
 }
 
 try {
-  if(module) {
+  if (module) {
     module.exports = {
       useSchema,
       textureSchema,
