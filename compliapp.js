@@ -313,7 +313,7 @@ axios.get('./resources/settings.json')
           auth.access_token = accessJSON.access_token
 
           window.localStorage.setItem('auth', JSON.stringify(auth))
-          window.location.reload()
+          window.location.href = window.location.origin + window.location.pathname + window.location.hash
         },
         addToken(data) {
           data.token = this.user.access_token
@@ -358,11 +358,6 @@ axios.get('./resources/settings.json')
               auth.username = `${json.username}#${json.discriminator}`
 
               this.tokenCallback(auth, auth)
-            })
-            .finally(() => {
-              setTimeout(() => {
-                window.location.search = ''
-              }, 20)
             })
             .catch(console.error)
         } else this.update()
