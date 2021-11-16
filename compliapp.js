@@ -85,13 +85,16 @@ const EMPTY_USER = {
   roles: []
 }
 
+let lang_value // = undefined
 const LANG_KEY = 'lang'
 const LANG_DEFAULT = 'en'
 const _get_lang = function () {
-  return localStorage.getItem(LANG_KEY) || LANG_DEFAULT
+  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT
+  return lang_value
 }
 const _set_lang = function (val) {
   val = String(val)
+  lang_value = val
   localStorage.setItem(LANG_KEY, val)
 }
 
@@ -225,7 +228,15 @@ axios.get('./resources/settings.json')
          */
         userRoles: function () {
           return this.user.roles
-        }
+        },
+        langBCP47: function() {
+          const res = {
+            en: 'en-US',
+            fr: 'fr-FR',
+            de: 'de-DE'
+          }
+          return res[this.selectedLang]
+        },
       },
       methods: {
         lang: function () {
@@ -233,6 +244,7 @@ axios.get('./resources/settings.json')
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
           this.snackbar.message = message
+          if(message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true
@@ -306,6 +318,10 @@ axios.get('./resources/settings.json')
 
           window.localStorage.setItem('auth', JSON.stringify(auth))
           window.location.href = window.location.origin + window.location.pathname + window.location.hash
+        },
+        addToken(data) {
+          data.token = this.user.access_token
+          return data
         }
       },
       created: function () {
