@@ -1,25 +1,37 @@
 /* global axios */
+const contributionModal = () => import('./contributionModal.js')
 
 export default {
+  components: {
+    contributionModal
+  },
   name: 'contribution-page',
   template: `
   <v-container>
+    <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit'></contribution-modal>
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.contributions }}
     </div>
-    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
-    <v-btn
-      v-for="(resobj) in form.resolutions"
-      :key="resobj.key"
-      class="my-2 mr-1"
-    >
-      <v-checkbox
-        v-model="resobj.selected"
-        :disabled="resobj.key != all_res && (form.resolutions[0] !== undefined && form.resolutions[0].selected == true)"
-        :label="resobj.key"
-        :id="resobj.key"
-      ></v-checkbox>
-    </v-btn>
+    <v-row>
+      <v-col>
+        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
+        <v-btn
+          v-for="(resobj) in form.resolutions"
+          :key="resobj.key"
+          class="my-2 mr-1"
+        ><v-checkbox
+          v-model="resobj.selected"
+          :disabled="resobj.key != all_res && (form.resolutions[0] !== undefined && form.resolutions[0].selected == true)"
+          :label="resobj.key"
+          :id="resobj.key"
+        ></v-checkbox>
+        </v-btn>
+      </v-col>
+      <v-col>
+        <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
+        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
+      </v-col>
+    </v-row>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.contributor }}</div>
     <v-autocomplete
       v-model="contributors_selected"
@@ -106,6 +118,17 @@ export default {
 
             <div><v-chip label x-small class="mr-1">{{ contrib.res }}</v-chip><v-chip label x-small class="mr-1">#{{contrib.textureID }}</v-chip></div>
           </v-list-item-content>
+
+          <v-list-item-action>
+            <v-btn icon @click="editContribution(contrib)">
+              <v-icon color="white lighten-1">mdi-pencil</v-icon>
+            </v-btn>
+          </v-list-item-action>
+          <v-list-item-action>
+            <v-btn icon @click="deleteContribution(contrib.id)">
+              <v-icon color="red lighten-1">mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
       </v-col></v-row>
     </v-list>
@@ -124,7 +147,8 @@ export default {
       search: {
         searching: false,
         search_results: []
-      }
+      },
+      newSubmit: false
     }
   },
   computed: {
@@ -158,6 +182,9 @@ export default {
       })
 
       return res
+    },
+    onModalSubmit: function() {
+      return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit
     }
   },
   methods: {
@@ -206,6 +233,33 @@ export default {
         .finally(() => {
           this.search.searching = false
         })
+    },
+    onNewSubmit: function(data) {
+      axios.post('/contribution/', this.$root.addToken(data))
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+        })
+        .catch(err => { this.$root.showSnackBar(err, 'error') })
+    },
+    editContribution: function(contrib) {
+      this.newSubmit = false
+      this.$refs.mod.open(contrib, false)
+    },
+    onChangeSubmit: function(data) {
+      console.log(data)
+      axios.put('/contribution/' + data.id, this.$root.addToken(data))
+        .then(() => {
+          this.$refs.mod.close()
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+        })
+        .catch(err => { this.$root.showSnackBar(err, 'error') })
+    },
+    deleteContribution: function(id) {
+      axios.delete('/contribution/' + id, { data: this.$root.addToken({}) })
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+        })
+        .catch(err => { this.$root.showSnackBar(err, 'error') })
     }
   },
   created: function () {

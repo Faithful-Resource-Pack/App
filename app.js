@@ -7,6 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
+const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const app = express()
 const compliappURL = '/'
 
@@ -20,6 +21,7 @@ const addonsBackend = require('./backend/addons')
 const allCollection = require('./helpers/firestorm/all')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
+const contributionController = require('./backend/contribution/contribution.controller.js')
 
 // fetch settings from the database
 const fetchSettings = async () => {
@@ -105,8 +107,11 @@ const errorHandler = function (res) {
     // advance parsing for axios errors and custom codes errors
     const code = (err.response ? err.response.status : err.code) || 400
     const message = (err.response && err.response.data ? err.response.data.error : err.message) || err
-    console.error(code, message)
-    console.error(err.stack)
+
+    if(VERBOSE) {
+      console.error(code, message)
+      console.error(err.stack)
+    }
     res.status(code)
     res.send({ error: `${message}` })
     res.end()
@@ -124,6 +129,8 @@ const postSuccess = function (res) {
     res.end()
   }
 }
+
+contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
 
 /**
  * Success handling for GET request
