@@ -17,6 +17,7 @@ export default {
       add_download: 'Ajouter un lien',
       submit: 'Soumettre',
       cancel: 'Annuler',
+      close: 'Fermer',
       save: 'Sauvegarder',
       edit: 'Editer',
       delete: 'Supprimer',
@@ -349,7 +350,8 @@ export default {
       paths: 'Récupération des chemins de texture...',
       uses: 'Récupération des utilisations des textures...',
       contribution: 'Récupération des contributions...',
-      contributors: 'Récupération des contributeurs...'
+      contributors: 'Récupération des contributeurs...',
+      tags: 'Récupération des tags de texture...'
     },
     error_message: {
       user_not_found: 'Utilisateur non enregistré dans la base de donée!',

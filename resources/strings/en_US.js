@@ -15,6 +15,7 @@ export default {
       add_download: 'Add Download',
       submit: 'Submit',
       cancel: 'Cancel',
+      close: 'Close',
       save: 'Save',
       edit: 'Edit',
       delete: 'Delete',
@@ -347,7 +348,8 @@ export default {
       paths: 'Getting textures paths...',
       uses: 'Getting textures uses...',
       contribution: 'Getting contributions...',
-      contributors: 'Getting contributors...'
+      contributors: 'Getting contributors...',
+      tags: 'Getting textures tags...'
     },
     error_message: {
       user_not_found: 'User not registered in database!',

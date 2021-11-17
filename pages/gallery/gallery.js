@@ -1,12 +1,12 @@
 /* global axios, Vue */
 
-const LATEST_MC_VERSION = {
-  java: '1.18',
-  bedrock: '1.17.0'
-}
+const textureModal = () => import('./modal.js')
 
 export default {
   name: 'texture-page',
+  components: {
+    textureModal
+  },
   template: `
   <v-container>
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
@@ -43,6 +43,10 @@ export default {
       <div class="text-h6 py-6" style="padding: 0 10px !important">{{ loading.comments.length }}/{{ loading.steps }} {{ $root.lang().gallery.loading_message.general }}</div>
       <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
     </v-list>
+
+    <v-list v-if="!loading.status && displayedTextures[0].length === 0" style="padding: 10px;">
+      <div class="text-h6 py-6" style="padding: 0 10px !important">{{ $root.lang().global.no_results }}</div>
+    </v-list>
     
     <v-list
       v-if="!loading.status"
@@ -52,7 +56,7 @@ export default {
         style="margin-top: -15px; margin-bottom: 5px; margin-left: -40px; justify-content: center;"
       >
         <v-col
-          v-for="(textures_arr, index) in splittedTextures"
+          v-for="(textures_arr, index) in displayedTextures"
           :cols="12/maxColumns"
           :key="index"
           style="padding: 0px; margin-right: -30px"
@@ -67,6 +71,7 @@ export default {
                 tile
                 style="height: 256px; width: 256px; max-width: 256px"
                 v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
+                v-on:click="openModal(texture.textureID)"
               >
                 <img onerror="this.onerror=null;this.src='https://database.compliancepack.net/images/bot/error.png';" class="texture-img" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
                 <v-img contain style="position: absolute; z-index: -1;" class="texture-background" src="https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png" />
@@ -76,6 +81,12 @@ export default {
         </v-col>
       </v-row>
     </v-list>
+
+    <texture-modal
+      :opened="modalOpen"
+      :closeModal="closeModal"
+      :textureID="modalTextureID" 
+    ></texture-modal>
   </v-container>
   `,
   data() {
@@ -110,6 +121,9 @@ export default {
         contributors: {}
       },
       displayedResults: 100,
+      displayedTextures: [[]],
+      modalTextureID: null,
+      modalOpen: false
     }
   },
   computed: {
@@ -135,20 +149,6 @@ export default {
         case 'lg': return 4
         case 'xl': return 6
       }
-    },
-    splittedTextures() {
-      const result = []
-      const length = Object.keys(this.displayed.textures).length
-
-      for (let col = 0; col < this.maxColumns; ++col) result.push([])
-
-      let arrayIndex = 0
-      for (let i = 0; i < Math.min(this.displayedResults, length); i++) {
-        result[arrayIndex].push(Object.values(this.displayed.textures)[i])
-        arrayIndex = (arrayIndex + 1) % this.maxColumns
-      }
-
-      return result
     }
   },
   watch: {
@@ -169,8 +169,32 @@ export default {
   created() {
     // directly add the search to the search bar if there is a search parameter inside the router
     this.current.search = this.$route.params.search ? this.$route.params.search : undefined
+    this.options.versions = this.$route.params.edition ? settings.versions[this.$route.params.edition] : settings.versions[0]
   },
   methods: {
+    openModal(id) {
+      console.log(id, this.modalTextureID, this.modalOpen)
+      this.modalTextureID = id
+      this.modalOpen = true
+    },
+    closeModal() {
+      this.modalOpen = false
+      this.modalTextureID = null
+    },
+    splittedTextures() {
+      const result = []
+      const length = Object.keys(this.displayed.textures).length
+
+      for (let col = 0; col < this.maxColumns; ++col) result.push([])
+
+      let arrayIndex = 0
+      for (let i = 0; i < Math.min(this.displayedResults, length); i++) {
+        result[arrayIndex].push(Object.values(this.displayed.textures)[i])
+        arrayIndex = (arrayIndex + 1) % this.maxColumns
+      }
+
+      return result
+    },
     getAuthor(textureID) {
       let contributionsHTML = ''
 
@@ -197,7 +221,7 @@ export default {
           <ul align="left" class="encased">${contributionsHTML}</ul>
         </div>
         <div class="texture-tags-container">
-          <span class="encased">#${this.displayed.textures[textureID].type.join('</span><span class="encased">#')}</span>
+          <span class="encased">#${this.displayed.textures[textureID].tags.join('</span><span class="encased">#')}</span>
         </div>
       </div>
       `
@@ -225,24 +249,17 @@ export default {
       this.startSearch()
     },
     getTextureURL(useID) {
-      let paths = Object.values(this.displayed.paths)
-      for (let i = 0; paths[i]; i++) {
-        if (paths[i].useID === useID) {
+      const pathID = this.displayed.uses[useID].pathID
+      const path = this.displayed.paths[pathID]
 
-          // todo: use settings here:
-          switch (this.current.edition) {
-            case 'dungeons':
-              return `https://raw.githubusercontent.com/Compliance-Dungeons/Resource-Pack/master/${paths[i].path}`
-            case 'bedrock':
-              if (this.current.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.current.version == 'latest' ? settings.versions[this.current.edition][0] : this.current.version}/${paths[i].path}`
-
-              return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${this.current.resolution}/Jappa-${this.current.version == 'latest' ? settings.versions[this.current.edition][0] : this.current.version}/${paths[i].path}`
-            case 'java':
-              if (this.current.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.current.version == 'latest' ? settings.versions[this.current.edition][0] : this.current.version}/${paths[i].path}`
-
-              return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.current.resolution}/Jappa-${this.current.version == 'latest' ? settings.versions[this.current.edition][0] : this.current.version}/${paths[i].path}`
-          }
-        }
+      // todo: use settings here:
+      switch (this.edition) {
+        case 'bedrock':
+          if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+        case 'java':
+          if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
       }
     },
     updateRoute(data, type) {
@@ -265,7 +282,8 @@ export default {
       this.$router.push({ params: { ...this.current } })
     },
     updateJSON(loadMessage = false) {
-      const params = [ // $root.lang()
+      const params = [
+        { message: this.$root.lang().gallery.loading_message.tags, route: '/textures/types', key: 'tags' },
         { message: this.$root.lang().gallery.loading_message.textures, route: `/gallery/textures/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'textures' },
         { message: this.$root.lang().gallery.loading_message.paths, route: `/gallery/paths/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'paths' },
         { message: this.$root.lang().gallery.loading_message.uses, route: `/gallery/uses/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'uses' },
@@ -315,63 +333,61 @@ export default {
         contributors: {}
       }
 
-      // if no data : no process
+      console.log(this.displayed.uses)
+
+      // set textures tags
+      this.options.tags = ['All']
+      this.dataJSON.tags.forEach(tag => {
+        if (!this.options.tags.includes(tag)) this.options.tags.push(tag)
+      })
+
+      // if no data : no textures to display
       if (!this.dataJSON.paths) return;
 
       // starting with the last element of a texture, paths:
       this.dataJSON.paths.forEach(path => {
-        if (path.versions.includes(this.current.version)) {
+        if (path.versions.includes(this.version === 'latest' ? settings.versions[this.edition][0] : this.version)) {
           this.displayed.paths[path.id] = {
+            versions: path.versions,
             path: path.path,
             useID: path.useID,
-            versions: path.versions,
             pathID: path.id
           }
         }
       })
 
-      // remap array to be objects
+      // re-map array to be objects
       let tmp = this.dataJSON.uses
       this.dataJSON.uses = {}
       tmp.forEach(t => {
-        this.dataJSON.uses[t.id] = t
+        this.dataJSON.uses[t.id] = {
+          edition: t.editions[0],
+          useID: t.id.toString(),
+          textureID: t.textureID.toString()
+        }
       })
 
       tmp = this.dataJSON.textures
       this.dataJSON.textures = {}
       tmp.forEach(t => {
-        this.dataJSON.textures[t.id] = t
+        this.dataJSON.textures[t.id] = {
+          name: t.name,
+          tags: t.type,
+          textureID: t.id
+        }
       })
 
       // then we keep uses that are in paths
       Object.values(this.displayed.paths).forEach(path => {
         const useID = path.useID
         const use = this.dataJSON.uses[useID]
-
-        this.displayed.uses[useID] = {
-          editions: use.editions,
-          textureID: use.textureID.toString(),
-          textureUseName: use.textureUseName,
-          useID: useID,
-          pathID: path.pathID
-        }
+        if (use) this.displayed.uses[useID] = { ...use, useID: useID, pathID: path.pathID }
       })
 
       Object.values(this.displayed.uses).forEach(use => {
         const textureID = use.textureID
         const texture = this.dataJSON.textures[textureID]
-
-        texture.type.forEach(t => {
-          if (!this.options.tags.includes(t)) this.options.tags.push(t)
-        })
-
-        this.displayed.textures[textureID] = {
-          name: texture.name,
-          type: texture.type,
-          useID: use.useID,
-          pathID: use.pathID,
-          textureID: textureID
-        }
+        if (texture) this.displayed.textures[textureID] = { ...texture, textureID: textureID, useID: use.useID, pathID: use.pathID }
       })
 
       // stuff below are only available in compliance, not default resolution
@@ -391,6 +407,8 @@ export default {
           date: contribution.date
         })
       })
+
+      this.displayedTextures = this.splittedTextures()
     }
   }
 }

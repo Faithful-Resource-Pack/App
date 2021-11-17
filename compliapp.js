@@ -229,7 +229,7 @@ axios.get('./resources/settings.json')
         userRoles: function () {
           return this.user.roles
         },
-        langBCP47: function() {
+        langBCP47: function () {
           const res = {
             en: 'en-US',
             fr: 'fr-FR',
@@ -244,7 +244,7 @@ axios.get('./resources/settings.json')
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
           this.snackbar.message = message
-          if(message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
+          if (message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true
