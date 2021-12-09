@@ -98,6 +98,38 @@ const _set_lang = function (val) {
   localStorage.setItem(LANG_KEY, val)
 }
 
+Object.defineProperty(Object.prototype, 'isObject', {
+  /**
+   * @param {*} item to be tested
+   * @returns {Boolean} true if the item is an JS Object
+   */
+  value: (item) => { return (item && typeof item === 'object' && !Array.isArray(item)) }
+})
+
+Object.defineProperty(Object.prototype, 'merge', {
+  /**
+   * @param {Object} target 
+   * @param  {...Object} sources 
+   */
+  value: (target, ...sources) => {
+    if (!sources.length) return target
+    const source = sources.shift()
+
+    if (Object.isObject(target) && Object.isObject(source)) {
+      for (const key in source) {
+        if (Object.isObject(source[key])) {
+          if (!target[key]) Object.assign(target, { [key]: {} })
+          Object.merge(target[key], source[key])
+        }
+
+        else Object.assign(target, { [key]: source[key] })
+      }
+    }
+
+    return Object.merge(target, ...sources)
+  }
+})
+
 let ALL_TABS = [
   {
     label: 'user',
@@ -157,8 +189,8 @@ axios.get('./resources/settings.json')
           selectedLang: _get_lang(),
           langs: {
             en: enUS,
-            fr: { ...enUS, ...frFR },
-            de: { ...enUS, ...deDE }
+            fr: Object.merge({}, enUS, frFR),
+            de: Object.merge({}, enUS, deDE),
           },
           window: {
             width: window.innerWidth,
