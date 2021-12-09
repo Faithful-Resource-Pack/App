@@ -10,6 +10,7 @@ export default {
     ends_success: 'Completed successfully',
     loading: 'Loading, please wait...',
     no_results: 'No results were found.',
+    nyi: 'Not yet implemented.',
     btn: {
       add: 'Add',
       add_download: 'Add Download',
@@ -361,6 +362,33 @@ export default {
       mc_version: 'Minecraft Version',
       edition: 'Edition',
       resolution: 'Resolution'
+    },
+    modal: {
+      items: {
+        information: "information",
+        authors: "authors",
+        animated: "animated",
+        model: "3D"
+      },
+      infos: {
+        texture: "texture",
+        uses: "uses",
+        paths: "paths"
+      },
+      tabs: {
+        date: "Date",
+        authors: "Author(s)",
+        id: "ID",
+        name: "Name",
+        tags: "Tags/Types",
+        use_id: "Use ID",
+        use_name: "Use Name",
+        editions: "Edition",
+        texture_id: "Texture ID",
+        path_id: "Path ID",
+        resource_pack_path: "Resource Pack Path",
+        mc_versions: "Minecraft Version(s)",
+      }
     }
   }
 }

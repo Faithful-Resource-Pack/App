@@ -27,7 +27,7 @@ export default {
             <v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
           </template>
           <template v-else>
-            <v-toolbar-title>Loading...</v-toolbar-title>
+            <v-toolbar-title>{{ $root.lang().global.loading }}</v-toolbar-title>
           </template>
         </v-toolbar>
 
@@ -98,10 +98,10 @@ export default {
                     </template>
                   </div>
                   <div v-if="item === items[2]">
-                    SoonTM
+                    {{ $root.lang().global.nyi }}
                   </div>
                   <div v-if="item === items[3]">
-                    SoonTM
+                    {{ $root.lang().global.nyi }}
                   </div>
                 </v-tab-item>
               </v-tabs-items>
@@ -138,8 +138,17 @@ export default {
     return {
       resolutions: ['16x', ...settings.resolutions],
       tab: null,
-      items: ['information', 'authors', 'Animated', '3D'],
-      infos: ['texture', 'uses', 'paths'],
+      items: [
+        this.$root.lang().gallery.modal.items.information,
+        this.$root.lang().gallery.modal.items.authors,
+        this.$root.lang().gallery.modal.items.animated,
+        this.$root.lang().gallery.modal.items.model
+      ],
+      infos: [
+        this.$root.lang().gallery.modal.infos.texture,
+        this.$root.lang().gallery.modal.infos.uses,
+        this.$root.lang().gallery.modal.infos.paths
+      ],
       authors: settings.resolutions
     }
   },
@@ -187,28 +196,28 @@ export default {
         case this.authors[1]:
           return [
             {
-              text: "Date",
+              text: this.$root.lang().gallery.modal.tabs.date,
               value: "date"
             },
             {
-              text: "Author(s)",
+              text: this.$root.lang().gallery.modal.tabs.authors,
               value: "contributors"
             }
           ]
         case this.infos[0]:
           return [
             {
-              text: 'ID',
+              text: this.$root.lang().gallery.modal.tabs.id,
               value: 'id',
               sortable: false
             },
             {
-              text: 'Name',
+              text: this.$root.lang().gallery.modal.tabs.name,
               value: 'name',
               sortable: false
             },
             {
-              text: 'Tags/Types',
+              text: this.$root.lang().gallery.modal.tabs.tags,
               value: 'type',
               sortable: false
             }
@@ -216,19 +225,19 @@ export default {
         case this.infos[1]:
           return [
             {
-              text: 'Use ID',
+              text: this.$root.lang().gallery.modal.tabs.use_id,
               value: 'id'
             },
             {
-              text: 'Use Name',
+              text: this.$root.lang().gallery.modal.tabs.use_name,
               value: 'textureUseName'
             },
             {
-              text: 'Edition(s)',
+              text: this.$root.lang().gallery.modal.tabs.editions,
               value: 'editions'
             },
             {
-              text: 'Texture ID',
+              text: this.$root.lang().gallery.modal.tabs.texture_id,
               value: 'textureID'
             }
           ]
@@ -236,19 +245,19 @@ export default {
         case this.infos[2]:
           return [
             {
-              text: 'Path ID',
+              text: this.$root.lang().gallery.modal.tabs.path_id,
               value: 'id'
             },
             {
-              text: 'Resource Pack Path',
+              text: this.$root.lang().gallery.modal.tabs.resource_pack_path,
               value: 'path'
             },
             {
-              text: 'Minecraft Versions',
+              text: this.$root.lang().gallery.modal.tabs.mc_versions,
               value: 'versions'
             },
             {
-              text: 'Use ID',
+              text: this.$root.lang().gallery.modal.tabs.use_id,
               value: 'useID'
             }
           ]
@@ -259,6 +268,7 @@ export default {
     getTextureURL(res) {
       const path = this.textureObj.paths[0][0]
 
+      // todo: use settings here
       switch (path.path.startsWith('assets')) {
         case false:
           if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${path.versions[0]}/${path.path}`

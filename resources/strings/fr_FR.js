@@ -12,6 +12,7 @@ export default {
     ends_success: 'Terminé avec succès',
     loading: 'Chargement, veuillez patienter...',
     no_results: 'Aucun resultat n\'a été trouvé.',
+    nyi: 'N\'a pas encore été implémenté.',
     btn: {
       add: 'Ajouter',
       add_download: 'Ajouter un lien',
@@ -363,6 +364,33 @@ export default {
       mc_version: 'Versions Minecraft',
       edition: 'Édition',
       resolution: 'Résolution'
+    },
+    modal: {
+      items: {
+        information: "information",
+        authors: "auteurs",
+        animated: "animée",
+        model: "3D"
+      },
+      infos: {
+        texture: "texture",
+        uses: "utilisations",
+        paths: "chemins"
+      },
+      tabs: {
+        date: "Date",
+        authors: "Auteur(s)",
+        id: "ID",
+        name: "Nom",
+        tags: "Tags/Types",
+        use_id: "ID de l'utilisation",
+        use_name: "Nom de l'utilisation",
+        editions: "Édition",
+        texture_id: "ID de la texture",
+        path_id: "ID du chemin",
+        resource_pack_path: "Chemin dans le Resource Pack",
+        mc_versions: "Version(s) Minecraft",
+      }
     }
   }
 }
