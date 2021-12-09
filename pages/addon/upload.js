@@ -9,7 +9,7 @@ export default {
     onError: {
       type: Function,
       required: false,
-      default: function() {}
+      default: function () { }
     },
     label: {
       type: String,
@@ -24,7 +24,7 @@ export default {
     verify: {
       type: Function,
       required: false,
-      default: function() { return true }
+      default: function () { return true }
     },
     prependIcon: {
       type: String,
@@ -57,10 +57,10 @@ export default {
     rules: {
       type: Array,
       required: false,
-      default: function() { return [] }
+      default: function () { return [] }
     }
   },
-  template:`
+  template: `
     <div class="upload-file-input mt-3">
       <v-card
         flat
@@ -127,21 +127,21 @@ export default {
     }
   },
   computed: {
-    fileList: function() {
+    fileList: function () {
       let arr
-      if(!this.multiple) arr = [this.value]
+      if (!this.multiple) arr = [this.value]
       else arr = this.value
 
       let result = []
       arr.forEach(file => {
-        if(file && file.contructor && file.constructor.name === 'Object' && 'name' in file && 'size' in file && 'lastModified' in file) {
+        if (file && file.contructor && file.constructor.name === 'Object' && 'name' in file && 'size' in file && 'lastModified' in file) {
           result.push(file)
         }
       })
 
       return result
     },
-    valueChips: function() {
+    valueChips: function () {
       let result = []
       this.fileList.forEach(file => {
         let sizePrepend = this.showSize ? ` (${this.bytesToText(file.size)})` : ''
@@ -154,14 +154,14 @@ export default {
 
       return result
     },
-    counterValue: function() {
+    counterValue: function () {
       let counter = this.counter
 
-      if(typeof counter === 'string') {
+      if (typeof counter === 'string') {
         let tmp = parseFloat(counter)
 
-        if(isNaN(tmp) || tmp % 1 !== 0) {
-          if(['false', 'true'].includes(counter)) counter = counter == 'true'
+        if (isNaN(tmp) || tmp % 1 !== 0) {
+          if (['false', 'true'].includes(counter)) counter = counter == 'true'
         } else {
           counter = tmp
         }
@@ -169,45 +169,45 @@ export default {
 
       return counter
     },
-    counterText: function() {
+    counterText: function () {
       let counter = this.counterValue
 
-      if(typeof counter === 'number') return counter % 1 === 0 && counter > 0 ? `${this.valueChips.length} / ${counter}` : ''
-      else if(typeof counter === 'boolean') return counter ? `${this.valueChips.length} file${this.valueChips.length > 1 ? 's' : ''}` : ''
+      if (typeof counter === 'number') return counter % 1 === 0 && counter > 0 ? `${this.valueChips.length} / ${counter}` : ''
+      else if (typeof counter === 'boolean') return counter ? `${this.valueChips.length} file${this.valueChips.length > 1 ? 's' : ''}` : ''
 
       return ''
     },
-    totalSizeText: function() {
-      if(!this.counter || this.smallChips) return ''
+    totalSizeText: function () {
+      if (!this.counter || this.smallChips) return ''
       return this.fileList.length ? ` (${this.bytesToText(this.fileList.reduce((acc, cur) => acc + cur.size, 0))} in total)` : ''
     },
-    errorReason: function() {
+    errorReason: function () {
       let i = 0
-      while(i < this.rules.length) {
+      while (i < this.rules.length) {
         let type = typeof this.rules[i]
-        if(type === 'string') return true
-        if(type === 'boolean') if(this.rules[i] === false) return true
-        if(type === 'function') {
+        if (type === 'string') return true
+        if (type === 'boolean') if (this.rules[i] === false) return true
+        if (type === 'function') {
           let u = 0, res
-          while(u < this.fileList.length) {
+          while (u < this.fileList.length) {
             res = this.rules[i](this.fileList[u])
-            if(res === false) return true
-            if(typeof res === 'string') return [true, res]
+            if (res === false) return true
+            if (typeof res === 'string') return [true, res]
             ++u
           }
-        } 
+        }
         ++i
       }
-      
+
       let counter = this.counterValue
-      if(typeof counter === 'number' && this.fileList.length !== 0 && this.fileList.length !== counter) return true
+      if (typeof counter === 'number' && this.fileList.length !== 0 && this.fileList.length !== counter) return true
 
       return false
     },
-    isError: function() {
+    isError: function () {
       return typeof this.errorReason === 'boolean' ? this.errorReason : this.errorReason[0]
     },
-    errorMessage: function() {
+    errorMessage: function () {
       return typeof Array.isArray(this.errorReason) && this.errorReason.length > 1 ? this.errorReason[1] : ''
     }
   },
@@ -216,7 +216,7 @@ export default {
       this.dragover = false
 
       // multiple
-      const files = [ ...e.dataTransfer.files ]
+      const files = [...e.dataTransfer.files]
       this.addFiles(files)
     },
     addFiles(files) {
@@ -224,12 +224,12 @@ export default {
         if (!this.multiple && files.length > 1) throw new Error('Only one file can be uploaded at a time..')
 
         let verified = true, i = 0
-        while(i < files.length && verified) {
+        while (i < files.length && verified) {
           verified = this.verify(files[0])
           ++i
         }
 
-        if(!verified) throw new Error('Incorrect file type')
+        if (!verified) throw new Error('Incorrect file type')
       } catch (error) {
         this.onError({
           message: error.message,
@@ -238,8 +238,8 @@ export default {
         return
       }
 
-      if(!this.multiple) {
-        if(files.length == 1) [
+      if (!this.multiple) {
+        if (files.length == 1) [
           this.setValue(files[0]) // single replace
         ]
       } else {
@@ -248,42 +248,42 @@ export default {
     },
     setValue(val) {
       this.$emit('input', val)
-      if(this.value != val) {
+      if (this.value != val) {
         this.$emit('change')
       }
     },
     reset() {
       this.setValue(this.multiple ? [] : '')
     },
-    selectFile(contentType, multiple){
+    selectFile(contentType, multiple) {
       return new Promise(resolve => {
-          let input = document.createElement('input')
-          input.type = 'file'
-          input.multiple = multiple
-          input.accept = contentType
+        let input = document.createElement('input')
+        input.type = 'file'
+        input.multiple = multiple
+        input.accept = contentType
 
-          if(this.value != undefined)
-            input.value = this.value
-  
-          input.onchange = () => {
-              let files = Array.from(input.files)
-              
-              resolve(files)
-          };
-  
-          input.click();
+        if (this.value != undefined)
+          input.value = this.value
+
+        input.onchange = () => {
+          let files = Array.from(input.files)
+
+          resolve(files)
+        };
+
+        input.click();
       });
     },
-    openDialog: function() {
+    openDialog: function () {
       this.selectFile(this.accept, this.multiple)
-      .then(files => {
-        this.addFiles(files)
-      })
+        .then(files => {
+          this.addFiles(files)
+        })
     },
-    bytesToText: function(size) {
+    bytesToText: function (size) {
       const units = ['B', 'kB', 'MB', 'GB', 'TB']
       let unit_index = 0
-      while(size > 1000) {
+      while (size > 1000) {
         size = size / 1000
         ++unit_index
       }

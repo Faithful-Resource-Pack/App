@@ -196,13 +196,13 @@ export default {
     },
     general: {
       title: 'Général',
-      addon_title: {
-        label: 'Titre de l\'add-on',
-        hint: 'Le titre ne peut pas être changé après la soumission !',
+      name: {
+        label: 'Nom de l\'add-on',
+        hint: 'Le nom ne peut pas être changé après la soumission !',
         rules: {
-          title_required: 'Le titre est requis.',
-          title_too_big: 'Le titre doit faire moins que %s caractères.',
-          title_unavailable: 'Ce titre est déjà pris !'
+          name_required: 'Le nom est requis.',
+          name_too_big: 'Le nom doit faire moins que %s caractères.',
+          name_unavailable: 'Ce nom est déjà pris !'
         }
       },
       description: {

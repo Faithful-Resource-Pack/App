@@ -194,13 +194,14 @@ export default {
     },
     general: {
       title: 'General',
-      addon_title: {
-        label: 'Add-on title',
-        hint: 'The title can\'t be changed after submission!',
+      name: {
+        label: 'Add-on name',
+        hint: 'The name can\'t be changed after submission!',
         rules: {
-          title_required: 'A title is required.',
-          title_too_big: 'Title must be less than %s characters.',
-          title_unavailable: 'This title is already taken!'
+          name_required: 'A name is required.',
+          name_too_big: 'Add-on name must be less than %s characters.',
+          name_too_small: 'Add-on name must be at least %s characters long.',
+          name_unavailable: 'This name is already taken!'
         }
       },
       description: {
@@ -208,7 +209,8 @@ export default {
         hint: 'You can use Markdown formatting to improve your description!',
         rules: {
           description_required: 'The description is required.',
-          description_too_big: 'Description must be less than %s characters.'
+          description_too_big: 'Description must be less than %s characters.',
+          description_too_small: 'Description must be at least %s characters long.'
         }
       },
       authors: {

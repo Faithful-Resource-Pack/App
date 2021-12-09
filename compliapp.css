@@ -106,6 +106,10 @@ div.tooltip .number {
   padding-left: 8px;
 }
 
+.v-select__selections > input {
+  padding-left: 8px;
+}
+
 .v-text-field__slot input, .v-text-field__slot textarea {
   padding: 8px 0 8px 8px;
 }

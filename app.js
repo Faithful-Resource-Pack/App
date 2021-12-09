@@ -235,8 +235,8 @@ approvalStatus.forEach(approvalKey => {
   })
 })
 
-app.get('/addons/get/titles', function (req, res) {
-  addonsBackend.get(['title'])
+app.get('/addons/get/names', function (req, res) {
+  addonsBackend.get(['name'])
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
