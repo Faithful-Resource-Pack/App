@@ -70,7 +70,7 @@ export default {
                   <template v-if="item === items[0]">
                     <template v-for="i in infos">
                       <div style="padding: 15px">
-                        <h2 style="text-transform: capitalize;">{{ i }}</h2>
+                        <h2 style="text-transform: capitalize;">{{ infosText[i] }}</h2>
                         <v-data-table
                           dense
                           :headers="getHeaders(i)"
@@ -144,11 +144,12 @@ export default {
         this.$root.lang().gallery.modal.items.animated,
         this.$root.lang().gallery.modal.items.model
       ],
-      infos: [
-        this.$root.lang().gallery.modal.infos.texture,
-        this.$root.lang().gallery.modal.infos.uses,
-        this.$root.lang().gallery.modal.infos.paths
-      ],
+      infos: ["texture", "uses", "paths"],
+      infosText: {
+        texture: this.$root.lang().gallery.modal.infos.texture,
+        uses: this.$root.lang().gallery.modal.infos.uses,
+        paths: this.$root.lang().gallery.modal.infos.paths,
+      },
       authors: settings.resolutions
     }
   },
@@ -166,6 +167,7 @@ export default {
     },
     getItems(item) {
       let output = []
+      console.log(this.textureObj)
 
       switch (item) {
         case this.authors[0]:

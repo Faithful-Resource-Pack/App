@@ -374,8 +374,8 @@ export default {
       },
       infos: {
         texture: "texture",
-        uses: "utilisations",
-        paths: "chemins"
+        uses: "utilisation(s)",
+        paths: "chemin(s)"
       },
       tabs: {
         date: "Date",
