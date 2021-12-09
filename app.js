@@ -255,6 +255,7 @@ app.post('/profile/set', function (req, res) {
   if (!req.body.access_token) {
     res.status(400)
     res.end()
+    return
   }
 
   fetch('https://discord.com/api/users/@me', {
@@ -284,6 +285,7 @@ app.post('/profile/get', function (req, res) {
   if (!req.body.access_token) {
     res.status(400)
     res.end()
+    return
   }
 
   let userID
@@ -313,6 +315,7 @@ app.post('/profile/roles', function (req, res) {
   if (!req.body.access_token) {
     res.status(400)
     res.end()
+    return
   }
 
   let userID

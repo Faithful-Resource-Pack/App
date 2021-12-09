@@ -8,6 +8,8 @@ export default {
   },
   template: `
   <v-container>
+    <h1>Submitting new Add-ons is currently disabled for maintenance.</h1>
+    <!--
     <div class="text-h4 py-4">
       {{ $root.lang().addons.titles.submit }}
       <v-progress-circular
@@ -55,7 +57,7 @@ export default {
                   multiple
                   chips
                 >
-                  <!-- SELECTED THINGY -->
+                  SELECTED THINGY
                   <template v-slot:selection="data">
                     <v-chip
                       :key="data.item.id"
@@ -83,7 +85,7 @@ export default {
                     </v-chip>
                   </template>
 
-                  <!-- LIST ITEM PART -->
+                  LIST ITEM PART
                   <template v-slot:item="data">
                     <template v-if="data.item && data.item.contructor && data.item.constructor.name === 'String'">
                       <v-list-item-content v-text="data.item"></v-list-item-content>
@@ -309,6 +311,7 @@ export default {
         </div>
       </v-list>
     </div>
+    -->
   </v-container>
   `,
   data() {
