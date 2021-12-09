@@ -108,7 +108,7 @@ const errorHandler = function (res) {
     const code = (err.response ? err.response.status : err.code) || 400
     const message = (err.response && err.response.data ? err.response.data.error : err.message) || err
 
-    if(VERBOSE) {
+    if (VERBOSE) {
       console.error(code, message)
       console.error(err.stack)
     }
@@ -675,7 +675,18 @@ app.get('/paths/all/', function (req, res) {
  * ==========================================
  */
 
-app.get('/gallery/:type/:edition/:version/:tag/:search?', function (req, res) {
+app.get('/gallery/dialog/:textureID', (req, res) => {
+  let textureID
+
+  if (isNaN(req.params.textureID)) return
+  else textureID = req.params.textureID
+
+  texturesBackend.getEverythingAbout(textureID)
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
+app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
   let type, edition, version, tag, search
 
   if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return

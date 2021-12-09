@@ -4,10 +4,39 @@ const paths = require('../helpers/firestorm/texture_paths.js')
 const { single, textureSchema, validator } = require('../validator.js')
 const PromiseEvery = require('../helpers/promiseEvery.js')
 const { ID_FIELD } = require('../helpers/firestorm')
+const contributionsBack = require('./contributions.js')
 
 module.exports = {
   textures: function () {
     return textures.read_raw().catch(err => console.trace(err))
+  },
+  getEverythingAbout: function (id) {
+    const output = {
+      texture: {},
+      uses: [],
+      paths: {},
+      contributions: []
+    }
+    return textures.get(id)
+      .then(texture => {
+        output.texture = texture
+        return texture.uses()
+          .then(uses => {
+            output.uses = uses
+
+            return Promise.all(uses.map(use => use.paths()))
+          })
+          .then(paths => {
+            output.paths = paths
+          })
+      })
+      .then(() => {
+        return contributionsBack.contributionsFromID(id)
+      })
+      .then(contributions => {
+        output.contributions = contributions
+        return output
+      })
   },
   textureTypes: function () {
     return textures.read_raw()

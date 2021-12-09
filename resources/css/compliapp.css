@@ -174,9 +174,10 @@ div.tooltip.vue-tooltip-theme {
   max-width: 256px;
 }
 
-.texture-img:hover {
+/* disabled because of the texture gallery modal */
+/* .texture-img:hover {
   cursor: pointer;
-}
+} */
 
 .texture-img > .v-image__image {
   background-size: contain !important;
@@ -433,4 +434,97 @@ code {
   filter: none !important;
   width: 50%;
   margin-left: 25%;
+}
+
+.gallery-textures-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-texture-in-container {
+  height: 256px; 
+  width: 256px; 
+  max-width: 256px;
+  margin: 5px;
+}
+
+.gallery-texture-background, 
+.gallery-texture-image {
+  position: absolute;
+  max-height: 256px;
+  max-width: 256px;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.gallery-texture-image:hover {
+  cursor: pointer;
+}
+
+.gallery-texture-background > .v-image__image {
+  image-rendering: pixelated;
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.gallery-dialog-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  margin-top: 10px;
+}
+
+.gallery-dialog-textures {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.gallery-dialog-texture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gallery-dialog-texture {
+  height: 196px;
+  width: 196px;
+  position: relative;
+}
+
+.gallery-dialog-texture > * {
+  position: absolute;
+  height: 196px;
+  width: 196px;
+}
+
+.theme--dark.v-data-table {
+  background-color: rgba(0,0,0,.2);
+  padding: 5px;
+}
+
+.double_table {
+  display: flex;
+  flex-direction: row;
+}
+
+.double_table > div {
+  width: 50%;
+}
+
+.go_up_btn {
+  position: fixed;
+  bottom: 64px;
+  right: 64px;
+  z-index: 202;
+}
+
+.go_up_btn:hover {
+  cursor: pointer;
 }

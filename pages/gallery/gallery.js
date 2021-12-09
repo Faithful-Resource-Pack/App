@@ -38,55 +38,49 @@ export default {
         @click:clear="clearSearch"
       ></v-text-field>
     </div>
-
-    <v-list v-if="loading.status == true" style="padding: 10px;">
-      <div class="text-h6 py-6" style="padding: 0 10px !important">{{ loading.comments.length }}/{{ loading.steps }} {{ $root.lang().gallery.loading_message.general }}</div>
-      <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
-    </v-list>
-
-    <v-list v-if="!loading.status && displayedTextures[0].length === 0" style="padding: 10px;">
-      <div class="text-h6 py-6" style="padding: 0 10px !important">{{ $root.lang().global.no_results }}</div>
-    </v-list>
     
     <v-list
-      v-if="!loading.status"
       two-line
+      style="padding: 10px;"
     >
-      <v-row
-        style="margin-top: -15px; margin-bottom: 5px; margin-left: -40px; justify-content: center;"
+      <template v-if="loading.status == true">
+        <div class="text-h6 py-6" style="padding: 0 10px !important">{{ loading.comments.length }}/{{ loading.steps }} {{ $root.lang().gallery.loading_message.general }}</div>
+        <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
+      </template>
+      <template v-if="!loading.status && displayedTextures.length === 0">
+        <div class="text-h6 py-6" style="padding: 0 10px 10px !important">{{ $root.lang().global.no_results }}</div>
+      </template>
+
+      <div
+        v-if="!loading.status"
+        class="gallery-textures-container"
       >
-        <v-col
-          v-for="(textures_arr, index) in displayedTextures"
-          :cols="12/maxColumns"
-          :key="index"
-          style="padding: 0px; margin-right: -30px"
+        <div
+          v-for="(texture, index) in displayedTextures"
+          v-if="index <= displayedResults"
+          class="gallery-texture-in-container"
+          v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
+          v-on:click="openModal(texture.textureID)"
         >
-          <v-list-item
-            v-for="texture in textures_arr"
-            :key="texture.textureID"
-            style="justify-content: center; margin-bottom: -22px"
-          >
-            <v-list-item-content style="display: contents">
-              <v-list-item-avatar
-                tile
-                style="height: 256px; width: 256px; max-width: 256px"
-                v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
-                v-on:click="openModal(texture.textureID)"
-              >
-                <img onerror="this.onerror=null;this.src='https://database.compliancepack.net/images/bot/error.png';" class="texture-img" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
-                <v-img contain style="position: absolute; z-index: -1;" class="texture-background" src="https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png" />
-              </v-list-item-avatar>
-            </v-list-item-content>
-          </v-list-item>
-        </v-col>
-      </v-row>
+          <img class="gallery-texture-image" onerror="this.onerror=null;this.src='https://database.compliancepack.net/images/bot/error.png';" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+          <v-img class="gallery-texture-background" contain style="position: absolute; z-index: -1;" src="https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png" />
+        </div>
+      </div>
     </v-list>
 
     <texture-modal
       :opened="modalOpen"
       :closeModal="closeModal"
-      :textureID="modalTextureID" 
+      :textureID="modalTextureID"
+      :textureObj="modalTextureObj"
+      :contributors="displayed.contributors"
     ></texture-modal>
+
+    <v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
+      <v-icon>
+        mdi-arrow-up
+      </v-icon>
+    </v-btn>
   </v-container>
   `,
   data() {
@@ -120,10 +114,11 @@ export default {
         },
         contributors: {}
       },
-      displayedResults: 100,
-      displayedTextures: [[]],
+      displayedResults: 20,
+      displayedTextures: [],
       modalTextureID: null,
-      modalOpen: false
+      modalTextureObj: {},
+      modalOpen: false,
     }
   },
   computed: {
@@ -137,19 +132,6 @@ export default {
     version() { return this.current.version },
     edition() { return this.current.edition },
     search() { return this.current.search },
-
-    maxColumns() {
-      // if there is only 1 textures
-      if (Object.keys(this.displayed.textures).length === 1) return 1
-
-      switch (this.$vuetify.breakpoint.name) {
-        case 'xs': return 1
-        case 'sm': return 2
-        case 'md': return 3
-        case 'lg': return 4
-        case 'xl': return 6
-      }
-    }
   },
   watch: {
     '$route.params': {
@@ -170,27 +152,30 @@ export default {
     // directly add the search to the search bar if there is a search parameter inside the router
     this.current.search = this.$route.params.search ? this.$route.params.search : undefined
     this.options.versions = this.$route.params.edition ? settings.versions[this.$route.params.edition] : settings.versions[0]
+
+    window.addEventListener('scroll', this.handleScroll)
   },
   methods: {
     openModal(id) {
-      console.log(id, this.modalTextureID, this.modalOpen)
       this.modalTextureID = id
       this.modalOpen = true
+
+      axios.get('/gallery/dialog/' + id)
+        .then(res => {
+          this.modalTextureObj = res.data
+        })
     },
     closeModal() {
       this.modalOpen = false
       this.modalTextureID = null
+      this.modalTextureObj = {}
     },
     splittedTextures() {
       const result = []
       const length = Object.keys(this.displayed.textures).length
 
-      for (let col = 0; col < this.maxColumns; ++col) result.push([])
-
-      let arrayIndex = 0
-      for (let i = 0; i < Math.min(this.displayedResults, length); i++) {
-        result[arrayIndex].push(Object.values(this.displayed.textures)[i])
-        arrayIndex = (arrayIndex + 1) % this.maxColumns
+      for (let i = 0; i < length; i++) {
+        result.push(Object.values(this.displayed.textures)[i])
       }
 
       return result
@@ -287,12 +272,12 @@ export default {
         { message: this.$root.lang().gallery.loading_message.textures, route: `/gallery/textures/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'textures' },
         { message: this.$root.lang().gallery.loading_message.paths, route: `/gallery/paths/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'paths' },
         { message: this.$root.lang().gallery.loading_message.uses, route: `/gallery/uses/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'uses' },
+        { message: this.$root.lang().gallery.loading_message.contributors, route: '/contributors/all', key: 'contributors' }
       ]
 
       if (this.current.resolution !== '16x') {
         params.push(
           { message: this.$root.lang().gallery.loading_message.contributions, route: '/contributions/all', key: 'contributions' },
-          { message: this.$root.lang().gallery.loading_message.contributors, route: '/contributors/all', key: 'contributors' }
         )
       }
 
@@ -322,6 +307,7 @@ export default {
       })
     },
     update() {
+      this.displayedResults = 20
       this.displayed = {
         paths: {},
         uses: {},
@@ -332,8 +318,6 @@ export default {
         },
         contributors: {}
       }
-
-      console.log(this.displayed.uses)
 
       // set textures tags
       this.options.tags = ['All']
@@ -390,14 +374,17 @@ export default {
         if (texture) this.displayed.textures[textureID] = { ...texture, textureID: textureID, useID: use.useID, pathID: use.pathID }
       })
 
-      // stuff below are only available in compliance, not default resolution
-      if (this.current.resolution === '16x') return
-
       this.dataJSON.contributors.forEach(contributor => {
         this.displayed.contributors[contributor.id] = {
           username: contributor.username
         }
       })
+
+      // stuff below are only available in compliance, not default resolution
+      if (this.current.resolution === '16x') {
+        this.displayedTextures = this.splittedTextures()
+        return
+      }
 
       Object.values(this.dataJSON.contributions).forEach(contribution => {
         if (!this.displayed.contributions[contribution.res][contribution.textureID]) this.displayed.contributions[contribution.res][contribution.textureID] = []
@@ -409,6 +396,25 @@ export default {
       })
 
       this.displayedTextures = this.splittedTextures()
+    },
+    scroll() {
+      window.onscroll = () => {
+        let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight
+
+        if (bottomOfWindow) {
+          this.displayedResults += 30
+          this.$forceUpdate()
+        }
+      }
+    },
+    toTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     }
+  },
+  mounted() {
+    this.scroll()
   }
 }

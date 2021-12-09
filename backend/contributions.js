@@ -14,6 +14,15 @@ module.exports = {
   resolutions: function () {
     return Promise.resolve(settings.compliance_resolutions)
   },
+  contributionsFromID: function (id) {
+    if (!id) return Promise.reject(new Error('Texture ID was undefined'))
+
+    return contri.search([{
+      field: 'textureID',
+      criteria: '==',
+      value: id
+    }])
+  },
   authors: function () {
     return contri.read_raw()
       .then((res) => {
