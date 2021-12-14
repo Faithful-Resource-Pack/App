@@ -21,12 +21,14 @@ const ModNewPage = () => import('./pages/modding/mods_new.js')
 const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
+const GalleryPage = () => import('./pages/gallery/gallery.js')
 
 const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/profile', component: ProfilePage }] },
-      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] }
+      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
+      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search?', component: GalleryPage }] }
     ]
   },
   {
@@ -132,8 +134,9 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile', },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' }
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
+      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
     ]
   },
   {
@@ -170,6 +173,7 @@ let ALL_TABS = [
     roles: ['Developer', 'Administrator']
   }
 ]
+
 // convert-import
 
 window.v = undefined
@@ -257,7 +261,7 @@ axios.get('./resources/settings.json')
         userRoles: function () {
           return this.user.roles
         },
-        langBCP47: function() {
+        langBCP47: function () {
           const res = {
             en: 'en-US',
             fr: 'fr-FR',
@@ -272,7 +276,7 @@ axios.get('./resources/settings.json')
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
           this.snackbar.message = message
-          if(message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
+          if (message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true

@@ -12,11 +12,13 @@ export default {
     ends_success: 'Terminé avec succès',
     loading: 'Chargement, veuillez patienter...',
     no_results: 'Aucun resultat n\'a été trouvé.',
+    nyi: 'N\'a pas encore été implémenté.',
     btn: {
       add: 'Ajouter',
       add_download: 'Ajouter un lien',
       submit: 'Soumettre',
       cancel: 'Annuler',
+      close: 'Fermer',
       save: 'Sauvegarder',
       edit: 'Editer',
       delete: 'Supprimer',
@@ -31,7 +33,8 @@ export default {
         title: 'utilisateur',
         subtabs: {
           profile: 'profil',
-          statistics: 'statistiques'
+          statistics: 'statistiques',
+          gallery: 'galerie'
         }
       },
       addons: {
@@ -65,6 +68,31 @@ export default {
           modpacks: 'modpacks'
         }
       }
+    },
+    months: {
+      jan: 'Jan',
+      january: 'Janvier',
+      feb: 'Fév',
+      february: 'Février',
+      mar: 'Mar',
+      march: 'Mars',
+      apr: 'Avr',
+      april: 'Avril',
+      may: 'Mai',
+      jun: 'Juin',
+      june: 'Juin',
+      jul: 'Juil',
+      july: 'Juillet',
+      aug: 'Aoû',
+      august: 'Août',
+      sep: 'Sep',
+      september: 'Septembre',
+      oct: 'Oct',
+      october: 'Octobre',
+      nov: 'Nov',
+      november: 'Novembre',
+      dec: 'Déc',
+      december: 'Décembre'
     }
   },
   database: {
@@ -312,6 +340,56 @@ export default {
       new: {
         placeholder: 'https://www.exemple.com/',
         label: 'Nouveau réseau social'
+      }
+    }
+  },
+  gallery: {
+    title: 'Galerie',
+    loading_message: {
+      general: 'Chargement...',
+      textures: 'Récupération des textures...',
+      paths: 'Récupération des chemins de texture...',
+      uses: 'Récupération des utilisations des textures...',
+      contribution: 'Récupération des contributions...',
+      contributors: 'Récupération des contributeurs...',
+      tags: 'Récupération des tags de texture...'
+    },
+    error_message: {
+      user_not_found: 'Utilisateur non enregistré dans la base de donée!',
+      contribution_not_found: 'Aucune contribution trouvée dans la base de donée!'
+    },
+    category: {
+      search: 'Rechercher',
+      tags: 'Étiquettes',
+      mc_version: 'Versions Minecraft',
+      edition: 'Édition',
+      resolution: 'Résolution'
+    },
+    modal: {
+      items: {
+        information: "information",
+        authors: "auteurs",
+        animated: "animée",
+        model: "3D"
+      },
+      infos: {
+        texture: "texture",
+        uses: "utilisation(s)",
+        paths: "chemin(s)"
+      },
+      tabs: {
+        date: "Date",
+        authors: "Auteur(s)",
+        id: "ID",
+        name: "Nom",
+        tags: "Tags/Types",
+        use_id: "ID de l'utilisation",
+        use_name: "Nom de l'utilisation",
+        editions: "Édition",
+        texture_id: "ID de la texture",
+        path_id: "ID du chemin",
+        resource_pack_path: "Chemin dans le Resource Pack",
+        mc_versions: "Version(s) Minecraft",
       }
     }
   }
