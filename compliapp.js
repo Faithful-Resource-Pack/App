@@ -205,7 +205,8 @@ axios.get('./resources/settings.json')
             color: '#222',
             timeout: 4000
           },
-          drawer: false
+          drawer: false,
+          atl: []
         }
       },
       watch: {
@@ -350,11 +351,33 @@ axios.get('./resources/settings.json')
 
           window.localStorage.setItem('auth', JSON.stringify(auth))
           window.location.href = window.location.origin + window.location.pathname + window.location.hash
+          this.emitConnected()
         },
         addToken(data) {
           data.token = this.user.access_token
           return data
-        }
+        },
+        emitConnected() {
+          const authStr = window.localStorage.getItem('auth')
+          if (!authStr) return
+  
+          const auth = JSON.parse(authStr)
+
+          this.atl.forEach(lis => {
+            lis(auth.access_token)
+          })
+        },
+        addAccessTokenListener(listener) {
+          this.atl.push(listener)
+          if (this.isUserLogged) {
+            const authStr = window.localStorage.getItem('auth')
+            if (!authStr) return
+    
+            const auth = JSON.parse(authStr)
+
+            listener(auth.access_token)
+          }
+        },
       },
       created: function () {
         const authStr = window.localStorage.getItem('auth')
