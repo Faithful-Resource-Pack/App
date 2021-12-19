@@ -21,7 +21,8 @@ const addonsBackend = require('./backend/addons')
 const allCollection = require('./helpers/firestorm/all')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
-const contributionController = require('./backend/contribution/contribution.controller.js')
+const contributionController = require('./backend/contribution/contribution.controller.js');
+const filesController = require('./backend/files/files.controller');
 
 // fetch settings from the database
 const fetchSettings = async () => {
@@ -129,9 +130,6 @@ const postSuccess = function (res) {
     res.end()
   }
 }
-
-contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
-
 /**
  * Success handling for GET request
  * @param {Response<any, Record<string, any>, number>} res
@@ -144,6 +142,9 @@ const getSuccess = function (res) {
     res.end()
   }
 }
+
+contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
+filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess)
 
 /**
  * ==========================================

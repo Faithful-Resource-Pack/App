@@ -21,6 +21,7 @@ const ModNewPage = () => import('./pages/modding/mods_new.js')
 const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
+const filesPage = () => import('./pages/files/pageFiles.js')
 
 const ALL_TABS_ROUTES = [
   {
@@ -51,6 +52,7 @@ const ALL_TABS_ROUTES = [
     subtabs: [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
       { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
+      { routes: [{ path: '/files', component: filesPage }] },
       { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
       { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
@@ -163,6 +165,7 @@ let ALL_TABS = [
     subtabs: [
       { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
       { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
+      { enabled: true, icon: 'mdi-file', to: '/files', label: 'files' },
       { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
       { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
       { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }

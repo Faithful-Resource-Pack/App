@@ -61,6 +61,7 @@ export default {
           contributions: 'contributions',
           contributors: 'contributeurs',
           textures: 'textures',
+          files: 'fichiers',
           mods: 'mods',
           modpacks: 'modpacks'
         }
@@ -72,6 +73,7 @@ export default {
       contributions: 'Contributions',
       contributors: 'Contributeurs',
       textures: 'Textures',
+      files: 'Fichiers',
       add_contributor: 'Ajouter un contributeur',
       add_textures: 'Ajouter des textures',
       add_texture: 'Ajouter une texture',
@@ -313,6 +315,66 @@ export default {
         placeholder: 'https://www.exemple.com/',
         label: 'Nouveau réseau social'
       }
+    }
+  },
+  files: {
+    general: {
+      name: {
+        label: 'Nom de fichier',
+        hint: 'Décrit brièvement le fichier',
+        rules: {
+          name_required: 'Un nom est requis.',
+          name_too_big: 'Le nom de fichier doit faire moins de %s caractères.',
+          name_too_small: 'Le nom de fichier doit faire plus de %s caractères.'
+        }
+      },
+      use: {
+        label: 'Utilisation de fichier',
+        hint: 'Décrit l\'utilisation brièvement',
+        rules: {
+          name_required: 'Une valeur est requise.',
+          name_too_big: 'L\'utilisation du fichier doit faire moins de %s caractères.',
+          name_too_small: 'L\'utilisation du fichier doit faire plus de %s caractères.'
+        }
+      },
+      type: {
+        label: 'Type de fichier',
+        hint: 'Décris le type de fichier',
+        rules: {
+          name_required: 'Une valeur est requise',
+          name_too_big: 'Le type de fichier doit faire moins de %s caractères.',
+          name_too_small: 'Le type de fichier doit faire plus de %s caractères.'
+        }
+      },
+      parent: {
+        type: {
+          label: 'Type du parent du fichier',
+          hint: 'Décris le type du parent du fichier',
+          rules: {
+            name_required: 'Une valeur est requise',
+            name_too_big: 'Le type du parent du fichier doit faire moins de %s caractères.',
+            name_too_small: 'Le type du parent du fichier doit faire plus de %s caractères.'
+          }
+        },
+        id: {
+          label: 'ID du parent du fichier',
+          hint: 'Décris l\'ID du parent du fichier',
+          rules: {
+            name_required: 'Une valeur est requise',
+            name_too_big: 'L\'ID du parent du fichier doit faire moins de %s caractères.',
+            name_too_small: 'L\'ID   du parent du fichier doit faire plus de %s caractères.'
+          }
+        },
+      },
+      source: {
+        label: 'File source',
+        hint: 'File source URL',
+        rules: {
+          name_required: 'A file source URL is required.',
+          name_too_big: 'File URL must be less than %s characters.',
+          name_too_small: 'File URL must be at least %s characters long.'
+        }
+      },
     }
   }
 }

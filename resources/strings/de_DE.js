@@ -61,6 +61,7 @@ export default {
           contributions: 'Beiträge',
           contributors: 'Mitwirkende',
           textures: 'Texturen',
+          files: 'Dateien',
           mods: 'mods',
           modpacks: 'modpacks'
         }
@@ -72,6 +73,7 @@ export default {
       contributions: 'Beiträge',
       contributors: 'Beitragende',
       textures: 'Texturen',
+      files: 'Dateien ',
       add_contributor: 'Neuen Mitwirkenden hinzufügen',
       add_textures: 'Neue Texturen hinzufügen',
       add_texture: 'Neue Textur hinzufügen',

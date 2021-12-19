@@ -59,6 +59,7 @@ export default {
           contributions: 'contributions',
           contributors: 'contributors',
           textures: 'textures',
+          files: 'files',
           mods: 'mods',
           modpacks: 'modpacks'
         }
@@ -70,6 +71,7 @@ export default {
       contributions: 'Contributions',
       contributors: 'Contributors',
       textures: 'Textures',
+      files: 'Files',
       add_contributor: 'Add new contributor',
       add_textures: 'Add new textures',
       add_texture: 'Add new texture',
@@ -313,6 +315,66 @@ export default {
         placeholder: 'https://www.example.com/',
         label: 'New social media'
       }
+    }
+  },
+  files: {
+    general: {
+      name: {
+        label: 'File name',
+        hint: 'Name describes shortly the file',
+        rules: {
+          name_required: 'A name is required.',
+          name_too_big: 'File name must be less than %s characters.',
+          name_too_small: 'File name must be at least %s characters long.'
+        }
+      },
+      use: {
+        label: 'File use',
+        hint: 'Describes short use',
+        rules: {
+          name_required: 'A value is required.',
+          name_too_big: 'File use must be less than %s characters.',
+          name_too_small: 'File use must be at least %s characters long.'
+        }
+      },
+      type: {
+        label: 'File type',
+        hint: 'Describes the type of file giveb',
+        rules: {
+          name_required: 'A value is required.',
+          name_too_big: 'File type must be less than %s characters.',
+          name_too_small: 'File type must be at least %s characters long.'
+        }
+      },
+      parent: {
+        type: {
+          label: 'File parent type',
+          hint: 'Describes the file parent type',
+          rules: {
+            name_required: 'A file type is required.',
+            name_too_big: 'File parent type must be less than %s characters.',
+            name_too_small: 'File parent type must be at least %s characters long.'
+          }
+        },
+        id: {
+          label: 'File parent ID',
+          hint: 'Describes the reference to the parent file',
+          rules: {
+            name_required: 'A file parent ID is required.',
+            name_too_big: 'File parent ID must be less than %s characters.',
+            name_too_small: 'File parent ID must be at least %s characters long.'
+          }
+        },
+      },
+      source: {
+        label: 'File source',
+        hint: 'File source URL',
+        rules: {
+          name_required: 'A file source URL is required.',
+          name_too_big: 'File URL must be less than %s characters.',
+          name_too_small: 'File URL must be at least %s characters long.'
+        }
+      },
     }
   }
 }
