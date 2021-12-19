@@ -37,9 +37,16 @@ export default {
             <div class="gallery-dialog-textures">
               <template v-for="res in resolutions">
                 <div class="gallery-dialog-texture-container">
-                  <div class="gallery-dialog-texture">
-                    <img onerror="this.onerror=null;this.src='https://database.compliancepack.net/images/bot/error.png';" class="texture-img" :src="getTextureURL(res)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
-                    <v-img contain style="position: absolute; z-index: -1;" class="texture-background" src="https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png" />
+                  <div
+                    class="gallery-dialog-texture"
+                    style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png)"
+                  >
+                    <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(res)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+                    <div class="not-done" style="display: none;">
+                      <span></span><div>
+                        <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+                      </div>
+                    </div>
                   </div>
                   <h2>{{ res }}</h2>
                 </div>
@@ -70,7 +77,7 @@ export default {
                   <template v-if="item === items[0]">
                     <template v-for="i in infos">
                       <div style="padding: 15px">
-                        <h2 style="text-transform: capitalize;">{{ infosText[i] }}</h2>
+                        <h2>{{ infosText[i] }}</h2>
                         <v-data-table
                           dense
                           :headers="getHeaders(i)"
@@ -145,11 +152,6 @@ export default {
         this.$root.lang().gallery.modal.items.model
       ],
       infos: ["texture", "uses", "paths"],
-      infosText: {
-        texture: this.$root.lang().gallery.modal.infos.texture,
-        uses: this.$root.lang().gallery.modal.infos.uses,
-        paths: this.$root.lang().gallery.modal.infos.paths,
-      },
       authors: settings.resolutions
     }
   },
@@ -280,6 +282,18 @@ export default {
           if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${path.versions[0]}/${path.path}`
           return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${res}/Jappa-${path.versions[0]}/${path.path}`
       }
+    },
+    ucfirst(text) {
+      return text[0].toUpperCase() + text.substring(1)
     }
+  },
+  computed: { 
+    infosText: function() {
+      return {
+        texture: this.ucfirst(this.$root.lang().gallery.modal.infos.texture),
+        uses: this.ucfirst(this.$root.lang().gallery.modal.infos.uses),
+        paths: this.ucfirst(this.$root.lang().gallery.modal.infos.paths),
+      }
+    },
   }
 }

@@ -449,6 +449,23 @@ code {
   width: 256px; 
   max-width: 256px;
   margin: 5px;
+  text-align: center;
+  position: relative;
+}
+
+.not-done {
+  padding: 0.25rem;
+  text-align: center;
+}
+.not-done, .not-done > span {
+  height: 100%;
+}
+.not-done > * {
+  vertical-align: middle;
+  display: inline-block;
+}
+.not-done > span + div {
+  width: 100%;
 }
 
 .gallery-texture-background, 
@@ -460,6 +477,11 @@ code {
   width: 100%;
   object-fit: contain;
   image-rendering: pixelated;
+}
+
+.gallery-texture-image {
+  top: 0;
+  left: 0;
 }
 
 .gallery-texture-image:hover {

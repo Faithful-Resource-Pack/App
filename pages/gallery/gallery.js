@@ -61,9 +61,16 @@ export default {
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
           v-on:click="openModal(texture.textureID)"
+          style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png)"
         >
-          <img class="gallery-texture-image" onerror="this.onerror=null;this.src='https://database.compliancepack.net/images/bot/error.png';" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
-          <v-img class="gallery-texture-background" contain style="position: absolute; z-index: -1;" src="https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png" />
+          <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+          <div class="not-done" style="display: none;">
+            <span></span><div>
+              <h1>#{{ texture.textureID }}</h1>
+              <h3>{{ texture.name }}</h3>
+              <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+            </div>
+          </div>
         </div>
       </div>
     </v-list>
