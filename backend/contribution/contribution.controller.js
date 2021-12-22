@@ -21,7 +21,7 @@ module.exports = {
   configure: function(before, app, successHandler, errorHandler) {
     CONTROLLER_MAP.forEach(e => {
       app[e[METHOD]]([e[URL]], function(req, res) {
-        before(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+        before(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
           .then(userID => {
             return e[FUNCTION](req.params, req.body)
           })
