@@ -1,5 +1,7 @@
 /* global axios */
 
+const SEARCH_DELAY = 300
+
 export default {
   name: 'contribution-modal',
   props: {
@@ -22,13 +24,13 @@ export default {
     <v-dialog
       v-model="opened"
       persistent
-      width="600"
+      width="800"
     >      
       <v-card>
         <v-card-title class="headline" v-text="$root.lang().database.titles.contributions"></v-card-title>
         <v-card-text>
           <v-row>
-            <v-col>
+            <v-col class="flex-grow-0 flex-shrink-1">
               <v-date-picker
                 v-model="form.date"
                 :locale="$root.langBCP47"
@@ -38,7 +40,7 @@ export default {
                 show-adjacent-months
               ></v-date-picker>
             </v-col>
-            <v-col>
+            <v-col class="flex-grow-1 flex-shrink-0">
               <h3>{{ $root.lang().database.subtitles.resolution }}</h3>
               <v-select
                 required
@@ -51,8 +53,9 @@ export default {
               <h3>{{ $root.lang().database.titles.contributors }}</h3>
               <v-autocomplete
                 v-model="form.contributors"
-                :items="contributors"
-                :loading="contributors.length == 0"
+                :items="contributorList"
+                :loading="contributors.length == 0 && !isSearching"
+                :search-input.sync="search"
                 item-text="username"
                 item-value="id"
                 :label="$root.lang().database.labels.one_contributor"
@@ -95,7 +98,6 @@ export default {
                   <template v-else>
                     <v-list-item-content>
                       <v-list-item-title v-text="data.item.username"></v-list-item-title>
-                      <v-list-item-subtitle v-html="data.item.occurences + ' contribution' + (data.item.occurences > 1 ? 's' : '')"></v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
                       <template v-if="data.item.uuid">
@@ -134,7 +136,17 @@ export default {
       opened: false,
       closeOnSubmit: true,
       res: settings.compliance_resolutions,
+      isSearching: false,
       form: {},
+      search: null,
+      loadedContributors: {},
+      searchTimeout: undefined,
+      previousSearches: []
+    }
+  },
+  computed: {
+    contributorList: function() {
+      return [ ...this.contributors, ...Object.values(this.loadedContributors)]
     }
   },
   methods: {
@@ -175,9 +187,62 @@ export default {
     remove (id) {
       const index = this.form.contributors.indexOf(id)
       if (index >= 0) this.form.contributors.splice(index, 1)
+    },
+    startSearch(val) {
+      val = val.trim()
+
+      // limit search on client and server side
+      if(val.length < 3) return
+
+      // make search only if not searched before
+      let alreadySearched = false
+      let i = 0
+      while(i < this.previousSearches.length && !alreadySearched) {
+        alreadySearched = this.previousSearches[i].includes(val)
+        ++i
+      } 
+      if(alreadySearched) return
+
+      this.previousSearches.push(val)
+      this.isSearching = true
+
+      axios.get(`/contributions/users/${val}`)
+        .then(res => {
+          const results = res.data
+          console.log(results)
+          results.forEach(result => {
+            // in case some clever guy forgot its username or uuid or anything
+            Vue.set(this.loadedContributors, result.id, Object.merge({
+              username: '',
+              uuid: '',
+              type: [],
+              media: []
+            }, result))
+          })
+        })
+        .catch(err => {
+          console.error(err)
+        })
+        .finally(() => {
+          this.isSearching = false
+        })
     }
   },
   created: function() {
     this.form = this.defaultValue()
+  },
+  watch: {
+    search(val) {
+      if(!val) return
+
+      if(this.searchTimeout) {
+        clearTimeout(this.searchTimeout)
+      }
+
+      this.searchTimeout = setTimeout(() => {
+        this.searchTimeout = undefined
+        this.startSearch(val)
+      }, SEARCH_DELAY)
+    }
   }
 }

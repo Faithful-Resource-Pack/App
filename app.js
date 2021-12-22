@@ -478,6 +478,12 @@ app.get('/contributions/stats/', function (req, res) {
     .catch(errorHandler(res))
 })
 
+app.get('/contributions/users/:searchterm', function (req, res) {
+  contributorsBackend.searchUserByUsername(req.params.searchterm)
+    .then(getSuccess(res))
+    .catch(errorHandler(res))
+})
+
 /**
  * ==========================================
  *                 TEXTURES

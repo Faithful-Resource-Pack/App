@@ -59,15 +59,15 @@ export default {
           >
             <template v-if="data.item.uuid != undefined">
               <v-img eager
-                :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
+                :src="'https://visage.surgeplay.com/face/24/' + (data.item.uuid || 'X-Alex')"
                 :alt="data.item.username.slice(0, 1).toUpperCase()"
               />
             </template>
             <template v-else>
-              {{ data.item.username.slice(0, 1) }}
+              {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
             </template>
           </v-avatar>
-          {{ data.item.username }}
+          {{ data.item.username || data.item.id }}
         </v-chip>
       </template>
 
@@ -78,14 +78,14 @@ export default {
         </template>
         <template v-else>
           <v-list-item-content>
-            <v-list-item-title v-text="data.item.username"></v-list-item-title>
+            <v-list-item-title v-text="data.item.username || data.item.id"></v-list-item-title>
             <v-list-item-subtitle v-html="data.item.occurences + ' contribution' + (data.item.occurences > 1 ? 's' : '')"></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
             <template v-if="data.item.uuid">
-              <v-img eager :src="'https://visage.surgeplay.com/head/48/' + data.item.uuid" />
+              <v-img eager :src="'https://visage.surgeplay.com/head/48/' + (data.item.uuid || 'X-Alex')" />
             </template>
-            <div v-else>{{ data.item.username.slice(0, 1).toUpperCase() }}</div>
+            <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
           </v-list-item-avatar>
         </template>
       </template>
@@ -199,7 +199,14 @@ export default {
     getAuthors: function () {
       axios.get('/contributions/authors/')
         .then(res => {
-          this.contributors = res.data
+          this.contributors = res.data.map(e => {
+            return Object.merge({
+              username: '',
+              uuid: '',
+              type: [],
+              media: []
+            }, e)
+          })
         })
         .catch(err => {
           console.trace(err)
