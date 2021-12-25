@@ -23,7 +23,6 @@ export default {
   template: `
     <v-dialog
       v-model="opened"
-      persistent
       width="800"
     >      
       <v-card>

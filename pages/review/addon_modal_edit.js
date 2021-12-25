@@ -5,7 +5,6 @@ export default {
   template: `
     <v-dialog
       v-model="dialog"
-      persistent
       max-width="900"
       style="z-index: 10000"
     >

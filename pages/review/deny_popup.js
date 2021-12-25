@@ -4,7 +4,6 @@ export default {
   `
   <v-dialog
     v-model="reasonPopup"
-    persistent
     max-width="600"
   >
     <v-card>

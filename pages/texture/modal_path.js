@@ -5,7 +5,6 @@ export default {
   template: `
   <v-dialog
     v-model="subPathDialog"
-    persistent
     max-width="600"
   >
     <v-card>
