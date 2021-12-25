@@ -374,7 +374,7 @@ app.post('/profile/roles', function (req, res) {
  * Perms: admins + dev
  */
 app.post('/contributors/change', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.change(req.body)
     })
@@ -386,7 +386,7 @@ app.post('/contributors/change', (req, res) => {
  * Perms: admins + dev
  */
 app.post('/contributors/add', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.add(req.body)
     })
@@ -398,7 +398,7 @@ app.post('/contributors/add', (req, res) => {
  * Perms: admins + dev
  */
 app.post('/contributors/remove', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return contributorsBackend.remove(req.body.id)
     })
@@ -495,7 +495,7 @@ app.get('/contributions/users/:searchterm', function (req, res) {
  * Perms: admins + dev
  */
 app.post('/textures/change', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return texturesBackend.change(req.body)
     })
@@ -507,7 +507,7 @@ app.post('/textures/change', (req, res) => {
  * Perms: admins + dev
  */
 app.post('/textures/add', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return texturesBackend.addTextures(req.body.data)
     })
@@ -516,7 +516,7 @@ app.post('/textures/add', (req, res) => {
 })
 
 app.post('/textures/versions/add', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return texturesBackend.addNewMinecraftVersion(req.body.data)
     })
@@ -561,7 +561,7 @@ app.get('/textures/:type/:name?/?', function (req, res) {
 })
 
 app.post('/textures/remove', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return texturesBackend.removeTextures(req.body.id)
     })
@@ -577,7 +577,7 @@ app.post('/textures/remove', (req, res) => {
 
 // POST
 app.post('/uses/change', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return usesBackend.change(req.body)
     })
@@ -586,7 +586,7 @@ app.post('/uses/change', (req, res) => {
 })
 
 app.post('/uses/add', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return usesBackend.add(req.body)
     })
@@ -595,7 +595,7 @@ app.post('/uses/add', (req, res) => {
 })
 
 app.post('/uses/remove', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return usesBackend.remove(req.body.id, req.body.deletePaths)
     })
@@ -627,7 +627,7 @@ app.get('/uses/all/', function (req, res) {
 
 // POST
 app.post('/paths/change', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.change(req.body)
     })
@@ -636,7 +636,7 @@ app.post('/paths/change', (req, res) => {
 })
 
 app.post('/paths/version-update/', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.update(req.body.actual, req.body.new)
     })
@@ -645,7 +645,7 @@ app.post('/paths/version-update/', (req, res) => {
 })
 
 app.post('/paths/add', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.add(req.body)
     })
@@ -654,7 +654,7 @@ app.post('/paths/add', (req, res) => {
 })
 
 app.post('/paths/remove', (req, res) => {
-  verifyAuth(req.body.token, [...settings.roles.admin.name, ...settings.roles.dev.name])
+  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.remove(req.body.id)
     })
