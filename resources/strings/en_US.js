@@ -185,7 +185,8 @@ export default {
   addons: {
     titles: {
       submit: 'Submit a new Add-on',
-      submissions: 'Submissions'
+      submissions: 'Submissions',
+      details: 'Details'
     },
     remove: {
       title: 'Confirm deletion',

@@ -123,7 +123,8 @@ export default {
   `,
   data() {
     return {
-      dragover: false
+      dragover: false,
+      update: 0
     }
   },
   computed: {
@@ -262,9 +263,6 @@ export default {
         input.multiple = multiple
         input.accept = contentType
 
-        if (this.value != undefined)
-          input.value = this.value
-
         input.onchange = () => {
           let files = Array.from(input.files)
 
@@ -288,6 +286,11 @@ export default {
         ++unit_index
       }
       return `${size} ${units[Math.min(units.length - 1, unit_index)]}`
+    }
+  },
+  watch: {
+    value(n, o) {
+      if(n != o) Vue.set(this, 'update', this.update++)
     }
   }
 }

@@ -307,7 +307,8 @@ axios.get('./resources/settings.json')
             })
             .catch(err => {
               console.error(err)
-              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+              const message = (err && err.response && err.response ? err.response.data.error : undefined) || err.message
+              this.showSnackBar(`${err.message}: ${message}`, 'error')
             })
         },
         /**
