@@ -278,5 +278,15 @@ export default {
 
     // use the logged user as default selected contributor
     this.contributors_selected = [this.$root.user.id]
+  },
+  watch: {
+    contributors: {
+      handler: function(contributors) {
+        // FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
+        const contributors_id = contributors.map(c => c.id)
+        this.contributors_selected = this.contributors_selected.filter(c => contributors_id.includes(c))
+      },
+      deep: true
+    }
   }
 }
