@@ -478,12 +478,6 @@ app.get('/contributions/stats/', function (req, res) {
     .catch(errorHandler(res))
 })
 
-app.get('/contributions/history/', function (req, res) {
-  contributionsStatsBackend.history()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
 app.get('/contributions/users/:searchterm', function (req, res) {
   contributorsBackend.searchUserByUsername(req.params.searchterm)
     .then(getSuccess(res))
