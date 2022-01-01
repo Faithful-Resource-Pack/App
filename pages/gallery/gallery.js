@@ -61,7 +61,7 @@ export default {
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
           v-on:click="openModal(texture.textureID)"
-          style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/Website/master/image/background/transparency_16x.png)"
+          style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png)"
         >
           <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
           <div class="not-done" style="display: none;">
