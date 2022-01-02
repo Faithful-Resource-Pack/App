@@ -157,7 +157,7 @@ export default {
   },
   methods: {
     discordIDtoName(d) {
-      return this.contributors[d].username || this.$root.lang().gallery.error_message.user_not_found
+      return this.contributors[d] ? this.contributors[d].username : this.$root.lang().gallery.error_message.user_not_found
     },
     timestampToDate(t) {
       const a = new Date(t)

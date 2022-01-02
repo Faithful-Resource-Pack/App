@@ -354,7 +354,7 @@ export default {
     },
     error_message: {
       texture_not_done: 'Texture not done!',
-      user_not_found: 'User not registered in database!',
+      user_not_found: 'Unkwown User',
       contribution_not_found: 'No contributions found in database!'
     },
     category: {
