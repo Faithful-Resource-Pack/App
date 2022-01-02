@@ -169,7 +169,7 @@ export default {
     },
     getItems(item) {
       let output = []
-      console.log(this.textureObj)
+      // console.log(this.textureObj)
 
       switch (item) {
         case this.authors[0]:
@@ -287,8 +287,8 @@ export default {
       return text[0].toUpperCase() + text.substring(1)
     }
   },
-  computed: { 
-    infosText: function() {
+  computed: {
+    infosText: function () {
       return {
         texture: this.ucfirst(this.$root.lang().gallery.modal.infos.texture),
         uses: this.ucfirst(this.$root.lang().gallery.modal.infos.uses),
