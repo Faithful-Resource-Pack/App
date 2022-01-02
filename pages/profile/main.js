@@ -264,7 +264,7 @@ export default {
       if (!this.$root.isUserLogged) return
 
       const data = JSON.parse(JSON.stringify(this.$root.user))
-      if(accessToken !== undefined) {
+      if (accessToken !== undefined) {
         data.token = accessToken
       } else {
         data.token = this.$root.user.access_token
@@ -276,7 +276,8 @@ export default {
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          // this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          if (this.$root.isUserLogged) this.$root.logout() // classical error 500 after a long time -> logout
         })
     },
     update: function (accessToken) {
