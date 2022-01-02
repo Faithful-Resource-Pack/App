@@ -123,6 +123,7 @@ export default {
       paths: 'Path(s)'
     },
     labels: {
+      mcmeta: "Animated texture",
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
       new_mc_version_name: 'New version name',

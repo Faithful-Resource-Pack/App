@@ -17,6 +17,7 @@ export default {
               <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.useID" :label="$root.lang().database.labels.use_id"></v-text-field>
               <v-text-field :hint="$root.lang().database.hints.path" v-model="subPathFormData.path" :label="$root.lang().database.labels.path"></v-text-field>
               <v-select required multiple small-chips v-model="subPathFormData.versions" :items="sortedVersions" :label="$root.lang().database.labels.versions"></v-select>
+              <v-checkbox v-model="subPathFormData.mcmeta" :label="$root.lang().database.labels.mcmeta" />
             </v-form>
           </v-col>
         </v-row>
@@ -61,7 +62,6 @@ export default {
     versions: {
       type: Array,
       required: false,
-      // TODO: Add an automated fetch for all version
       default: function () {
         return [...settings.versions.java, ...settings.versions.bedrock, ...settings.versions.dungeons]
       }
@@ -78,7 +78,8 @@ export default {
         id: '',
         useID: '',
         path: '',
-        versions: []
+        versions: [],
+        mcmeta: false
       }
     }
   },
@@ -138,6 +139,7 @@ export default {
           this.subPathFormData.id = this.pathData.id
           this.subPathFormData.path = this.pathData.path
           this.subPathFormData.useID = this.pathData.useID
+          this.subPathFormData.mcmeta = this.pathData.mcmeta
         } else this.$refs.form.reset()
       })
     }

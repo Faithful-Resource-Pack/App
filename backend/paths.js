@@ -53,7 +53,7 @@ module.exports = {
   change: function (body) {
     const elID = body.id
     const obj = {}
-    const fArr = ['useID', 'path', 'versions']
+    const fArr = ['useID', 'path', 'versions', 'mcmeta']
 
     fArr.forEach(field_kept => {
       if (field_kept in body) obj[field_kept] = body[field_kept]
@@ -73,7 +73,7 @@ module.exports = {
   },
   add: function (body) {
     const obj = {}
-    const fArr = ['useID', 'path', 'versions']
+    const fArr = ['useID', 'path', 'versions', 'mcmeta']
 
     fArr.forEach(field_kept => {
       if (field_kept in body) obj[field_kept] = body[field_kept]
