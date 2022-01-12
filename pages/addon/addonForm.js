@@ -13,31 +13,10 @@ export default {
       type: Boolean,
       required: true
     },
-    value: {
-      required: true,
-    },
-    addon: {
-      type: Object,
+    slug: {
+      type: String,
       required: false,
-      default: {
-        name: '',
-        description: '',
-        authors: [],
-        slug: '',
-        options: {
-          optifine: false,
-          comments: true,
-          tags: []
-        },
-        approval: {
-          status: 'pending',
-          author: null,
-          reason: null
-        },
-        files: {
-          header: {}
-        }
-      }
+      default: () => undefined
     }
   },
   template: `
@@ -53,7 +32,7 @@ export default {
               <!-- Addon name -->
               <v-text-field
                 clearable
-                v-model="addon.name"
+                v-model="submittedForm.name"
                 :rules="form.name.rules"
                 :counter="form.name.counter.max"
                 :label="$root.lang().addons.general.name.label"
@@ -67,7 +46,7 @@ export default {
                   small-chips
                   counter="1"
                   prepend-icon="mdi-image"
-                  v-model="headerFile"
+                  v-model="submittedForm.headerFile"
                   accept="image/jpg, image/png, image/gif"
                   :label="$root.lang().addons.images.header.labels.drop"
                   :rules="headerRules"
@@ -95,7 +74,7 @@ export default {
               multiple
               small-chips
               prepend-icon="mdi-image"
-              v-model="carouselFiles"
+              v-model="submittedForm.carouselFiles"
               accept="image/jpg, image/png, image/gif"
               :label="$root.lang().addons.images.carousel.labels.drop"
               :rules="carouselRules"
@@ -108,7 +87,7 @@ export default {
         <!-- Addon description -->
         <v-textarea
           clearable
-          v-model="addon.description"
+          v-model="submittedForm.description"
           :rules="form.description.rules"
           :counter="form.description.counter.max"
           :label="$root.lang().addons.general.description.label"
@@ -117,7 +96,7 @@ export default {
 
         <!-- Addon description preview -->
         <v-container
-          v-if="addon.description && addon.description.length > 0"
+          v-if="submittedForm.description && submittedForm.description.length > 0"
           class="markdown"
           style="background-color: rgba(33,33,33,1); border-radius: 5px;"
           v-html="$root.compiledMarkdown(addon.description)"
@@ -125,7 +104,7 @@ export default {
 
         <!-- Addon authors selection -->
         <user-list 
-          :array="addon.authors"
+          :array="submittedForm.authors"
           :label="$root.lang().addons.general.authors.label"
           :hint="$root.lang().addons.general.authors.hint"
         />
@@ -137,9 +116,9 @@ export default {
                 <v-checkbox
                   class="col-6"
                   v-for="type in editions"
-                  v-model="selectedEditions"
+                  v-model="submittedForm.selectedEditions"
                   :label="type"
-                  :disabled="selectedEditions.length === 1 && selectedEditions[0] === type"
+                  :disabled="submittedForm.selectedEditions.length === 1 && submittedForm.selectedEditions[0] === type"
                   :value="type"
                   color="primary"
                 />
@@ -149,9 +128,9 @@ export default {
                 <v-checkbox
                   class="col-6"
                   v-for="type in res"
-                  v-model="selectedRes"
+                  v-model="submittedForm.selectedRes"
                   :label="type"
-                  :disabled="selectedRes.length === 1 && selectedRes[0] === type"
+                  :disabled="submittedForm.selectedRes.length === 1 && submittedForm.selectedRes[0] === type"
                   :value="type"
                   color="primary"
                 />
@@ -166,13 +145,13 @@ export default {
           <v-row>
               <v-checkbox
                 class="col-6"
-                :v-model="comments"
+                :v-model="submittedForm.comments"
                 :label="$root.lang().addons.options.comments.label"
                 color="primary"
               />
               <v-checkbox
                 class="col-6"
-                :v-model="optifine"
+                :v-model="submittedForm.optifine"
                 :label="$root.lang().addons.options.optifine.label"
                 color="primary"
               />
@@ -186,7 +165,7 @@ export default {
             <!-- LEFT PART: Download link -->
             <div class="v-col">
             <v-row 
-               v-for="(obj, index) in downloads"
+               v-for="(obj, index) in submittedForm.downloads"
                :key="index"
                :style="{'margin-top': index == 0 ? '-12px' : '-32px' }"
              >
@@ -315,19 +294,27 @@ export default {
           },
         }
       },
-      headerFile: undefined,
+      submittedForm: {
+        name: '',
+        headerFile: undefined,
+        carouselFiles: [],
+        downloads: [{
+          key: '',
+          links: ['']
+        }],
+        authors: [],
+        selectedEditions: ['Java'],
+        selectedRes: ['32x'],
+        comments: true,
+        optifine: false
+      },
       headerValid: false,
       headerValidating: false,
       headerError: "",
-      carouselFiles: undefined,
       carouselValid: false,
       carouselValidating: false,
       carouselError: "",
       carouselDoNotVerify: false,
-      downloads: [{
-        key: '',
-        links: ['']
-      }],
       downloadTitleRules: [
         u => !!u || this.$root.lang().addons.downloads.name.rules.name_required,
         u => u !== ' ' || this.$root.lang().addons.downloads.name.rules.name_cannot_be_empty
@@ -337,11 +324,7 @@ export default {
       ],
       validForm: false,
       editions: ['Java', 'Bedrock'],
-      selectedEditions: ['Java'],
       res: ['32x', '64x'],
-      selectedRes: ['32x'],
-      comments: true,
-      optifine: false
     }
   },
   computed: {
@@ -349,59 +332,66 @@ export default {
       return !!this.header
     },
     header: function () {
-      return this.newAddon ? (this.headerFile ? URL.createObjectURL(this.headerFile) : undefined) : this.addon.files.header.source
+      return this.submittedForm.headerFile ? URL.createObjectURL(this.submittedForm.headerFile) : undefined;
     },
-    carouselSources: function() {
-      return this.carouselValidating === false && this.carouselValid ? this.carouselFiles.map(file => URL.createObjectURL(file)) : []
+    carouselSources: function () {
+      return this.carouselValidating === false && this.carouselValid ? this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []
     },
-    headerValidSentence: function() {
-      if(this.headerValidating) {
+    headerValidSentence: function () {
+      if (this.headerValidating) {
         return "Header being verified..."
-      } else if(this.headerValid) {
+      } else if (this.headerValid) {
         return true
       }
 
       return this.headerError
     },
-    headerRules: function() {
+    headerRules: function () {
       return [...this.form.files.header.rules, this.headerValidSentence]
     },
-    carouselRules: function() {
+    carouselRules: function () {
       return [...this.form.files.carousel.rules, this.carouselValidSentence]
     },
-    carouselValidSentence: function() {
-      if(this.carouselValidating) {
+    carouselValidSentence: function () {
+      if (this.carouselValidating) {
         return "Carousel being verified..."
-      } else if(this.carouselValid) {
+      } else if (this.carouselValid) {
         return true
       }
 
       return this.carouselError
     },
-    submittedData: function() {
-      return {
-        title: this.addon.title,
-        headerImage: this.headerFile,
-        carouselFiles: this.carouselFiles,
-        description: this.addon.description,
-        authors: this.addon.authors,
-        download: this.addon.downloads,
-        tags: [...selectedEditions, ...selectedRes]
-      }
+    submittedData: function () {
+      let res = Object.merge({}, this.submittedForm)
+
+      res.tags = [...res.selectedEditions, res.selectedRes]
+      delete res.selectedEditions
+      delete res.selectedRes
+
+      return res
+    },
+    submitMethod: function () {
+      return this.newAddon ? 'post' : 'put'
+    },
+    submitURL: function () {
+      return '/addon/' + this.newAddon ? this.slug : ''
     }
   },
   methods: {
     addNewDownload: function () {
-      this.downloads.push({ key: '', links: [''] })
+      this.submittedForm.downloads.push({ key: '', links: [''] })
+    },
+    deleteDownload: function (index) {
+      this.submittedForm.downloads = this.submittedForm.downloads.splice(index, 1)
     },
     updateDownloadForm: function () {
       this.addon.downloads = {}
 
-      this.downloads.forEach(download => {
+      this.submittedForm.downloads.forEach(download => {
         this.addon.downloads[download.key] = download.links
       })
     },
-    checkSlug: function() {
+    checkSlug: function () {
       return new Promise((resolve, reject) => {
         const slug = this.addon.slug
         axios.get('/addons/slug/' + slug)
@@ -409,7 +399,7 @@ export default {
             reject(new Error(this.$root.lang().addon.general.slug.rules.unavailable))
           })
           .catch(err => {
-            if(err.status === 404) resolve()
+            if (err.status === 404) resolve()
             else {
               const message = (err && err.response && err.response.dara ? err.response.data.error : undefined) || 'An error occured'
               console.error(err)
@@ -418,16 +408,16 @@ export default {
           })
       })
     },
-    onDeleteCarousel: function(item, index) {
+    onDeleteCarousel: function (item, index) {
       this.carouselDoNotVerify = true
-      this.carouselFiles.splice(index, 1)
+      this.submittedForm.carouselFiles.splice(index, 1)
       Vue.nextTick(() => {
         this.carouselDoNotVerify = false
       })
     },
-    validateRatio: function(ctx) {
+    validateRatio: function (ctx) {
       const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78
-      if(!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio)
+      if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio)
     },
     validURL: function (str) {
       const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
@@ -438,35 +428,44 @@ export default {
         '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
       return !!pattern.test(str)
     },
-    verifyImage: function(file, validateImage) {
-      if(validateImage === undefined) validateImage = this.validateRatio
+    verifyImage: function (file, validateImage) {
+      if (validateImage === undefined) validateImage = this.validateRatio
 
       return new Promise((resolve, reject) => {
-          // start reader
-          const reader = new FileReader()
-    
-          reader.onload = function (e) {
-            const image = new Image()
-            image.src = e.target.result
-            image.onload = function () {
-              try {
-                validateImage(this)
-                resolve()
-              } catch (error) {
-                reject(error)
-              }
-            }
-            image.onerror = function(error) {
-              reject(e)
+        // start reader
+        const reader = new FileReader()
+
+        reader.onload = function (e) {
+          const image = new Image()
+          image.src = e.target.result
+          image.onload = function () {
+            try {
+              validateImage(this)
+              resolve()
+            } catch (error) {
+              reject(error)
             }
           }
-          reader.onerror = function(error) {
+          image.onerror = function (error) {
             reject(e)
           }
-    
-          // set file to be readt
-          reader.readAsDataURL(file)
+        }
+        reader.onerror = function (error) {
+          reject(e)
+        }
+
+        // set file to be readt
+        reader.readAsDataURL(file)
       })
+    },
+    submitMethod: function () {
+      axios[this.method](this.submitURL, this.submittedData)
+        .then((res) => {
+          this.$root.showSnackBar(res, 'success')
+        })
+        .catch((err) => {
+          this.$root.showSnackBar(error.message, 'error')
+        })
     }
   },
   watch: {
@@ -488,21 +487,20 @@ export default {
         })
     },
     carouselFiles(files) {
-      if(this.carouselDoNotVerify) return
+      if (this.carouselDoNotVerify) return
 
       this.carouselValidating = true
       Promise.all(files.map(f => this.verifyImage(f, this.validateRatio)))
-      .then(() => {
-        this.carouselValid = true
-      })
-      .catch((error) => {
-        this.carouselValid = false
-        this.carouselError = error.message
-        this.$root.showSnackBar(error.message, 'error')
-      })
-      .finally(() => {
-        this.carouselValidating = false
-      })
+        .then(() => {
+          this.carouselValid = true
+        })
+        .catch((error) => {
+          this.carouselValid = false
+          this.carouselError = error.message
+        })
+        .finally(() => {
+          this.carouselValidating = false
+        })
     }
   }
 }
