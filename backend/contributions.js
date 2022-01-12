@@ -8,8 +8,20 @@ const { textureURL } = require('../helpers/textureURL')
 const settings = require('../resources/settings.json')
 
 module.exports = {
+  contributions: function () {
+    return contri.read_raw()
+  },
   resolutions: function () {
     return Promise.resolve(settings.compliance_resolutions)
+  },
+  contributionsFromID: function (id) {
+    if (!id) return Promise.reject(new Error('Texture ID was undefined'))
+
+    return contri.search([{
+      field: 'textureID',
+      criteria: '==',
+      value: id
+    }])
   },
   authors: function () {
     return contri.read_raw()
@@ -77,7 +89,7 @@ module.exports = {
         return Promise.all([results, texture.searchKeys(texture_ids), uses_promise])
       })
       .then(results => {
-        const contrib_results = results[0]
+        let contrib_results = results[0]
         const texture_results = results[1]
         let uses_results = results[2]
 
@@ -89,14 +101,20 @@ module.exports = {
         uses_results = Object.values(uses_object)
 
         let texture_found
+        
+        // FIX BUG WHERE USE WAS DELETED OR MERGED
+        contrib_results = contrib_results.filter(contrib => uses_object[contrib.textureID] !== undefined)
+        
         for (let i = 0; i < contrib_results.length; ++i) {
           texture_found = texture_results.filter(r => r[firestorm.ID_FIELD] == contrib_results[i].textureID)[0]
 
           if (texture_found && texture_found.name) {
             contrib_results[i].textureName = texture_found.name
           }
-          contrib_results[i].edition = uses_object[contrib_results[i].textureID].editions[0]
-          contrib_results[i].useID = uses_object[contrib_results[i].textureID][firestorm.ID_FIELD]
+
+          const use = uses_object[contrib_results[i].textureID]
+          contrib_results[i].edition = use.editions[0]
+          contrib_results[i].useID = use[firestorm.ID_FIELD]
         }
 
         let uses_ids = uses_results.map(val => val[firestorm.ID_FIELD])

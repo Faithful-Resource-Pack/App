@@ -5,7 +5,6 @@ export default {
   template: `
   <v-dialog
     v-model="subPathDialog"
-    persistent
     max-width="600"
   >
     <v-card>
@@ -18,6 +17,7 @@ export default {
               <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.useID" :label="$root.lang().database.labels.use_id"></v-text-field>
               <v-text-field :hint="$root.lang().database.hints.path" v-model="subPathFormData.path" :label="$root.lang().database.labels.path"></v-text-field>
               <v-select required multiple small-chips v-model="subPathFormData.versions" :items="sortedVersions" :label="$root.lang().database.labels.versions"></v-select>
+              <v-checkbox v-model="subPathFormData.mcmeta" :label="$root.lang().database.labels.mcmeta" />
             </v-form>
           </v-col>
         </v-row>
@@ -78,7 +78,8 @@ export default {
         id: '',
         useID: '',
         path: '',
-        versions: []
+        versions: [],
+        mcmeta: false
       }
     }
   },
@@ -95,22 +96,22 @@ export default {
       const aSplit = a.split('.').map(s => parseInt(s))
       const bSplit = b.split('.').map(s => parseInt(s))
 
-      if(aSplit.includes(NaN) || bSplit.includes(NaN)) {
+      if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
         return String(a).localeCompare(String(b)) // compare as strings
       }
-      
+
       const upper = Math.min(aSplit.length, bSplit.length)
       let i = 0
       let result = 0
-      while(i < upper && result == 0) {
+      while (i < upper && result == 0) {
         result = (aSplit[i] == bSplit[i]) ? 0 : (aSplit[i] < bSplit[i] ? -1 : 1) // each number
         ++i
       }
-      
-      if(result != 0) return result
-      
+
+      if (result != 0) return result
+
       result = (aSplit.length == bSplit.length) ? 0 : (aSplit.length < bSplit.length ? -1 : 1) // longer length wins
-      
+
       return result
     },
     send: function () {
@@ -138,6 +139,7 @@ export default {
           this.subPathFormData.id = this.pathData.id
           this.subPathFormData.path = this.pathData.path
           this.subPathFormData.useID = this.pathData.useID
+          this.subPathFormData.mcmeta = this.pathData.mcmeta
         } else this.$refs.form.reset()
       })
     }

@@ -50,7 +50,6 @@ export default {
   template: `
   <v-dialog
       v-model="dialog"
-      persistent
       max-width="860"
     >      
       <v-card>

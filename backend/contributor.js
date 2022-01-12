@@ -18,6 +18,18 @@ module.exports = {
         return types
       })
   },
+  searchUserByUsername: function(searchterm) {
+    if(!searchterm || searchterm.length < 3) return Promise.reject(new Error('User search requires at least 3 letters'))
+
+    return this.search([{
+      criteria: "includes",
+      field: "username",
+      value: searchterm
+    }])
+  },
+  /**
+   * @param {import('../helpers/firestorm/index').SearchOption[]} searchOptions search options
+   */
   search: function(searchOptions) {
     return firestorm_users.search(searchOptions)
   },

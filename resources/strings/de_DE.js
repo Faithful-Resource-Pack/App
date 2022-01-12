@@ -31,7 +31,8 @@ export default {
         title: 'Benutzer',
         subtabs: {
           profile: 'Profil',
-          statistics: 'Statistik'
+          statistics: 'Statistik',
+          gallery: 'Gallery'
         }
       },
       addons: {

@@ -260,11 +260,15 @@ export default {
           this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
         })
     },
-    getUserInfo: function () {
+    getUserInfo: function (accessToken) {
       if (!this.$root.isUserLogged) return
 
       const data = JSON.parse(JSON.stringify(this.$root.user))
-      data.token = this.$root.user.access_token
+      if (accessToken !== undefined) {
+        data.token = accessToken
+      } else {
+        data.token = this.$root.user.access_token
+      }
 
       axios.post('/profile/get', data)
         .then((res) => {
@@ -272,14 +276,15 @@ export default {
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          // this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          if (this.$root.isUserLogged) this.$root.logout() // classical error 500 after a long time -> logout
         })
     },
-    update: function () {
-      this.getUserInfo()
+    update: function (accessToken) {
+      this.getUserInfo(accessToken)
     }
   },
   mounted: function () {
-    this.update()
+    this.$root.addAccessTokenListener(this.update)
   }
 }

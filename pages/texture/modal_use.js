@@ -12,7 +12,6 @@ export default {
   template: `
   <v-dialog
     v-model="subDialog"
-    persistent
     max-width="600"
   >
     <path-modal :subPathDialog="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>

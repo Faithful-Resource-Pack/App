@@ -1,6 +1,54 @@
 @font-face {
   font-family: Compliance;
-  src: url("./Compliance.ttf") format("truetype");
+  src: url("../fonts/Compliance.ttf") format("truetype");
+  
+}
+
+@font-face {
+  font-family: 'icons';
+  src:  url('../fonts/icons.eot?sn8f0g');
+  src:  url('../fonts/icons.eot?sn8f0g#iefix') format('embedded-opentype'),
+    url('../fonts/icons.ttf?sn8f0g') format('truetype'),
+    url('../fonts/icons.woff?sn8f0g') format('woff'),
+    url('../fonts/icons.svg?sn8f0g#icons') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  font-family: 'icons';
+  speak: never;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  margin-right: 6px;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-something: grayscale;
+}
+
+.icon-mojang-red:before {
+  content: "\e900";
+  color: #ec343c;
+}
+.icon-mojang-white:before {
+  content: "\e901";
+  color: #fff;
+}
+.icon-people:before {
+  content: "\e902";
+  color: #fff;
+}
+.icon-peoples:before {
+  content: "\e903";
+  color: #fff;
+}
+.icon-time:before {
+  content: "\e904";
+  color: #fff;
 }
 
 /* Keep background from #app when the page is loading */
@@ -58,7 +106,6 @@ a { text-decoration: none; }
   text-transform: none;
 }
 
-
 div.tooltip {
   text-align: center;
   font-family: 'Roboto', sans-serif;
@@ -75,6 +122,10 @@ div.tooltip {
 div.tooltip .number {
   font-size: 18px;
   font-weight: 600;
+}
+
+div.tooltip.vue-tooltip-theme {
+	background: transparent;
 }
 
 .selected {
@@ -122,9 +173,70 @@ div.tooltip .number {
   top: 2px !important;
 }
 
+.texture-img {
+  max-height: 256px;
+  max-width: 256px;
+}
+
+/* disabled because of the texture gallery modal */
+/* .texture-img:hover {
+  cursor: pointer;
+} */
+
 .texture-img > .v-image__image {
   background-size: contain !important;
   image-rendering: pixelated;
+}
+
+img.texture-img {
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.texture-background > .v-image__image {
+  image-rendering: pixelated;
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.texture-tooltip {
+  max-height: 256px;
+  min-width: 256px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-content: center;
+
+  font-size: larger;
+}
+
+.texture-info-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+
+.texture-tags-container {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+}
+
+.texture-info-container > ul {
+  list-style: none;
+}
+
+.encased {
+  padding: .2rem .4rem;
+  margin-bottom: 5px;
+  margin-right: 5px;
+	border-radius: 3px;
+  background-color: #272727;
+
+  -webkit-box-shadow: 2px 2px 8px 2px rgba(0,0,0,.7); 
+  box-shadow: 2px 2px 8px 2px rgba(0,0,0,.7);
 }
 
 .v-chip {
@@ -320,4 +432,125 @@ code {
 }
 .upload-file-input .v-card.dragover .upload-label {
   color: white;
+}
+
+.v-image__image--preload {
+  filter: none !important;
+  width: 50%;
+  margin-left: 25%;
+}
+
+.gallery-textures-container {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-texture-in-container {
+  height: 256px; 
+  width: 256px; 
+  max-width: 256px;
+  margin: 5px;
+  text-align: center;
+  position: relative;
+}
+
+.not-done {
+  padding: 0.25rem;
+  text-align: center;
+}
+.not-done, .not-done > span {
+  height: 100%;
+}
+.not-done > * {
+  vertical-align: middle;
+  display: inline-block;
+}
+.not-done > span + div {
+  width: 100%;
+}
+
+.gallery-texture-background, 
+.gallery-texture-image {
+  position: absolute;
+  max-height: 256px;
+  max-width: 256px;
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.gallery-texture-image {
+  top: 0;
+  left: 0;
+}
+
+.gallery-texture-image:hover {
+  cursor: pointer;
+}
+
+.gallery-texture-background > .v-image__image {
+  image-rendering: pixelated;
+  background-repeat: repeat;
+  background-size: auto;
+}
+
+.gallery-dialog-container {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  margin-top: 10px;
+}
+
+.gallery-dialog-textures {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+}
+
+.gallery-dialog-texture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.gallery-dialog-texture {
+  height: 196px;
+  width: 196px;
+  position: relative;
+}
+
+.gallery-dialog-texture > * {
+  position: absolute;
+  height: 196px;
+  width: 196px;
+}
+
+.theme--dark.v-data-table {
+  background-color: rgba(0,0,0,.2);
+  padding: 5px;
+}
+
+.double_table {
+  display: flex;
+  flex-direction: row;
+}
+
+.double_table > div {
+  width: 50%;
+}
+
+.go_up_btn {
+  position: fixed;
+  bottom: 64px;
+  right: 64px;
+  z-index: 202;
+}
+
+.go_up_btn:hover {
+  cursor: pointer;
 }

@@ -12,7 +12,6 @@ export default {
   template: `
   <v-dialog
       v-model="dialog"
-      persistent
       max-width="600"
     >
       <use-modal :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>

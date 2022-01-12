@@ -25,7 +25,6 @@ export default {
   template: `
   <v-dialog
     v-model="dialog"
-    persistent
     max-width="600"
   >   
     <v-card>

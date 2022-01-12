@@ -1,8 +1,37 @@
 const paths = require('../helpers/firestorm/texture_paths.js')
+const uses = require('../helpers/firestorm/texture_use.js')
 
 module.exports = {
-  path: function() {
-    return paths.read_raw().catch(err => console.trace(err))
+  path: function () {
+    return paths.read_raw()
+  },
+  searchTextureID(ids) {
+    return uses.search([{
+      field: "textureID",
+      criteria: 'in',
+      value: ids
+    }])
+      .then(uses => {
+        uses = uses.map(use => use.id)
+        return paths.search([{
+          field: "useID",
+          criteria: 'in',
+          value: uses
+        }])
+      })
+  },
+  usesIDsFromVersion: function (version) {
+    return paths.search([{
+      field: 'versions',
+      criteria: 'array-contains',
+      value: version
+    }])
+      .then(paths => {
+        const ids = []
+        for (const pathID in paths)
+          ids.push(paths[pathID].useID)
+        return ids
+      })
   },
   search: function (useID) {
     if (!useID) return Promise.reject(new Error('Search function paramater undefined'))
@@ -24,7 +53,7 @@ module.exports = {
   change: function (body) {
     const elID = body.id
     const obj = {}
-    const fArr = [ 'useID', 'path', 'versions' ]
+    const fArr = ['useID', 'path', 'versions', 'mcmeta']
 
     fArr.forEach(field_kept => {
       if (field_kept in body) obj[field_kept] = body[field_kept]
@@ -44,7 +73,7 @@ module.exports = {
   },
   add: function (body) {
     const obj = {}
-    const fArr = [ 'useID', 'path', 'versions' ]
+    const fArr = ['useID', 'path', 'versions', 'mcmeta']
 
     fArr.forEach(field_kept => {
       if (field_kept in body) obj[field_kept] = body[field_kept]
@@ -52,30 +81,30 @@ module.exports = {
 
     return paths.add(obj)
   },
-  remove: function(path_id) {
+  remove: function (path_id) {
     return paths.remove(path_id)
   },
-  update: function(oldVersion, newVersion) {
+  update: function (oldVersion, newVersion) {
     return paths.read_raw() // this cannot be done without a read/write raw :'(
-    .then(allPaths => {
-      for (const pathID in allPaths) {
-        if (!allPaths[pathID].versions || allPaths[pathID].versions == []) continue
+      .then(allPaths => {
+        for (const pathID in allPaths) {
+          if (!allPaths[pathID].versions || allPaths[pathID].versions == []) continue
 
-        if (allPaths[pathID].versions.includes(oldVersion)) {
-          // remove old value
-          allPaths[pathID].versions = allPaths[pathID].versions.filter(el => el != oldVersion)
-          // add the new
-          allPaths[pathID].versions.push(newVersion)
+          if (allPaths[pathID].versions.includes(oldVersion)) {
+            // remove old value
+            allPaths[pathID].versions = allPaths[pathID].versions.filter(el => el != oldVersion)
+            // add the new
+            allPaths[pathID].versions.push(newVersion)
+          }
+
+          // sort versions
+          allPaths[pathID].versions = allPaths[pathID].versions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+          // remove duplicate (if so)
+          allPaths[pathID].versions = [...new Set(allPaths[pathID].versions)]
+          // reverse it to get the highest version first
+          allPaths[pathID].versions.reverse()
         }
-
-        // sort versions
-        allPaths[pathID].versions = allPaths[pathID].versions.sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
-        // remove duplicate (if so)
-        allPaths[pathID].versions = [...new Set(allPaths[pathID].versions)]
-        // reverse it to get the highest version first
-        allPaths[pathID].versions.reverse()
-      }
-      paths.write_raw(allPaths)
-    })
+        paths.write_raw(allPaths)
+      })
   }
 }

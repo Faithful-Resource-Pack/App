@@ -166,7 +166,6 @@ export default {
         .attr('height', d => height - spacing - yScale(d[1] - d[0]))
         .on("mouseover", function (...args) {
           const [event, d] = args
-          console.log(args);
           div.transition()
             .duration(200)
             .style("opacity", .9)
@@ -251,15 +250,5 @@ export default {
         }
       })
     }
-  },
-  mounted: function () {
-    // best method to do it unfortunatley
-    const d3script = document.createElement('script')
-    d3script.setAttribute('src', 'https://cdn.jsdelivr.net/combine/npm/d3@7,npm/moment@2')
-    document.head.appendChild(d3script)
-
-    d3script.addEventListener('load', () => {
-      this.getData()
-    })
   }
 }

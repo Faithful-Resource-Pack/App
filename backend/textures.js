@@ -4,10 +4,39 @@ const paths = require('../helpers/firestorm/texture_paths.js')
 const { single, textureSchema, validator } = require('../validator.js')
 const PromiseEvery = require('../helpers/promiseEvery.js')
 const { ID_FIELD } = require('../helpers/firestorm')
+const contributionsBack = require('./contributions.js')
 
 module.exports = {
   textures: function () {
     return textures.read_raw().catch(err => console.trace(err))
+  },
+  getEverythingAbout: function (id) {
+    const output = {
+      texture: {},
+      uses: [],
+      paths: {},
+      contributions: []
+    }
+    return textures.get(id)
+      .then(texture => {
+        output.texture = texture
+        return texture.uses()
+          .then(uses => {
+            output.uses = uses
+
+            return Promise.all(uses.map(use => use.paths()))
+          })
+          .then(paths => {
+            output.paths = paths
+          })
+      })
+      .then(() => {
+        return contributionsBack.contributionsFromID(id)
+      })
+      .then(contributions => {
+        output.contributions = contributions
+        return output
+      })
   },
   textureTypes: function () {
     return textures.read_raw()
@@ -25,6 +54,28 @@ module.exports = {
         })
 
         return types
+      })
+  },
+  searchKeys(ids) {
+    return textures.searchKeys(ids)
+  },
+  texturesIDsFromSearch(ids, name) {
+    return textures.searchKeys(ids)
+      .then(res => {
+        return res.filter(el => el.name.includes(name)).map(el => el.id)
+      })
+  },
+  texturesIDsFromTags(tag, ids) {
+    return textures.searchKeys(ids)
+      .then(res => {
+        if (tag.toLowerCase() === 'all') return res.map(e => e.id)
+
+        const ids = []
+        res.forEach(t => {
+          if (t.type.includes(tag)) ids.push(t.id)
+        })
+
+        return ids
       })
   },
   search: function (textureName, textureType) {
@@ -196,12 +247,14 @@ module.exports = {
       })
       .then(pathsFound => {
         const pathIDs = pathsFound.map(path => path[ID_FIELD])
-        const pathEditBulk = pathIDs.map(pathID => { return {
-          id: pathID,
-          field: 'versions',
-          operation: 'array-push',
-          value: data.newVersion
-        }})
+        const pathEditBulk = pathIDs.map(pathID => {
+          return {
+            id: pathID,
+            field: 'versions',
+            operation: 'array-push',
+            value: data.newVersion
+          }
+        })
 
         return paths.editFieldBulk(pathEditBulk)
       })
@@ -211,8 +264,8 @@ module.exports = {
    * @param {String|String[]} ids textures ids to delete
    */
   removeTextures(ids) {
-    if(!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
-    if(typeof ids === 'string') ids = [ids]
+    if (!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
+    if (typeof ids === 'string') ids = [ids]
 
     // type validation for String array
     single(ids, {

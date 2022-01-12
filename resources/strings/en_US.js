@@ -10,11 +10,13 @@ export default {
     ends_success: 'Completed successfully',
     loading: 'Loading, please wait...',
     no_results: 'No results were found.',
+    nyi: 'Not yet implemented.',
     btn: {
       add: 'Add',
       add_download: 'Add Download',
       submit: 'Submit',
       cancel: 'Cancel',
+      close: 'Close',
       save: 'Save',
       edit: 'Edit',
       delete: 'Delete',
@@ -29,7 +31,8 @@ export default {
         title: 'user',
         subtabs: {
           profile: 'profile',
-          statistics: 'statistics'
+          statistics: 'statistics',
+          gallery: 'gallery'
         }
       },
       addons: {
@@ -64,6 +67,31 @@ export default {
           modpacks: 'modpacks'
         }
       }
+    },
+    months: {
+      jan: 'Jan',
+      january: 'January',
+      feb: 'Feb',
+      february: 'February',
+      mar: 'Mar',
+      march: 'March',
+      apr: 'Apr',
+      april: 'April',
+      may: 'May',
+      jun: 'Jun',
+      june: 'June',
+      jul: 'Jul',
+      july: 'July',
+      aug: 'Aug',
+      august: 'August',
+      sep: 'Sep',
+      september: 'September',
+      oct: 'Oct',
+      october: 'October',
+      nov: 'Nov',
+      november: 'November',
+      dec: 'Dec',
+      december: 'December'
     }
   },
   database: {
@@ -97,6 +125,7 @@ export default {
       paths: 'Path(s)'
     },
     labels: {
+      mcmeta: "Animated texture",
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
       new_mc_version_name: 'New version name',
@@ -376,6 +405,55 @@ export default {
           name_too_small: 'File URL must be at least %s characters long.'
         }
       },
+      gallery: {
+        title: 'Gallery',
+        loading_message: {
+          general: 'Loading...',
+          textures: 'Getting textures...',
+          paths: 'Getting textures paths...',
+          uses: 'Getting textures uses...',
+          contribution: 'Getting contributions...',
+          contributors: 'Getting contributors...',
+          tags: 'Getting textures tags...'
+        },
+        error_message: {
+          texture_not_done: 'Texture not done!',
+          user_not_found: 'Unkwown User',
+          contribution_not_found: 'No contributions found in database!'
+        },
+        category: {
+          search: 'Search',
+          tags: 'Tags',
+          mc_version: 'Minecraft Version',
+          edition: 'Edition',
+          resolution: 'Resolution'
+        },
+        modal: {
+          items: {
+            information: "information",
+            authors: "authors",
+            animated: "animated",
+            model: "3D"
+          },
+          infos: {
+            texture: "texture",
+            uses: "use(s)",
+            paths: "path(s)"
+          },
+          tabs: {
+            date: "Date",
+            authors: "Author(s)",
+            id: "ID",
+            name: "Name",
+            tags: "Tags/Types",
+            use_id: "Use ID",
+            use_name: "Use Name",
+            editions: "Edition",
+            texture_id: "Texture ID",
+            path_id: "Path ID",
+            resource_pack_path: "Resource Pack Path",
+            mc_versions: "Minecraft Version(s)",
+          }
+        }
+      }
     }
-  }
-}

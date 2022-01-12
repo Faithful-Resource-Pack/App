@@ -5,7 +5,6 @@ export default {
   template: `
   <v-dialog
     v-model="MCDialog"
-    persistent
     max-width="600"
   >
 
