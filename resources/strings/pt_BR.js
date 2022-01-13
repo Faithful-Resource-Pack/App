@@ -372,7 +372,7 @@ export default {
       items: {
         information: "informações",
         authors: "autores",
-        animated: "animada",
+        animated: "animadas",
         model: "3D"
       },
       infos: {
