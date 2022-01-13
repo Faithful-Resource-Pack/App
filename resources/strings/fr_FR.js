@@ -78,6 +78,7 @@ export default {
       march: 'Mars',
       apr: 'Avr',
       april: 'Avril',
+      may_: 'Mai',
       may: 'Mai',
       jun: 'Juin',
       june: 'Juin',
