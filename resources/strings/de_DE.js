@@ -1,7 +1,7 @@
 /**
  * German translation
  * - Translated by:
- *   - RobertR11 (https://github.com/RobertRR11)
+ *   - @author RobertR11 // GitHub: https://github.com/RobertRR11
  */
 
 export default {

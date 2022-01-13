@@ -73,6 +73,7 @@ for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
 import enUS from './resources/strings/en_US.js'
 import frFR from './resources/strings/fr_FR.js'
 import deDE from './resources/strings/de_DE.js'
+import ptBR from './resources/strings/pt_BR.js'
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
@@ -189,8 +190,9 @@ axios.get('./resources/settings.json')
           selectedLang: _get_lang(),
           langs: {
             en: enUS,
-            fr: Object.merge({}, enUS, frFR),
+            br: Object.merge({}, enUS, ptBR),
             de: Object.merge({}, enUS, deDE),
+            fr: Object.merge({}, enUS, frFR),
           },
           window: {
             width: window.innerWidth,
@@ -360,7 +362,7 @@ axios.get('./resources/settings.json')
         emitConnected() {
           const authStr = window.localStorage.getItem('auth')
           if (!authStr) return
-  
+
           const auth = JSON.parse(authStr)
 
           this.atl.forEach(lis => {
@@ -372,7 +374,7 @@ axios.get('./resources/settings.json')
           if (this.isUserLogged) {
             const authStr = window.localStorage.getItem('auth')
             if (!authStr) return
-    
+
             const auth = JSON.parse(authStr)
 
             listener(auth.access_token)

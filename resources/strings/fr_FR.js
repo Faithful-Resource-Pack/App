@@ -1,7 +1,7 @@
 /**
  * French translation
  * - Translated by:
- *   - Juknum
+ *   - @author Juknum // GitHub: https://github.com/Juknum
  */
 
 export default {
