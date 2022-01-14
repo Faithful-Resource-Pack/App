@@ -1,13 +1,5 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
-window.settings = undefined
-
-const routes = [
-  { path: '/', redirect: '/profile/' }
-]
-
-const router = new VueRouter({ routes })
-
 const ContributionPage = () => import('./pages/contribution/main.js')
 const ContributorPage = () => import('./pages/contributor/main.js')
 const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
@@ -22,6 +14,74 @@ const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
+
+Object.defineProperty(Object.prototype, 'isObject', {
+  /**
+   * @param {*} item to be tested
+   * @returns {Boolean} true if the item is an JS Object
+   */
+  value: (item) => { return (item && typeof item === 'object' && !Array.isArray(item)) }
+})
+
+Object.defineProperty(Object.prototype, 'merge', {
+  /**
+   * @param {Object} target 
+   * @param  {...Object} sources 
+   */
+  value: (target, ...sources) => {
+    if (!sources.length) return target
+    const source = sources.shift()
+
+    if (Object.isObject(target) && Object.isObject(source)) {
+      for (const key in source) {
+        if (Object.isObject(source[key])) {
+          if (!target[key]) Object.assign(target, { [key]: {} })
+          Object.merge(target[key], source[key])
+        }
+
+        else Object.assign(target, { [key]: source[key] })
+      }
+    }
+
+    return Object.merge(target, ...sources)
+  }
+})
+
+// languages section
+import enUS from './resources/strings/en_US.js'
+import frFR from './resources/strings/fr_FR.js'
+import deDE from './resources/strings/de_DE.js'
+import ptBR from './resources/strings/pt_BR.js'
+
+const LANGS = {
+  en: enUS,
+  br: Object.merge({}, enUS, ptBR),
+  de: Object.merge({}, enUS, deDE),
+  fr: Object.merge({}, enUS, frFR),
+}
+
+let lang_value;
+const LANG_KEY = 'lang';
+const LANG_DEFAULT = 'en';
+const _get_lang = function () {
+  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
+  return lang_value;
+}
+
+const _set_lang = function (val) {
+  val = String(val);
+  lang_value = val;
+  localStorage.setItem(LANG_KEY, val);
+}
+///////////
+
+window.settings = undefined
+
+const routes = [
+  { path: '/', redirect: '/profile/' }
+]
+
+const router = new VueRouter({ routes })
 
 const ALL_TABS_ROUTES = [
   {
@@ -69,11 +129,6 @@ for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
   })
 }
 
-// convert-import
-import enUS from './resources/strings/en_US.js'
-import frFR from './resources/strings/fr_FR.js'
-import deDE from './resources/strings/de_DE.js'
-import ptBR from './resources/strings/pt_BR.js'
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
@@ -85,51 +140,6 @@ const EMPTY_USER = {
   email: '',
   roles: []
 }
-
-let lang_value // = undefined
-const LANG_KEY = 'lang'
-const LANG_DEFAULT = 'en'
-const _get_lang = function () {
-  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT
-  return lang_value
-}
-const _set_lang = function (val) {
-  val = String(val)
-  lang_value = val
-  localStorage.setItem(LANG_KEY, val)
-}
-
-Object.defineProperty(Object.prototype, 'isObject', {
-  /**
-   * @param {*} item to be tested
-   * @returns {Boolean} true if the item is an JS Object
-   */
-  value: (item) => { return (item && typeof item === 'object' && !Array.isArray(item)) }
-})
-
-Object.defineProperty(Object.prototype, 'merge', {
-  /**
-   * @param {Object} target 
-   * @param  {...Object} sources 
-   */
-  value: (target, ...sources) => {
-    if (!sources.length) return target
-    const source = sources.shift()
-
-    if (Object.isObject(target) && Object.isObject(source)) {
-      for (const key in source) {
-        if (Object.isObject(source[key])) {
-          if (!target[key]) Object.assign(target, { [key]: {} })
-          Object.merge(target[key], source[key])
-        }
-
-        else Object.assign(target, { [key]: source[key] })
-      }
-    }
-
-    return Object.merge(target, ...sources)
-  }
-})
 
 let ALL_TABS = [
   {
@@ -188,12 +198,7 @@ axios.get('./resources/settings.json')
       data() {
         return {
           selectedLang: _get_lang(),
-          langs: {
-            en: enUS,
-            br: Object.merge({}, enUS, ptBR),
-            de: Object.merge({}, enUS, deDE),
-            fr: Object.merge({}, enUS, frFR),
-          },
+          langs: LANGS,
           window: {
             width: window.innerWidth,
             height: window.innerHeight
