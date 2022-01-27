@@ -590,3 +590,12 @@ code {
 .v-dialog {
   margin: 10px;
 }
+
+body .texture-avatar {
+  height: 64px !important;
+  min-width: 64px !important;
+  background: rgba(39, 39, 39, 0.8);
+  padding: 0 10px 0 10px;
+  border-radius: 4px !important;
+  width: fit-content !important;
+}

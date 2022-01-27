@@ -179,7 +179,7 @@ export default {
   },
   watch: {
     dialog: function (newValue, oldValue) {
-      if (oldValue !== newValue && newValue === true) {
+      if (newValue === true) {
         Vue.nextTick(() => {
           if (this.add) this.$refs.form.reset()
 
@@ -190,6 +190,9 @@ export default {
             this.getUses(this.data.id)
           }
         })
+      } else {
+        // Fixes bug where click outside changes dialog to false but not dialogOpen to false
+        this.disableDialog()
       }
     }
   }

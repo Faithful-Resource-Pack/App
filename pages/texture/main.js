@@ -71,29 +71,21 @@ export default {
             v-for="texture in textures_arr"
             :key="texture.id"
           >
-            <v-list-item-content style="display: contents">
-              <v-list-item-avatar tile :style="{ 
-                  'height': '64px !important', 
-                  'min-width': '64px !important', 
-                  'background': 'rgba(39, 39, 39, 0.8)', 
-                  'max-width': 'fit-content', 
-                  'padding': '0 10px 0 10px', 
-                  'border-radius': '4px !important', 
-                  'flex': 'auto' 
-                }" 
-              >#{{ texture.id }}</v-list-item-avatar>
-              <v-list-item-title>
-                {{ texture.name }}
-                <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
-              </v-list-item-title>
+            <v-list-item-avatar
+              tile
+              class="texture-avatar"
+              v-text="texture.id"
+            ></v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="texture.name"></v-list-item-title>
+              <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action>
+            <v-list-item-action class="merged">
               <v-btn icon @click="openDialog(texture)">
                 <v-icon color="white lighten-1">mdi-pencil</v-icon>
               </v-btn>
-            </v-list-item-action>
-            <v-list-item-action>
               <v-btn icon @click="askRemove(texture)">
                 <v-icon color="red lighten-1">mdi-delete</v-icon>
               </v-btn>

@@ -210,7 +210,7 @@ export default {
     }
   },
   watch: {
-    subDialog: function () {
+    subDialog: function (n, o) {
       Vue.nextTick(() => {
         if (!this.add) {
           this.subFormData.editions = this.data.editions
@@ -223,6 +223,10 @@ export default {
           this.subFormData.paths = {}
         }
       })
+
+      if(!n) {
+        this.disableSubDialog()
+      }
     }
   }
 }
