@@ -550,3 +550,43 @@ code {
 .go_up_btn:hover {
   cursor: pointer;
 }
+
+.list-item-inline {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.v-list-item__title, .v-list-item__subtitle {
+  word-break: break-word;
+  white-space: normal;
+}
+
+.v-dialog > .v-card > .v-card__subtitle, .v-dialog > .v-card > .v-card__actions {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.v-list-item__action.merged {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  flex-direction: row;
+  align-self: center;
+}
+
+/* Stylised pill button paths */
+.v-list-item__action.merged .v-btn {
+  display: inline-block;
+  border-radius: 0;
+}
+.v-list-item__action.merged .v-btn:first-child {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+.v-list-item__action.merged .v-btn:last-child {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.v-dialog {
+  margin: 10px;
+}

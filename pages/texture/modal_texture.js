@@ -20,53 +20,44 @@ export default {
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
-          <v-row>
-            <v-col class="col-12" sm="12">
-              <v-form ref="form">
-                <v-text-field :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
-                <v-text-field required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-                <v-select required multiple small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
+          <v-form ref="form">
+            <v-text-field :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
+            <v-text-field required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
+            <v-select required multiple small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
-                <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
-                <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
-                  <v-row>
-                  <v-list-item
-                    v-for="(use, index) in formData.uses"
-                    :key="index"
-                  >
+            <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
+            <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
+              <v-list-item
+                class="list-item-inline"
+                v-for="(use, index) in formData.uses"
+                :key="index"
+              >
+                <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
 
-                  <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'padding': '0 10px 0 10px', 'border-radius': '4px !important' }" >#{{ index }}</v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-list-item style="display: inline; padding: 0 0 0 5px;">
+                      <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
+                      <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
+                    </v-list-item>
+                    <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
+                  </v-list-item-title>
+                </v-list-item-content>
 
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <v-list-item style="display: inline; padding: 0 0 0 5px;">
-                        <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
-                        <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
-                      </v-list-item>
-                      <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
-                    </v-list-item-title>
-                  </v-list-item-content>
+                <v-list-item-action class="merged">
+                  <v-btn icon @click="openSubDialog(use)">
+                    <v-icon color="white lighten-1">mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon @click="askRemoveUse(use)">
+                    <v-icon color="red lighten-1">mdi-delete</v-icon>
+                  </v-btn>
+                </v-list-item-action>
+              </v-list-item>
+            </v-list>
+            <div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-                  <v-list-item-action>
-                    <v-btn icon @click="openSubDialog(use)">
-                      <v-icon color="white lighten-1">mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-list-item-action>
-                  <v-list-item-action>
-                    <v-btn icon @click="askRemoveUse(use)">
-                      <v-icon color="red lighten-1">mdi-delete</v-icon>
-                    </v-btn>
-                  </v-list-item-action>
-
-                  </v-list-item>
-                  </v-row>
-                </v-list>
-                <div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
-
-                <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right dark>mdi-plus</v-icon></v-btn>
-              </v-form>
-            </v-col>
-          </v-row>
+            <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+          </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
