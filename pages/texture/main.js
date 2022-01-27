@@ -28,7 +28,24 @@ export default {
       {{ $root.lang().database.titles.textures }}
     </div>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_texture_type }}</div>
-    <div><v-btn v-for="t in texturesTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="textureURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
+    <div v-if="$vuetify.breakpoint.smAndUp">
+      <v-btn
+        v-for="t in texturesTypes"
+        :key="t"
+        :class="['my-2', 'mr-1', { 'v-btn--active': t === 'All' && !type && !!name }]"
+        :to="textureURL(t)"
+        :exact="t == 'All'"
+      >{{ t }}</v-btn>
+    </div>
+    <v-select
+      id="selectTextureType"
+      v-else
+      :items="texturesTypes.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
+      item-text="text"
+      item-value="value"
+      filled
+      v-model="selectTextureType"
+    ></v-select>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
     <div class="my-2">
       <v-text-field
@@ -125,7 +142,8 @@ export default {
         confirm: false,
         data: {}
       },
-      displayedResults: INCREMENT
+      displayedResults: INCREMENT,
+      selectTextureType: "all"
     }
   },
   computed: {
@@ -288,6 +306,14 @@ export default {
   watch: {
     $route () {
       this.getTextures()
+    },
+    type(n) {
+      this.selectTextureType = n
+    },
+    selectTextureType(n) {
+      if(n) {
+        this.$router.push(this.textureURL(n))
+      }
     }
   },
   mounted: function () {
