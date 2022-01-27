@@ -80,7 +80,7 @@
       </span>
     </v-app-bar>
 
-    <v-navigation-drawer width="320" absolute v-model="drawer" v-if="isUserLogged && window.width <= 700" temporary>
+    <v-navigation-drawer width="320" fixed v-model="drawer" v-if="isUserLogged && window.width <= 700" temporary>
 
       <v-card>
         <v-img height="128" :src="user.banner">
