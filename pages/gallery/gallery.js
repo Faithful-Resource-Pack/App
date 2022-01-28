@@ -48,7 +48,7 @@ export default {
         <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
       </template>
       <template v-if="!loading.status && displayedTextures.length === 0">
-        <div class="text-h6 py-6" style="padding: 0 10px 10px !important">{{ $root.lang().global.no_results }}</div>
+        <div class="text-h6" style="padding: 0 10px !important">{{ $root.lang().global.no_results }}</div>
       </template>
 
       <div
@@ -63,7 +63,11 @@ export default {
           v-on:click="openModal(texture.textureID)"
           style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png)"
         >
-          <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+          <img
+            class="gallery-texture-image"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
+            :src="texture.url"
+            lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
           <div class="not-done" style="display: none;">
             <span></span><div>
               <h1>#{{ texture.textureID }}</h1>
@@ -178,14 +182,14 @@ export default {
       this.modalTextureObj = {}
     },
     splittedTextures() {
-      const result = []
-      const length = Object.keys(this.displayed.textures).length
-
-      for (let i = 0; i < length; i++) {
-        result.push(Object.values(this.displayed.textures)[i])
-      }
-
-      return result
+      // we load texture URL here as it is called after this.displayed.uses is updated
+      // reduces also inline code
+      return Object.values(this.displayed.textures).map(texture => {
+        return {
+          ...texture,
+          url: this.getTextureURL(texture.useID)
+        }
+      })
     },
     getAuthor(textureID) {
       let contributionsHTML = ''
@@ -241,10 +245,14 @@ export default {
       this.startSearch()
     },
     getTextureURL(useID) {
-      const pathID = this.displayed.uses[useID].pathID
-      const path = this.displayed.paths[pathID]
+      let use = this.displayed.uses[useID]
+      // fixes bug when sometimes, uses are not upadated yet
+      if(use === undefined) use = Object.values(this.displayed.uses)[0]
+      
+      // find path from use and path ID
+      const path = this.displayed.paths[use.pathID]
 
-      // todo: use settings here:
+      // TODO: use api v2 here
       switch (this.edition) {
         case 'bedrock':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
@@ -253,6 +261,9 @@ export default {
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
           return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
       }
+
+      // TODO: put a default value
+      return ''
     },
     updateRoute(data, type) {
       if (this.current[type] === data) return // avoid redundant redirection

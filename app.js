@@ -695,7 +695,7 @@ app.get('/gallery/dialog/:textureID', (req, res) => {
     .catch(errorHandler(res))
 })
 
-app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
+app.get('/gallery/:type/:edition/:version/:tag/:search*', (req, res) => {
   let type, edition, version, tag, search
 
   if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return
@@ -710,7 +710,7 @@ app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
   else version = req.params.version.toLowerCase()
 
   tag = req.params.tag || 'all'
-  search = req.params.search || undefined
+  search = req.params.search + (req.params[0] || '') || undefined
 
   pathsBackend.usesIDsFromVersion(version)
     .then(usesIDs => {

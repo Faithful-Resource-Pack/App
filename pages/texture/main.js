@@ -193,23 +193,13 @@ export default {
     }
   },
   methods: {
-    textureURL (t) {
-      return this.name ? `/textures/${t}/${this.name}` : `/textures/${t}`
+    textureURL (t, name = undefined) {
+      return (this.name || name) ? `/textures/${t}/${name !== undefined ? name : this.name}` : `/textures/${t}`
     },
     startSearch: function () {
-      let newPath
+      let newPath = this.textureURL(this.type, this.search)
 
-      if (this.name) {
-        const splitted = this.$route.path.split('/')
-        splitted.pop()
-        newPath = splitted.join('/')
-      } else newPath = this.$route.path
-
-      if (!newPath.endsWith('/')) newPath += '/'
-
-      newPath += this.search
-
-      if (newPath === this.$route.path) console.warn(newPath)
+      if (newPath === this.$route.path) return // DO NOT CHANGE ROUTE IF SAME PATH
       else this.$router.push(newPath)
     },
     clearSearch: function () {

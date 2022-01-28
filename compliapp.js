@@ -88,7 +88,7 @@ const ALL_TABS_ROUTES = [
     subtabs: [
       { routes: [{ path: '/profile', component: ProfilePage }] },
       { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
-      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search?', component: GalleryPage }] }
+      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage }] }
     ]
   },
   {
@@ -112,8 +112,8 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
-      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
-      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
+      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name*', component: ContributorPage }] },
+      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name*', component: TexturePage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
       { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
     ]
