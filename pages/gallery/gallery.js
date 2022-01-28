@@ -11,30 +11,70 @@ export default {
   <v-container>
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.resolution }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.resolutions" v-on:click="updateRoute(t, 'resolution')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === resolution }" >{{ t }}</v-btn>
+    <v-row>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.resolution }}</div>
+        <v-btn
+          v-for="t in options.resolutions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'resolution')"
+          :class="['mr-1', { 'v-btn--active': t === resolution }]"
+          v-text="t"
+        ></v-btn>
+      </v-col>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.edition }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.editions" v-on:click="updateRoute(t, 'edition')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === edition }" >{{ t }}</v-btn>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.edition }}</div>
+        <v-btn 
+          v-for="t in options.editions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'edition')"
+          :class="['mr-1', { 'v-btn--active': t === edition }]"
+          v-text="t"
+        ></v-btn>
+      </v-col>
+    </v-row>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.mc_version }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.versions" v-on:click="updateRoute(t, 'version')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === version }" >{{ t }}</v-btn>
+    <v-row>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.mc_version }}</div>
+        <v-btn
+          v-for="t in options.versions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'version')"
+          :class="{ 'mr-1': true, 'v-btn--active': t === version }"
+          v-text="t"
+        ></v-btn>
+      </v-col>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.tags }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.tags" v-on:click="updateRoute(t, 'tag')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === tag }">{{ t }}</v-btn>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.tags }}</div>
+        <v-btn
+          v-for="t in options.tags"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'tag')"
+          :class="{ 'mr-1': true, 'v-btn--active': t === tag }"
+          v-text="t"
+        ></v-btn>
+      </v-col>
+    </v-row>
 
     <div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
     <div class="my-2">
       <v-text-field
         v-model="current.search"
-        :append-outer-icon="current.search ? 'mdi-send' : undefined"
+        :append-icon="current.search ? 'mdi-send' : undefined"
         filled
         clear-icon="mdi-close"
         clearable
         :placeholder="$root.lang().database.labels.search_texture"
         type="text"
         v-on:keyup.enter="startSearch"
-        @click:append-outer="startSearch"
+        @click:append="startSearch"
         @click:clear="clearSearch"
       ></v-text-field>
     </div>
