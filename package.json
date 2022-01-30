@@ -19,12 +19,12 @@
   },
   "homepage": "https://github.com/Compliance-Resource-Pack/App#readme",
   "dependencies": {
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "btoa": "^1.2.1",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
     "moment": "^2.29.1",
-    "node-fetch": "^3.1.1",
+    "node-fetch": "^3.2.0",
     "node-localstorage": "^2.2.1",
     "twin-bcrypt": "^2.1.1",
     "url": "^0.11.0"
