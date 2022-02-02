@@ -65,7 +65,8 @@ export default {
           contributors: 'contributeurs',
           textures: 'textures',
           mods: 'mods',
-          modpacks: 'modpacks'
+          modpacks: 'modpacks',
+          settings: 'Paramètres'
         }
       }
     },
@@ -394,6 +395,13 @@ export default {
         resource_pack_path: "Chemin dans le Resource Pack",
         mc_versions: "Version(s) Minecraft",
       }
+    }
+  },
+  settings: {
+    title: "Settings",
+    label: {
+      edit_raw: "Éditer le JSON",
+      edit_editor: "Éditer avec l'éditeur visuel"
     }
   }
 }

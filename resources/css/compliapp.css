@@ -93,7 +93,7 @@ a { text-decoration: none; }
   background-attachment: fixed;
 }
 
-#app .v-toolbar {
+#app header.v-toolbar {
   border-bottom: 2px solid rgba(0,0,0,0.5)
 }
 
@@ -598,4 +598,118 @@ body .texture-avatar {
   padding: 0 10px 0 10px;
   border-radius: 4px !important;
   width: fit-content !important;
+}
+
+.json-editor .json-editor-bordered {
+  border-radius: 6px;
+  border: 1px solid gray;
+  margin-bottom: 4px;
+}
+
+.json-object-editor {
+  overflow: auto;
+}
+
+.json-object-editor > .json-editor-header {
+  user-select: none;
+  cursor: pointer;
+}
+
+.json-object-editor > .json-editor-header, .json-object-editor > .json-editor-content {
+  padding: 6px;
+}
+
+.json-editor.json-editor-root > .json-editor-header, .json-object-editor.json-editor-root > .json-editor-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.json-object-editor > .json-editor-header .json-editor-title {
+  line-height: 24px;
+}
+
+.json-editor .json-editor-toggle, .json-editor .json-editor-delete, .json-editor .json-editor-input {
+  border-radius: 3px;
+  height: 24px;
+  line-height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.json-editor .json-editor-toggle {
+  width: 24px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #2979ff;
+  margin-right: 6px;
+}
+
+.json-editor .json-editor-delete {
+  text-align: center;
+  background: #ec343c;
+  color: white;
+  font-size: 14px;
+  padding: 0 4px;
+  margin: 0 4px;
+  user-select: none;
+}
+
+.json-object-editor .json-object-key {
+  flex-shrink: 0;
+}
+
+.json-editor .json-editor-input, .json-editor .json-editor-hide {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.json-editor .json-editor-title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.json-editor .json-editor-input {
+  color: inherit;
+  border: none;
+  background: rgba(0,0,0,.7);
+  min-width: 30px;
+}
+
+.json-editor .json-editor-input.json-object-key-input {
+  text-align: center;
+}
+
+.json-editor .json-editor-input:focus-visible {
+  outline: none;
+}
+
+.json-editor .json-editor-hide {
+  position: absolute;
+  height: 0;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.json-editor .json-add-editor {
+  width: 100%;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 16px;
+}
+
+.json-editor .json-add-editor td {
+  border-radius: 4px;
+-moz-border-radius: 4px;
+-webkit-border-radius: 4px;
+  background-color: rgba(0,0,0,.2);
+  padding: 2px 4px;
+  font-weight: bold;
+}
+
+.json-editor .json-add-editor td:first-child {
+  text-transform: none;
+  text-align: left;
+  background-color: transparent;
+  font-weight: 400;
 }

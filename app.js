@@ -21,7 +21,8 @@ const addonsBackend = require('./backend/addons')
 const allCollection = require('./helpers/firestorm/all')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
-const contributionController = require('./backend/contribution/contribution.controller.js')
+const contributionController = require('./backend/contribution/contribution.controller.js');
+const settingsController = require('./backend/settings/settings.controller');
 
 // fetch settings from the database
 const fetchSettings = async () => {
@@ -120,17 +121,25 @@ const errorHandler = function (res) {
 
 /**
  * Success handling for POST request
- * @param {Response<any, Record<string, any>, number>} res
+ * @param {import('express').Response<any, Record<string, any>, number>} res
  * @return {Function}
  */
 const postSuccess = function (res) {
-  return () => {
+  return (result) => {
     res.status(200)
+    if(result) res.send(result)
     res.end()
   }
 }
 
 contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
+
+/**
+ * ==========================================
+ *                 SETTINGS
+ * ==========================================
+ */
+settingsController.configure(verifyAuth, app, postSuccess, errorHandler)
 
 /**
  * Success handling for GET request

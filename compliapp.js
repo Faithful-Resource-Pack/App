@@ -14,6 +14,7 @@ const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
+const SettingsPage = () => import('./pages/settings/settingsPage.js')
 
 Object.defineProperty(Object.prototype, 'isObject', {
   /**
@@ -114,6 +115,7 @@ const ALL_TABS_ROUTES = [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
       { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name*', component: ContributorPage }] },
       { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name*', component: TexturePage }] },
+      { routes: [{ path: '/settings', component: SettingsPage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
       { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
     ]
@@ -178,6 +180,7 @@ let ALL_TABS = [
       { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
       { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
       { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
+      { enabled: true, icon: 'mdi-settings', to: '/settings', label: 'settings' },
       { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
       { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
     ],
