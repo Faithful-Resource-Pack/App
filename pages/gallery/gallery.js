@@ -11,30 +11,70 @@ export default {
   <v-container>
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.resolution }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.resolutions" v-on:click="updateRoute(t, 'resolution')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === resolution }" >{{ t }}</v-btn>
+    <v-row>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.resolution }}</div>
+        <v-btn
+          v-for="t in options.resolutions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'resolution')"
+          :class="['mr-1', { 'v-btn--active': t === resolution }]"
+          v-text="t"
+        ></v-btn>
+      </v-col>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.edition }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.editions" v-on:click="updateRoute(t, 'edition')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === edition }" >{{ t }}</v-btn>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.edition }}</div>
+        <v-btn 
+          v-for="t in options.editions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'edition')"
+          :class="['mr-1', { 'v-btn--active': t === edition }]"
+          v-text="t"
+        ></v-btn>
+      </v-col>
+    </v-row>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.mc_version }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.versions" v-on:click="updateRoute(t, 'version')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === version }" >{{ t }}</v-btn>
+    <v-row>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.mc_version }}</div>
+        <v-btn
+          v-for="t in options.versions"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'version')"
+          :class="{ 'mr-1': true, 'v-btn--active': t === version }"
+          v-text="t"
+        ></v-btn>
+      </v-col>
 
-    <div class="my-2 text-h5">{{ $root.lang().gallery.category.tags }}</div>
-    <v-btn style="margin-bottom: 5px"  v-for="t in options.tags" v-on:click="updateRoute(t, 'tag')" :key="t + $route.path" :class="{ 'mr-1': true, 'v-btn--active': t === tag }">{{ t }}</v-btn>
+      <v-col cols="12" sm="6">
+        <div class="my-2 text-h5">{{ $root.lang().gallery.category.tags }}</div>
+        <v-btn
+          v-for="t in options.tags"
+          :key="t + $route.path"
+          style="margin-bottom: 5px"
+          v-on:click="updateRoute(t, 'tag')"
+          :class="{ 'mr-1': true, 'v-btn--active': t === tag }"
+          v-text="t"
+        ></v-btn>
+      </v-col>
+    </v-row>
 
     <div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
     <div class="my-2">
       <v-text-field
         v-model="current.search"
-        :append-outer-icon="current.search ? 'mdi-send' : undefined"
+        :append-icon="current.search ? 'mdi-send' : undefined"
         filled
         clear-icon="mdi-close"
         clearable
         :placeholder="$root.lang().database.labels.search_texture"
         type="text"
         v-on:keyup.enter="startSearch"
-        @click:append-outer="startSearch"
+        @click:append="startSearch"
         @click:clear="clearSearch"
       ></v-text-field>
     </div>
@@ -48,7 +88,7 @@ export default {
         <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
       </template>
       <template v-if="!loading.status && displayedTextures.length === 0">
-        <div class="text-h6 py-6" style="padding: 0 10px 10px !important">{{ $root.lang().global.no_results }}</div>
+        <div class="text-h6" style="padding: 0 10px !important">{{ $root.lang().global.no_results }}</div>
       </template>
 
       <div
@@ -63,7 +103,11 @@ export default {
           v-on:click="openModal(texture.textureID)"
           style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png)"
         >
-          <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(texture.useID)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+          <img
+            class="gallery-texture-image"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
+            :src="texture.url"
+            lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
           <div class="not-done" style="display: none;">
             <span></span><div>
               <h1>#{{ texture.textureID }}</h1>
@@ -178,14 +222,14 @@ export default {
       this.modalTextureObj = {}
     },
     splittedTextures() {
-      const result = []
-      const length = Object.keys(this.displayed.textures).length
-
-      for (let i = 0; i < length; i++) {
-        result.push(Object.values(this.displayed.textures)[i])
-      }
-
-      return result
+      // we load texture URL here as it is called after this.displayed.uses is updated
+      // reduces also inline code
+      return Object.values(this.displayed.textures).map(texture => {
+        return {
+          ...texture,
+          url: this.getTextureURL(texture.useID)
+        }
+      })
     },
     getAuthor(textureID) {
       let contributionsHTML = ''
@@ -241,10 +285,14 @@ export default {
       this.startSearch()
     },
     getTextureURL(useID) {
-      const pathID = this.displayed.uses[useID].pathID
-      const path = this.displayed.paths[pathID]
+      let use = this.displayed.uses[useID]
+      // fixes bug when sometimes, uses are not upadated yet
+      if(use === undefined) use = Object.values(this.displayed.uses)[0]
+      
+      // find path from use and path ID
+      const path = this.displayed.paths[use.pathID]
 
-      // todo: use settings here:
+      // TODO: use api v2 here
       switch (this.edition) {
         case 'bedrock':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
@@ -253,6 +301,9 @@ export default {
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
           return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
       }
+
+      // TODO: put a default value
+      return ''
     },
     updateRoute(data, type) {
       if (this.current[type] === data) return // avoid redundant redirection

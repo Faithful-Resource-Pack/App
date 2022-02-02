@@ -24,6 +24,7 @@ const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const contributionController = require('./backend/contribution/contribution.controller.js');
 const filesController = require('./backend/files/files.controller');
+const settingsController = require('./backend/settings/settings.controller');
 
 // fetch settings from the database
 const fetchSettings = async () => {
@@ -132,15 +133,23 @@ const errorHandler = function (res) {
 
 /**
  * Success handling for POST request
- * @param {Response<any, Record<string, any>, number>} res
+ * @param {import('express').Response<any, Record<string, any>, number>} res
  * @return {Function}
  */
 const postSuccess = function (res) {
-  return () => {
+  return (result) => {
     res.status(200)
+    if(result) res.send(result)
     res.end()
   }
 }
+/**
+ * ==========================================
+ *                 SETTINGS
+ * ==========================================
+ */
+settingsController.configure(verifyAuth, app, postSuccess, errorHandler)
+
 /**
  * Success handling for GET request
  * @param {Response<any, Record<string, any>, number>} res
@@ -707,7 +716,7 @@ app.get('/gallery/dialog/:textureID', (req, res) => {
     .catch(errorHandler(res))
 })
 
-app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
+const gallerySearchHandler = (req, res) => {
   let type, edition, version, tag, search
 
   if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return
@@ -722,7 +731,7 @@ app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
   else version = req.params.version.toLowerCase()
 
   tag = req.params.tag || 'all'
-  search = req.params.search || undefined
+  search = req.params.search ? req.params.search + (req.params[0] || '') : undefined
 
   pathsBackend.usesIDsFromVersion(version)
     .then(usesIDs => {
@@ -755,7 +764,6 @@ app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
     })
     .then(getSuccess(res))
     .catch(errorHandler(res))
-})
 
 app.get('/api', (_req, res) => {
   const url = process.env.API_URL
@@ -766,3 +774,8 @@ app.get('/api', (_req, res) => {
 
   res.status(200).send(url)
 })
+}
+
+app.get('/gallery/:type/:edition/:version/:tag/', gallerySearchHandler)
+
+app.get('/gallery/:type/:edition/:version/:tag/:search*', gallerySearchHandler)

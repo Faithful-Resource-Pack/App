@@ -64,7 +64,8 @@ export default {
           textures: 'textures',
           files: 'files',
           mods: 'mods',
-          modpacks: 'modpacks'
+          modpacks: 'modpacks',
+          settings: 'settings'
         }
       }
     },
@@ -77,6 +78,7 @@ export default {
       march: 'March',
       apr: 'Apr',
       april: 'April',
+      may_: 'May', // longer
       may: 'May',
       jun: 'Jun',
       june: 'June',
@@ -366,6 +368,38 @@ export default {
           name_too_big: 'File use must be less than %s characters.',
           name_too_small: 'File use must be at least %s characters long.'
         }
+      }
+    }
+  },
+  gallery: {
+    title: 'Gallery',
+    loading_message: {
+      general: 'Loading...',
+      textures: 'Getting textures...',
+      paths: 'Getting textures paths...',
+      uses: 'Getting textures uses...',
+      contribution: 'Getting contributions...',
+      contributors: 'Getting contributors...',
+      tags: 'Getting textures tags...'
+    },
+    error_message: {
+      texture_not_done: 'Texture not done!',
+      user_not_found: 'Unknown User',
+      contribution_not_found: 'No contributions found in database!'
+    },
+    category: {
+      search: 'Search',
+      tags: 'Tags',
+      mc_version: 'Minecraft Version',
+      edition: 'Edition',
+      resolution: 'Resolution'
+    },
+    modal: {
+      items: {
+        information: "information",
+        authors: "authors",
+        animated: "animated",
+        model: "3D"
       },
       type: {
         label: 'File type',
@@ -456,6 +490,13 @@ export default {
           }
         }
       }
+    }
+  },
+  settings: {
+    title: "Settings",
+    label: {
+      edit_raw: "Edit raw JSON",
+      edit_editor: "Edit with visual editor"
     }
   }
 }

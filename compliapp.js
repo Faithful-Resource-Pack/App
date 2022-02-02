@@ -34,12 +34,6 @@ Object.defineProperty(Object.prototype, 'merge', {
 
 window.settings = undefined
 
-const routes = [
-  { path: '/', redirect: '/profile/' }
-]
-
-const router = new VueRouter({ routes })
-
 const ContributionPage = () => import('./pages/contribution/main.js')
 const ContributorPage = () => import('./pages/contributor/main.js')
 const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
@@ -55,13 +49,50 @@ const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
+const SettingsPage = () => import('./pages/settings/settingsPage.js')
+
+// languages section
+import enUS from './resources/strings/en_US.js'
+import frFR from './resources/strings/fr_FR.js'
+import deDE from './resources/strings/de_DE.js'
+import ptBR from './resources/strings/pt_BR.js'
+
+const LANGS = {
+  en: enUS,
+  br: Object.merge({}, enUS, ptBR),
+  de: Object.merge({}, enUS, deDE),
+  fr: Object.merge({}, enUS, frFR),
+}
+
+let lang_value;
+const LANG_KEY = 'lang';
+const LANG_DEFAULT = 'en';
+const _get_lang = function () {
+  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
+  return lang_value;
+}
+
+const _set_lang = function (val) {
+  val = String(val);
+  lang_value = val;
+  localStorage.setItem(LANG_KEY, val);
+}
+///////////
+
+window.settings = undefined
+
+const routes = [
+  { path: '/', redirect: '/profile/' }
+]
+
+const router = new VueRouter({ routes })
 
 const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/profile', component: ProfilePage }] },
       { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
-      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search?', component: GalleryPage }] }
+      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage }] }
     ]
   },
   {
@@ -85,9 +116,10 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
-      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name?', component: ContributorPage }] },
       { routes: [{ path: '/files', component: filesPage }] },
       { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
+      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name*', component: ContributorPage }] },
+      { routes: [{ path: '/settings', component: SettingsPage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
       { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
     ]
@@ -103,11 +135,6 @@ for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
   })
 }
 
-// convert-import
-import enUS from './resources/strings/en_US.js'
-import frFR from './resources/strings/fr_FR.js'
-import deDE from './resources/strings/de_DE.js'
-
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
 const EMPTY_USER = {
@@ -118,64 +145,6 @@ const EMPTY_USER = {
   email: '',
   roles: []
 }
-
-let lang_value // = undefined
-const LANG_KEY = 'lang'
-const LANG_DEFAULT = 'en'
-const _get_lang = function () {
-  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT
-  return lang_value
-}
-const _set_lang = function (val) {
-  val = String(val)
-  lang_value = val
-  localStorage.setItem(LANG_KEY, val)
-}
-
-let ALL_TABS = [
-  {
-    label: 'user',
-    subtabs: [
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
-      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
-    ]
-  },
-  {
-    label: 'addons',
-    subtabs: [
-      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
-      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
-    ]
-  },
-  {
-    label: 'modding',
-    subtabs: [
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
-    ]
-  },
-  {
-    label: 'review',
-    subtabs: [
-      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
-      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
-    ],
-    roles: ['Administrator']
-  },
-  {
-    label: 'database',
-    subtabs: [
-      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
-      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
-      { enabled: true, icon: 'mdi-file', to: '/files', label: 'files' },
-      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
-    ],
-    roles: ['Developer', 'Administrator']
-  }
-]
 
 // convert-import
 
@@ -191,17 +160,13 @@ axios.get('./resources/settings.json')
         return {
           apiURL: 'https://api.compliancepack.net/v2/',
           selectedLang: _get_lang(),
-          langs: {
-            en: enUS,
-            fr: Object.merge({}, enUS, frFR),
-            de: Object.merge({}, enUS, deDE),
-          },
+          langs: LANGS,
           window: {
             width: window.innerWidth,
             height: window.innerHeight
           },
           user: EMPTY_USER,
-          tabs: ALL_TABS,
+          tabs: ALL_TABS_ROUTES,
           bg: 'transparent',
           snackbar: {
             show: false,

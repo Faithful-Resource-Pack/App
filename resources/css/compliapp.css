@@ -1,23 +1,23 @@
 @font-face {
   font-family: Compliance;
   src: url("../fonts/Compliance.ttf") format("truetype");
-  
 }
 
 @font-face {
-  font-family: 'icons';
-  src:  url('../fonts/icons.eot?sn8f0g');
-  src:  url('../fonts/icons.eot?sn8f0g#iefix') format('embedded-opentype'),
-    url('../fonts/icons.ttf?sn8f0g') format('truetype'),
-    url('../fonts/icons.woff?sn8f0g') format('woff'),
-    url('../fonts/icons.svg?sn8f0g#icons') format('svg');
+  font-family: "icons";
+  src: url("../fonts/icons.eot?sn8f0g");
+  src: url("../fonts/icons.eot?sn8f0g#iefix") format("embedded-opentype"),
+    url("../fonts/icons.ttf?sn8f0g") format("truetype"),
+    url("../fonts/icons.woff?sn8f0g") format("woff"),
+    url("../fonts/icons.svg?sn8f0g#icons") format("svg");
   font-weight: normal;
   font-style: normal;
   font-display: block;
 }
 
-[class^="icon-"], [class*=" icon-"] {
-  font-family: 'icons';
+[class^="icon-"],
+[class*=" icon-"] {
+  font-family: "icons";
   speak: never;
   font-style: normal;
   font-weight: normal;
@@ -53,7 +53,9 @@
 
 /* Keep background from #app when the page is loading */
 html {
-  background: #120E19 url(https://compliancepack.net/image/background/the_end.jpg) no-repeat center;
+  background: #120e19
+    url(https://compliancepack.net/image/background/the_end.jpg) no-repeat
+    center;
   background-size: cover;
   background-attachment: fixed;
 }
@@ -63,9 +65,12 @@ v-app {
   display: none;
 }
 
-a { text-decoration: none; }
+a {
+  text-decoration: none;
+}
 
-.noselect, .noselect * {
+.noselect,
+.noselect * {
   -webkit-user-select: none;
   -khtml-user-select: none;
   -moz-user-select: none;
@@ -74,27 +79,29 @@ a { text-decoration: none; }
 }
 
 * {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	outline: none;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  outline: none;
 
   /* Hide scrollbar */
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }
 ::-webkit-scrollbar {
   display: none;
 }
 
 #app {
-  background: #120E19 url(https://compliancepack.net/image/background/the_end.jpg) no-repeat center;
+  background: #120e19
+    url(https://compliancepack.net/image/background/the_end.jpg) no-repeat
+    center;
   background-size: cover;
   background-attachment: fixed;
 }
 
-#app .v-toolbar {
-  border-bottom: 2px solid rgba(0,0,0,0.5)
+#app header.v-toolbar {
+  border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 #app .v-tabs {
@@ -108,7 +115,7 @@ a { text-decoration: none; }
 
 div.tooltip {
   text-align: center;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   position: absolute;
   font-size: 12px;
   padding: 4px 8px;
@@ -125,7 +132,7 @@ div.tooltip .number {
 }
 
 div.tooltip.vue-tooltip-theme {
-	background: transparent;
+  background: transparent;
 }
 
 .selected {
@@ -138,12 +145,15 @@ div.tooltip.vue-tooltip-theme {
   background: transparent;
 }
 
-.v-list, .v-input__slot, .v-card, .v-expansion-panel {
-	backdrop-filter: blur(10px);
+.v-list,
+.v-input__slot,
+.v-card,
+.v-expansion-panel {
+  backdrop-filter: blur(10px);
 }
 .v-btn {
-	background: rgba(39, 39, 39, 0.8) !important;
-	backdrop-filter: blur(10px);
+  background: rgba(39, 39, 39, 0.8) !important;
+  backdrop-filter: blur(10px);
 }
 .banner-btn span {
   text-shadow: 2px 2px #000;
@@ -153,7 +163,8 @@ div.tooltip.vue-tooltip-theme {
   margin-bottom: 12px;
 }
 
-.v-messages, .v-select__selection {
+.v-messages,
+.v-select__selection {
   padding-left: 8px;
 }
 
@@ -161,11 +172,13 @@ div.tooltip.vue-tooltip-theme {
   padding-left: 8px;
 }
 
-.v-text-field__slot input, .v-text-field__slot textarea {
+.v-text-field__slot input,
+.v-text-field__slot textarea {
   padding: 8px 0 8px 8px;
 }
 
-.v-text-field__slot label, .v-select__slot label {
+.v-text-field__slot label,
+.v-select__slot label {
   padding-left: 8px;
 }
 
@@ -229,14 +242,14 @@ img.texture-img {
 }
 
 .encased {
-  padding: .2rem .4rem;
+  padding: 0.2rem 0.4rem;
   margin-bottom: 5px;
   margin-right: 5px;
-	border-radius: 3px;
+  border-radius: 3px;
   background-color: #272727;
 
-  -webkit-box-shadow: 2px 2px 8px 2px rgba(0,0,0,.7); 
-  box-shadow: 2px 2px 8px 2px rgba(0,0,0,.7);
+  -webkit-box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
+  box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
 }
 
 .v-chip {
@@ -256,16 +269,16 @@ h2.compliance-font {
 
 .router-link {
   padding: 8px 16px;
-  width: 100%
+  width: 100%;
 }
 
 .router-link:hover {
-  background-color: rgba(255,255,255,.3);
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 blockquote {
   margin-left: 15px;
-  border-left: 5px solid rgba(255,255,255,.3) ;
+  border-left: 5px solid rgba(255, 255, 255, 0.3);
   padding-left: 10px;
 }
 
@@ -285,7 +298,7 @@ blockquote {
   max-height: 90px !important;
 }
 
-.transparent-input > .v-input__control > .v-input__slot{
+.transparent-input > .v-input__control > .v-input__slot {
   backdrop-filter: none !important;
 }
 
@@ -330,14 +343,14 @@ blockquote {
 
 .uppercased {
   text-transform: uppercase;
-  letter-spacing: .0892857143em;
+  letter-spacing: 0.0892857143em;
   font-weight: 500;
-  font-size: .775rem;
+  font-size: 0.775rem;
 }
 
 .uppercased-unsized {
   text-transform: uppercase;
-  letter-spacing: .0892857143em;
+  letter-spacing: 0.0892857143em;
   font-weight: 500;
 }
 
@@ -358,26 +371,28 @@ blockquote {
   padding-bottom: 4px;
 }
 .markdown > h5 {
-  font-size: .9em;
+  font-size: 0.9em;
   padding-bottom: 3px;
 }
 .markdown > h6 {
-  font-size: .8em;
+  font-size: 0.8em;
   padding-bottom: 2px;
 }
-.markdown > p, .markdown > blockquote > p, .markdown > * > li,
+.markdown > p,
+.markdown > blockquote > p,
+.markdown > * > li,
 .markdown > table > * > * > * {
-  font-size: .7em;
+  font-size: 0.7em;
   line-height: 1.5em !important;
 }
 .markdown > blockquote {
   margin-left: 7.5px;
-  border-left: 2.5px solid rgba(255,255,255,.3);
+  border-left: 2.5px solid rgba(255, 255, 255, 0.3);
   padding-left: 5px;
 }
 
- pre {
-  background-color: hsla(0,0%,100%,.1);
+pre {
+  background-color: hsla(0, 0%, 100%, 0.1);
   color: currentColor;
   border-radius: 2px;
 }
@@ -386,10 +401,12 @@ code {
   background-color: transparent !important;
 }
 
-.upload-file-input .v-card, .upload-file-input .v-card * {
-  transition: all .25s ease;
+.upload-file-input .v-card,
+.upload-file-input .v-card * {
+  transition: all 0.25s ease;
 }
-.upload-file-input .v-card, .upload-file-input .v-card.error {
+.upload-file-input .v-card,
+.upload-file-input .v-card.error {
   background: transparent !important;
 }
 .upload-file-input .v-card {
@@ -449,8 +466,8 @@ code {
 }
 
 .gallery-texture-in-container {
-  height: 256px; 
-  width: 256px; 
+  height: 256px;
+  width: 256px;
   max-width: 256px;
   margin: 5px;
   text-align: center;
@@ -461,7 +478,8 @@ code {
   padding: 0.25rem;
   text-align: center;
 }
-.not-done, .not-done > span {
+.not-done,
+.not-done > span {
   height: 100%;
 }
 .not-done > * {
@@ -472,7 +490,7 @@ code {
   width: 100%;
 }
 
-.gallery-texture-background, 
+.gallery-texture-background,
 .gallery-texture-image {
   position: absolute;
   max-height: 256px;
@@ -531,7 +549,7 @@ code {
 }
 
 .theme--dark.v-data-table {
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(0, 0, 0, 0.2);
   padding: 5px;
 }
 
@@ -555,6 +573,177 @@ code {
   cursor: pointer;
 }
 
-#addon-description-preview, #addon-description-preview > p {
+#addon-description-preview,
+#addon-description-preview > p {
   word-break: break-all;
+}
+
+.list-item-inline {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.v-list-item__title,
+.v-list-item__subtitle {
+  word-break: break-word;
+  white-space: normal;
+}
+
+.v-dialog > .v-card > .v-card__subtitle,
+.v-dialog > .v-card > .v-card__actions {
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+.v-list-item__action.merged {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  flex-direction: row;
+  align-self: center;
+}
+
+/* Stylised pill button paths */
+.v-list-item__action.merged .v-btn {
+  display: inline-block;
+  border-radius: 0;
+}
+.v-list-item__action.merged .v-btn:first-child {
+  border-top-left-radius: 50%;
+  border-bottom-left-radius: 50%;
+}
+.v-list-item__action.merged .v-btn:last-child {
+  border-top-right-radius: 50%;
+  border-bottom-right-radius: 50%;
+}
+
+.v-dialog {
+  margin: 10px;
+}
+
+body .texture-avatar {
+  height: 64px !important;
+  min-width: 64px !important;
+  background: rgba(39, 39, 39, 0.8);
+  padding: 0 10px 0 10px;
+  border-radius: 4px !important;
+  width: fit-content !important;
+}
+
+.json-editor .json-editor-bordered {
+  border-radius: 6px;
+  border: 1px solid gray;
+  margin-bottom: 4px;
+}
+
+.json-object-editor {
+  overflow: auto;
+}
+
+.json-object-editor > .json-editor-header {
+  user-select: none;
+  cursor: pointer;
+}
+
+.json-object-editor > .json-editor-header,
+.json-object-editor > .json-editor-content {
+  padding: 6px;
+}
+
+.json-editor.json-editor-root > .json-editor-header,
+.json-object-editor.json-editor-root > .json-editor-content {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.json-object-editor > .json-editor-header .json-editor-title {
+  line-height: 24px;
+}
+
+.json-editor .json-editor-toggle,
+.json-editor .json-editor-delete,
+.json-editor .json-editor-input {
+  border-radius: 3px;
+  height: 24px;
+  line-height: 24px;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.json-editor .json-editor-toggle {
+  width: 24px;
+  font-weight: bold;
+  text-align: center;
+  background-color: #2979ff;
+  margin-right: 6px;
+}
+
+.json-editor .json-editor-delete {
+  text-align: center;
+  background: #ec343c;
+  color: white;
+  font-size: 14px;
+  padding: 0 4px;
+  margin: 0 4px;
+  user-select: none;
+}
+
+.json-object-editor .json-object-key {
+  flex-shrink: 0;
+}
+
+.json-editor .json-editor-input,
+.json-editor .json-editor-hide {
+  font: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.json-editor .json-editor-title {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.json-editor .json-editor-input {
+  color: inherit;
+  border: none;
+  background: rgba(0, 0, 0, 0.7);
+  min-width: 30px;
+}
+
+.json-editor .json-editor-input.json-object-key-input {
+  text-align: center;
+}
+
+.json-editor .json-editor-input:focus-visible {
+  outline: none;
+}
+
+.json-editor .json-editor-hide {
+  position: absolute;
+  height: 0;
+  overflow: hidden;
+  white-space: pre;
+}
+
+.json-editor .json-add-editor {
+  width: 100%;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 16px;
+}
+
+.json-editor .json-add-editor td {
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding: 2px 4px;
+  font-weight: bold;
+}
+
+.json-editor .json-add-editor td:first-child {
+  text-transform: none;
+  text-align: left;
+  background-color: transparent;
+  font-weight: 400;
 }

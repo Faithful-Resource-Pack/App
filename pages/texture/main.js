@@ -28,7 +28,24 @@ export default {
       {{ $root.lang().database.titles.textures }}
     </div>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_texture_type }}</div>
-    <div><v-btn v-for="t in texturesTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="textureURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
+    <div v-if="$vuetify.breakpoint.smAndUp">
+      <v-btn
+        v-for="t in texturesTypes"
+        :key="t"
+        :class="['my-2', 'mr-1', { 'v-btn--active': t === 'All' && !type && !!name }]"
+        :to="textureURL(t)"
+        :exact="t == 'All'"
+      >{{ t }}</v-btn>
+    </div>
+    <v-select
+      id="selectTextureType"
+      v-else
+      :items="texturesTypes.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
+      item-text="text"
+      item-value="value"
+      filled
+      v-model="selectTextureType"
+    ></v-select>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
     <div class="my-2">
       <v-text-field
@@ -71,29 +88,21 @@ export default {
             v-for="texture in textures_arr"
             :key="texture.id"
           >
-            <v-list-item-content style="display: contents">
-              <v-list-item-avatar tile :style="{ 
-                  'height': '64px !important', 
-                  'min-width': '64px !important', 
-                  'background': 'rgba(39, 39, 39, 0.8)', 
-                  'max-width': 'fit-content', 
-                  'padding': '0 10px 0 10px', 
-                  'border-radius': '4px !important', 
-                  'flex': 'auto' 
-                }" 
-              >#{{ texture.id }}</v-list-item-avatar>
-              <v-list-item-title>
-                {{ texture.name }}
-                <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
-              </v-list-item-title>
+            <v-list-item-avatar
+              tile
+              class="texture-avatar"
+              v-text="texture.id"
+            ></v-list-item-avatar>
+
+            <v-list-item-content>
+              <v-list-item-title v-text="texture.name"></v-list-item-title>
+              <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action>
+            <v-list-item-action class="merged">
               <v-btn icon @click="openDialog(texture)">
                 <v-icon color="white lighten-1">mdi-pencil</v-icon>
               </v-btn>
-            </v-list-item-action>
-            <v-list-item-action>
               <v-btn icon @click="askRemove(texture)">
                 <v-icon color="red lighten-1">mdi-delete</v-icon>
               </v-btn>
@@ -133,7 +142,8 @@ export default {
         confirm: false,
         data: {}
       },
-      displayedResults: INCREMENT
+      displayedResults: INCREMENT,
+      selectTextureType: "all"
     }
   },
   computed: {
@@ -183,23 +193,13 @@ export default {
     }
   },
   methods: {
-    textureURL (t) {
-      return this.name ? `/textures/${t}/${this.name}` : `/textures/${t}`
+    textureURL (t, name = undefined) {
+      return (this.name || name) ? `/textures/${t}/${name !== undefined ? name : this.name}` : `/textures/${t}`
     },
     startSearch: function () {
-      let newPath
+      let newPath = this.textureURL(this.type, this.search)
 
-      if (this.name) {
-        const splitted = this.$route.path.split('/')
-        splitted.pop()
-        newPath = splitted.join('/')
-      } else newPath = this.$route.path
-
-      if (!newPath.endsWith('/')) newPath += '/'
-
-      newPath += this.search
-
-      if (newPath === this.$route.path) console.warn(newPath)
+      if (newPath === this.$route.path) return // DO NOT CHANGE ROUTE IF SAME PATH
       else this.$router.push(newPath)
     },
     clearSearch: function () {
@@ -296,6 +296,14 @@ export default {
   watch: {
     $route () {
       this.getTextures()
+    },
+    type(n) {
+      this.selectTextureType = n
+    },
+    selectTextureType(n) {
+      if(n) {
+        this.$router.push(this.textureURL(n))
+      }
     }
   },
   mounted: function () {

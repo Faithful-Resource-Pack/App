@@ -1,7 +1,7 @@
 /**
  * French translation
  * - Translated by:
- *   - Juknum
+ *   - @author Juknum // GitHub: https://github.com/Juknum
  */
 
 export default {
@@ -66,7 +66,8 @@ export default {
           textures: 'textures',
           files: 'fichiers',
           mods: 'mods',
-          modpacks: 'modpacks'
+          modpacks: 'modpacks',
+          settings: 'Paramètres'
         }
       }
     },
@@ -79,6 +80,7 @@ export default {
       march: 'Mars',
       apr: 'Avr',
       april: 'Avril',
+      may_: 'Mai',
       may: 'Mai',
       jun: 'Juin',
       june: 'Juin',
@@ -455,6 +457,13 @@ export default {
           }
         }
       }
+    }
+  },
+  settings: {
+    title: "Settings",
+    label: {
+      edit_raw: "Éditer le JSON",
+      edit_editor: "Éditer avec l'éditeur visuel"
     }
   }
 }
