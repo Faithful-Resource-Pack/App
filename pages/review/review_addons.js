@@ -133,7 +133,6 @@ export default {
     getAddonsByStatus(status) {
       axios
         .get(`${this.$root.apiURL}/addons/status/${status}`)
-        // .get(`http://localhost:8000/v2/addons/status/${status}`) // todo: use the main one before commit
         .then(res => {
           this.addons[status] = res.data
           this.addons[status].forEach(addon => addon.options.tags = addon.options.tags.sort())

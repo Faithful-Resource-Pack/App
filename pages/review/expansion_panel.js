@@ -201,7 +201,6 @@ export default {
 
       axios
         .get(`${this.$root.apiURL}addons/${id}/all`)
-        // .get(`http://localhost:8000/v2/addons/${id}/all`) // todo: use the main one before commit
         .then(res => {
           // void value if already here (closing tab)
           if (this.addonInPanel.id === res.data.id) {
