@@ -40,7 +40,7 @@ export default {
       addons: {
         title: 'add-on',
         subtabs: {
-          submissions: 'soumissions',
+          submissions: 'mes add-ons',
           upload: 'upload'
         }
       },
@@ -209,14 +209,14 @@ export default {
         approved_by: 'Approuvé par',
         denied_by: 'Refusé par',
         reason: 'Raison',
-        old_addon: 'Ancien add-on, il n\'y a pas de donée.'
+        old_addon: 'Ancien add-on, aucune donées.'
       }
     }
   },
   addons: {
     titles: {
-      submit: 'Soumettre un nouveau Add-on',
-      submissions: 'Soumissions'
+      submit: 'Soumettre un nouvel Add-on',
+      submissions: 'Mes Add-ons'
     },
     remove: {
       title: 'Confirmer la suppression',

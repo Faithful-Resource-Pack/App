@@ -256,7 +256,12 @@ export default {
             }
           },
           carousel: {
-            rules: []
+            rules: [
+              (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 10000)).filter(r => typeof r === "string")[0] || true }
+            ],
+            counter: {
+              max: 5000000
+            }
           },
           value: ''
         },
@@ -350,6 +355,9 @@ export default {
     },
     headerRules: function () {
       return [...this.form.files.header.rules, this.headerValidSentence]
+    },
+    headerFile: function () {
+      return this.submittedForm.headerFile
     },
     carouselFiles: function() {
       return this.submittedForm.carouselFiles
