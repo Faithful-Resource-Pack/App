@@ -1,5 +1,22 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
+const ContributionPage = () => import('./pages/contribution/main.js')
+const ContributorPage = () => import('./pages/contributor/main.js')
+const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
+const TexturePage = () => import('./pages/texture/main.js')
+const ProfilePage = () => import('./pages/profile/main.js')
+const AddonNewPage = () => import('./pages/addon/new.js')
+const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
+const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
+const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
+const ModNewPage = () => import('./pages/modding/mods_new.js')
+const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
+const ModsPage = () => import('./pages/modding/mods.js')
+const ModpacksPage = () => import('./pages/modding/modpacks.js')
+const filesPage = () => import('./pages/files/pageFiles.js')
+const GalleryPage = () => import('./pages/gallery/gallery.js')
+const SettingsPage = () => import('./pages/settings/settingsPage.js')
+
 Object.defineProperty(Object.prototype, 'isObject', {
   /**
    * @param {*} item to be tested
@@ -31,25 +48,6 @@ Object.defineProperty(Object.prototype, 'merge', {
     return Object.merge(target, ...sources)
   }
 })
-
-window.settings = undefined
-
-const ContributionPage = () => import('./pages/contribution/main.js')
-const ContributorPage = () => import('./pages/contributor/main.js')
-const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
-const TexturePage = () => import('./pages/texture/main.js')
-const ProfilePage = () => import('./pages/profile/main.js')
-const AddonNewPage = () => import('./pages/addon/new.js')
-const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
-const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
-const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
-const ModNewPage = () => import('./pages/modding/mods_new.js')
-const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
-const ModsPage = () => import('./pages/modding/mods.js')
-const ModpacksPage = () => import('./pages/modding/modpacks.js')
-const filesPage = () => import('./pages/files/pageFiles.js')
-const GalleryPage = () => import('./pages/gallery/gallery.js')
-const SettingsPage = () => import('./pages/settings/settingsPage.js')
 
 // languages section
 import enUS from './resources/strings/en_US.js'
@@ -85,6 +83,7 @@ const routes = [
   { path: '/', redirect: '/profile/' }
 ]
 
+
 const router = new VueRouter({ routes })
 
 const ALL_TABS_ROUTES = [
@@ -116,9 +115,8 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
-      { routes: [{ path: '/files', component: filesPage }] },
-      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name?', component: TexturePage }] },
       { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name*', component: ContributorPage }] },
+      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name*', component: TexturePage }] },
       { routes: [{ path: '/settings', component: SettingsPage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
       { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
@@ -146,6 +144,51 @@ const EMPTY_USER = {
   roles: []
 }
 
+let ALL_TABS = [
+  {
+    label: 'user',
+    subtabs: [
+      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
+      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
+    ]
+  },
+  {
+    label: 'addons',
+    subtabs: [
+      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
+      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
+    ]
+  },
+  {
+    label: 'modding',
+    subtabs: [
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
+    ]
+  },
+  {
+    label: 'review',
+    subtabs: [
+      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
+      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
+    ],
+    roles: ['Administrator']
+  },
+  {
+    label: 'database',
+    subtabs: [
+      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
+      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
+      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
+      { enabled: true, icon: 'mdi-settings', to: '/settings', label: 'settings' },
+      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
+      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
+    ],
+    roles: ['Developer', 'Administrator']
+  }
+]
+
 // convert-import
 
 window.v = undefined
@@ -166,7 +209,7 @@ axios.get('./resources/settings.json')
             height: window.innerHeight
           },
           user: EMPTY_USER,
-          tabs: ALL_TABS_ROUTES,
+          tabs: ALL_TABS,
           bg: 'transparent',
           snackbar: {
             show: false,
