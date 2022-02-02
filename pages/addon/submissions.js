@@ -19,39 +19,41 @@ export default {
       />
     </div>
 
-    <div v-if="loading == false && Object.keys(addons).length == 0">
+    <div v-if="loading == false && addons.length == 0">
       {{ $root.lang().global.no_results }}
     </div>
     <div v-else class="my-2 text-h5">
-      <v-row v-if="Object.keys(addons).length != 0">
-        <v-col :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" v-for="(addon, index) in addons" :key="index">
-
+      <v-row>
+        <v-col 
+          :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" 
+          v-for="addon in addons" 
+        >
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
               style="border-radius: 5px"
-              :src="addon.images.header"
+              :src="$root.apiURL + 'addons/'+ addon.id + '/files/header'"
               :aspect-ratio="16/9"
             />
-            <v-card-title v-text="addon.title" />
-            <v-card-subtitle v-text="addon.type.join(', ')" />
+            <v-card-title v-text="addon.name" />
+            <v-card-subtitle v-text="addon.options.tags.join(', ')" />
             <v-card-text style="height: 60px">
               <v-badge
                 dot
                 inline
-                :color="addon.status == 'approved' ? 'green' : (addon.status == 'pending' ? 'yellow' : 'red')"
+                :color="addon.approval.status == 'approved' ? 'green' : (addon.approval.status == 'pending' ? 'yellow' : 'red')"
               />
-              {{ $root.lang().addons.status[addon.status] }}
+              {{ $root.lang().addons.status[addon.approval.status] }}
               <v-btn
-                v-if="addon.status == 'approved'"
+                v-if="addon.approval.status == 'approved'"
                 color="blue"
-                :href="'https://www.compliancepack.net/addons#/' + addon.id"
+                :href="'https://www.compliancepack.net/addons/' + addon.slug"
                 target="_blank"
                 icon
                 small
               >
                 <v-icon small>mdi-open-in-new</v-icon>
               </v-btn>
-              <template v-if="addon.status == 'denied'">: {{ addon.approval ? addon.approval.reason: '' }}</template>
+              <div v-if="addon.approval.status === 'denied'">: {{ addon.approval.reason }}</div>
             </v-card-text>
 
             <v-card-actions style="justify-content: flex-end;">
@@ -75,8 +77,12 @@ export default {
         </v-col>
       </v-row>
     </div>
-    <addon-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></addon-remove-confirm>
 
+    <addon-remove-confirm 
+      :confirm="remove.confirm" 
+      :disableDialog="function() { remove.confirm = false; update() }" 
+      :data="remove.data">
+    </addon-remove-confirm>
     <addon-edit-modal
       :dialog="dialogOpen"
       :disableDialog="closeDialog"
@@ -85,9 +91,9 @@ export default {
 
   </v-container>
   `,
-  data () {
+  data() {
     return {
-      addons: {},
+      addons: [],
       remove: {
         confirm: false,
         data: {}
@@ -112,12 +118,9 @@ export default {
       this.remove.confirm = true
     },
     getAddons: function (authorID) {
-      axios.get('/addons/search/author', {
-        params: {
-          authorID: authorID
-        }
-      })
-        .then((res) => {
+        axios
+        .get(`${this.$root.apiURL}users/${authorID}/addons`)
+        .then(res => {
           this.addons = res.data
           this.loading = false
           this.$forceUpdate()
@@ -131,7 +134,7 @@ export default {
       this.$forceUpdate()
     }
   },
-  mounted () {
+  mounted() {
     this.getAddons(this.$root.user.id)
   }
 }

@@ -756,3 +756,13 @@ app.get('/gallery/:type/:edition/:version/:tag/:search?', (req, res) => {
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
+
+app.get('/api', (_req, res) => {
+  const url = process.env.API_URL
+  if(!url) {
+    res.status(500).send('NO API URL DEFINED')
+    throw new Error('NO API URL DEFINED')
+  }
+
+  res.status(200).send(url)
+})

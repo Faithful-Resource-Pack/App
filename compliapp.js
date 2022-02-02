@@ -189,6 +189,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          apiURL: 'https://api.compliancepack.net/v2/',
           selectedLang: _get_lang(),
           langs: {
             en: enUS,
@@ -384,6 +385,11 @@ axios.get('./resources/settings.json')
         },
       },
       created: function () {
+        axios.get('/api')
+          .then(res => res.data)
+          .then(url => {
+            this.apiURL = url
+          })
         const authStr = window.localStorage.getItem('auth')
         if (!authStr) return
 

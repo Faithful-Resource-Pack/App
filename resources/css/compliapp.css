@@ -554,3 +554,7 @@ code {
 .go_up_btn:hover {
   cursor: pointer;
 }
+
+#addon-description-preview, #addon-description-preview > p {
+  word-break: break-all;
+}

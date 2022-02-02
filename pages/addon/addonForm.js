@@ -31,6 +31,7 @@ export default {
               <div class="text-h5">{{ $root.lang().addons.general.title }}</div>
               <!-- Addon name -->
               <v-text-field
+                required
                 clearable
                 v-model="submittedForm.name"
                 :rules="form.name.rules"
@@ -96,10 +97,11 @@ export default {
 
         <!-- Addon description preview -->
         <v-container
+          id="addon-description-preview"
           v-if="submittedForm.description && submittedForm.description.length > 0"
           class="markdown"
           style="background-color: rgba(33,33,33,1); border-radius: 5px;"
-          v-html="$root.compiledMarkdown(addon.description)"
+          v-html="$root.compiledMarkdown(submittedForm.description)"
         />
 
         <!-- Addon authors selection -->
@@ -232,7 +234,7 @@ export default {
         </div>        
 
         <div class="text-center">
-          <v-btn :disabled="!validForm">
+          <v-btn :disabled="!validForm" @click="onSubmit">
             {{ $root.lang().global.btn.submit }}
           </v-btn>
         </div>
@@ -324,7 +326,7 @@ export default {
       ],
       validForm: false,
       editions: ['Java', 'Bedrock'],
-      res: ['32x', '64x'],
+      res: ['32x', '64x']
     }
   },
   computed: {
@@ -349,6 +351,9 @@ export default {
     headerRules: function () {
       return [...this.form.files.header.rules, this.headerValidSentence]
     },
+    carouselFiles: function() {
+      return this.submittedForm.carouselFiles
+    },
     carouselRules: function () {
       return [...this.form.files.carousel.rules, this.carouselValidSentence]
     },
@@ -368,13 +373,17 @@ export default {
       delete res.selectedEditions
       delete res.selectedRes
 
+      // we treat files with different endpoint
+      delete res.headerFile
+      delete res.carouselFiles
+
       return res
     },
     submitMethod: function () {
-      return this.newAddon ? 'post' : 'put'
+      return this.newAddon ? 'post' : 'patch'
     },
     submitURL: function () {
-      return '/addon/' + this.newAddon ? this.slug : ''
+      return this.$root.apiURL + 'addon/' + (this.newAddon ? '' : this.slug)
     }
   },
   methods: {
@@ -414,6 +423,31 @@ export default {
       Vue.nextTick(() => {
         this.carouselDoNotVerify = false
       })
+    },
+    onSubmit: function() {
+      this.$refs.form.validate()
+
+      if(!this.validForm) return
+
+      const infoPromise = axios[this.submitMethod](this.submitURL, this.submittedData, {
+        headers: {
+          discord: this.$root.user.access_token
+        }
+      })
+
+      infoPromise.catch(error => {
+        console.error(error)
+        this.$root.showSnackBar(error.message, 'error')
+      })
+
+      // we submit header file and 
+      if(this.newAddon) {
+        infoPromise.then((response) => {
+          const id = response.data
+
+
+        })
+      }
     },
     validateRatio: function (ctx) {
       const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78
@@ -457,15 +491,6 @@ export default {
         // set file to be readt
         reader.readAsDataURL(file)
       })
-    },
-    submitMethod: function () {
-      axios[this.method](this.submitURL, this.submittedData)
-        .then((res) => {
-          this.$root.showSnackBar(res, 'success')
-        })
-        .catch((err) => {
-          this.$root.showSnackBar(error.message, 'error')
-        })
     }
   },
   watch: {
