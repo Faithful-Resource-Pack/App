@@ -33,6 +33,7 @@ export default {
           :approveAddon="approveAddon"
           :denyAddon="openDenyPopup"
           :update="update"
+          :status="status"
         />
       </v-expansion-panels>
       <template v-else-if="loading[status] === true"><v-container>{{ $root.lang().global.loading }}</v-container></template>

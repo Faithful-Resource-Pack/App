@@ -58,17 +58,17 @@ export default {
                   <v-container class="markdown text--secondary" style="margin-bottom: 10px; background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(addonInPanel.description)"></v-container>
 
                   <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
-                  <!-- <div class="text--secondary" style="margin-bottom: 10px;">
-                    <template v-for="(links, key) in addon.downloads">
-                      <div :key="'title-' + key">{{ key }}:</div>
-                      <ul :key="'ul-' + key">
-                        <li v-for="(link, indexLink) in links" :key="indexLink" style="background-color: transparent">
-                          <a :href="link" class="text--secondary">{{ $root.lang().review.addon.labels.link }} {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
-                        </li>
-                      </ul>
-                      <br :key="'br-' + key">
-                    </template>
-                  </div> -->
+                  <div class="text--secondary" style="margin-bottom: 10px;">
+                    <ul v-for="file in addonInPanel.files.filter(f => f.use === 'download')">
+                      <li>
+                        {{ file.name }} - 
+                        <a :href="file.source" class="text--secondary">
+                          {{ $root.lang().review.addon.labels.link }}
+                          <v-icon small color="light-blue">mdi-open-in-new</v-icon>
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
                   
                   <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
                   <div>
@@ -133,7 +133,7 @@ export default {
               <v-btn
                 text
                 color="teal"
-                :disabled="addon.status == 'approved'"
+                :disabled="status == 'approved'"
                 @click="approveAddon(addon)"
               >
                 {{ $root.lang().global.btn.approve }}
@@ -141,7 +141,7 @@ export default {
               <v-btn
                 text
                 color="red"
-                :disabled="addon.status == 'denied'"
+                :disabled="status == 'denied'"
                 @click="denyAddon(addon)"
               >
                 {{ $root.lang().global.btn.deny }}
@@ -179,6 +179,10 @@ export default {
     },
     update: {
       type: Function,
+      required: true
+    },
+    status: {
+      type: String,
       required: true
     }
   },
