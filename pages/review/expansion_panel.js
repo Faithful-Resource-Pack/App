@@ -223,9 +223,7 @@ export default {
       this.update()
     },
     getUsername: function (id) {
-      if (id == null || !id) return this.$root.lang().review.addon.labels.old_addon
-
-      return this.contributors.filter(el => el.id === id)[0]?.username
+      return this.contributors[id].username || 'Unknown User';
     }
   }
 }

@@ -142,7 +142,7 @@ export default {
     },
     getContributors: function () {
       axios
-        .get('/contributors/all/')
+        .get(`${this.$root.apiURL}/users/names`)
         .then(res => {
           this.contributors = res.data
         })
