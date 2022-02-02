@@ -1,0 +1,7 @@
+resources/settings.json
+
+node_modules
+.env
+
+settings.json
+.git

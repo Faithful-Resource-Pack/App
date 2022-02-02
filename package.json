@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "dev": "nodemon app.js -e js,json,css,html",
-    "start": "pm2 start \"node app.js\" --name \"APP\""
+    "start": "pm2 start \"node app.js\" --name \"APP\"",
+    "watch": "browser-refresh app.js"
   },
   "repository": {
     "type": "git",
@@ -28,5 +29,8 @@
     "node-localstorage": "^2.2.1",
     "twin-bcrypt": "^2.1.1",
     "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "browser-refresh": "^1.7.3"
   }
 }

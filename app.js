@@ -8,6 +8,7 @@ const path = require('path')
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
+const DEV = (process.env.DEV || 'false') === 'true'
 const app = express()
 const compliappURL = '/'
 
@@ -45,12 +46,22 @@ app.use(express.urlencoded({
 app.use(express.json({ limit: '50mb' }))
 
 app.get(compliappURL, (req, res) => {
-  res.sendFile(path.join(__dirname, './index.html'))
+  let file = fs.readFileSync('./index.html', 'utf8')
+
+  if (DEV && process.send) {
+    file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script>` + '</body>')
+  }
+
+  res.send(file)
 })
 
 app.listen(port, () => {
   console.log(`listening at http://localhost:${port}`)
   console.log(`Web app at http://localhost:${port}${compliappURL}`)
+
+  if (DEV && process.send) {
+      process.send('online')
+  }
 })
 
 app.use(express.static('.', {
