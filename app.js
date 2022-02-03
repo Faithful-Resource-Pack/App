@@ -9,6 +9,7 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const DEV = (process.env.DEV || 'false') === 'true'
+const API_URL = process.env.API_URL || 'https://api.compliancepack.net/v2/'
 const app = express()
 const compliappURL = '/'
 
@@ -49,6 +50,8 @@ app.use(express.json({ limit: '50mb' }))
 app.get(compliappURL, (req, res) => {
   let file = fs.readFileSync('./index.html', 'utf8')
 
+  file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
+
   if (DEV && process.send) {
     file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script>` + '</body>')
   }
@@ -57,6 +60,7 @@ app.get(compliappURL, (req, res) => {
 })
 
 app.listen(port, () => {
+  console.log(`API url at ${API_URL}`);
   console.log(`listening at http://localhost:${port}`)
   console.log(`Web app at http://localhost:${port}${compliappURL}`)
 
@@ -766,7 +770,7 @@ const gallerySearchHandler = (req, res) => {
     .catch(errorHandler(res))
 
 app.get('/api', (_req, res) => {
-  const url = process.env.API_URL
+  const url = API_URL
   if(!url) {
     res.status(500).send('NO API URL DEFINED')
     throw new Error('NO API URL DEFINED')
