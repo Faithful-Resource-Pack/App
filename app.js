@@ -25,7 +25,6 @@ const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const contributionController = require('./backend/contribution/contribution.controller.js');
 const filesController = require('./backend/files/files.controller');
-const settingsController = require('./backend/settings/settings.controller');
 
 // fetch settings from the database
 const fetchSettings = async () => {
@@ -147,12 +146,6 @@ const postSuccess = function (res) {
     res.end()
   }
 }
-/**
- * ==========================================
- *                 SETTINGS
- * ==========================================
- */
-settingsController.configure(verifyAuth, app, postSuccess, errorHandler)
 
 /**
  * Success handling for GET request
