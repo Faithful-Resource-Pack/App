@@ -391,7 +391,7 @@ export default {
       return this.newAddon ? 'post' : 'patch'
     },
     submitURL: function () {
-      return this.$root.apiURL + 'addon/' + (this.newAddon ? '' : this.slug)
+      return this.$root.apiURL + '/addon/' + (this.newAddon ? '' : this.slug)
     }
   },
   methods: {

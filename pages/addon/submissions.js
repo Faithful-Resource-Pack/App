@@ -31,7 +31,7 @@ export default {
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
               style="border-radius: 5px"
-              :src="$root.apiURL + 'addons/'+ addon.id + '/files/header'"
+              :src="$root.apiURL + '/addons/'+ addon.id + '/files/header'"
               :aspect-ratio="16/9"
             />
             <v-card-title v-text="addon.name" />
@@ -119,7 +119,7 @@ export default {
     },
     getAddons: function (authorID) {
         axios
-        .get(`${this.$root.apiURL}users/${authorID}/addons`)
+        .get(`${this.$root.apiURL}/users/${authorID}/addons`)
         .then(res => {
           this.addons = res.data
           this.loading = false
