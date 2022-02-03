@@ -18,7 +18,6 @@ export default {
     <deny-popup
       :reasonPopup="showDenyPopup"
       :closePopup="closeDenyPopup"
-      :validPopup="denyAddon"
     />
 
     <div
@@ -30,8 +29,8 @@ export default {
         <exp-panel
           :contributors="contributors"
           :addons="addons[status]"
-          :approveAddon="approveAddon"
-          :denyAddon="openDenyPopup"
+          :reviewAddon="reviewAddon"
+          :openDenyPopup="openDenyPopup"
           :update="update"
           :status="status"
         />
@@ -62,26 +61,20 @@ export default {
       contributors: [],
 
       showDenyPopup: false,
-      denyReason: '',
-      deniedAddon: {}
+      denyAddon: {}
     }
   },
   methods: {
-    approveAddon: function (addon) {
+    reviewAddon: function (addon, status, reason = null) {
       if (!this.$root.isUserLogged) return
 
       const data = {
-        token: this.$root.user.access_token,
-        approval: {
-          author: this.$root.user.id,
-          reason: null
-        },
-        id: addon.id
+        status: status,
+        reason: reason
       }
 
-      // todo : USE THE V2 API HERE
       axios
-        .post('/review/addons/approve', data)
+        .put(`${this.$root.apiURL}/addons/${addon.id}/review`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.update()
@@ -91,54 +84,21 @@ export default {
           this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
         })
     },
-    denyAddon: function (reason) {
-      if (!this.$root.isUserLogged) return
-
-      const data = {
-        token: this.$root.user.access_token,
-        approval: {
-          author: this.$root.user.id,
-          reason: reason
-        },
-        id: this.deniedAddon.id
-      }
-
-      // if the addon was approved -> denied
-      let updateApproved = false
-      if (this.deniedAddon.status == 'approved') updateApproved = true
-
-      // todo : USE THE V2 API HERE
-      axios
-        .post('/review/addons/deny', data)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.update()
-          if (updateApproved) this.getApprovedAddons()
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-        })
-
-      this.closeDenyPopup()
-    },
-    closeDenyPopup: function () {
+    closeDenyPopup: function (send = false, reason) {
       this.showDenyPopup = false
-      this.deniedAddon = {}
+      if (send) this.reviewAddon(this.denyAddon, 'denied', reason)
     },
     openDenyPopup: function (addon) {
       this.showDenyPopup = true
-      this.deniedAddon = addon
+      this.denyAddon = addon
     },
     getAddonsByStatus(status) {
-      axios
-        .get(`${this.$root.apiURL}/addons/status/${status}`)
-        .then(res => {
-          this.addons[status] = res.data
-          this.addons[status].forEach(addon => addon.options.tags = addon.options.tags.sort())
-          this.loading[status] = false
-          this.$forceUpdate()
-        }) // todo: add API verification for 404 errors
+      axios.get(`${this.$root.apiURL}/addons/status/${status}`).then(res => {
+        this.addons[status] = res.data
+        this.addons[status].forEach(addon => (addon.options.tags = addon.options.tags.sort()))
+        this.loading[status] = false
+        this.$forceUpdate()
+      }) // todo: add API verification for 404 errors
     },
     getContributors: function () {
       axios

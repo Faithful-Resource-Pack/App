@@ -15,8 +15,8 @@ export default {
     ></addon-edit-modal>
 
     <v-expansion-panel
-      v-for="(addon, index) in addons"
-      :key="index"
+      v-for="addon in addons"
+      :key="addon.id"
       rounded
       style="background-color: rgba(255, 255, 255, 0.05)"
       @click="getAddon(addon.id)"
@@ -114,16 +114,16 @@ export default {
             </v-col>
           </v-row>
 
-          <v-row v-if="addon.status == 'approved' && addon.approval.author != null">
+          <v-row v-if="addonInPanel.approval.status === 'approved'">
             <v-col style="padding-left: 16px">
               <v-list-item-title v-text="$root.lang().review.addon.labels.approved_by" class="uppercased"/>
-              <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
+              <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
             </v-col>
           </v-row>
-          <v-row v-if="addon.status == 'denied'">
+          <v-row v-if="addonInPanel.approval.status === 'denied'">
             <v-col style="padding-left: 16px">
               <v-list-item-title v-text="$root.lang().review.addon.labels.denied_by" class="uppercased"/>
-              <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
+              <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
               <v-list-item-title v-text="$root.lang().review.addon.labels.reason" class="uppercased"/>
               <p class="text--secondary">{{ addon.approval.reason }}</p>
             </v-col>
@@ -134,7 +134,7 @@ export default {
                 text
                 color="teal"
                 :disabled="status == 'approved'"
-                @click="approveAddon(addon)"
+                @click="reviewAddon(addon, 'approved')"
               >
                 {{ $root.lang().global.btn.approve }}
               </v-btn>
@@ -142,10 +142,11 @@ export default {
                 text
                 color="red"
                 :disabled="status == 'denied'"
-                @click="denyAddon(addon)"
+                @click="openDenyPopup(addonInPanel)"
               >
                 {{ $root.lang().global.btn.deny }}
               </v-btn>
+              <!-- TODO: use the global modal edit -->
               <v-btn
                 text
                 color="yellow"
@@ -165,11 +166,11 @@ export default {
       type: Array,
       required: true
     },
-    approveAddon: {
+    reviewAddon: {
       type: Function,
       required: true
     },
-    denyAddon: {
+    openDenyPopup: {
       type: Function,
       required: true
     },
@@ -199,19 +200,17 @@ export default {
     getAddon: function (id) {
       this.addonInPanelLoading = true
 
-      axios
-        .get(`${this.$root.apiURL}/addons/${id}/all`)
-        .then(res => {
-          // void value if already here (closing tab)
-          if (this.addonInPanel.id === res.data.id) {
-            this.addonInPanel = {}
-            this.addonInPanelLoading = true
-            return
-          }
+      axios.get(`${this.$root.apiURL}/addons/${id}/all`).then(res => {
+        // void value if already here (closing tab)
+        if (this.addonInPanel.id === res.data.id) {
+          this.addonInPanel = {}
+          this.addonInPanelLoading = true
+          return
+        }
 
-          this.addonInPanel = res.data
-          this.addonInPanelLoading = false
-        })
+        this.addonInPanel = res.data
+        this.addonInPanelLoading = false
+      })
     },
     openDialog: function () {
       this.dialogAddon = this.addonInPanel
@@ -223,7 +222,8 @@ export default {
       this.update()
     },
     getUsername: function (id) {
-      return this.contributors[id].username || 'Unknown User';
+      if (id === null || id === undefined) return 'null/undefined'
+      return this.contributors[id].username || 'Unknown User'
     }
   }
 }

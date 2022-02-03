@@ -224,9 +224,22 @@ axios.get('./resources/settings.json')
       watch: {
         selectedLang: function (newValue) {
           if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
+        },
+        user: {
+          handler(n, o) {
+            if (Vue.config.devtools && n.access_token && n.access_token !== o.access_token) {
+              console.info(n.access_token)
+            }
+          },
+          deep: true
         }
       },
       computed: {
+        apiOptions: function () {
+          return {
+            headers: { "discord": this.user.access_token }
+          }
+        },
         /**
          * Check user perms & add (or not) tabs & routes following user perms
          * @returns all tabs to be added in the html
