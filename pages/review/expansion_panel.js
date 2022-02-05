@@ -81,7 +81,7 @@ export default {
               </v-list-item>
             </v-col>
             <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12">
-              <v-img :src="$root.apiURL + '/addons/' + addonInPanel.id + '/files/header'" :aspect-ratio="16/9" style="border-radius: 5px" alt="Header not found!">
+              <v-img :src="addonInPanel.files.filter(f => f.use === 'header').length ? addonInPanel.files.filter(f => f.use === 'header')[0].source : ''" :aspect-ratio="16/9" style="border-radius: 5px" alt="Header not found!">
                 <template v-slot:placeholder>
                   <v-row
                     class="fill-height ma-0"
@@ -200,7 +200,7 @@ export default {
     getAddon: function (id) {
       this.addonInPanelLoading = true
 
-      axios.get(`${this.$root.apiURL}/addons/${id}/all`).then(res => {
+      axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions).then(res => {
         // void value if already here (closing tab)
         if (this.addonInPanel.id === res.data.id) {
           this.addonInPanel = {}

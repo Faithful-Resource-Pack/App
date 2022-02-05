@@ -53,7 +53,7 @@ export default {
               >
                 <v-icon small>mdi-open-in-new</v-icon>
               </v-btn>
-              <div v-if="addon.approval.status === 'denied'">: {{ addon.approval.reason }}</div>
+              <div v-if="addon.approval.status === 'denied'">{{ $root.lang().review.addon.labels.reason }}: {{ addon.approval.reason }}</div>
             </v-card-text>
 
             <v-card-actions style="justify-content: flex-end;">
@@ -119,7 +119,7 @@ export default {
     },
     getAddons: function (authorID) {
         axios
-        .get(`${this.$root.apiURL}/users/${authorID}/addons`)
+        .get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
         .then(res => {
           this.addons = res.data
           this.loading = false

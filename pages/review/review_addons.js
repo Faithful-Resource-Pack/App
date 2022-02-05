@@ -93,7 +93,7 @@ export default {
       this.denyAddon = addon
     },
     getAddonsByStatus(status) {
-      axios.get(`${this.$root.apiURL}/addons/status/${status}`).then(res => {
+      axios.get(`${this.$root.apiURL}/addons/${status}`, this.$root.apiOptions).then(res => {
         this.addons[status] = res.data
         this.addons[status].forEach(addon => (addon.options.tags = addon.options.tags.sort()))
         this.loading[status] = false
