@@ -3,10 +3,6 @@
 export default {
   name: 'user-list',
   props: {
-    array: {
-      type: Array,
-      required: true
-    },
     label: {
       type: String,
       required: true
@@ -14,13 +10,16 @@ export default {
     hint: {
       type: String,
       required: true
+    },
+    value: {
+      required: true
     }
   },
   template: `
   <v-autocomplete
     multiple
     chips
-    v-model="array"
+    v-model="val"
     item-text="username"
     item-value="id"
     :items="contributors"
@@ -79,6 +78,7 @@ export default {
   `,
   data() {
     return {
+      val: [],
       contributors: []
     }
   },
@@ -95,6 +95,17 @@ export default {
         .catch(err => {
           console.trace(err)
         })
+    }
+  },
+  watch: {
+    val(n) {
+      this.$emit('input', n)
+    },
+    value: {
+      handler(n) {
+        this.val = n
+      },
+      immediate: true
     }
   },
   mounted() {

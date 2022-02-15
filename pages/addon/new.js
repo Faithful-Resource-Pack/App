@@ -1,14 +1,13 @@
-/* global axios, marked, FileReader, Image */
-const AddonForm = () => import('./addonForm.js')
+const newAddonForm = () => import('./newAddonForm.js')
 
 export default {
   name: 'new-addon-page',
   components: {
-    AddonForm,
+    newAddonForm,
   },
   template: `
 <v-container>
-  <AddonForm :new-addon="true" />
+  <newAddonForm />
 </v-container>
   `
 }

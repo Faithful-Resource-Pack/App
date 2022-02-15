@@ -106,7 +106,7 @@ export default {
 
         <!-- Addon authors selection -->
         <user-list 
-          :array="submittedForm.authors"
+          v-model="submittedForm.authors"
           :label="$root.lang().addons.general.authors.label"
           :hint="$root.lang().addons.general.authors.hint"
         />
@@ -147,13 +147,13 @@ export default {
           <v-row>
               <v-checkbox
                 class="col-6"
-                :v-model="submittedForm.comments"
+                :v-model="submittedForm.options.comments"
                 :label="$root.lang().addons.options.comments.label"
                 color="primary"
               />
               <v-checkbox
                 class="col-6"
-                :v-model="submittedForm.optifine"
+                :v-model="submittedForm.options.optifine"
                 :label="$root.lang().addons.options.optifine.label"
                 color="primary"
               />
@@ -178,7 +178,6 @@ export default {
                    :label="$root.lang().addons.downloads.name.label"
                    v-model="obj.key"
                    :rules="downloadTitleRules"
-                   @change="updateDownloadForm()"
                  ></v-text-field>
                </v-col>
                <v-col cols="9">
@@ -197,7 +196,6 @@ export default {
                        :label="$root.lang().addons.downloads.link.label"
                        v-model="obj.links[indexLinks]"
                        :rules="downloadLinkRules"
-                       @change="updateDownloadForm()"
                      ></v-text-field>
                    </v-col>
                    <v-col cols="1" v-if="indexLinks == 0" style="padding-left: 3px;">
@@ -305,6 +303,7 @@ export default {
         name: '',
         headerFile: undefined,
         carouselFiles: [],
+        description: '',
         downloads: [{
           key: '',
           links: ['']
@@ -312,8 +311,11 @@ export default {
         authors: [],
         selectedEditions: ['Java'],
         selectedRes: ['32x'],
-        comments: true,
-        optifine: false
+        options: {
+          tags:[],
+          comments: true,
+          optifine: false
+        }
       },
       headerValid: false,
       headerValidating: false,
@@ -377,7 +379,7 @@ export default {
     submittedData: function () {
       let res = Object.merge({}, this.submittedForm)
 
-      res.tags = [...res.selectedEditions, res.selectedRes]
+      res.options.tags = [...res.selectedEditions, res.selectedRes]
       delete res.selectedEditions
       delete res.selectedRes
 
@@ -386,12 +388,6 @@ export default {
       delete res.carouselFiles
 
       return res
-    },
-    submitMethod: function () {
-      return this.newAddon ? 'post' : 'patch'
-    },
-    submitURL: function () {
-      return this.$root.apiURL + '/addon/' + (this.newAddon ? '' : this.slug)
     }
   },
   methods: {
@@ -400,30 +396,6 @@ export default {
     },
     deleteDownload: function (index) {
       this.submittedForm.downloads = this.submittedForm.downloads.splice(index, 1)
-    },
-    updateDownloadForm: function () {
-      this.addon.downloads = {}
-
-      this.submittedForm.downloads.forEach(download => {
-        this.addon.downloads[download.key] = download.links
-      })
-    },
-    checkSlug: function () {
-      return new Promise((resolve, reject) => {
-        const slug = this.addon.slug
-        axios.get('/addons/slug/' + slug)
-          .then(() => {
-            reject(new Error(this.$root.lang().addon.general.slug.rules.unavailable))
-          })
-          .catch(err => {
-            if (err.status === 404) resolve()
-            else {
-              const message = (err && err.response && err.response.dara ? err.response.data.error : undefined) || 'An error occured'
-              console.error(err)
-              reject(message)
-            }
-          })
-      })
     },
     onDeleteCarousel: function (item, index) {
       this.carouselDoNotVerify = true
@@ -437,25 +409,7 @@ export default {
 
       if(!this.validForm) return
 
-      const infoPromise = axios[this.submitMethod](this.submitURL, this.submittedData, {
-        headers: {
-          discord: this.$root.user.access_token
-        }
-      })
-
-      infoPromise.catch(error => {
-        console.error(error)
-        this.$root.showSnackBar(error.message, 'error')
-      })
-
-      // we submit header file and 
-      if(this.newAddon) {
-        infoPromise.then((response) => {
-          const id = response.data
-
-
-        })
-      }
+      this.$emit('submit', this.submittedData)
     },
     validateRatio: function (ctx) {
       const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78
@@ -509,6 +463,7 @@ export default {
       this.verifyImage(file, this.validateRatio)
         .then(() => {
           this.headerValid = true
+          this.$emit('header', file)
         })
         .catch((error) => {
           this.headerValid = false
@@ -535,5 +490,8 @@ export default {
           this.carouselValidating = false
         })
     }
+  },
+  beforeMount: function() {
+    this.submittedForm.authors = [this.$root.user.id]
   }
 }
