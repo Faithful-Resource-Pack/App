@@ -17,10 +17,11 @@ export default {
   methods: {
     handleSubmit: function(data) {
       // 1. Upload 
+      let id
       axios.post(this.$root.apiURL + '/addons', data, this.$root.apiOptions)
       .then(response => {
         const addon = response.data
-        const id = addon.id
+        id = addon.id
         
         const promises = []
         // 2. Upload header and screenshots
@@ -30,13 +31,11 @@ export default {
         }
 
         if(this.header) {
-          console.log(this.header)
           form.set("file", this.header, this.header.name)
           promises.push(axios.post(this.$root.apiURL + '/addons/' + id + '/header', form, this.$root.apiOptions))
         }
         if(this.screenshots.length) {
           this.screenshots.forEach(screen => {
-            console.log(screen)
             form.set("file", screen, screen.name)
             promises.push(axios.post(this.$root.apiURL + '/addons/' + id + '/screenshots', form, this.$root.apiOptions))
           })
@@ -48,16 +47,26 @@ export default {
         this.$root.showSnackBar(`Saved`, 'Success')
       })
       .catch(err => {
-        console.error(err.response.data)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.message}`, 'error')
+        const message = err.response ? err.response.data.message : String(err)
+        console.error(err.response ? err.response.data : message)
+        this.$root.showSnackBar(`${err.message}: ${message}`, 'error')
+
+        // delete what is left of addon
+        // if we have id then we at least successfully created the file
+        if(id)
+          axios.delete(this.$root.apiURL + '/addons/' + id, this.$root.apiOptions)
       })
     },
-    handleHeader: function(file) {
-      console.log(file)
-      this.header = file
+    handleHeader: function(file, remove=false) {
+      this.header = remove ? undefined : file
     },
-    handleScreenshot: function(screenshot, index, remove) {
-
+    handleScreenshot: function(screenshots, index, remove=false) {
+      if(remove) {
+        this.screenshots.slice(index, 1)
+        console.log(this.screenshots);
+      } else {
+        this.screenshots = screenshots
+      }
     }
   }
 }

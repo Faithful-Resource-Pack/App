@@ -116,9 +116,7 @@ class Collection {
    * @returns {Promise<Any>} data out
    */
   __get_request(data) {
-    const request = typeof process === 'object' ? axios.get(readAddress(), {
-      data: data
-    }) : axios.post(readAddress(), data)
+    const request = axios.post(readAddress(), data)
     return this.__extract_data(request)
   }
 
@@ -238,7 +236,7 @@ class Collection {
 
           resolve(data)
         })
-        .catch(reject)
+        .catch(err => reject(err))
     })
   }
 

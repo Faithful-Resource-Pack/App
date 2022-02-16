@@ -6,8 +6,6 @@ export default {
     newAddonForm,
   },
   template: `
-<v-container>
   <newAddonForm />
-</v-container>
   `
 }

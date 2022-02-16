@@ -151,6 +151,9 @@ div.tooltip.vue-tooltip-theme {
 .v-expansion-panel {
   backdrop-filter: blur(10px);
 }
+.v-input--checkbox .v-input__slot {
+  backdrop-filter: none;
+}
 .v-btn {
   background: rgba(39, 39, 39, 0.8) !important;
   backdrop-filter: blur(10px);

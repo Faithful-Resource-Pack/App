@@ -27,18 +27,36 @@ const contributionController = require('./backend/contribution/contribution.cont
 const filesController = require('./backend/files/files.controller');
 
 // fetch settings from the database
-const fetchSettings = async () => {
-  fs.writeFileSync(
-    path.join(path.join(process.cwd(), 'resources/'), 'settings.json'),
-    JSON.stringify(await allCollection.settings.read_raw(), null, 0),
-    { flag: 'w', encoding: 'utf-8' }
-  )
+const SETTINGS_PATH = path.join(path.join(process.cwd(), 'resources/'), 'settings.json')
+
+//TODO: Find the ETIMEDOUT origin, may be linked to my connection quality
+if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
+  const fetchSettings = () => {
+    const read_settings = allCollection.settings.read_raw()
+  
+    read_settings.catch(() => {})
+  
+    read_settings.then(result => {
+      result = JSON.stringify(result)
+      return fs.promises.writeFile(SETTINGS_PATH, result, {
+        flag: 'w',
+        encoding: 'utf-8'
+      })
+    })
+  }
+  
+  fetchSettings()
+  setInterval(() => {
+    fetchSettings()
+  }, 5000)
+} else {
+  console.info('no refresh');
 }
 
-fetchSettings()
-setInterval(() => {
-  fetchSettings()
-}, 5000)
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(reason);
+  console.trace(promise);
+});
 
 app.use(express.urlencoded({
   extended: true,

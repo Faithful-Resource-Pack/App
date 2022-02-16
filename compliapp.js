@@ -201,7 +201,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
-          apiURL: window.apiURL,
+          vapiURL: window.apiURL,
           selectedLang: _get_lang(),
           langs: LANGS,
           window: {
@@ -235,6 +235,11 @@ axios.get('./resources/settings.json')
         }
       },
       computed: {
+        apiURL: function() {
+          if(Vue.config.devtools && this.vapiURL && this.vapiURL.includes('localhost') && window.location.host !== 'localhost')
+            return this.vapiURL.replace('localhost', window.location.host)
+          return this.vapiURL
+        },
         apiOptions: function () {
           return {
             headers: { "discord": this.user.access_token }

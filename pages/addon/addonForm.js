@@ -21,8 +21,8 @@ export default {
   },
   template: `
   <v-container>
-    <v-list class="my-2" rounded two-line color="rgba(255,255,255,.05)">
-      <v-form lazy-validation v-model="validForm" ref="form" style="padding: 10px">
+    <v-list :class="['my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255,255,255,.05)">
+      <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
 
         <div class="container">
           <div class="row">
@@ -48,7 +48,7 @@ export default {
                   counter="1"
                   prepend-icon="mdi-image"
                   v-model="submittedForm.headerFile"
-                  accept="image/jpg, image/png, image/gif"
+                  accept="image/jpg, image/jpeg, image/png, image/gif"
                   :label="$root.lang().addons.images.header.labels.drop"
                   :rules="headerRules"
                   :on-error="o => $root.showSnackBar(o.message, o.colour)"
@@ -76,7 +76,7 @@ export default {
               small-chips
               prepend-icon="mdi-image"
               v-model="submittedForm.carouselFiles"
-              accept="image/jpg, image/png, image/gif"
+              accept="image/jpg, image/jpeg, image/png, image/gif"
               :label="$root.lang().addons.images.carousel.labels.drop"
               :rules="carouselRules"
               :on-error="o => $root.showSnackBar(o.message, o.colour)"
@@ -111,31 +111,40 @@ export default {
           :hint="$root.lang().addons.general.authors.hint"
         />
 
-        <div class="container">
+        <div class="container" id="type-checkbox">
           <div class="row text-center">
-            <div class="col-6">
+            <div class="col-12 col-md-6">
               <v-row>
-                <v-checkbox
-                  class="col-6"
+                <v-col
+                  cols="6"
                   v-for="type in editions"
-                  v-model="submittedForm.selectedEditions"
-                  :label="type"
-                  :disabled="submittedForm.selectedEditions.length === 1 && submittedForm.selectedEditions[0] === type"
-                  :value="type"
-                  color="primary"
-                />
+                  :key="type"
+                >
+                  <v-checkbox
+                    v-model="submittedForm.selectedEditions"
+                    :label="type"
+                    :disabled="submittedForm.selectedEditions.length === 1 && submittedForm.selectedEditions[0] === type"
+                    :value="type"
+                    :hide-details="$vuetify.breakpoint.smAndDown"
+                    color="primary"
+                  />
+                </v-col>
               </v-row>
-            </div><div class="col-6">
+            </div><div class="col-12 col-md-6">
               <v-row>
-                <v-checkbox
-                  class="col-6"
+                <v-col
+                  cols="6"
                   v-for="type in res"
-                  v-model="submittedForm.selectedRes"
-                  :label="type"
-                  :disabled="submittedForm.selectedRes.length === 1 && submittedForm.selectedRes[0] === type"
-                  :value="type"
-                  color="primary"
-                />
+                  :key="type"
+                >
+                  <v-checkbox
+                    v-model="submittedForm.selectedRes"
+                    :label="type"
+                    :disabled="submittedForm.selectedRes.length === 1 && submittedForm.selectedRes[0] === type"
+                    :value="type"
+                    color="primary"
+                  />
+                </v-col>
               </v-row>
             </div>
           </div>
@@ -162,74 +171,59 @@ export default {
 
         <div class="text-h5">{{ $root.lang().addons.downloads.title }}</div>
 
-        <div class="container">
-          <div class="v-row">
-            <!-- LEFT PART: Download link -->
-            <div class="v-col">
-            <v-row 
-               v-for="(obj, index) in submittedForm.downloads"
-               :key="index"
-               :style="{'margin-top': index == 0 ? '-12px' : '-32px' }"
-             >
-               <v-col cols="3">
-                 <v-text-field
-                   clearable
-                   :placeholder="$root.lang().addons.downloads.name.placeholder"
-                   :label="$root.lang().addons.downloads.name.label"
-                   v-model="obj.key"
-                   :rules="downloadTitleRules"
-                 ></v-text-field>
-               </v-col>
-               <v-col cols="9">
-                 <v-row 
-                   v-for="(link, indexLinks) in obj.links"
-                   :key="indexLinks"
-                   :style="{
-                     'align-items': 'baseline',
-                     'margin-top': indexLinks != 0 ? '-32px' : '-12px'
-                   }"
-                 >
-                   <v-col :cols="index == 0 ? 11 : 10">
-                     <v-text-field
-                       clearable
-                       :placeholder="$root.lang().addons.downloads.link.placeholder"
-                       :label="$root.lang().addons.downloads.link.label"
-                       v-model="obj.links[indexLinks]"
-                       :rules="downloadLinkRules"
-                     ></v-text-field>
-                   </v-col>
-                   <v-col cols="1" v-if="indexLinks == 0" style="padding-left: 3px;">
-                     <v-btn icon @click="addLink(index)">
-                       <v-icon color="white lighten-1">mdi-plus</v-icon>
-                     </v-btn>
-                   </v-col>
-                   <v-col cols="1" v-else style="padding-left: 3px;">
-                     <v-btn icon @click="deleteLink(index, indexLinks)">
-                       <v-icon color="red lighten-1">mdi-minus</v-icon>
-                     </v-btn>
-                   </v-col>
-                   <v-col cols="1" v-if="index != 0 && indexLinks == 0" style="padding-left: 3px;">
-                     <v-btn icon @click="deleteDownload(index)">
-                       <v-icon color="red lighten-1">mdi-delete</v-icon>
-                     </v-btn>
-                   </v-col>
-                 </v-row>
-               </v-col>
-             </v-row>
-             <v-row>
-               <v-col>
-                 <v-btn block @click="addNewDownload()">
-                   {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
-                 </v-btn>
-               </v-col>
-             </v-row>
-            </div>
-            <!-- RIGHT PART: INFORMATION -->
-            <div class="v-col">
-
-            </div>
-          </div>
-        </div>        
+        <div>
+          <v-row v-for="(obj,index) in submittedForm.downloads" :key="index" style="margin-top: 0">
+            <v-col cols="3">
+              <v-text-field
+                clearable
+                :placeholder="$root.lang().addons.downloads.name.placeholder"
+                :label="$root.lang().addons.downloads.name.label"
+                v-model="obj.key"
+                :rules="downloadTitleRules"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="9">
+              <v-row 
+                v-for="(link, indexLinks) in obj.links"
+                :key="indexLinks"
+                :style="{
+                  'align-items': 'baseline',
+                  'margin-top': indexLinks != 0 ? '-32px' : '-12px'
+                }"
+              >
+                <v-col>
+                  <v-text-field
+                    clearable
+                    :placeholder="$root.lang().addons.downloads.link.placeholder"
+                    :label="$root.lang().addons.downloads.link.label"
+                    v-model="obj.links[indexLinks]"
+                    :rules="downloadLinkRules"
+                  ></v-text-field>
+                </v-col>
+                <v-col v-if="indexLinks == 0" class="flex-grow-0 flex-shrink-0">
+                  <v-btn icon @click="linkAdd(index)">
+                    <v-icon color="white lighten-1">mdi-plus</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col v-else class="flex-grow-0 flex-shrink-0">
+                  <v-btn icon @click="linkRemove(index, indexLinks)">
+                    <v-icon color="red lighten-1">mdi-minus</v-icon>
+                  </v-btn>
+                </v-col>
+                <v-col v-if="index != 0 && indexLinks == 0" class="flex-grow-0 flex-shrink-0">
+                  <v-btn icon @click="downloadRemove(index)">
+                    <v-icon color="red lighten-1">mdi-delete</v-icon>
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </div>
+        <div class="pb-3">
+          <v-btn block @click="downloadAdd()">
+            {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
+          </v-btn>
+        </div>       
 
         <div class="text-center">
           <v-btn :disabled="!validForm" @click="onSubmit">
@@ -320,7 +314,7 @@ export default {
       headerValid: false,
       headerValidating: false,
       headerError: "",
-      carouselValid: false,
+      carouselValid: true,
       carouselValidating: false,
       carouselError: "",
       carouselDoNotVerify: false,
@@ -391,23 +385,30 @@ export default {
     }
   },
   methods: {
-    addNewDownload: function () {
+    downloadAdd: function () {
       this.submittedForm.downloads.push({ key: '', links: [''] })
     },
-    deleteDownload: function (index) {
-      this.submittedForm.downloads = this.submittedForm.downloads.splice(index, 1)
+    downloadRemove: function (download_index) {
+      this.submittedForm.downloads.splice(download_index, 1)
+    },
+    linkAdd: function(download_index) {
+      this.submittedForm.downloads[download_index].links.push('')
+    },
+    linkRemove: function(download_index, link_index) {
+      this.submittedForm.downloads[download_index].links.splice(link_index, 1)
     },
     onDeleteCarousel: function (item, index) {
       this.carouselDoNotVerify = true
       this.submittedForm.carouselFiles.splice(index, 1)
+      this.$emit('screenshot', undefined, index, true)
       Vue.nextTick(() => {
         this.carouselDoNotVerify = false
       })
     },
     onSubmit: function() {
-      this.$refs.form.validate()
+      const valid = this.$refs.form.validate()
 
-      if(!this.validForm) return
+      if(!valid) return
 
       this.$emit('submit', this.submittedData)
     },
@@ -457,9 +458,16 @@ export default {
   },
   watch: {
     headerFile(file) {
+      if(!file) {
+        this.$emit('header', undefined, true)
+        return
+      }
+
+      // else new file
+
       // activate validation loading
       this.headerValidating = true
-
+      
       this.verifyImage(file, this.validateRatio)
         .then(() => {
           this.headerValid = true
@@ -468,7 +476,9 @@ export default {
         .catch((error) => {
           this.headerValid = false
           this.headerError = error.message
-          that.$root.showSnackBar(error.message, 'error')
+          console.error(error)
+          this.$emit('header', undefined, true)
+          this.$root.showSnackBar(error.message, 'error')
         })
         .finally(() => {
           this.headerValidating = false
@@ -481,8 +491,10 @@ export default {
       Promise.all(files.map(f => this.verifyImage(f, this.validateRatio)))
         .then(() => {
           this.carouselValid = true
+          this.$emit('screenshot', files)
         })
         .catch((error) => {
+          console.log(error)
           this.carouselValid = false
           this.carouselError = error.message
         })
