@@ -227,6 +227,7 @@ export default {
       }
     },
     general: {
+      loading_addon: 'Loading addon',
       title: 'General',
       name: {
         label: 'Add-on name',

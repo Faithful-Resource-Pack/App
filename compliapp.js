@@ -6,6 +6,7 @@ const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
 const TexturePage = () => import('./pages/texture/main.js')
 const ProfilePage = () => import('./pages/profile/main.js')
 const AddonNewPage = () => import('./pages/addon/new.js')
+const AddonEditPage = () => import('./pages/addon/editAddonForm.js')
 const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
 const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
 const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
@@ -97,7 +98,8 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
-      { routes: [{ path: '/addons/new', component: AddonNewPage }] }
+      { routes: [{ path: '/addons/new', component: AddonNewPage }] },
+      { routes: [{ path: '/addons/edit/:id', component: AddonEditPage }] }
     ]
   },
   {

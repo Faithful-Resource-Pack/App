@@ -228,6 +228,7 @@ export default {
       }
     },
     general: {
+      loading_addon: 'Chargement de l\'addon',
       title: 'Général',
       name: {
         label: 'Nom de l\'add-on',

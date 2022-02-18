@@ -6,7 +6,13 @@ export default {
     'addon-form': addonForm
   },
   template: `
-  <addon-form newAddon v-on:submit="handleSubmit" v-on:header="handleHeader" v-on:screenshot="handleScreenshot" />
+  <addon-form
+    addon-new
+    v-on:submit="handleSubmit"
+    v-on:header="handleHeader"
+    v-on:screenshot="handleScreenshot"
+    screen-sources="screenSources"
+  />
   `,
   data: function() {
     return {
@@ -44,7 +50,8 @@ export default {
         return Promise.all(promises)
       })
       .then(() => {
-        this.$root.showSnackBar(`Saved`, 'Success')
+        this.$root.showSnackBar('Saved', 'success')
+        this.$router.push('/addons/submissions')
       })
       .catch(err => {
         const message = err.response ? err.response.data.message : String(err)

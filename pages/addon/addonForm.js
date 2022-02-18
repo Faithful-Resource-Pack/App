@@ -9,7 +9,7 @@ export default {
     ImagePreviewer
   },
   props: {
-    newAddon: {
+    addonNew: {
       type: Boolean,
       required: true
     },
@@ -17,11 +17,32 @@ export default {
       type: String,
       required: false,
       default: () => undefined
+    },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: () => false
+    },
+    addonData: {
+      required: false,
+      default: () => undefined
+    },
+    screenSources: {
+      required: false
     }
   },
   template: `
   <v-container>
-    <v-list :class="['my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255,255,255,.05)">
+    <div class="text-center" v-if="loading">
+      <h2 v-text="$root.lang().addons.general.loading_addon" class="mb-3"></h2>
+      <v-progress-circular
+        :size="70"
+        :width="7"
+        color="blue"
+        indeterminate
+      ></v-progress-circular>
+    </div>
+    <v-list v-else :class="['my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255,255,255,.05)">
       <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
 
         <div class="container">
@@ -241,18 +262,18 @@ export default {
           header: {
             rules: [
               header => !!header || this.$root.lang().addons.images.header.rules.image_required,
-              header => (header && header.size < this.form.files.header.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 10000)
+              header => (header && header.size < this.form.files.header.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)
             ],
             counter: {
-              max: 5000000
+              max: 500000
             }
           },
           carousel: {
             rules: [
-              (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 10000)).filter(r => typeof r === "string")[0] || true }
+              (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)).filter(r => typeof r === "string")[0] || true }
             ],
             counter: {
-              max: 5000000
+              max: 500000
             }
           },
           value: ''
@@ -332,13 +353,16 @@ export default {
   },
   computed: {
     hasHeader: function () {
-      return !!this.header
+      return !!(this.header || this.headerURL)
     },
     header: function () {
       return this.submittedForm.headerFile ? URL.createObjectURL(this.submittedForm.headerFile) : undefined;
     },
     carouselSources: function () {
-      return this.carouselValidating === false && this.carouselValid ? this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []
+      return this.addonNew ? 
+        (this.carouselValidating === false && this.carouselValid ?
+          this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []) :
+        (this.screenSources ? this.screenSources : [])
     },
     headerValidSentence: function () {
       if (this.headerValidating) {

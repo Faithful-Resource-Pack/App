@@ -110,8 +110,7 @@ export default {
       this.update()
     },
     editAddon: function (addon) {
-      this.dialogAddon = addon
-      this.dialogOpen = true
+      this.$router.push('/addons/edit/' + addon.id)
     },
     deleteAddon: function (addon) {
       this.remove.data = addon
