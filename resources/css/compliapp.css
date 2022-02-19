@@ -583,6 +583,9 @@ code {
 .v-dialog {
   margin: 10px;
 }
+.v-dialog.v-dialog--fullscreen {
+  margin: 0;
+}
 
 body .texture-avatar {
   height: 64px !important;
