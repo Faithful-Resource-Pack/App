@@ -12,11 +12,12 @@ export default {
           :width="150*16/9"
           :aspect-ratio="16/9"
           alt="preview"
+          @click="onFullscreen(item, index)"
         />
         <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
-          <v-icon small class="ma-1" @click="onFullscreen(item, index)">
+          <v-icon small class="ma-1" @click.stop="(e) => onFullscreen(item, index, e)">
             mdi-fullscreen
-          </v-icon><v-icon small class="ma-1" @click="onDelete(item, index)">
+          </v-icon><v-icon small class="ma-1" @click.stop="(e) => onDelete(item, index, e)">
             mdi-delete
           </v-icon>
         </v-card>
@@ -32,6 +33,7 @@ export default {
         :src="fullscreenItem"
         alt="fullscreen preview" 
         :aspect-ratio="16/9" 
+        v-on:click="disableFullscreen"
       />
     </v-card>
   </v-dialog>
@@ -56,10 +58,12 @@ export default {
     },
   },
   methods: {
-    onDelete: function(item, index) {
+    onDelete: function(item, index, e) {
+      if(e) e.target.blur();
       this.$emit('item-delete', item, index)
     },
-    onFullscreen: function(item, index) {
+    onFullscreen: function(item, index, e) {
+      if(e) e.target.blur();
       this.fullscreen = true
       this.fullscreenIndex = index
     },

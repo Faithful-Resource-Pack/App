@@ -31,7 +31,7 @@ export default {
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
               style="border-radius: 5px"
-              :src="$root.apiURL + '/addons/'+ addon.id + '/files/header?discord=' + $root.user.access_token"
+              :src="$root.apiURL + '/addons/'+ addon.id + '/header?discord=' + $root.user.access_token + '&t=' + new Date().getTime()"
               :aspect-ratio="16/9"
             />
             <v-card-title v-text="addon.name" />
@@ -60,7 +60,7 @@ export default {
               <v-btn
                 color="white"
                 text
-                @click="editAddon(addon)"
+                :href="'/#/addons/edit/' + addon.id"
               >
                 {{ $root.lang().global.btn.edit }}
               </v-btn>
@@ -108,9 +108,6 @@ export default {
       this.dialogOpen = false
       this.dialogAddon = {}
       this.update()
-    },
-    editAddon: function (addon) {
-      this.$router.push('/addons/edit/' + addon.id)
     },
     deleteAddon: function (addon) {
       this.remove.data = addon

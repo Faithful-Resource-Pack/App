@@ -1,19 +1,7 @@
-const AddonEditModal = () => import('./addon_modal_edit.js')
-
 export default {
   name: 'exp-panel',
-  components: {
-    AddonEditModal
-  },
   template: `
   <v-container>
-    <addon-edit-modal
-      :dialog="dialogOpen"
-      :disableDialog="closeDialog"
-      :data="dialogAddon"
-      :contributors="contributors"
-    ></addon-edit-modal>
-
     <v-expansion-panel
       v-for="addon in addons"
       :key="addon.id"
@@ -81,7 +69,7 @@ export default {
               </v-list-item>
             </v-col>
             <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12">
-              <v-img :src="addonInPanel.files.filter(f => f.use === 'header').length ? addonInPanel.files.filter(f => f.use === 'header')[0].source : ''" :aspect-ratio="16/9" style="border-radius: 5px" alt="Header not found!">
+              <v-img :src="addonInPanelHeaderURL" :aspect-ratio="16/9" style="border-radius: 5px" alt="Header not found!">
                 <template v-slot:placeholder>
                   <v-row
                     class="fill-height ma-0"
@@ -150,7 +138,7 @@ export default {
               <v-btn
                 text
                 color="yellow"
-                @click="openDialog(addon)"
+                :href="'/#/addons/edit/' + addonInPanel.id"
               >
                 {{ $root.lang().global.btn.edit }}
               </v-btn>
@@ -193,14 +181,21 @@ export default {
       dialogOpen: false,
 
       addonInPanelLoading: true,
-      addonInPanel: {}
+      addonInPanel: {},
+      addonURL: undefined,
+      addonInPanelHeaderURL: undefined
     }
   },
   methods: {
     getAddon: function (id) {
       this.addonInPanelLoading = true
 
-      axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions).then(res => {
+      Promise.all([
+        axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
+        axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
+      ])
+      .then(([res, header_res]) => {
+        
         // void value if already here (closing tab)
         if (this.addonInPanel.id === res.data.id) {
           this.addonInPanel = {}
@@ -210,6 +205,7 @@ export default {
 
         this.addonInPanel = res.data
         this.addonInPanelLoading = false
+        this.addonInPanelHeaderURL = header_res.data + '?t=' + new Date().getTime()
       })
     },
     openDialog: function () {

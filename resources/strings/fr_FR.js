@@ -218,6 +218,7 @@ export default {
   addons: {
     titles: {
       submit: 'Soumettre un nouvel Add-on',
+      edit: 'Éditer l\'addon',
       submissions: 'Mes Add-ons'
     },
     remove: {

@@ -69,8 +69,8 @@ app.get(compliappURL, (req, res) => {
 
   file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
 
-  if (DEV && process.send) {
-    file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script>` + '</body>')
+  if (DEV && process.env.BROWSER_REFRESH_URL) {
+    file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script></body>`)
   }
 
   res.send(file)

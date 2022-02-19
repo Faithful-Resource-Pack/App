@@ -13,17 +13,16 @@ export default {
       type: Boolean,
       required: true
     },
-    slug: {
-      type: String,
-      required: false,
-      default: () => undefined
-    },
     loading: {
       type: Boolean,
       required: false,
       default: () => false
     },
     addonData: {
+      required: false,
+      default: () => undefined
+    },
+    headerSource: {
       required: false,
       default: () => undefined
     },
@@ -48,7 +47,7 @@ export default {
         <div class="container">
           <div class="row">
             <!-- LEFT PART : INPUT -->
-            <div class="col">
+            <div class="col pb-0">
               <div class="text-h5">{{ $root.lang().addons.general.title }}</div>
               <!-- Addon name -->
               <v-text-field
@@ -66,25 +65,38 @@ export default {
                   dense
                   show-size
                   small-chips
-                  counter="1"
+                  :counter="addonNew ? 1 : undefined"
                   prepend-icon="mdi-image"
                   v-model="submittedForm.headerFile"
                   accept="image/jpg, image/jpeg, image/png, image/gif"
                   :label="$root.lang().addons.images.header.labels.drop"
                   :rules="headerRules"
+                  ref="headerInput"
+                  v-on:change="headerChange"
                   :on-error="o => $root.showSnackBar(o.message, o.colour)"
                 />
               </div>
             </div>
             <!-- RIGHT PART: HEADER IMAGE PREVIEW -->
-            <div class="col-12 col-sm-3 d-flex align-center" v-if="hasHeader">
-              <v-img
-                style="border-radius: 10px"
-                :aspect-ratio="16/9"
-                :src="header"
-              />
+            <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center" v-if="hasHeader">
+              <div class="col">
+                <div style="position: relative">
+                  <v-img
+                    style="border-radius: 10px"
+                    :aspect-ratio="16/9"
+                    :src="header"
+                  />
+                  <v-card v-if="!addonNew" class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
+                    <v-icon small class="ma-1" @click="$emit('header', undefined, true)">
+                      mdi-delete
+                    </v-icon>
+                  </v-card>
+                </div>
+              </div>
             </div>
           </div>
+
+          <div class="text-h5 mb-3">{{ $root.lang().addons.images.title }}</div>
 
           <!-- upload field for images -->
           <ImagePreviewer :sources="carouselSources" @item-delete="onDeleteCarousel" />
@@ -101,6 +113,8 @@ export default {
               :label="$root.lang().addons.images.carousel.labels.drop"
               :rules="carouselRules"
               :on-error="o => $root.showSnackBar(o.message, o.colour)"
+              v-on:change="carouselChange"
+              ref="carouselInput"
             />
           </div>
 
@@ -294,7 +308,6 @@ export default {
             name => !!name || this.$root.lang().addons.general.name.rules.name_required,
             name => (name && name.length <= this.form.name.counter.max) || this.$root.lang().addons.general.name.rules.name_too_big.replace('%s', this.form.name.counter.max),
             name => (name && name.length >= this.form.name.counter.min) || this.$root.lang().addons.general.name.rules.name_too_small.replace('%s', this.form.name.counter.min),
-            // TODO: REDO name => (name && !this.names.includes(name)) || this.$root.lang().addons.general.name.rules.name_unavailable
           ],
           counter: {
             min: 5,
@@ -356,7 +369,10 @@ export default {
       return !!(this.header || this.headerURL)
     },
     header: function () {
-      return this.submittedForm.headerFile ? URL.createObjectURL(this.submittedForm.headerFile) : undefined;
+      return this.addonNew ?
+        (this.headerValidating == false && this.headerValid ?
+          URL.createObjectURL(this.submittedForm.headerFile) : undefined) : 
+        (this.headerSource ? this.headerSource : undefined)
     },
     carouselSources: function () {
       return this.addonNew ? 
@@ -374,6 +390,7 @@ export default {
       return this.headerError
     },
     headerRules: function () {
+      if(!this.addonNew) return []
       return [...this.form.files.header.rules, this.headerValidSentence]
     },
     headerFile: function () {
@@ -409,6 +426,70 @@ export default {
     }
   },
   methods: {
+    carouselChange: function() {
+      if (this.carouselDoNotVerify) return
+
+      const files = this.submittedForm.carouselFiles
+      if(!files || files.length == 0) return
+
+      this.carouselValidating = true
+      Promise.all(files.map(f => this.verifyImage(f, this.validateRatio)))
+        .then(() => {
+          this.carouselValid = true
+          this.$emit('screenshot', files)
+          if(!this.addonNew) {
+            this.submittedForm.carouselFiles = []
+            this.$refs.carouselInput.value = []
+          }
+          this.$refs.carouselInput.blur()
+        })
+        .catch((error) => {
+          console.log(error)
+          this.carouselValid = false
+          this.carouselError = error.message
+        })
+        .finally(() => {
+          this.carouselValidating = false
+        })
+    },
+    headerChange: function(file) {
+      // delete not uploaded file
+      if(!file) {
+        if(this.addonNew) {
+          console.log('delete header')
+          this.$emit('header', undefined, true)
+        }
+        return
+      }
+
+      // activate validation loading
+      this.headerValidating = true
+
+      this.verifyImage(file, this.validateRatio)
+        .then(() => {
+          this.headerValid = true
+          this.$emit('header', file)
+          if(!this.addonNew) {
+            this.submittedForm.headerFile = undefined
+            this.$refs.headerInput.value = null
+            this.$refs.headerInput.blur()
+          }
+        })
+        .catch((error) => {
+          this.headerValid = false
+          this.headerError = error.message
+          console.error(error)
+          
+          // input is changed so we delete parent component value
+          if(this.addonNew) this.$emit('header', undefined, true)
+          // if not addon new will delete file
+
+          this.$root.showSnackBar(error.message, 'error')
+        })
+        .finally(() => {
+          this.headerValidating = false
+        })
+    },
     downloadAdd: function () {
       this.submittedForm.downloads.push({ key: '', links: [''] })
     },
@@ -481,50 +562,18 @@ export default {
     }
   },
   watch: {
-    headerFile(file) {
-      if(!file) {
-        this.$emit('header', undefined, true)
-        return
-      }
-
-      // else new file
-
-      // activate validation loading
-      this.headerValidating = true
-      
-      this.verifyImage(file, this.validateRatio)
-        .then(() => {
-          this.headerValid = true
-          this.$emit('header', file)
-        })
-        .catch((error) => {
-          this.headerValid = false
-          this.headerError = error.message
-          console.error(error)
-          this.$emit('header', undefined, true)
-          this.$root.showSnackBar(error.message, 'error')
-        })
-        .finally(() => {
-          this.headerValidating = false
-        })
-    },
-    carouselFiles(files) {
-      if (this.carouselDoNotVerify) return
-
-      this.carouselValidating = true
-      Promise.all(files.map(f => this.verifyImage(f, this.validateRatio)))
-        .then(() => {
-          this.carouselValid = true
-          this.$emit('screenshot', files)
-        })
-        .catch((error) => {
-          console.log(error)
-          this.carouselValid = false
-          this.carouselError = error.message
-        })
-        .finally(() => {
-          this.carouselValidating = false
-        })
+    addonData: {
+      handler(data) {
+        if(!this.addonNew && data) {
+          data.headerFile = undefined
+          data.carouselFiles = []
+          data.selectedRes = data.options.tags.filter(e => this.res.includes(e))
+          data.selectedEditions = data.options.tags.filter(e => this.editions.includes(e))
+          this.submittedForm = data
+        }
+      },
+      immediate: true,
+      deep: true
     }
   },
   beforeMount: function() {

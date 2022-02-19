@@ -216,6 +216,7 @@ export default {
   addons: {
     titles: {
       submit: 'Submit a new Add-on',
+      edit: 'Edit addon',
       submissions: 'Submissions',
       details: 'Details'
     },

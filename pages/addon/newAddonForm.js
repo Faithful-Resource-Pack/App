@@ -6,13 +6,18 @@ export default {
     'addon-form': addonForm
   },
   template: `
-  <addon-form
-    addon-new
-    v-on:submit="handleSubmit"
-    v-on:header="handleHeader"
-    v-on:screenshot="handleScreenshot"
-    screen-sources="screenSources"
-  />
+  <div class="container">
+    <h4 class="text-h4 py-4">{{ $root.lang().addons.titles.submit }} </h4>
+    <addon-form
+      class="pa-0"
+
+      addon-new
+      
+      v-on:submit="handleSubmit"
+      v-on:header="handleHeader"
+      v-on:screenshot="handleScreenshot"
+    />
+  </div>
   `,
   data: function() {
     return {
