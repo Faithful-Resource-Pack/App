@@ -51,12 +51,12 @@ export default {
           this.totalContributions = data.totalContributions
 
           this.contrib = data.contrib
+
+          this.buildGraph()
         })
         .catch(function (error) {
           console.error(error)
-        })
-        .finally(() => {
-          this.buildGraph()
+          this.$root.showSnackBar(String(error), "error")
         })
     },
 
@@ -137,8 +137,20 @@ export default {
 
       const series = stack(data)
 
+      console.log(series)
+
+      const [max, secondMax] = data.map(d => d.c32 + d.c64).reduce((acc, cur) => {
+        if(cur > acc[0]) {
+          acc[1] = acc[0]
+          acc[0] = cur
+        } else if(cur > acc[1]) {
+          acc[1] = cur
+        }
+        return acc
+      }, [0,0])
+
       // scale y
-      if (series.length) yScale.domain([0, d3.max(series[series.length - 1], function (d) { return d[1] })])
+      if (series.length) yScale.domain([0, secondMax])
 
       // add left axis
       svg.append('g')
@@ -250,5 +262,8 @@ export default {
         }
       })
     }
+  },
+  created: function() {
+    this.getData()
   }
 }
