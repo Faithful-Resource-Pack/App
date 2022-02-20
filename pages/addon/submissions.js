@@ -1,12 +1,10 @@
 /* global axios */
 
-const addonEditModal = () => import('./modal_edit.js')
 const addonRemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
   name: 'own-addon-page',
   components: {
-    addonEditModal,
     addonRemoveConfirm
   },
   template: `
@@ -83,12 +81,6 @@ export default {
       :disableDialog="function() { remove.confirm = false; update() }" 
       :data="remove.data">
     </addon-remove-confirm>
-    <addon-edit-modal
-      :dialog="dialogOpen"
-      :disableDialog="closeDialog"
-      :data="dialogAddon"
-    ></addon-edit-modal>
-
   </v-container>
   `,
   data() {

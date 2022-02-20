@@ -370,13 +370,13 @@ export default {
     },
     header: function () {
       return this.addonNew ?
-        (this.headerValidating == false && this.headerValid ?
+        (this.headerValidating == false && this.headerValid && this.submittedForm.headerFile ?
           URL.createObjectURL(this.submittedForm.headerFile) : undefined) : 
         (this.headerSource ? this.headerSource : undefined)
     },
     carouselSources: function () {
       return this.addonNew ? 
-        (this.carouselValidating === false && this.carouselValid ?
+        (this.carouselValidating === false && this.carouselValid && this.submittedForm.carouselFiles.length ?
           this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []) :
         (this.screenSources ? this.screenSources : [])
     },
@@ -444,7 +444,7 @@ export default {
           this.$refs.carouselInput.blur()
         })
         .catch((error) => {
-          console.log(error)
+          console.error(error)
           this.carouselValid = false
           this.carouselError = error.message
         })
@@ -456,7 +456,6 @@ export default {
       // delete not uploaded file
       if(!file) {
         if(this.addonNew) {
-          console.log('delete header')
           this.$emit('header', undefined, true)
         }
         return

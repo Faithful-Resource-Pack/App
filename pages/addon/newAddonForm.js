@@ -75,7 +75,6 @@ export default {
     handleScreenshot: function(screenshots, index, remove=false) {
       if(remove) {
         this.screenshots.slice(index, 1)
-        console.log(this.screenshots);
       } else {
         this.screenshots = screenshots
       }
