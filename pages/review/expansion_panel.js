@@ -78,9 +78,11 @@ export default {
                     style="background-color: rgba(255,255,255, 0.1);"
                   >
                     <v-progress-circular
+                      v-if="addonInPanelHeaderURL != null"
                       indeterminate
                       color="grey lighten-5"
                     />
+                    <v-icon v-else x-large>mdi-image-off</v-icon>
                   </v-row>
                 </template>
               </v-img>
@@ -190,22 +192,27 @@ export default {
     getAddon: function (id) {
       this.addonInPanelLoading = true
 
-      Promise.all([
+      // allSettled if no header res
+      Promise.allSettled([
         axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
         axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
       ])
       .then(([res, header_res]) => {
         
         // void value if already here (closing tab)
-        if (this.addonInPanel.id === res.data.id) {
+        if (this.addonInPanel.id === res.value.data.id) {
           this.addonInPanel = {}
           this.addonInPanelLoading = true
           return
         }
 
-        this.addonInPanel = res.data
+        this.addonInPanel = res.value.data
         this.addonInPanelLoading = false
-        this.addonInPanelHeaderURL = header_res.data + '?t=' + new Date().getTime()
+        
+        if(header_res.value)
+          this.addonInPanelHeaderURL = header_res.value.data + '?t=' + new Date().getTime()
+        else
+        this.addonInPanelHeaderURL = null
       })
     },
     openDialog: function () {
