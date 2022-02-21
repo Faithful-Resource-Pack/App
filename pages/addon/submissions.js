@@ -29,9 +29,26 @@ export default {
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
               style="border-radius: 5px"
-              :src="$root.apiURL + '/addons/'+ addon.id + '/header?discord=' + $root.user.access_token + '&t=' + new Date().getTime()"
-              :aspect-ratio="16/9"
-            />
+              :src="$root.apiURL + '/addons/'+ addon.id + '/header?discord=' + $root.user.access_token + '&t=' + timestamp"
+              :aspect-ratio="16/9" v-on:error="() => {failed[addon.id] = true; $forceUpdate(); return false }">
+              <template v-slot:placeholder>
+                <v-row
+                  class="fill-height ma-0"
+                  align="center"
+                  justify="center"
+                  style="background-color: rgba(255,255,255, 0.1);"
+                >
+                  <v-icon
+                    v-if="failed[addon.id]"
+                    x-large>mdi-image-off</v-icon>
+                  <v-progress-circular
+                    v-else
+                    indeterminate
+                    color="grey lighten-5"
+                  />
+                </v-row>
+              </template>
+            </v-img>
             <v-card-title v-text="addon.name" />
             <v-card-subtitle v-text="addon.options.tags.join(', ')" />
             <v-card-text style="height: 60px">
@@ -92,7 +109,9 @@ export default {
       },
       dialogAddon: {},
       dialogOpen: false,
-      loading: true
+      loading: true,
+      failed: {},
+      timestamp: new Date().getTime()
     }
   },
   methods: {
