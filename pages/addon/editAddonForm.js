@@ -49,7 +49,6 @@ export default {
       })
     },
     handleHeader: function(file, remove=false) {
-      console.log(file, remove)
       let promise
       if(remove) {
         promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/header', this.$root.apiOptions)
