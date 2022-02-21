@@ -564,6 +564,7 @@ export default {
     addonData: {
       handler(data) {
         if(!this.addonNew && data) {
+          data = JSON.parse(JSON.stringify(data))
           data.headerFile = undefined
           data.carouselFiles = []
           data.selectedRes = data.options.tags.filter(e => this.res.includes(e))
