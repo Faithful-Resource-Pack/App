@@ -414,7 +414,7 @@ export default {
     submittedData: function () {
       let res = Object.merge({}, this.submittedForm)
 
-      res.options.tags = [...res.selectedEditions, res.selectedRes]
+      res.options.tags = [...res.selectedEditions, ...res.selectedRes]
       delete res.selectedEditions
       delete res.selectedRes
 
