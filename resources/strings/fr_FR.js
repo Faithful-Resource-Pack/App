@@ -233,7 +233,7 @@ export default {
       title: 'Général',
       name: {
         label: 'Nom de l\'add-on',
-        hint: 'Le nom ne peut pas être changé après la soumission !',
+        hint: 'Un nom court sera meilleur !',
         rules: {
           name_required: 'Le nom est requis.',
           name_too_big: 'Le nom doit faire moins que %s caractères.',

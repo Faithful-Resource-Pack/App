@@ -232,7 +232,7 @@ export default {
       title: 'General',
       name: {
         label: 'Add-on name',
-        hint: 'The name can\'t be changed after submission!',
+        hint: 'A short name is always better!',
         rules: {
           name_required: 'A name is required.',
           name_too_big: 'Add-on name must be less than %s characters.',
