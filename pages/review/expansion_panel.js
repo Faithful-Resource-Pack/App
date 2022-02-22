@@ -1,7 +1,17 @@
+const FullscreenPreview = () => import('../addon/fullscreen-preview.js')
+
 export default {
   name: 'exp-panel',
+  components: {
+    FullscreenPreview
+  },
   template: `
   <v-container>
+    <fullscreen-preview
+      ref="preview"
+      :src="imagePreview"
+    />
+
     <v-expansion-panel
       v-for="addon in addons"
       :key="addon.id"
@@ -68,8 +78,14 @@ export default {
                 </v-list-item-content>
               </v-list-item>
             </v-col>
-            <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12">
-              <v-img :src="addonInPanelHeaderURL" :aspect-ratio="16/9" style="border-radius: 5px" alt="Header not found!">
+            <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="position: relative">
+              <v-img 
+                @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }"
+                :src="addonInPanelHeaderURL" 
+                :aspect-ratio="16/9" 
+                style="border-radius: 5px;" 
+                alt="Header not found!"
+              >
                 <template v-slot:placeholder>
                   <v-row
                     class="fill-height ma-0"
@@ -86,6 +102,11 @@ export default {
                   </v-row>
                 </template>
               </v-img>
+              <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 10px; top: 10px;">
+                <v-icon small class="ma-1" @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }">
+                  mdi-fullscreen
+                </v-icon>
+              </v-card>
             </v-col>
 
           </v-row>
@@ -95,12 +116,19 @@ export default {
               v-for="file in addonInPanel.files.filter(f => f.use === 'carousel')"
               :key="file.id"
               :cols="$vuetify.breakpoint.mdAndUp ? 4 : 6"
+              style="position: relative;"
             >
               <v-img
                 style="border-radius: 5px"
+                @click.stop="(e) => { $refs.preview.open(); imagePreview = file.source }"
                 :aspect-ratio="16/9"
                 :src="file.source"
               />
+              <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 10px; top: 10px;">
+                <v-icon small class="ma-1" @click.stop="(e) => { $refs.preview.open(); imagePreview = file.source }">
+                  mdi-fullscreen
+                </v-icon>
+              </v-card>
             </v-col>
           </v-row>
 
@@ -179,6 +207,7 @@ export default {
   },
   data() {
     return {
+      imagePreview: "",
       dialogAddon: {},
       dialogOpen: false,
 

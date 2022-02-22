@@ -1,12 +1,14 @@
 /* global Vue, axios, marked */
 const UserList = () => import('./userlist.js')
 const ImagePreviewer = () => import('./image-previewer.js')
+const FullscreenPreview = () => import('./fullscreen-preview.js')
 
 export default {
   name: 'addon-form',
   components: {
     UserList,
-    ImagePreviewer
+    ImagePreviewer,
+    FullscreenPreview
   },
   props: {
     addonNew: {
@@ -32,6 +34,11 @@ export default {
   },
   template: `
   <v-container>
+    <fullscreen-preview
+      ref="headerPreview"
+      :src="header"
+    />
+
     <div class="text-center" v-if="loading">
       <h2 v-text="$root.lang().addons.general.loading_addon" class="mb-3"></h2>
       <v-progress-circular
@@ -82,12 +89,15 @@ export default {
               <div class="col">
                 <div style="position: relative">
                   <v-img
+                    @click.stop="(e) => $refs.headerPreview.open()"
                     style="border-radius: 10px"
                     :aspect-ratio="16/9"
                     :src="header"
                   />
                   <v-card v-if="!addonNew" class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
-                    <v-icon small class="ma-1" @click="$emit('header', undefined, true)">
+                    <v-icon small class="ma-1" @click.stop="(e) => $refs.headerPreview.open()">
+                      mdi-fullscreen
+                    </v-icon><v-icon small class="ma-1" @click="$emit('header', undefined, true)">
                       mdi-delete
                     </v-icon>
                   </v-card>
@@ -191,13 +201,13 @@ export default {
           <v-row>
               <v-checkbox
                 class="col-6"
-                :v-model="submittedForm.options.comments"
+                v-model="submittedForm.options.comments"
                 :label="$root.lang().addons.options.comments.label"
                 color="primary"
               />
               <v-checkbox
                 class="col-6"
-                :v-model="submittedForm.options.optifine"
+                v-model="submittedForm.options.optifine"
                 :label="$root.lang().addons.options.optifine.label"
                 color="primary"
               />

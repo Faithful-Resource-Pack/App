@@ -1,5 +1,10 @@
+const FullscreenPreview = () => import('./fullscreen-preview.js')
+
 export default {
   name: `image-previewer`,
+  components: {
+    FullscreenPreview
+  },
   template: `
 <div>
   <div class="scroller" style="overflow: auto; white-space: nowrap;">
@@ -24,19 +29,11 @@ export default {
       </v-card>
     </div>
   </div>
-  <v-dialog
-    v-model="fullscreen"
-  >
-    <v-card>
-      <v-img
-        v-if="fullscreenItem"
-        :src="fullscreenItem"
-        alt="fullscreen preview" 
-        :aspect-ratio="16/9" 
-        v-on:click="disableFullscreen"
-      />
-    </v-card>
-  </v-dialog>
+
+  <fullscreen-preview
+    ref="preview"
+    :src="fullscreenItem"
+  />
 </v-container>
   `,
   props: {
@@ -47,13 +44,12 @@ export default {
   },
   data: function() {
     return {
-      fullscreen: false,
       fullscreenIndex: undefined
     }
   },
   computed: {
     fullscreenItem: function() {
-      if(this.fullscreenIndex === undefined) return undefined
+      if (this.fullscreenIndex === undefined) return undefined
       return this.sources[this.fullscreenIndex]
     },
   },
@@ -63,12 +59,9 @@ export default {
       this.$emit('item-delete', item, index)
     },
     onFullscreen: function(item, index, e) {
-      if(e) e.target.blur();
-      this.fullscreen = true
+      if (e) e.target.blur();
       this.fullscreenIndex = index
-    },
-    disableFullscreen: function() {
-      this.fullscreen = false
+      this.$refs.preview.open()
     }
   }
 }

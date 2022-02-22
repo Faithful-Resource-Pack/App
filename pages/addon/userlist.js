@@ -84,8 +84,8 @@ export default {
   },
   methods: {
     remove: function (id) {
-      const index = this.array.indexOf(id)
-      if (index >= 0) this.array.splice(index, 1)
+      const index = this.val.indexOf(id)
+      if (index >= 0) this.val.splice(index, 1)
     },
     getContributorsIDs: function () {
       axios.get('/contributors/all')
