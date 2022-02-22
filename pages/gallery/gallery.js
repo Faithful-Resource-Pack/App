@@ -100,7 +100,7 @@ export default {
           v-if="index <= displayedResults"
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
-          v-on:click="openModal(texture.textureID)"
+          @click.stop="() => openModal(texture.textureID)"
           style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png)"
         >
           <img
@@ -120,8 +120,7 @@ export default {
     </v-list>
 
     <texture-modal
-      :opened="modalOpen"
-      :closeModal="closeModal"
+      v-model="modalOpen"
       :textureID="modalTextureID"
       :textureObj="modalTextureObj"
       :contributors="displayed.contributors"
@@ -209,17 +208,13 @@ export default {
   methods: {
     openModal(id) {
       this.modalTextureID = id
+      this.modalTextureObj = {} // changes text back to loading text if reopening modal
       this.modalOpen = true
 
       axios.get('/gallery/dialog/' + id)
         .then(res => {
           this.modalTextureObj = res.data
         })
-    },
-    closeModal() {
-      this.modalOpen = false
-      this.modalTextureID = null
-      this.modalTextureObj = {}
     },
     splittedTextures() {
       // we load texture URL here as it is called after this.displayed.uses is updated

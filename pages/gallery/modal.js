@@ -8,7 +8,7 @@ export default {
       fullscreen
       hide-overlay
       transition="dialog-bottom-transition"
-      @click.stop="closeModal"
+      @click.stop="() => closeModal()"
     >
 
       <v-card>
@@ -18,7 +18,7 @@ export default {
           <v-btn
             icon
             dark
-            @click="closeModal"
+            @click.stop="() => closeModal()"
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
@@ -120,12 +120,8 @@ export default {
     </v-dialog>
   `,
   props: {
-    opened: {
+    value: {
       type: Boolean,
-      required: true
-    },
-    closeModal: {
-      type: Function,
       required: true
     },
     textureID: {
@@ -152,10 +148,25 @@ export default {
         this.$root.lang().gallery.modal.items.model
       ],
       infos: ["texture", "uses", "paths"],
-      authors: settings.resolutions
+      authors: settings.resolutions,
+      opened: false,
+    }
+  },
+  watch: {
+    value: {
+      handler(n) {
+        this.opened = n
+      },
+      immediate: true
+    },
+    opened(n) {
+      this.$emit('input', n);
     }
   },
   methods: {
+    closeModal: function() {
+      this.opened = false
+    },
     discordIDtoName(d) {
       return this.contributors[d] ? this.contributors[d].username : this.$root.lang().gallery.error_message.user_not_found
     },
@@ -285,7 +296,7 @@ export default {
     },
     ucfirst(text) {
       return text[0].toUpperCase() + text.substring(1)
-    }
+    },
   },
   computed: {
     infosText: function () {

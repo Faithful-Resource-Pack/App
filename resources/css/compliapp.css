@@ -83,13 +83,6 @@ a {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   outline: none;
-
-  /* Hide scrollbar */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
-}
-::-webkit-scrollbar {
-  display: none;
 }
 
 #app {
@@ -621,6 +614,9 @@ code {
 
 .v-dialog {
   margin: 10px;
+}
+.v-dialog.v-dialog--fullscreen {
+  margin: 0;
 }
 
 body .texture-avatar {
