@@ -309,7 +309,7 @@ export default {
             desc => (desc && desc.length >= this.form.description.counter.min) || this.$root.lang().addons.general.description.rules.description_too_small.replace('%s', this.form.description.counter.min),
           ],
           counter: {
-            min: 256,
+            min: 32,
             max: 4096
           }
         },
