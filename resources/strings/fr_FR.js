@@ -40,7 +40,7 @@ export default {
       addons: {
         title: 'add-on',
         subtabs: {
-          submissions: 'soumissions',
+          submissions: 'mes add-ons',
           upload: 'upload'
         }
       },
@@ -64,6 +64,7 @@ export default {
           contributions: 'contributions',
           contributors: 'contributeurs',
           textures: 'textures',
+          files: 'fichiers',
           mods: 'mods',
           modpacks: 'modpacks',
           settings: 'Paramètres'
@@ -102,6 +103,7 @@ export default {
       contributions: 'Contributions',
       contributors: 'Contributeurs',
       textures: 'Textures',
+      files: 'Fichiers',
       add_contributor: 'Ajouter un contributeur',
       add_textures: 'Ajouter des textures',
       add_texture: 'Ajouter une texture',
@@ -209,14 +211,15 @@ export default {
         approved_by: 'Approuvé par',
         denied_by: 'Refusé par',
         reason: 'Raison',
-        old_addon: 'Ancien add-on, il n\'y a pas de donée.'
+        old_addon: 'Ancien add-on, aucune donées.'
       }
     }
   },
   addons: {
     titles: {
-      submit: 'Soumettre un nouveau Add-on',
-      submissions: 'Soumissions'
+      submit: 'Soumettre un nouvel Add-on',
+      edit: 'Éditer l\'addon',
+      submissions: 'Mes Add-ons'
     },
     remove: {
       title: 'Confirmer la suppression',
@@ -226,14 +229,15 @@ export default {
       }
     },
     general: {
+      loading_addon: 'Chargement de l\'addon',
       title: 'Général',
-      addon_title: {
-        label: 'Titre de l\'add-on',
-        hint: 'Le titre ne peut pas être changé après la soumission !',
+      name: {
+        label: 'Nom de l\'add-on',
+        hint: 'Un nom court sera meilleur !',
         rules: {
-          title_required: 'Le titre est requis.',
-          title_too_big: 'Le titre doit faire moins que %s caractères.',
-          title_unavailable: 'Ce titre est déjà pris !'
+          name_required: 'Le nom est requis.',
+          name_too_big: 'Le nom doit faire moins que %s caractères.',
+          name_unavailable: 'Ce nom est déjà pris !'
         }
       },
       description: {
@@ -346,54 +350,114 @@ export default {
       }
     }
   },
-  gallery: {
-    title: 'Galerie',
-    loading_message: {
-      general: 'Chargement...',
-      textures: 'Récupération des textures...',
-      paths: 'Récupération des chemins de texture...',
-      uses: 'Récupération des utilisations des textures...',
-      contribution: 'Récupération des contributions...',
-      contributors: 'Récupération des contributeurs...',
-      tags: 'Récupération des tags de texture...'
-    },
-    error_message: {
-      texture_not_done: 'La texture n\'a pas été faite !',
-      user_not_found: 'Utilisateur Inconnu',
-      contribution_not_found: 'Aucune contribution trouvée dans la base de donée!'
-    },
-    category: {
-      search: 'Rechercher',
-      tags: 'Étiquettes',
-      mc_version: 'Versions Minecraft',
-      edition: 'Édition',
-      resolution: 'Résolution'
-    },
-    modal: {
-      items: {
-        information: "information",
-        authors: "auteurs",
-        animated: "animée",
-        model: "3D"
+  files: {
+    general: {
+      name: {
+        label: 'Nom de fichier',
+        hint: 'Décrit brièvement le fichier',
+        rules: {
+          name_required: 'Un nom est requis.',
+          name_too_big: 'Le nom de fichier doit faire moins de %s caractères.',
+          name_too_small: 'Le nom de fichier doit faire plus de %s caractères.'
+        }
       },
-      infos: {
-        texture: "texture",
-        uses: "utilisation(s)",
-        paths: "chemin(s)"
+      use: {
+        label: 'Utilisation de fichier',
+        hint: 'Décrit l\'utilisation brièvement',
+        rules: {
+          name_required: 'Une valeur est requise.',
+          name_too_big: 'L\'utilisation du fichier doit faire moins de %s caractères.',
+          name_too_small: 'L\'utilisation du fichier doit faire plus de %s caractères.'
+        }
       },
-      tabs: {
-        date: "Date",
-        authors: "Auteur(s)",
-        id: "ID",
-        name: "Nom",
-        tags: "Tags/Types",
-        use_id: "ID de l'utilisation",
-        use_name: "Nom de l'utilisation",
-        editions: "Édition",
-        texture_id: "ID de la texture",
-        path_id: "ID du chemin",
-        resource_pack_path: "Chemin dans le Resource Pack",
-        mc_versions: "Version(s) Minecraft",
+      type: {
+        label: 'Type de fichier',
+        hint: 'Décris le type de fichier',
+        rules: {
+          name_required: 'Une valeur est requise',
+          name_too_big: 'Le type de fichier doit faire moins de %s caractères.',
+          name_too_small: 'Le type de fichier doit faire plus de %s caractères.'
+        }
+      },
+      parent: {
+        type: {
+          label: 'Type du parent du fichier',
+          hint: 'Décris le type du parent du fichier',
+          rules: {
+            name_required: 'Une valeur est requise',
+            name_too_big: 'Le type du parent du fichier doit faire moins de %s caractères.',
+            name_too_small: 'Le type du parent du fichier doit faire plus de %s caractères.'
+          }
+        },
+        id: {
+          label: 'ID du parent du fichier',
+          hint: 'Décris l\'ID du parent du fichier',
+          rules: {
+            name_required: 'Une valeur est requise',
+            name_too_big: 'L\'ID du parent du fichier doit faire moins de %s caractères.',
+            name_too_small: 'L\'ID   du parent du fichier doit faire plus de %s caractères.'
+          }
+        },
+      },
+      source: {
+        label: 'File source',
+        hint: 'File source URL',
+        rules: {
+          name_required: 'A file source URL is required.',
+          name_too_big: 'File URL must be less than %s characters.',
+          name_too_small: 'File URL must be at least %s characters long.'
+        }
+      },
+      gallery: {
+        title: 'Galerie',
+        loading_message: {
+          general: 'Chargement...',
+          textures: 'Récupération des textures...',
+          paths: 'Récupération des chemins de texture...',
+          uses: 'Récupération des utilisations des textures...',
+          contribution: 'Récupération des contributions...',
+          contributors: 'Récupération des contributeurs...',
+          tags: 'Récupération des tags de texture...'
+        },
+        error_message: {
+          texture_not_done: 'La texture n\'a pas été faite !',
+          user_not_found: 'Utilisateur Inconnu',
+          contribution_not_found: 'Aucune contribution trouvée dans la base de donée!'
+        },
+        category: {
+          search: 'Rechercher',
+          tags: 'Étiquettes',
+          mc_version: 'Versions Minecraft',
+          edition: 'Édition',
+          resolution: 'Résolution'
+        },
+        modal: {
+          items: {
+            information: "information",
+            authors: "auteurs",
+            animated: "animée",
+            model: "3D"
+          },
+          infos: {
+            texture: "texture",
+            uses: "utilisation(s)",
+            paths: "chemin(s)"
+          },
+          tabs: {
+            date: "Date",
+            authors: "Auteur(s)",
+            id: "ID",
+            name: "Nom",
+            tags: "Tags/Types",
+            use_id: "ID de l'utilisation",
+            use_name: "Nom de l'utilisation",
+            editions: "Édition",
+            texture_id: "ID de la texture",
+            path_id: "ID du chemin",
+            resource_pack_path: "Chemin dans le Resource Pack",
+            mc_versions: "Version(s) Minecraft",
+          }
+        }
       }
     }
   },

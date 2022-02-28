@@ -62,6 +62,7 @@ export default {
           contributions: 'contributions',
           contributors: 'contributors',
           textures: 'textures',
+          files: 'files',
           mods: 'mods',
           modpacks: 'modpacks',
           settings: 'settings'
@@ -100,6 +101,7 @@ export default {
       contributions: 'Contributions',
       contributors: 'Contributors',
       textures: 'Textures',
+      files: 'Files',
       add_contributor: 'Add new contributor',
       add_textures: 'Add new textures',
       add_texture: 'Add new texture',
@@ -214,7 +216,9 @@ export default {
   addons: {
     titles: {
       submit: 'Submit a new Add-on',
-      submissions: 'Submissions'
+      edit: 'Edit addon',
+      submissions: 'Submissions',
+      details: 'Details'
     },
     remove: {
       title: 'Confirm deletion',
@@ -224,14 +228,16 @@ export default {
       }
     },
     general: {
+      loading_addon: 'Loading addon',
       title: 'General',
-      addon_title: {
-        label: 'Add-on title',
-        hint: 'The title can\'t be changed after submission!',
+      name: {
+        label: 'Add-on name',
+        hint: 'A short name is always better!',
         rules: {
-          title_required: 'A title is required.',
-          title_too_big: 'Title must be less than %s characters.',
-          title_unavailable: 'This title is already taken!'
+          name_required: 'A name is required.',
+          name_too_big: 'Add-on name must be less than %s characters.',
+          name_too_small: 'Add-on name must be at least %s characters long.',
+          name_unavailable: 'This name is already taken!'
         }
       },
       description: {
@@ -239,7 +245,8 @@ export default {
         hint: 'You can use Markdown formatting to improve your description!',
         rules: {
           description_required: 'The description is required.',
-          description_too_big: 'Description must be less than %s characters.'
+          description_too_big: 'Description must be less than %s characters.',
+          description_too_small: 'Description must be at least %s characters long.'
         }
       },
       authors: {
@@ -344,6 +351,28 @@ export default {
       }
     }
   },
+  files: {
+    general: {
+      name: {
+        label: 'File name',
+        hint: 'Name describes shortly the file',
+        rules: {
+          name_required: 'A name is required.',
+          name_too_big: 'File name must be less than %s characters.',
+          name_too_small: 'File name must be at least %s characters long.'
+        }
+      },
+      use: {
+        label: 'File use',
+        hint: 'Describes short use',
+        rules: {
+          name_required: 'A value is required.',
+          name_too_big: 'File use must be less than %s characters.',
+          name_too_small: 'File use must be at least %s characters long.'
+        }
+      }
+    }
+  },
   gallery: {
     title: 'Gallery',
     loading_message: {
@@ -374,24 +403,94 @@ export default {
         animated: "animated",
         model: "3D"
       },
-      infos: {
-        texture: "texture",
-        uses: "use(s)",
-        paths: "path(s)"
+      type: {
+        label: 'File type',
+        hint: 'Describes the type of file giveb',
+        rules: {
+          name_required: 'A value is required.',
+          name_too_big: 'File type must be less than %s characters.',
+          name_too_small: 'File type must be at least %s characters long.'
+        }
       },
-      tabs: {
-        date: "Date",
-        authors: "Author(s)",
-        id: "ID",
-        name: "Name",
-        tags: "Tags/Types",
-        use_id: "Use ID",
-        use_name: "Use Name",
-        editions: "Edition",
-        texture_id: "Texture ID",
-        path_id: "Path ID",
-        resource_pack_path: "Resource Pack Path",
-        mc_versions: "Minecraft Version(s)",
+      parent: {
+        type: {
+          label: 'File parent type',
+          hint: 'Describes the file parent type',
+          rules: {
+            name_required: 'A file type is required.',
+            name_too_big: 'File parent type must be less than %s characters.',
+            name_too_small: 'File parent type must be at least %s characters long.'
+          }
+        },
+        id: {
+          label: 'File parent ID',
+          hint: 'Describes the reference to the parent file',
+          rules: {
+            name_required: 'A file parent ID is required.',
+            name_too_big: 'File parent ID must be less than %s characters.',
+            name_too_small: 'File parent ID must be at least %s characters long.'
+          }
+        },
+      },
+      source: {
+        label: 'File source',
+        hint: 'File source URL',
+        rules: {
+          name_required: 'A file source URL is required.',
+          name_too_big: 'File URL must be less than %s characters.',
+          name_too_small: 'File URL must be at least %s characters long.'
+        }
+      },
+      gallery: {
+        title: 'Gallery',
+        loading_message: {
+          general: 'Loading...',
+          textures: 'Getting textures...',
+          paths: 'Getting textures paths...',
+          uses: 'Getting textures uses...',
+          contribution: 'Getting contributions...',
+          contributors: 'Getting contributors...',
+          tags: 'Getting textures tags...'
+        },
+        error_message: {
+          texture_not_done: 'Texture not done!',
+          user_not_found: 'Unkwown User',
+          contribution_not_found: 'No contributions found in database!'
+        },
+        category: {
+          search: 'Search',
+          tags: 'Tags',
+          mc_version: 'Minecraft Version',
+          edition: 'Edition',
+          resolution: 'Resolution'
+        },
+        modal: {
+          items: {
+            information: "information",
+            authors: "authors",
+            animated: "animated",
+            model: "3D"
+          },
+          infos: {
+            texture: "texture",
+            uses: "use(s)",
+            paths: "path(s)"
+          },
+          tabs: {
+            date: "Date",
+            authors: "Author(s)",
+            id: "ID",
+            name: "Name",
+            tags: "Tags/Types",
+            use_id: "Use ID",
+            use_name: "Use Name",
+            editions: "Edition",
+            texture_id: "Texture ID",
+            path_id: "Path ID",
+            resource_pack_path: "Resource Pack Path",
+            mc_versions: "Minecraft Version(s)",
+          }
+        }
       }
     }
   },

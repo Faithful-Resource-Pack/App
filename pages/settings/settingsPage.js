@@ -65,7 +65,7 @@ export default {
       return Prism.highlight(code, Prism.languages.js, 'json')
     },
     save () {
-      axios.post('/settings/raw', this.json, {
+      axios.post(this.$root.apiURL + '/settings/raw', this.json, {
         'headers': {
           discord: this.$root.user.access_token
         }
@@ -98,8 +98,9 @@ export default {
     }
   },
   created: function() {
-    axios.get('/settings/raw', {
-      'headers': {
+    axios.get(this.$root.apiURL + '/settings/raw', {
+      headers: {
+        Accept: 'application/json',
         discord: this.$root.user.access_token
       }
     })
@@ -108,7 +109,7 @@ export default {
     })
     .catch(err => {
       console.error(err)
-      this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+      this.$root.showSnackBar(`${err.message}: ${err.response ? err.response.data.error : err.message}`, 'error')
     })
   }
 }

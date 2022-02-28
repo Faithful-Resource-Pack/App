@@ -11,7 +11,7 @@ export default {
         <v-card-title class="headline">{{ $root.lang().addons.remove.title }}</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>{{ $root.lang().addons.remove.labels.question.replace("%s", data.title) }}</p>
+            <p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
             <p style="color: red">{{ $root.lang().addons.remove.labels.warning }}</p>
           </v-form>
         </v-card-text>
@@ -50,17 +50,14 @@ export default {
   },
   computed: {
     title: function () {
-      return this.$props.data.title
+      return this.$props.data.name
     }
   },
   methods: {
     deleteAddon: function () {
-      const data = {
-        id: JSON.parse(JSON.stringify(this.$props.data.id)),
-        token: this.$root.user.access_token
-      }
+      const addon_id = JSON.parse(JSON.stringify(this.$props.data.id))
 
-      axios.post('/addons/remove', data)
+      axios.delete(this.$root.apiURL + '/addons/' + addon_id, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)

@@ -5,7 +5,8 @@ const ContributorPage = () => import('./pages/contributor/main.js')
 const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
 const TexturePage = () => import('./pages/texture/main.js')
 const ProfilePage = () => import('./pages/profile/main.js')
-const AddonNewPage = () => import('./pages/addon/new.js')
+const AddonNewPage = () => import('./pages/addon/newAddonForm.js')
+const AddonEditPage = () => import('./pages/addon/editAddonForm.js')
 const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
 const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
 const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
@@ -13,6 +14,7 @@ const ModNewPage = () => import('./pages/modding/mods_new.js')
 const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
 const ModsPage = () => import('./pages/modding/mods.js')
 const ModpacksPage = () => import('./pages/modding/modpacks.js')
+const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
 
@@ -82,6 +84,7 @@ const routes = [
   { path: '/', redirect: '/profile/' }
 ]
 
+
 const router = new VueRouter({ routes })
 
 const ALL_TABS_ROUTES = [
@@ -95,7 +98,8 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
-      { routes: [{ path: '/addons/new', component: AddonNewPage }] }
+      { routes: [{ path: '/addons/new', component: AddonNewPage }] },
+      { routes: [{ path: '/addons/edit/:id', component: AddonEditPage }] }
     ]
   },
   {
@@ -130,7 +134,6 @@ for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
     })
   })
 }
-
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
@@ -200,6 +203,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          vapiURL: window.apiURL,
           selectedLang: _get_lang(),
           langs: LANGS,
           window: {
@@ -222,9 +226,27 @@ axios.get('./resources/settings.json')
       watch: {
         selectedLang: function (newValue) {
           if (Object.keys(this.langs).includes(newValue)) _set_lang(newValue)
+        },
+        user: {
+          handler(n, o) {
+            if (Vue.config.devtools && n.access_token && n.access_token !== o.access_token) {
+              console.info(n.access_token)
+            }
+          },
+          deep: true
         }
       },
       computed: {
+        apiURL: function() {
+          if(Vue.config.devtools && this.vapiURL && this.vapiURL.includes('localhost') && window.location.host !== 'localhost')
+            return this.vapiURL.replace('localhost', window.location.host)
+          return this.vapiURL
+        },
+        apiOptions: function () {
+          return {
+            headers: { "discord": this.user.access_token }
+          }
+        },
         /**
          * Check user perms & add (or not) tabs & routes following user perms
          * @returns all tabs to be added in the html
@@ -319,7 +341,8 @@ axios.get('./resources/settings.json')
             })
             .catch(err => {
               console.error(err)
-              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+              const message = (err && err.response && err.response ? err.response.data.error : undefined) || err.message
+              this.showSnackBar(`${err.message}: ${message}`, 'error')
             })
         },
         /**

@@ -1,7 +1,6 @@
 export default {
   name: 'deny-popup',
-  template:
-  `
+  template: `
   <v-dialog
     v-model="reasonPopup"
     max-width="600"
@@ -13,7 +12,7 @@ export default {
       <v-card-text>
         <v-text-field 
           required 
-          v-model="reason" 
+          v-model="denyReason" 
           :label="$root.lang().review.deny_window.label"
           :rules="reasonRules"
         ></v-text-field>
@@ -24,15 +23,15 @@ export default {
           <v-btn
             color="darken-1"
             text
-            @click="cleanUp('close')"
+            @click="closePopup(false, denyReason)"
           >
             {{ $root.lang().global.btn.cancel }}
           </v-btn>
           <v-btn
             color="red"
             text
-            :disabled="!reason || (reason && reason.length == 0)"
-            @click="cleanUp('validate')"
+            :disabled="!denyReason || (denyReason && denyReason.length == 0)"
+            @click="closePopup(true, denyReason)"
           >
             {{ $root.lang().global.btn.ok }}
           </v-btn>
@@ -49,26 +48,12 @@ export default {
     closePopup: {
       type: Function,
       required: true
-    },
-    validPopup: {
-      type: Function,
-      required: true
     }
   },
-  data () {
+  data() {
     return {
-      reason: undefined,
-      reasonRules: [
-        u => (!u || (u?.length > 0)) || this.$root.lang().review.deny_window.rule
-      ]
-    }
-  },
-  methods: {
-    cleanUp: function (type) {
-      if (type === 'validate') this.validPopup(this.reason)
-      if (type === 'close') this.closePopup()
-
-      this.reason = undefined
+      denyReason: '',
+      reasonRules: [u => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule]
     }
   }
 }

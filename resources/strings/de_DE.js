@@ -62,6 +62,7 @@ export default {
           contributions: 'Beiträge',
           contributors: 'Mitwirkende',
           textures: 'Texturen',
+          files: 'Dateien',
           mods: 'mods',
           modpacks: 'modpacks'
         }
@@ -73,6 +74,7 @@ export default {
       contributions: 'Beiträge',
       contributors: 'Beitragende',
       textures: 'Texturen',
+      files: 'Dateien ',
       add_contributor: 'Neuen Mitwirkenden hinzufügen',
       add_textures: 'Neue Texturen hinzufügen',
       add_texture: 'Neue Textur hinzufügen',
@@ -197,15 +199,7 @@ export default {
     },
     general: {
       title: 'Allgemein',
-      addon_title: {
-        label: 'Add-on-Titel',
-        hint: 'Der Titel kann nach der Einreichung nicht mehr geändert werden!',
-        rules: {
-          title_required: 'Ein Titel ist erforderlich.',
-          title_too_big: 'Der Titel muss weniger als %s Zeichen enthalten.',
-          title_unavailable: 'Dieser Titel ist bereits vergeben!'
-        }
-      },
+      name: {},
       description: {
         label: 'Add-on Beschreibung',
         hint: 'Du kannst die Markdown-Formatierung verwenden, um deine Beschreibung zu verbessern!',

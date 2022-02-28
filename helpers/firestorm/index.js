@@ -41,12 +41,34 @@ const writeAddress = () => {
 
   return _address + 'post.php'
 }
+const fileAddress = () => {
+  if (!_address)
+    throw new Error('Firestorm address was not configured')
+
+  return _address + 'files.php'
+}
 
 const writeToken = () => {
   if (!_token)
     throw new Error('Firestorm token was not configured')
 
   return _token
+}
+
+/**
+ * Auto-extracts data from Axios request
+ * @param {Promise<T>} request The Axios concerned request
+ */
+const __extract_data = (request) => {
+  return new Promise((resolve, reject) => {
+    request.then(res => {
+      if ('data' in res) return resolve(res.data)
+      resolve(res)
+    })
+      .catch(err => {
+        reject(err)
+      })
+  })
 }
 
 /**
@@ -85,13 +107,7 @@ class Collection {
    * @param {Promise<T>} request The Axios concerned request
    */
   __extract_data(request) {
-    return new Promise((resolve, reject) => {
-      request.then(res => {
-        if ('data' in res) return resolve(res.data)
-        return resolve(res)
-      })
-        .catch(err => reject(err))
-    })
+    return __extract_data(request)
   }
 
   /**
@@ -100,9 +116,7 @@ class Collection {
    * @returns {Promise<Any>} data out
    */
   __get_request(data) {
-    const request = typeof process === 'object' ? axios.get(readAddress(), {
-      data: data
-    }) : axios.post(readAddress(), data)
+    const request = axios.post(readAddress(), data)
     return this.__extract_data(request)
   }
 
@@ -121,10 +135,11 @@ class Collection {
 
   /**
    * Search through collection
-   * @param {SearchOption[]} searchOptions
+   * @param {SearchOption[]} searchOptions Array of search options
+   * @param {(Number|false|true)?} random Random result seed, disabled by default, but can activated with true or a given seed
    * @returns {Promise<T[]>}
    */
-  search(searchOptions) {
+  search(searchOptions, random = false) {
     if (!Array.isArray(searchOptions))
       return Promise.reject(new Error('searchOptions shall be an array'))
 
@@ -141,12 +156,26 @@ class Collection {
       //TODO: add more strict value field warnings in JS and PHP
     })
 
+    let params = {
+      "collection": this.collectionName,
+      "command": "search",
+      "search": searchOptions
+    }
+
+    if (random !== false) {
+      if (random === true) {
+        params.random = {}
+      } else {
+        let seed = parseInt(random)
+        if (isNaN(seed)) return Promise.reject(new Error('random takes as parameter true, false or an integer value'))
+        params.random = {
+          "seed": seed
+        }
+      }
+    }
+
     return new Promise((resolve, reject) => {
-      this.__get_request({
-        "collection": this.collectionName,
-        "command": "search",
-        "search": searchOptions
-      }).then(res => {
+      this.__get_request(params).then(res => {
         const arr = []
 
         Object.keys(res).forEach(contribID => {
@@ -207,7 +236,7 @@ class Collection {
 
           resolve(data)
         })
-        .catch(reject)
+        .catch(err => reject(err))
     })
   }
 
@@ -231,6 +260,48 @@ class Collection {
         resolve(data)
       })
         .catch(reject)
+    })
+  }
+
+  /**
+   * Returns random max entries offsetted with a given seed
+   * @param {Integer} max 
+   * @param {Integer} seed 
+   * @param {Integer} offset 
+   * @returns {Promise} entries
+   */
+  random(max, seed, offset) {
+    const params = {}
+    if (max !== undefined) {
+      if (typeof (max) !== 'number' || !Number.isInteger(max) || max < -1) return Promise.reject(new Error('Expected integer >= -1 for the max'))
+      params.max = max
+    }
+
+    const hasSeed = seed !== undefined
+    const hasOffset = offset !== undefined
+    if (hasOffset && !hasSeed) return Promise.reject(new Error('You can\'t put an offset without a seed'))
+
+    if (hasOffset && (typeof (offset) !== 'number' || !Number.isInteger(offset) || offset < 0)) return Promise.reject(new Error('Expected integer >= -1 for the max'))
+
+    if (hasSeed) {
+      if ((typeof (seed) !== 'number' || !Number.isInteger(seed))) return Promise.reject(new Error('Expected integer for the seed'))
+
+      if (!hasOffset) offset = 0
+      params.seed = seed
+      params.offset = offset
+    }
+
+    return this.__get_request({
+      'collection': this.collectionName,
+      'command': 'random',
+      'random': params
+    }).then(data => {
+      Object.keys(data).forEach(key => {
+        data[key][ID_FIELD_NAME] = key
+        this.addMethods(data[key])
+      })
+
+      return Promise.resolve(data)
     })
   }
 
@@ -410,7 +481,48 @@ const firestorm = {
     return this.collection(name)
   },
 
-  ID_FIELD: ID_FIELD_NAME
+  ID_FIELD: ID_FIELD_NAME,
+
+  files: {
+    /**
+     * gets file back
+     * @param {String} path File path wanted
+     */
+    get: function (path) {
+      return __extract_data(axios.get(fileAddress(), {
+        params: {
+          path: path
+        }
+      }))
+    },
+
+    /**
+     * Uploads file
+     * @param {FormData} form formdata with path, filename and file
+     * @returns {Promise} http response
+     */
+    upload: function (form) {
+      form.append('token', firestorm.token())
+      return axios.post(fileAddress(), form, {
+        headers: {
+          ...form.getHeaders()
+        }
+      })
+    },
+
+    /**
+     * @param {String} path File path to delete
+     * @returns {Promise} http response
+     */
+    delete: function (path) {
+      return axios.delete(fileAddress(), {
+        data: {
+          path: path,
+          token: firestorm.token()
+        }
+      })
+    }
+  }
 }
 
 try {

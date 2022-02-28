@@ -1,25 +1,23 @@
-const AddonEditModal = () => import('./addon_modal_edit.js')
+const FullscreenPreview = () => import('../addon/fullscreen-preview.js')
 
 export default {
   name: 'exp-panel',
   components: {
-    AddonEditModal
+    FullscreenPreview
   },
-  template:
-  `
+  template: `
   <v-container>
-    <addon-edit-modal
-      :dialog="dialogOpen"
-      :disableDialog="closeDialog"
-      :data="dialogAddon"
-      :contributors="contributors"
-    ></addon-edit-modal>
+    <fullscreen-preview
+      ref="preview"
+      :src="imagePreview"
+    />
 
     <v-expansion-panel
-      v-for="(addon, index) in addons"
-      :key="index"
+      v-for="addon in addons"
+      :key="addon.id"
       rounded
       style="background-color: rgba(255, 255, 255, 0.05)"
+      @click="getAddon(addon.id)"
     >
       <v-expansion-panel-header expand-icon="mdi-menu-down">
         <v-row no-gutters>
@@ -27,117 +25,156 @@ export default {
             cols="12"
             class="uppercased"
           >
-            {{ addon.title }}
+            {{ addon.name }}
           </v-col>
           <v-col
             cols="12"
             class="text--secondary uppercased"
             style="margin-top: 2.5px;"
           >
-            {{ addon.type.join(' | ') }}
+            {{ addon.options.tags.join(' | ') }}
           </v-col>
         </v-row>
 
       </v-expansion-panel-header>
 
       <v-expansion-panel-content style="background: rgba(255, 255, 255, 0.05); padding-top: 10px;">
-        <v-row>
-          <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="padding-left: 0">
-            <v-list-item>
-              <v-list-item-content>
-                <v-list-item-title v-text="$root.lang().review.addon.titles.authors" class="uppercased" />
-                <div class="text--secondary" style="margin-bottom: 10px;" >
-                  {{ addon.authors.map(id => getUsername(id)).join(", ") }}
-                </div>
+        <template v-if="addonInPanelLoading === true">
+          <p>{{ $root.lang().global.loading }}</p>
+        </template>
+        <template v-else>
+          <v-row>
+            <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="padding-left: 0">
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title v-text="$root.lang().review.addon.titles.authors" class="uppercased" />
+                  <div class="text--secondary" style="margin-bottom: 10px;" >
+                    {{ addonInPanel.authors.map(id => getUsername(id)).join(", ") }}
+                  </div>
 
-                <v-list-item-title v-text="$root.lang().review.addon.titles.description" class="uppercased"/>
-                <v-container class="markdown text--secondary" style="margin-bottom: 10px; background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(addon.description)"></v-container>
+                  <v-list-item-title v-text="$root.lang().review.addon.titles.description" class="uppercased"/>
+                  <v-container class="markdown text--secondary" style="margin-bottom: 10px; background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(addonInPanel.description)"></v-container>
 
-                <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
-                <div class="text--secondary" style="margin-bottom: 10px;">
-                  <template v-for="(links, key) in addon.downloads">
-                    <div :key="'title-' + key">{{ key }}:</div>
-                    <ul :key="'ul-' + key">
-                      <li v-for="(link, indexLink) in links" :key="indexLink" style="background-color: transparent">
-                        <a :href="link" class="text--secondary">{{ $root.lang().review.addon.labels.link }} {{ indexLink + 1 }}<v-icon small color="light-blue">mdi-open-in-new</v-icon></a>
+                  <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
+                  <div class="text--secondary" style="margin-bottom: 10px;">
+                    <ul v-for="file in addonInPanel.files.filter(f => f.use === 'download')">
+                      <li>
+                        {{ file.name }} - 
+                        <a :href="file.source" class="text--secondary">
+                          {{ $root.lang().review.addon.labels.link }}
+                          <v-icon small color="light-blue">mdi-open-in-new</v-icon>
+                        </a>
                       </li>
                     </ul>
-                    <br :key="'br-' + key">
-                  </template>
-                </div>
-                
-                <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
-                <div>
-                  <v-icon small v-text="addon.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }}
-                  <br>
-                  <v-icon small v-text="addon.optifine ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.optifine }}
-                </div>
+                  </div>
+                  
+                  <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
+                  <div>
+                    <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }}
+                    <br>
+                    <v-icon small v-text="addonInPanel.options.optifine ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.optifine }}
+                  </div>
 
-              </v-list-item-content>
-            </v-list-item>
-          </v-col>
-          <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12">
-            <v-img :src="addon.images.header" :aspect-ratio="16/9" style="border-radius: 5px"></v-img>
-          </v-col>
+                </v-list-item-content>
+              </v-list-item>
+            </v-col>
+            <v-col :cols="$vuetify.breakpoint.mdAndUp ? 6 : 12" style="position: relative">
+              <v-img 
+                @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }"
+                :src="addonInPanelHeaderURL" 
+                :aspect-ratio="16/9" 
+                style="border-radius: 5px;" 
+                alt="Header not found!"
+              >
+                <template v-slot:placeholder>
+                  <v-row
+                    class="fill-height ma-0"
+                    align="center"
+                    justify="center"
+                    style="background-color: rgba(255,255,255, 0.1);"
+                  >
+                    <v-progress-circular
+                      v-if="addonInPanelHeaderURL != null"
+                      indeterminate
+                      color="grey lighten-5"
+                    />
+                    <v-icon v-else x-large>mdi-image-off</v-icon>
+                  </v-row>
+                </template>
+              </v-img>
+              <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 10px; top: 10px;">
+                <v-icon small class="ma-1" @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }">
+                  mdi-fullscreen
+                </v-icon>
+              </v-card>
+            </v-col>
 
-        </v-row>
+          </v-row>
 
-        <v-row v-if="addon.images && addon.images.carousel.length > 0">
-          <v-col
-            v-for="index in addon.images.carousel"
-            :key="index"
-            :cols="$vuetify.breakpoint.mdAndUp ? 4 : 6"
-          >
-            <v-img
-              style="border-radius: 5px"
-              :aspect-ratio="16/9"
-              :src="index"
-            />
-          </v-col>
-        </v-row>
-
-        <v-row v-if="addon.status == 'approved' && addon.approval.author != null">
-          <v-col style="padding-left: 16px">
-            <v-list-item-title v-text="$root.lang().review.addon.labels.approved_by" class="uppercased"/>
-            <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
-          </v-col>
-        </v-row>
-        <v-row v-if="addon.status == 'denied'">
-          <v-col style="padding-left: 16px">
-            <v-list-item-title v-text="$root.lang().review.addon.labels.denied_by" class="uppercased"/>
-            <p class="text--secondary">{{ getUsername(addon.approval.author) }}</p>
-            <v-list-item-title v-text="$root.lang().review.addon.labels.reason" class="uppercased"/>
-            <p class="text--secondary">{{ addon.approval.reason }}</p>
-          </v-col>
-        </v-row>
-        <v-row style="margin-bottom: 0; justify-content: flex-end;">
-          <v-col>
-            <v-btn
-              text
-              color="teal"
-              :disabled="addon.status == 'approved'"
-              @click="approveAddon(addon)"
+          <v-row v-if="addonInPanel.files.filter(f => f.use === 'carousel').length > 0">
+            <v-col
+              v-for="file in addonInPanel.files.filter(f => f.use === 'carousel')"
+              :key="file.id"
+              :cols="$vuetify.breakpoint.mdAndUp ? 4 : 6"
+              style="position: relative;"
             >
-              {{ $root.lang().global.btn.approve }}
-            </v-btn>
-            <v-btn
-              text
-              color="red"
-              :disabled="addon.status == 'denied'"
-              @click="denyAddon(addon)"
-            >
-              {{ $root.lang().global.btn.deny }}
-            </v-btn>
-            <v-btn
-              text
-              color="yellow"
-              @click="openDialog(addon)"
-            >
-              {{ $root.lang().global.btn.edit }}
-            </v-btn>
-          </v-col>
-        </v-row>
+              <v-img
+                style="border-radius: 5px"
+                @click.stop="(e) => { $refs.preview.open(); imagePreview = file.source }"
+                :aspect-ratio="16/9"
+                :src="file.source"
+              />
+              <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 10px; top: 10px;">
+                <v-icon small class="ma-1" @click.stop="(e) => { $refs.preview.open(); imagePreview = file.source }">
+                  mdi-fullscreen
+                </v-icon>
+              </v-card>
+            </v-col>
+          </v-row>
 
+          <v-row v-if="addonInPanel.approval.status === 'approved'">
+            <v-col style="padding-left: 16px">
+              <v-list-item-title v-text="$root.lang().review.addon.labels.approved_by" class="uppercased"/>
+              <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
+            </v-col>
+          </v-row>
+          <v-row v-if="addonInPanel.approval.status === 'denied'">
+            <v-col style="padding-left: 16px">
+              <v-list-item-title v-text="$root.lang().review.addon.labels.denied_by" class="uppercased"/>
+              <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
+              <v-list-item-title v-text="$root.lang().review.addon.labels.reason" class="uppercased"/>
+              <p class="text--secondary">{{ addon.approval.reason }}</p>
+            </v-col>
+          </v-row>
+          <v-row style="margin-bottom: 0; justify-content: flex-end;">
+            <v-col>
+              <v-btn
+                text
+                color="teal"
+                :disabled="status == 'approved'"
+                @click="reviewAddon(addon, 'approved')"
+              >
+                {{ $root.lang().global.btn.approve }}
+              </v-btn>
+              <v-btn
+                text
+                color="red"
+                :disabled="status == 'denied'"
+                @click="openDenyPopup(addonInPanel)"
+              >
+                {{ $root.lang().global.btn.deny }}
+              </v-btn>
+              <!-- TODO: use the global modal edit -->
+              <v-btn
+                text
+                color="yellow"
+                :href="'/#/addons/edit/' + addonInPanel.id"
+              >
+                {{ $root.lang().global.btn.edit }}
+              </v-btn>
+            </v-col>
+          </v-row>
+        </template>
       </v-expansion-panel-content>
     </v-expansion-panel>
   </v-container>
@@ -147,11 +184,11 @@ export default {
       type: Array,
       required: true
     },
-    approveAddon: {
+    reviewAddon: {
       type: Function,
       required: true
     },
-    denyAddon: {
+    openDenyPopup: {
       type: Function,
       required: true
     },
@@ -162,17 +199,53 @@ export default {
     update: {
       type: Function,
       required: true
+    },
+    status: {
+      type: String,
+      required: true
     }
   },
-  data () {
+  data() {
     return {
+      imagePreview: "",
       dialogAddon: {},
-      dialogOpen: false
+      dialogOpen: false,
+
+      addonInPanelLoading: true,
+      addonInPanel: {},
+      addonURL: undefined,
+      addonInPanelHeaderURL: undefined
     }
   },
   methods: {
-    openDialog: function (addon) {
-      this.dialogAddon = addon
+    getAddon: function (id) {
+      this.addonInPanelLoading = true
+
+      // allSettled if no header res
+      Promise.allSettled([
+        axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
+        axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
+      ])
+      .then(([res, header_res]) => {
+        
+        // void value if already here (closing tab)
+        if (this.addonInPanel.id === res.value.data.id) {
+          this.addonInPanel = {}
+          this.addonInPanelLoading = true
+          return
+        }
+
+        this.addonInPanel = res.value.data
+        this.addonInPanelLoading = false
+        
+        if(header_res.value)
+          this.addonInPanelHeaderURL = header_res.value.data + '?t=' + new Date().getTime()
+        else
+        this.addonInPanelHeaderURL = null
+      })
+    },
+    openDialog: function () {
+      this.dialogAddon = this.addonInPanel
       this.dialogOpen = true
     },
     closeDialog: function () {
@@ -181,9 +254,8 @@ export default {
       this.update()
     },
     getUsername: function (id) {
-      if (id == null || !id) return this.$root.lang().review.addon.labels.old_addon
-
-      return this.contributors.filter(el => el.id === id)[0]?.username
+      if (id === null || id === undefined) return 'null/undefined'
+      return this.contributors[id].username || 'Unknown User'
     }
   }
 }

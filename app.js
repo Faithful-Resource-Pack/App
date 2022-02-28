@@ -8,6 +8,8 @@ const path = require('path')
 const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
+const DEV = (process.env.DEV || 'false') === 'true'
+const API_URL = process.env.API_URL || 'https://api.compliancepack.net/v2/'
 const app = express()
 const compliappURL = '/'
 
@@ -22,21 +24,39 @@ const allCollection = require('./helpers/firestorm/all')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const contributionController = require('./backend/contribution/contribution.controller.js');
-const settingsController = require('./backend/settings/settings.controller');
+const filesController = require('./backend/files/files.controller');
 
 // fetch settings from the database
-const fetchSettings = async () => {
-  fs.writeFileSync(
-    path.join(path.join(process.cwd(), 'resources/'), 'settings.json'),
-    JSON.stringify(await allCollection.settings.read_raw(), null, 0),
-    { flag: 'w', encoding: 'utf-8' }
-  )
+const SETTINGS_PATH = path.join(path.join(process.cwd(), 'resources/'), 'settings.json')
+
+//TODO: Find the ETIMEDOUT origin, may be linked to my connection quality
+if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
+  const fetchSettings = () => {
+    const read_settings = allCollection.settings.read_raw()
+  
+    read_settings.catch(() => {})
+  
+    read_settings.then(result => {
+      result = JSON.stringify(result)
+      return fs.promises.writeFile(SETTINGS_PATH, result, {
+        flag: 'w',
+        encoding: 'utf-8'
+      })
+    })
+  }
+  
+  fetchSettings()
+  setInterval(() => {
+    fetchSettings()
+  }, 5000)
+} else {
+  console.info('no refresh');
 }
 
-fetchSettings()
-setInterval(() => {
-  fetchSettings()
-}, 5000)
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(reason);
+  console.trace(promise);
+});
 
 app.use(express.urlencoded({
   extended: true,
@@ -45,12 +65,25 @@ app.use(express.urlencoded({
 app.use(express.json({ limit: '50mb' }))
 
 app.get(compliappURL, (req, res) => {
-  res.sendFile(path.join(__dirname, './index.html'))
+  let file = fs.readFileSync('./index.html', 'utf8')
+
+  file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
+
+  if (DEV && process.env.BROWSER_REFRESH_URL) {
+    file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script></body>`)
+  }
+
+  res.send(file)
 })
 
 app.listen(port, () => {
+  console.log(`API url at ${API_URL}`);
   console.log(`listening at http://localhost:${port}`)
   console.log(`Web app at http://localhost:${port}${compliappURL}`)
+
+  if (DEV && process.send) {
+      process.send('online')
+  }
 })
 
 app.use(express.static('.', {
@@ -132,15 +165,6 @@ const postSuccess = function (res) {
   }
 }
 
-contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
-
-/**
- * ==========================================
- *                 SETTINGS
- * ==========================================
- */
-settingsController.configure(verifyAuth, app, postSuccess, errorHandler)
-
 /**
  * Success handling for GET request
  * @param {Response<any, Record<string, any>, number>} res
@@ -153,6 +177,9 @@ const getSuccess = function (res) {
     res.end()
   }
 }
+
+contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
+filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess)
 
 /**
  * ==========================================
@@ -244,8 +271,8 @@ approvalStatus.forEach(approvalKey => {
   })
 })
 
-app.get('/addons/get/titles', function (req, res) {
-  addonsBackend.get(['title'])
+app.get('/addons/get/names', function (req, res) {
+  addonsBackend.get(['name'])
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
@@ -752,6 +779,16 @@ const gallerySearchHandler = (req, res) => {
     })
     .then(getSuccess(res))
     .catch(errorHandler(res))
+
+app.get('/api', (_req, res) => {
+  const url = API_URL
+  if(!url) {
+    res.status(500).send('NO API URL DEFINED')
+    throw new Error('NO API URL DEFINED')
+  }
+
+  res.status(200).send(url)
+})
 }
 
 app.get('/gallery/:type/:edition/:version/:tag/', gallerySearchHandler)

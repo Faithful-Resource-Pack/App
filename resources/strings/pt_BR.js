@@ -228,7 +228,7 @@ export default {
       title: 'Geral',
       addon_title: {
         label: 'Título do add-on',
-        hint: 'O título não pode ser alterado após o envio!',
+        // hint: 'O título não pode ser alterado após o envio!', // deprecated
         rules: {
           title_required: 'Um título é necessário.',
           title_too_big: 'O título deve conter menos que %s caracteres.',
