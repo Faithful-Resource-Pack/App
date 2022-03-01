@@ -111,9 +111,9 @@ export default {
 
           </v-row>
 
-          <v-row v-if="addonInPanel.files.filter(f => f.use === 'carousel').length > 0">
+          <v-row v-if="addonInPanel.files.filter(f => f.use === 'carousel' || f.use === 'screenshot').length > 0">
             <v-col
-              v-for="file in addonInPanel.files.filter(f => f.use === 'carousel')"
+              v-for="file in addonInPanel.files.filter(f => f.use === 'carousel' || f.use === 'screenshot')"
               :key="file.id"
               :cols="$vuetify.breakpoint.mdAndUp ? 4 : 6"
               style="position: relative;"
