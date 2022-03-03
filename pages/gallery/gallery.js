@@ -291,10 +291,10 @@ export default {
       switch (this.edition) {
         case 'bedrock':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
         case 'java':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/Jappa-${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
       }
 
       // TODO: put a default value
