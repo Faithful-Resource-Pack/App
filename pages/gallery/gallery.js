@@ -97,6 +97,7 @@ export default {
       >
         <div
           v-for="(texture, index) in displayedTextures"
+          :key="texture.id"
           v-if="index <= displayedResults"
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
@@ -360,6 +361,7 @@ export default {
       })
     },
     update() {
+      this.displayedTextures = {}
       this.displayedResults = 20
       this.displayed = {
         paths: {},
