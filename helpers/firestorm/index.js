@@ -167,7 +167,7 @@ class Collection {
         params.random = {}
       } else {
         let seed = parseInt(random)
-        if (isNaN(seed)) return Promise.reject(new Error('random takes as parameter true, false or an integer value'))
+        if (Number.isNaN(seed)) return Promise.reject(new Error('random takes as parameter true, false or an integer value'))
         params.random = {
           "seed": seed
         }

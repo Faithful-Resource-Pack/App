@@ -723,7 +723,7 @@ app.get('/paths/all/', function (req, res) {
 app.get('/gallery/dialog/:textureID', (req, res) => {
   let textureID
 
-  if (isNaN(req.params.textureID)) return
+  if (Number.isNaN(req.params.textureID)) return
   else textureID = req.params.textureID
 
   texturesBackend.getEverythingAbout(textureID)
