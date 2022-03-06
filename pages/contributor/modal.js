@@ -94,7 +94,7 @@ export default {
         })
         .catch(error => {
           console.error(error)
-          this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
+          this.$root.showSnackBar(`${error.message}: ${error.response ? error.response.data.error : error.message}`, 'error')
         })
     }
   },
