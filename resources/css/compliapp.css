@@ -53,11 +53,11 @@
 
 /* Keep background from #app when the page is loading */
 html {
-  background: #120e19
-    url(https://compliancepack.net/image/background/the_end.jpg) no-repeat
-    center;
-  background-size: cover;
-  background-attachment: fixed;
+  background-color: #181818;
+}
+
+.v-sheet.v-list {
+  background-color: #202020 !important;
 }
 
 /* Used to hide the content when the page is loading */
@@ -86,11 +86,7 @@ a {
 }
 
 #app {
-  background: #120e19
-    url(https://compliancepack.net/image/background/the_end.jpg) no-repeat
-    center;
-  background-size: cover;
-  background-attachment: fixed;
+  background-color: #181818;
 }
 
 #app.theme--dark header.v-toolbar {
@@ -146,6 +142,7 @@ div.tooltip.vue-tooltip-theme {
   background: transparent;
 }
 
+<<<<<<< HEAD
 .v-list,
 .v-input__slot,
 .v-card,
@@ -160,6 +157,10 @@ div.tooltip.vue-tooltip-theme {
 }
 .v-btn {
   backdrop-filter: blur(10px);
+=======
+.v-btn {
+  background: rgb(39, 39, 39) !important;
+>>>>>>> 600d237f2c3a0b1cc3d40a0ae3493b9eaa33cc6d
 }
 .banner-btn span {
   text-shadow: 2px 2px #000;
