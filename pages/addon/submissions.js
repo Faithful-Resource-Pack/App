@@ -73,7 +73,6 @@ export default {
 
             <v-card-actions style="justify-content: flex-end;">
               <v-btn
-                color="white"
                 text
                 :href="'/#/addons/edit/' + addon.id"
               >

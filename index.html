@@ -14,10 +14,10 @@
   <title>Compliance Web Application</title>
 </head>
 <body>
-  <v-app id="app" ref="app">
+  <v-app id="app" ref="app" :dark="dark" :light="!dark">
     <v-app-bar flat dense bar app v-if="isUserLogged && window.width > 700">
-      <span class="mr-2 d-flex noselect">
-        <img src="https://compliancepack.net/image/icon/compliance_32x.png" style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
+      <span class="monochrome-logo mr-2 d-flex noselect">
+        <img src="https://compliancepack.net/image/icon/compliance_32x.png">
       </span>
 
       <v-menu
@@ -40,7 +40,7 @@
           <v-list-item
             v-for="(subtab, index) in tab.subtabs" :key="index" link :to="subtab.to" :disabled="!subtab.enabled"
           >
-            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small :color="!subtab.enabled ? 'rgba(255,255,255,.3)' : 'white'" v-text="subtab.icon"/></v-list-item-icon>
+            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;"><v-icon small style="color: inherit" v-text="subtab.icon"/></v-list-item-icon>
             <v-list-item-content><v-list-item-title v-text="subtab.labelText" class="uppercased"/></v-list-item-content>
           </v-list-item>
         </v-list>
@@ -60,7 +60,7 @@
               }"
               v-bind="attrs"
               v-on="on"
-              class="banner-btn"
+              class="banner-btn white--text"
 
               @click="logout"
             >
@@ -78,15 +78,14 @@
         <v-app-bar-nav-icon small @click="drawer = true"></v-app-bar-nav-icon>
       </span>
 
-      <span class="mr-2 d-flex noselect">
-        <img src="https://compliancepack.net/image/icon/compliance_32x.png"
-          style="max-height: 100%; height: 30px; filter: brightness(0) invert(1);">
+      <span class="monochrome-logo mr-2 d-flex noselect">
+        <img src="https://compliancepack.net/image/icon/compliance_32x.png" />
       </span>
     </v-app-bar>
 
     <v-navigation-drawer width="320" fixed v-model="drawer" v-if="isUserLogged && window.width <= 700" temporary>
 
-      <v-card>
+      <v-card class="rounded-t-0">
         <v-img height="128" :src="user.banner">
           <v-card-title class="banner-btn">
             <v-avatar size="48" style="margin-right: 10px">
@@ -95,7 +94,7 @@
                 :src="user.avatar"
               >
             </v-avatar>
-            <span>{{ user.username }}</span>
+            <span class="white--text">{{ user.username }}</span>
           </v-card-title>
           <v-card-actions style="justify-content: flex-end">
             <v-btn small color="red" @click="logout">
@@ -119,7 +118,7 @@
 
           <v-list-item v-if="tab.subtabs" v-for="(subtab, subtabIndex) in tab.subtabs" :key="subtabIndex" :to="subtab.to" :disabled="!subtab.enabled" class="uppercased-unsized">
             <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;">
-              <v-icon small :color="!subtab.enabled ? 'rgba(255,255,255,.3)' : 'white'">{{ subtab.icon }}</v-icon>
+              <v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="subtab.labelText" class="uppercased" />
@@ -128,7 +127,7 @@
 
           <v-list-item v-if="tab.to" :to="tab.to" :disabled="!tab.enabled" class="uppercased-unsized">
             <v-list-item-icon v-if="tab.icon" style="margin-right: 5px;">
-              <v-icon small :color="!tab.enabled ? 'rgba(255,255,255,.3)' : 'white'">{{ tab.icon }}</v-icon>
+              <v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
             </v-list-item-icon>
             <v-list-item-content>
               <v-list-item-title v-text="tab.labelText" class="uppercased" />
@@ -171,8 +170,20 @@
       </div>
     </v-main>
 
-    <v-bottom-navigation height="42px" id="bottom" style="box-shadow: none">
-      &copy; Compliance Team {{ year }}
+    <v-bottom-navigation id="bottom" style="box-shadow: none">
+      <span>
+        &copy; Compliance Team {{ year }}
+      </span><div id="theme" class="text-center ml-2 d-inline-block">
+        <v-icon class="d-inline-block">
+          mdi-white-balance-sunny
+        </v-icon><v-switch
+            class="d-inline-block mx-2"
+            hide-details
+            v-model="dark"
+          ></v-switch><v-icon class="d-inline-block">
+            mdi-weather-night
+          </v-icon>
+      </div>
     </v-bottom-navigation>
     <v-radio-group row v-model="selectedLang" style="margin-left: auto; margin-right: auto;">
       <v-radio class="uppercased" v-for="(lang, key) in langs" :key="key" :label="key" :value="key">

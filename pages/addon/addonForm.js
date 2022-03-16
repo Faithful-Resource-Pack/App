@@ -48,7 +48,7 @@ export default {
         indeterminate
       ></v-progress-circular>
     </div>
-    <v-list v-else :class="['my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255,255,255,.05)">
+    <v-list v-else :class="['main-container', 'my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
       <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
 
         <div class="container">
@@ -247,7 +247,7 @@ export default {
                 </v-col>
                 <v-col v-if="indexLinks == 0" class="flex-grow-0 flex-shrink-0">
                   <v-btn icon @click="linkAdd(index)">
-                    <v-icon color="white lighten-1">mdi-plus</v-icon>
+                    <v-icon color="lighten-1">mdi-plus</v-icon>
                   </v-btn>
                 </v-col>
                 <v-col v-else class="flex-grow-0 flex-shrink-0">

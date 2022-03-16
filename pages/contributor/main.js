@@ -36,7 +36,7 @@ export default {
         <v-btn block @click="openDialog()">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
         <div class="my-2 text-h5">{{ $root.lang().database.labels.contributors_results }}</div>
-        <v-list rounded v-if="contributors.length" two-line color="rgba(255, 255, 255, 0.08)">
+        <v-list rounded v-if="contributors.length" two-line class="main-container">
           <v-row><v-col :cols="12/listColumns" xs="1"
               v-for="(contrib_arr, index) in splittedContributors"
               :key="index"
@@ -65,7 +65,7 @@ export default {
 
               <v-list-item-action>
                 <v-btn icon @click="openDialog(contrib)">
-                  <v-icon color="white lighten-1">mdi-pencil</v-icon>
+                  <v-icon color="lighten-1">mdi-pencil</v-icon>
                 </v-btn>
               </v-list-item-action>
               <v-list-item-action>

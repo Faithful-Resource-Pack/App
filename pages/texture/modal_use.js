@@ -40,7 +40,7 @@ export default {
 
               <v-list-item-action class="merged">
                 <v-btn icon @click="openSubPathDialog(path)">
-                  <v-icon color="white lighten-1">mdi-pencil</v-icon>
+                  <v-icon color="lighten-1">mdi-pencil</v-icon>
                 </v-btn>
                 <v-btn icon @click="askRemovePath(path)">
                   <v-icon color="red lighten-1">mdi-delete</v-icon>
@@ -51,7 +51,7 @@ export default {
 
           <div v-else><template v-if="add == false">{{ $root.lang().database.labels.no_path_found }}</template></div>
 
-          <v-btn block :disabled="add" :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubPathDialog()">{{ $root.lang().database.labels.add_new_path }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block :disabled="add" :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubPathDialog()">{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon></v-btn>
 
         </v-form>
       </v-card-text>

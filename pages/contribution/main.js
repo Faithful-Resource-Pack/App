@@ -92,7 +92,7 @@ export default {
     </v-autocomplete>
     <v-btn block @click="startSearch()" :disabled="searchDisabled">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
-    <v-list rounded v-if="search.search_results.length" two-line color="rgba(255, 255, 255, 0.08)" class="mt-4">
+    <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
           v-for="(contrib_arr, index) in splittedResults"
           :key="index"
@@ -121,7 +121,7 @@ export default {
 
           <v-list-item-action>
             <v-btn icon @click="editContribution(contrib)">
-              <v-icon color="white lighten-1">mdi-pencil</v-icon>
+              <v-icon color="lighten-1">mdi-pencil</v-icon>
             </v-btn>
           </v-list-item-action>
           <v-list-item-action>

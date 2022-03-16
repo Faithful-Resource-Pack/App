@@ -80,8 +80,8 @@ export default {
     </div>
     
     <v-list
+      class="main-container pa-2"
       two-line
-      style="padding: 10px;"
     >
       <template v-if="loading.status == true">
         <div class="text-h6 py-6" style="padding: 0 10px !important">{{ loading.comments.length }}/{{ loading.steps }} {{ $root.lang().gallery.loading_message.general }}</div>
@@ -102,7 +102,6 @@ export default {
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
           @click.stop="() => openModal(texture.textureID)"
-          style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png)"
         >
           <img
             class="gallery-texture-image"
@@ -442,6 +441,7 @@ export default {
       }
 
       Object.values(this.dataJSON.contributions).forEach(contribution => {
+        if (!contribution.res || !contribution.textureID) return
         if (!this.displayed.contributions[contribution.res][contribution.textureID]) this.displayed.contributions[contribution.res][contribution.textureID] = []
 
         this.displayed.contributions[contribution.res][contribution.textureID].push({

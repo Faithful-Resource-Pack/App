@@ -65,21 +65,21 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn block @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
       <v-row>
         <v-col>
-          <v-btn block @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn block @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right dark>mdi-plus</v-icon></v-btn>
+          <v-btn block @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
       <div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
-      <v-list v-if="Object.keys(textures).length" two-line color="rgba(255, 255, 255, 0.08)" >
+      <v-list v-if="Object.keys(textures).length" two-line class="main-container">
         <v-row><v-col :cols="12/listColumns" xs="1"
             v-for="(textures_arr, index) in splittedResults"
             :key="index"
@@ -101,7 +101,7 @@ export default {
 
             <v-list-item-action class="merged">
               <v-btn icon @click="openDialog(texture)">
-                <v-icon color="white lighten-1">mdi-pencil</v-icon>
+                <v-icon color="lighten-1">mdi-pencil</v-icon>
               </v-btn>
               <v-btn icon @click="askRemove(texture)">
                 <v-icon color="red lighten-1">mdi-delete</v-icon>

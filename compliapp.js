@@ -203,6 +203,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          dark: undefined,
           vapiURL: window.apiURL,
           selectedLang: _get_lang(),
           langs: LANGS,
@@ -234,6 +235,21 @@ axios.get('./resources/settings.json')
             }
           },
           deep: true
+        },
+        dark: {
+          handler(n, o) {
+            if(o == undefined) {
+              const isDark = window.localStorage.getItem('DARK_THEME')
+              this.dark =  isDark === null ? true : isDark === "true"
+              this.$vuetify.theme.dark = this.dark
+            } else {
+              if(n === false || n === true) {
+                this.$vuetify.theme.dark = n
+                window.localStorage.setItem('DARK_THEME', String(n))
+              }
+            }
+          },
+          immediate: true
         }
       },
       computed: {
@@ -461,6 +477,12 @@ axios.get('./resources/settings.json')
             dark: {
               primary: '#fafafa',
               accent: '#5e3631',
+              success: '#22a831'
+            },
+            light: {
+              primary: '#76C945',
+              secondary: '#00552B',
+              accent: '#af0b51',
               success: '#22a831'
             }
           }

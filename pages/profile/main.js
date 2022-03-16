@@ -9,7 +9,7 @@ export default {
     </div>
 
     <div :class="['my-2 text-h5', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]">
-      <v-list :rounded="$vuetify.breakpoint.mdAndUp" two-line color="rgba(255, 255, 255, 0.08)" style="background-color: rgba(255,255,255,.05)">
+      <v-list :rounded="$vuetify.breakpoint.mdAndUp" class="main-container">
 
         <v-list-item>
           <v-list-item-avatar>
@@ -122,7 +122,7 @@ export default {
                     </v-select>
                   </v-col>
                   <v-col class="flex-grow-0 flex-shrink-0">
-                    <v-btn icon @click="removeSocialMedia(index)" style="margin-right: 8px">
+                    <v-btn icon @click="removeSocialMedia(index)" style="margin-right: 8px" elevation="2">
                       <v-icon color="red lighten-1">mdi-delete</v-icon>
                     </v-btn>
                   </v-col>
@@ -158,8 +158,8 @@ export default {
                     ></v-select>
                   </v-col>
                   <v-col class="flex-grow-0 flex-shrink-0">
-                    <v-btn icon @click="addSocialMedia()" :disabled="isMediaOk()" style="margin-right: 8px">
-                      <v-icon color="white lighten-1">mdi-plus</v-icon>
+                    <v-btn icon @click="addSocialMedia()" :disabled="isMediaOk()" style="margin-right: 8px" elevation="2">
+                      <v-icon color="lighten-1">mdi-plus</v-icon>
                     </v-btn>
                   </v-col>
                 </v-row>

@@ -46,7 +46,7 @@ export default {
 
                 <v-list-item-action class="merged">
                   <v-btn icon @click="openSubDialog(use)">
-                    <v-icon color="white lighten-1">mdi-pencil</v-icon>
+                    <v-icon color="lighten-1">mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn icon @click="askRemoveUse(use)">
                     <v-icon color="red lighten-1">mdi-delete</v-icon>
@@ -56,7 +56,7 @@ export default {
             </v-list>
             <div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-            <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+            <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon></v-btn>
           </v-form>
         </v-card-text>
         <v-card-actions>

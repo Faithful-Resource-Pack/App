@@ -58,7 +58,6 @@ export default {
               v-for="pa in item.parent"
               class="ma-1"
               small
-              dark
             >
               {{ pa }}
             </v-chip>

@@ -12,12 +12,9 @@ export default {
     >
 
       <v-card>
-        <v-toolbar
-          dark
-        >
+        <v-toolbar>
           <v-btn
             icon
-            dark
             @click.stop="() => closeModal()"
           >
             <v-icon>mdi-close</v-icon>
@@ -37,10 +34,7 @@ export default {
             <div class="gallery-dialog-textures">
               <template v-for="res in resolutions">
                 <div class="gallery-dialog-texture-container">
-                  <div
-                    class="gallery-dialog-texture"
-                    style="background: url(https://raw.githubusercontent.com/Compliance-Resource-Pack/App/main/resources/transparency.png) center"
-                  >
+                  <div class="gallery-dialog-texture">
                     <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(res)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
                     <div class="not-done" style="display: none;">
                       <span></span><div>
@@ -58,7 +52,7 @@ export default {
                 v-model="tab"
                 align-with-title
               >
-                <v-tabs-slider color="white"></v-tabs-slider>
+                <v-tabs-slider></v-tabs-slider>
 
                 <v-tab
                   v-for="item in items"
