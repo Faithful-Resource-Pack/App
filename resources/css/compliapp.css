@@ -142,25 +142,8 @@ div.tooltip.vue-tooltip-theme {
   background: transparent;
 }
 
-<<<<<<< HEAD
-.v-list,
-.v-input__slot,
-.v-card,
-.v-expansion-panel {
-  backdrop-filter: blur(10px);
-}
-.v-input--checkbox .v-input__slot {
-  backdrop-filter: none;
-}
-.theme--dark .v-btn {
-  background: rgba(39, 39, 39, 0.8) !important;
-}
-.v-btn {
-  backdrop-filter: blur(10px);
-=======
 .v-btn {
   background: rgb(39, 39, 39) !important;
->>>>>>> 600d237f2c3a0b1cc3d40a0ae3493b9eaa33cc6d
 }
 .banner-btn span {
   text-shadow: 2px 2px #000;
