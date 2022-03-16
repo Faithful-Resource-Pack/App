@@ -127,7 +127,7 @@ export default {
       paths: 'Path(s)'
     },
     labels: {
-      mcmeta: "Animated texture",
+      mcmeta: 'Animated texture',
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
       new_mc_version_name: 'New version name',
@@ -175,7 +175,7 @@ export default {
       warning_path: 'Use needs to be created before adding paths to it (currently not well supported and a bit buggy), adding path before creating the use is planned.',
       path: 'The path should start from the root directory (ex: assets/...)',
       example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
-      example_scenario_warn: 'Please don\'t forget to update all GitHub branch names as well!'
+      example_scenario_warn: "Please don't forget to update all GitHub branch names as well!"
     }
   },
   review: {
@@ -224,7 +224,7 @@ export default {
       title: 'Confirm deletion',
       labels: {
         question: 'Do you want to delete %s?',
-        warning: 'You can\'t undo this operation.'
+        warning: "You can't undo this operation."
       }
     },
     general: {
@@ -251,7 +251,7 @@ export default {
       },
       authors: {
         label: 'Select authors for the add-on',
-        hint: 'Any author can modify the Add-on once it is submitted! | If you can\'t find anybody in the list who\'s supposed to be there, contact an Administrator/Developer'
+        hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list who's supposed to be there, contact an Administrator/Developer"
       }
     },
     images: {
@@ -264,7 +264,7 @@ export default {
         },
         rules: {
           image_size: 'Image size should be less than %s KB! Use https://compressor.io/ to compress it.',
-          image_ratio: 'Wrong Ratio: The provided image doesn\'t have a 16:9 side ratio.',
+          image_ratio: "Wrong Ratio: The provided image doesn't have a 16:9 side ratio.",
           image_required: 'A header image is required.'
         }
       },
@@ -301,7 +301,7 @@ export default {
         label: 'Name',
         rules: {
           name_required: 'A name is required.',
-          name_cannot_be_empty: 'Name can\'t be empty.'
+          name_cannot_be_empty: "Name can't be empty."
         }
       },
       link: {
@@ -398,10 +398,10 @@ export default {
     },
     modal: {
       items: {
-        information: "information",
-        authors: "authors",
-        animated: "animated",
-        model: "3D"
+        information: 'information',
+        authors: 'authors',
+        animated: 'animated',
+        model: '3D'
       },
       type: {
         label: 'File type',
@@ -430,7 +430,7 @@ export default {
             name_too_big: 'File parent ID must be less than %s characters.',
             name_too_small: 'File parent ID must be at least %s characters long.'
           }
-        },
+        }
       },
       source: {
         label: 'File source',
@@ -441,64 +441,56 @@ export default {
           name_too_small: 'File URL must be at least %s characters long.'
         }
       },
-      gallery: {
-        title: 'Gallery',
-        loading_message: {
-          general: 'Loading...',
-          textures: 'Getting textures...',
-          paths: 'Getting textures paths...',
-          uses: 'Getting textures uses...',
-          contribution: 'Getting contributions...',
-          contributors: 'Getting contributors...',
-          tags: 'Getting textures tags...'
-        },
-        error_message: {
-          texture_not_done: 'Texture not done!',
-          user_not_found: 'Unkwown User',
-          contribution_not_found: 'No contributions found in database!'
-        },
-        category: {
-          search: 'Search',
-          tags: 'Tags',
-          mc_version: 'Minecraft Version',
-          edition: 'Edition',
-          resolution: 'Resolution'
-        },
-        modal: {
-          items: {
-            information: "information",
-            authors: "authors",
-            animated: "animated",
-            model: "3D"
-          },
-          infos: {
-            texture: "texture",
-            uses: "use(s)",
-            paths: "path(s)"
-          },
-          tabs: {
-            date: "Date",
-            authors: "Author(s)",
-            id: "ID",
-            name: "Name",
-            tags: "Tags/Types",
-            use_id: "Use ID",
-            use_name: "Use Name",
-            editions: "Edition",
-            texture_id: "Texture ID",
-            path_id: "Path ID",
-            resource_pack_path: "Resource Pack Path",
-            mc_versions: "Minecraft Version(s)",
-          }
-        }
+      infos: {
+        texture: 'texture',
+        uses: 'use(s)',
+        paths: 'path(s)'
+      },
+      tabs: {
+        date: 'Date',
+        authors: 'Author(s)',
+        id: 'ID',
+        name: 'Name',
+        tags: 'Tags/Types',
+        use_id: 'Use ID',
+        use_name: 'Use Name',
+        editions: 'Edition',
+        texture_id: 'Texture ID',
+        path_id: 'Path ID',
+        resource_pack_path: 'Resource Pack Path',
+        mc_versions: 'Minecraft Version(s)'
+      }
+    },
+    gallery: {
+      title: 'Gallery',
+      loading_message: {
+        general: 'Loading...',
+        textures: 'Getting textures...',
+        paths: 'Getting textures paths...',
+        uses: 'Getting textures uses...',
+        contribution: 'Getting contributions...',
+        contributors: 'Getting contributors...',
+        tags: 'Getting textures tags...'
+      },
+      error_message: {
+        texture_not_done: 'Texture not done!',
+        user_not_found: 'Unkwown User',
+        contribution_not_found: 'No contributions found in database!'
+      },
+      category: {
+        search: 'Search',
+        tags: 'Tags',
+        mc_version: 'Minecraft Version',
+        edition: 'Edition',
+        resolution: 'Resolution'
       }
     }
   },
   settings: {
-    title: "Settings",
+    title: 'Settings',
     label: {
-      edit_raw: "Edit raw JSON",
-      edit_editor: "Edit with visual editor"
+      edit_raw: 'Edit raw JSON',
+      edit_editor: 'Edit with visual editor'
     }
   }
 }
