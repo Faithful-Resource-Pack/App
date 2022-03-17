@@ -62,8 +62,11 @@
   width: 200px;
   margin-bottom: 20px;
 }
-.theme--dark#connect-title {
+.theme--dark #connect-title {
   text-shadow: 2px 2px rgba(0,0,0,.7);
+}
+.theme--light #connect-title {
+  text-shadow: 2px 2px rgba(0,0,0,.2);
 }
 
 /* Used to hide the content when the page is loading */
@@ -144,9 +147,6 @@ div.tooltip.vue-tooltip-theme {
   background: transparent;
 }
 
-.v-btn {
-  background: rgb(39, 39, 39) !important;
-}
 .banner-btn span {
   text-shadow: 2px 2px #000;
 }
@@ -464,6 +464,8 @@ code {
   margin: 5px;
   text-align: center;
   position: relative;
+  background-size: cover;
+  background-position: center;
 }
 .theme--dark .gallery-texture-in-container {
   background: url(/resources/transparency.png);
@@ -535,6 +537,8 @@ code {
   height: 196px;
   width: 196px;
   position: relative;
+  background-size: cover;
+  background-position: center;
 }
 .theme--dark .gallery-dialog-texture {
   background: url(/resources/transparency.png) center
@@ -754,7 +758,7 @@ body .texture-avatar {
 }
 
 .theme--dark .main-container {
-  color: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.87);
   background-color: rgba(255,255,255,.05);
 }
 

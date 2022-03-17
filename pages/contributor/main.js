@@ -63,12 +63,10 @@ export default {
                 <v-list-item-subtitle v-text="(contrib.type||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
 
-              <v-list-item-action>
+              <v-list-item-action class="merged">
                 <v-btn icon @click="openDialog(contrib)">
                   <v-icon color="lighten-1">mdi-pencil</v-icon>
                 </v-btn>
-              </v-list-item-action>
-              <v-list-item-action>
                 <v-btn icon @click="askRemove(contrib)">
                   <v-icon color="red lighten-1">mdi-delete</v-icon>
                 </v-btn>
