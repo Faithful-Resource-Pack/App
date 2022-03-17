@@ -52,12 +52,18 @@
 }
 
 /* Keep background from #app when the page is loading */
-html {
-  background-color: #181818;
+.theme--dark.v-application {
+  background: #120e19 url(https://compliancepack.net/image/background/the_end.jpg) no-repeat center;
+  background-attachment: fixed;
 }
 
-.v-sheet.v-list {
-  background-color: #202020 !important;
+#connect-title {
+  text-align: center;
+  width: 200px;
+  margin-bottom: 20px;
+}
+.theme--dark#connect-title {
+  text-shadow: 2px 2px rgba(0,0,0,.7);
 }
 
 /* Used to hide the content when the page is loading */
@@ -83,10 +89,6 @@ a {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   outline: none;
-}
-
-#app {
-  background-color: #181818;
 }
 
 #app.theme--dark header.v-toolbar {
