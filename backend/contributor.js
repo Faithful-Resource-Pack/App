@@ -24,7 +24,8 @@ module.exports = {
     return this.search([{
       criteria: "includes",
       field: "username",
-      value: searchterm
+      value: searchterm,
+      ignoreCase: true
     }])
   },
   /**

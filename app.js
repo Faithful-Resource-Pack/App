@@ -458,7 +458,8 @@ app.get('/contributors/:type/:name?/?', function (req, res) {
   const searchOptions = [{
     field: 'username',
     criteria: 'includes',
-    value: username || ''
+    value: username || '',
+    ignoreCase: true
   }]
 
   if (type) {

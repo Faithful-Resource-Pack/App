@@ -1,14 +1,15 @@
 try {
-  if (typeof process === 'object') {
+  if(typeof process === 'object') {
     var axios = require("axios").default
   }
-} catch (_error) { }
+} catch(_error) {}
 
 /**
  * @typedef {Object} SearchOption
  * @property {String} field The field you want to search in
  * @property {"!=" | "==" | ">=" | "<=" | "<" | ">" | "in" | "includes" | "startsWith" | "endsWith" | "array-contains" | "array-contains-any" | "array-length-(eq|df|gt|lt|ge|le)" } criteria // filter criteria
  * @property {String | Number | Boolean | Array } value // the value you want to compare
+ * @property {Boolean} ignoreCase Ignore case on search string
  */
 
 /**
@@ -24,32 +25,43 @@ try {
  * @property {Array<String>} fields Chosen fields to eventually return
  */
 
+/**
+ * @import {AxiosPromise} from 'axios'
+ */
+
+/**
+ * @ignore
+ */
 let _address = undefined
+
+/**
+ * @ignore
+ */
 let _token = undefined
 
 const ID_FIELD_NAME = 'id'
 
 const readAddress = () => {
-  if (!_address)
+  if(!_address)
     throw new Error('Firestorm address was not configured')
-
+  
   return _address + 'get.php'
 }
 const writeAddress = () => {
-  if (!_address)
+  if(!_address)
     throw new Error('Firestorm address was not configured')
-
+  
   return _address + 'post.php'
 }
 const fileAddress = () => {
-  if (!_address)
+  if(!_address)
     throw new Error('Firestorm address was not configured')
-
+  
   return _address + 'files.php'
 }
 
 const writeToken = () => {
-  if (!_token)
+  if(!_token)
     throw new Error('Firestorm token was not configured')
 
   return _token
@@ -57,6 +69,7 @@ const writeToken = () => {
 
 /**
  * Auto-extracts data from Axios request
+ * @ignore
  * @param {Promise<T>} request The Axios concerned request
  */
 const __extract_data = (request) => {
@@ -65,9 +78,9 @@ const __extract_data = (request) => {
       if ('data' in res) return resolve(res.data)
       resolve(res)
     })
-      .catch(err => {
-        reject(err)
-      })
+    .catch(err => {
+     reject(err)
+    })
   })
 }
 
@@ -85,38 +98,51 @@ class Collection {
     this.collectionName = name
   }
 
+  /**
+   * Add user methods to the returned data
+   * @private
+   * @ignore
+   * @param {AxiosPromise} req Incoming request 
+   * @returns {Object|Object[]}
+   */
   __add_methods(req) {
     return new Promise((resolve, reject) => {
       req
-        .then(el => {
-          if (Array.isArray(el)) {
-            return resolve(el.map(e => this.addMethods(e)))
-          }
+      .then(el => {
+        if(Array.isArray(el)) {
+          return resolve(el.map(e => this.addMethods(e)))
+        }
 
-          el[Object.keys(el)[0]][ID_FIELD_NAME] = Object.keys(el)[0]
-          el = el[Object.keys(el)[0]]
+        el[Object.keys(el)[0]][ID_FIELD_NAME] = Object.keys(el)[0]
+        el = el[Object.keys(el)[0]]
 
-          // else on the object itself
-          return resolve(this.addMethods(el))
-        }).catch(err => reject(err))
+        // else on the object itself
+        return resolve(this.addMethods(el))
+      }).catch(err => reject(err))
     })
   }
 
   /**
    * Auto-extracts data from Axios request
-   * @param {Promise<T>} request The Axios concerned request
+   * @private
+   * @ignore
+   * @param {AxiosPromise} request The Axios concerned request
    */
   __extract_data(request) {
     return __extract_data(request)
   }
 
   /**
-   * Send get request and extract data from ir
+   * Send get request and extract data from response
+   * @private
+   * @ignore
    * @param {Object} data Body data
-   * @returns {Promise<Any>} data out
+   * @returns {Promise<Object|Object[]>} data out
    */
   __get_request(data) {
-    const request = axios.post(readAddress(), data)
+    const request = typeof process === 'object' ? axios.get(readAddress(), {
+      data: data
+    }) : axios.post(readAddress(), data)
     return this.__extract_data(request)
   }
 
@@ -134,23 +160,33 @@ class Collection {
   }
 
   /**
+   * @returns {String} returns sha1 hash of the file. can be used to see if same file content without downloding the file for example
+   */
+  sha1() {
+    return this.__get_request({
+      "collection": this.collectionName,
+      "command": "sha1",
+    })
+  }
+
+  /**
    * Search through collection
    * @param {SearchOption[]} searchOptions Array of search options
    * @param {(Number|false|true)?} random Random result seed, disabled by default, but can activated with true or a given seed
    * @returns {Promise<T[]>}
    */
-  search(searchOptions, random = false) {
-    if (!Array.isArray(searchOptions))
+  search(searchOptions, random=false) {
+    if(!Array.isArray(searchOptions))
       return Promise.reject(new Error('searchOptions shall be an array'))
 
     searchOptions.forEach(searchOption => {
-      if (searchOption.field === undefined || searchOption.criteria === undefined || searchOption.value === undefined)
+      if(searchOption.field === undefined || searchOption.criteria === undefined || searchOption.value === undefined)
         return Promise.reject(new Error('Missing fields in searchOptions array'))
 
-      if (typeof searchOption.field !== 'string')
+      if(typeof searchOption.field !== 'string')
         return Promise.reject(new Error(`${JSON.stringify(searchOption)} search option field is not a string`))
 
-      if (searchOption.criteria == 'in' && !Array.isArray(searchOption.value))
+      if(searchOption.criteria == 'in' && !Array.isArray(searchOption.value))
         return Promise.reject(new Error('in takes an array of values'))
 
       //TODO: add more strict value field warnings in JS and PHP
@@ -162,12 +198,12 @@ class Collection {
       "search": searchOptions
     }
 
-    if (random !== false) {
-      if (random === true) {
+    if(random !== false) {
+      if(random === true) {
         params.random = {}
       } else {
         let seed = parseInt(random)
-        if (Number.isNaN(seed)) return Promise.reject(new Error('random takes as parameter true, false or an integer value'))
+        if(isNaN(seed)) return Promise.reject(new Error('random takes as parameter true, false or an integer value'))
         params.random = {
           "seed": seed
         }
@@ -175,9 +211,11 @@ class Collection {
     }
 
     return new Promise((resolve, reject) => {
+      let raw
       this.__get_request(params).then(res => {
         const arr = []
 
+        raw = res
         Object.keys(res).forEach(contribID => {
           const tmp = res[contribID]
           tmp[ID_FIELD_NAME] = contribID
@@ -186,7 +224,10 @@ class Collection {
 
         resolve(this.__add_methods(Promise.resolve(arr)))
 
-      }).catch(err => reject(err))
+      }).catch(err => {
+        err.raw = raw
+        reject(err)
+      })
     })
   }
 
@@ -196,7 +237,7 @@ class Collection {
    * @returns {Promise<T[]>} Search results
    */
   searchKeys(keys) {
-    if (!Array.isArray(keys))
+    if(!Array.isArray(keys))
       return Promise.reject('Incorrect keys')
 
     return new Promise((resolve, reject) => {
@@ -228,15 +269,15 @@ class Collection {
         "collection": this.collectionName,
         "command": "read_raw"
       })
-        .then(data => {
-          Object.keys(data).forEach(key => {
-            data[key][ID_FIELD_NAME] = key
-            this.addMethods(data[key])
-          })
-
-          resolve(data)
+      .then(data => {
+        Object.keys(data).forEach(key => {
+          data[key][ID_FIELD_NAME] = key
+          this.addMethods(data[key])
         })
-        .catch(err => reject(err))
+
+        resolve(data)
+      })
+      .catch(reject)
     })
   }
 
@@ -245,7 +286,7 @@ class Collection {
    * @param {SelectOption} selectOption Select options
    */
   select(selectOption) {
-    if (!selectOption) selectOption = {}
+    if(!selectOption) selectOption = {}
     return new Promise((resolve, reject) => {
       this.__get_request({
         'collection': this.collectionName,
@@ -259,7 +300,7 @@ class Collection {
 
         resolve(data)
       })
-        .catch(reject)
+      .catch(reject)
     })
   }
 
@@ -272,21 +313,21 @@ class Collection {
    */
   random(max, seed, offset) {
     const params = {}
-    if (max !== undefined) {
-      if (typeof (max) !== 'number' || !Number.isInteger(max) || max < -1) return Promise.reject(new Error('Expected integer >= -1 for the max'))
+    if(max !== undefined) {
+      if(typeof(max) !== 'number' || !Number.isInteger(max) || max < -1) return Promise.reject(new Error('Expected integer >= -1 for the max'))
       params.max = max
     }
 
     const hasSeed = seed !== undefined
     const hasOffset = offset !== undefined
-    if (hasOffset && !hasSeed) return Promise.reject(new Error('You can\'t put an offset without a seed'))
+    if(hasOffset && !hasSeed) return Promise.reject(new Error('You can\'t put an offset without a seed'))
 
-    if (hasOffset && (typeof (offset) !== 'number' || !Number.isInteger(offset) || offset < 0)) return Promise.reject(new Error('Expected integer >= -1 for the max'))
-
-    if (hasSeed) {
-      if ((typeof (seed) !== 'number' || !Number.isInteger(seed))) return Promise.reject(new Error('Expected integer for the seed'))
-
-      if (!hasOffset) offset = 0
+    if(hasOffset && (typeof(offset) !== 'number' || !Number.isInteger(offset) || offset < 0)) return Promise.reject(new Error('Expected integer >= -1 for the max'))
+    
+    if(hasSeed) {
+      if((typeof(seed) !== 'number' || !Number.isInteger(seed))) return Promise.reject(new Error('Expected integer for the seed'))
+      
+      if(!hasOffset) offset = 0
       params.seed = seed
       params.offset = offset
     }
@@ -306,7 +347,9 @@ class Collection {
   }
 
   /**
-   * 
+   * creates write requests with given value
+   * @private
+   * @ignore
    * @param {String} command The write command you want
    * @param {Object?} value The value for this command 
    * @param {Boolean | undefined} multiple if I need to delete multiple 
@@ -318,16 +361,16 @@ class Collection {
       "collection": this.collectionName,
       "command": command
     }
-    if (multiple === true && Array.isArray(value)) { // solves errors with undefined and null values
+    if(multiple === true && Array.isArray(value)) { // solves errors with undefined and null values
       value.forEach(v => {
-        if (typeof value != 'number' && typeof value != 'string' && !Array.isArray(value))
+        if(typeof value != 'number' && typeof value != 'string' && !Array.isArray(value)) 
           delete v[ID_FIELD_NAME]
       })
-    } else if (multiple === false && value != null && value != undefined && typeof value != 'number' && typeof value != 'string' && !Array.isArray(value)) { // solves errors with undefined and null values
+    } else if(multiple === false && value != null && value != undefined && typeof value != 'number' && typeof value != 'string' && !Array.isArray(value)) { // solves errors with undefined and null values
       delete value[ID_FIELD_NAME]
     }
-    if (value) {
-      if (multiple)
+    if(value) {
+      if(multiple)
         obj["values"] = value
       else
         obj["value"] = value
@@ -342,7 +385,7 @@ class Collection {
    * @returns {Promise<any>}
    */
   write_raw(value) {
-    if (value === undefined || value === null) {
+    if(value === undefined || value === null) {
       return Promise.reject(new Error('write_raw value must not be undefined or null'))
     }
     return this.__extract_data(axios.post(writeAddress(), this.__write_data('write_raw', value)))
@@ -360,7 +403,7 @@ class Collection {
           return this.__extract_data(Promise.resolve(res))
         })
         .then(res => {
-          if (typeof res != 'object' || !('id' in res) || typeof res.id != 'string') throw (new Error('Incorrect result'))
+          if(typeof res != 'object' || !('id' in res) || typeof res.id != 'string') throw(new Error('Incorrect result'))
           resolve(res.id)
         })
         .catch(err => {
@@ -376,11 +419,11 @@ class Collection {
    */
   addBulk(values) {
     return new Promise((resolve, reject) => {
-      this.__extract_data(axios.post(writeAddress(), this.__write_data('addBulk', values, true)))
-        .then(res => {
-          resolve(res.ids)
-        })
-        .catch(reject)
+    this.__extract_data(axios.post(writeAddress(), this.__write_data('addBulk', values, true)))
+      .then(res => {
+        resolve(res.ids)
+      })
+      .catch(reject)
     })
   }
 
@@ -447,12 +490,15 @@ class Collection {
   }
 }
 
+/**
+ * @namespace firestorm
+ */
 const firestorm = {
   /**
    * @param {String} newValue The new address value
    */
-  address: function (newValue = undefined) {
-    if (newValue) _address = newValue
+  address: function(newValue = undefined) {
+    if(newValue) _address = newValue
 
     return _address
   },
@@ -460,8 +506,8 @@ const firestorm = {
   /**
    * @param {String} newValue The new write token
    */
-  token: function (newValue = undefined) {
-    if (newValue) _token = newValue
+  token: function(newValue = undefined) {
+    if(newValue) _token = newValue
 
     return _token
   },
@@ -469,7 +515,7 @@ const firestorm = {
    * @param {String} name Collection name to get
    * @param {Function?} addMethods Additional methods and data to add to the objects
    */
-  collection: function (name, addMethods = el => el) {
+  collection: function(name, addMethods = el => el) {
     return new Collection(name, addMethods)
   },
 
@@ -477,15 +523,25 @@ const firestorm = {
    * 
    * @param {String} name Table name to get
    */
-  table: function (name) {
+  table: function(name) {
     return this.collection(name)
   },
 
+  /**
+   * Value for the id field when researching content
+   */
   ID_FIELD: ID_FIELD_NAME,
 
+  /**
+   * Test child object with child namespace
+   * @memberof firestorm
+   * @type {object}
+   * @namespace firestorm.files
+   */
   files: {
     /**
      * gets file back
+     * @memberof firestorm.files
      * @param {String} path File path wanted
      */
     get: function (path) {
@@ -495,13 +551,14 @@ const firestorm = {
         }
       }))
     },
-
+  
     /**
      * Uploads file
+     * @memberof firestorm.files
      * @param {FormData} form formdata with path, filename and file
      * @returns {Promise} http response
      */
-    upload: function (form) {
+    upload: function(form) {
       form.append('token', firestorm.token())
       return axios.post(fileAddress(), form, {
         headers: {
@@ -509,12 +566,14 @@ const firestorm = {
         }
       })
     },
-
+  
     /**
+     * Deletes a file given its path
+     * @memberof firestorm.files
      * @param {String} path File path to delete
      * @returns {Promise} http response
      */
-    delete: function (path) {
+    delete: function(path) {
       return axios.delete(fileAddress(), {
         data: {
           path: path,
@@ -526,7 +585,7 @@ const firestorm = {
 }
 
 try {
-  if (typeof process === 'object') {
+  if(typeof process === 'object') {
     module.exports = firestorm
   }
 } catch (_error) {
