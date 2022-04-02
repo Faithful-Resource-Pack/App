@@ -142,9 +142,8 @@ div.tooltip.vue-tooltip-theme {
 }
 
 #bottom {
-  overflow: hidden;
-  line-height: 42px;
   background: transparent;
+  align-items: center;
 }
 
 .banner-btn span {
@@ -755,6 +754,13 @@ body .texture-avatar {
 
 #theme > * {
   vertical-align: middle;
+}
+
+#theme .active.theme--dark > .theme-icon {
+  color: #1e1e1e;
+}
+#theme .active.theme--light > .theme-icon {
+  color: white;
 }
 
 .theme--dark .main-container {

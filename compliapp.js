@@ -221,6 +221,12 @@ axios.get('./resources/settings.json')
             timeout: 4000
           },
           drawer: false,
+          theme: undefined,
+          themes: {
+            dark: 'mdi-weather-night',
+            light: 'mdi-white-balance-sunny',
+            system: 'mdi-theme-light-dark',
+          },
           atl: []
         }
       },
@@ -248,6 +254,31 @@ axios.get('./resources/settings.json')
                 window.localStorage.setItem('DARK_THEME', String(n))
               }
             }
+          },
+          immediate: true
+        },
+        theme: {
+          handler(n) {
+            const themes_available = Object.keys(this.themes)
+            if(n == undefined) {
+              let theme = window.localStorage.getItem('THEME')
+
+              if(!themes_available.includes(theme)) {
+                theme = themes_available[0]
+              }
+
+              this.theme = theme
+              return
+            } else {
+              if(!themes_available.includes(n)) {
+                this.theme = themes_available[0]
+                return
+              }
+            }
+
+            window.localStorage.setItem('THEME', String(n))
+            const isDark = n != 'light' && (n == 'dark' || window.matchMedia("(prefers-color-scheme: dark)"))
+            this.$vuetify.theme.dark = isDark
           },
           immediate: true
         }

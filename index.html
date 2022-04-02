@@ -171,23 +171,26 @@
       </div>
     </v-main>
 
-    <v-bottom-navigation id="bottom" style="box-shadow: none">
+    <v-bottom-navigation id="bottom" style="box-shadow: none" height="auto" class="mb-2">
       <span>
         &copy; Compliance Team {{ year }}
-      </span><div id="theme" class="text-center ml-2 d-inline-block">
-        <v-icon class="d-inline-block">
-          mdi-white-balance-sunny
-        </v-icon><v-switch
-            class="d-inline-block mx-2"
-            hide-details
-            v-model="dark"
-          ></v-switch><v-icon class="d-inline-block">
-            mdi-weather-night
+      </span><v-card id="theme" class="d-inline-block ml-2">
+        <v-card
+          v-for="(icon, key) in themes"
+          :key="key"
+          flat
+          rounded
+          :class="['pa-2 d-inline-block', { 'active primary': theme === key }]"
+          @click="theme = key"
+        >
+          <v-icon class="theme-icon">
+            {{ icon }}
           </v-icon>
-      </div>
+        </v-card>
+      </v-card>
     </v-bottom-navigation>
-    <v-radio-group row v-model="selectedLang" style="margin-left: auto; margin-right: auto;">
-      <v-radio class="uppercased" v-for="(lang, key) in langs" :key="key" :label="key" :value="key">
+    <v-radio-group row v-model="selectedLang" style="margin-left: auto; margin-right: auto;" hide-details class="pb-2">
+      <v-radio class="uppercased" v-for="(lang, key) in langs" :key="key" :label="key" :value="key" hide-details>
       </v-radio>
     </v-radio-group>
 
