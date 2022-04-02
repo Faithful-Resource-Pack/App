@@ -11,6 +11,7 @@ const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const DEV = (process.env.DEV || 'false') === 'true'
 const API_URL = process.env.API_URL || 'https://api.compliancepack.net/v2/'
 const app = express()
+app.disable('x-powered-by');
 const compliappURL = '/'
 
 const contributorsBackend = require('./backend/contributor')
