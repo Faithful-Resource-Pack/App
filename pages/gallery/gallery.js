@@ -243,7 +243,7 @@ export default {
       }
       else contributionsHTML = `<li class="danger-text"><p>${this.$root.lang().gallery.error_message.contribution_not_found}</p></li>`
 
-      if (this.current.resolution === '16x') contributionsHTML = `<li><i class="icon-mojang-red"></i>Mojang Studio</li>`
+      if (this.current.resolution === '16x') contributionsHTML = `<li><i class="icon-mojang-red"></i>Mojang Studios</li>`
 
       return `
       <div class="texture-tooltip">
