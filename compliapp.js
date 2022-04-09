@@ -19,6 +19,7 @@ const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
 const DashboardPage = () => import('./pages/dashboard/dashboard.js')
 const ReconnectPage = () => import('./pages/reconnect/reconnect.js')
+const ColorLabPage = () => import('./pages/color-lab/colorLabPage.js')
 
 window.colors = (await import('https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js')).default
 window.colorToHex = function(color) {
@@ -139,7 +140,8 @@ const ALL_TABS_ROUTES = [
       { routes: [
         { path: '/gallery', redirect: '/gallery/java/32x/latest/All/'},
         { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage}
-      ], unlogged: true }
+      ], unlogged: true },
+      { routes: [{ path: '/color-lab', component: ColorLabPage }]}
     ]
   },
   {
@@ -202,7 +204,8 @@ let ALL_TABS = [
       { enabled: true, icon: 'mdi-view-dashboard', to: '/dashboard', label: 'dashboard', unlogged: true },
       { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
       { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics', unlogged: true },
-      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery', unlogged: true }
+      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery', unlogged: true },
+      { enabled: true, icon: 'mdi-palette', to: '/color-lab', label: 'colorlab', unlogged: true }
     ]
   },
   {

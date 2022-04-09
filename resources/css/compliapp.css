@@ -912,3 +912,57 @@ body .texture-avatar {
 .heatmap-wrapper svg {
   min-height: 100px;
 }
+
+/** COLOR LAB **/
+#color-lab-page {
+  height: calc(100% - 40px);
+}
+#color-lab-page #color-lab-main {
+  height: calc(100% - 40px);
+}
+#color-lab-page #color-lab-main > * {
+  display: inline-block;
+  vertical-align: top;
+}
+#color-lab-page .color-lab-tile {
+  height: 100%;
+}
+
+#color-lab-page #color-lab-toolbar .v-btn.v-btn--icon {
+  background: transparent;
+}
+
+#color-lab-page #color-lab-main {
+  display: flex;
+}
+
+.color-lab-tile {
+  text-align: center;
+}
+
+.color-lab-tile .actions {
+  opacity: 0;
+}
+.color-lab-tile:hover .actions {
+  opacity: 1;
+}
+.color-lab-tile .actions .v-btn.v-btn--icon {
+  color: inherit;
+  margin: 7px 0;
+}
+
+.color-lab-tile .hex-btn {
+  padding: 5px;
+  border-radius: 5px;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+.color-lab-tile .hex-btn:hover {
+  background: rgba(0,0,0,0.2);
+}
+
+.color-lab-tile .human-name {
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.6;
+}

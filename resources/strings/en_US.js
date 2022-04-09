@@ -40,7 +40,8 @@ export default {
           dashboard: 'dashboard',
           profile: 'profile',
           statistics: 'statistics',
-          gallery: 'gallery'
+          gallery: 'gallery',
+          colorlab: 'color lab'
         }
       },
       addons: {
