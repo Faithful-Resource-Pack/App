@@ -109,7 +109,7 @@ export default {
             }"
           >
             <v-img class="texture-img" v-if="contrib.url" :src="contrib.url" />
-            <v-img class="texture-img" v-else :src="'https://compliancepack.net/image/icon/compliance_' + contrib.res.slice(1) + 'x.png'" />
+            <v-img class="texture-img" v-else :src="'https://faithfulpack.net/image/icon/compliance_' + contrib.res.slice(1) + 'x.png'" />
           </v-list-item-avatar>
 
           <v-list-item-content>

@@ -35,7 +35,7 @@ export default {
               <template v-for="res in resolutions">
                 <div class="gallery-dialog-texture-container">
                   <div class="gallery-dialog-texture">
-                    <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(res)" lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+                    <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(res)" lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
                     <div class="not-done" style="display: none;">
                       <span></span><div>
                         <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>

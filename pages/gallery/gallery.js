@@ -107,7 +107,7 @@ export default {
             class="gallery-texture-image"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
             :src="texture.url"
-            lazy-src="https://database.compliancepack.net/images/bot/loading.gif" />
+            lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
           <div class="not-done" style="display: none;">
             <span></span><div>
               <h1>#{{ texture.textureID }}</h1>

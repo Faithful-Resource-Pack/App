@@ -61,7 +61,7 @@ export default {
               <v-btn
                 v-if="addon.approval.status == 'approved'"
                 color="blue"
-                :href="'https://www.compliancepack.net/addons/' + addon.slug"
+                :href="'https://www.faithfulpack.net/addons/' + addon.slug"
                 target="_blank"
                 icon
                 small

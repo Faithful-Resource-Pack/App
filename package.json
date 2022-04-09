@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Compliance-Resource-Pack/App.git"
+    "url": "git+https://github.com/Faithful-Resource-Pack/App.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Compliance-Resource-Pack/App/issues"
+    "url": "https://github.com/Faithful-Resource-Pack/App/issues"
   },
-  "homepage": "https://github.com/Compliance-Resource-Pack/App#readme",
+  "homepage": "https://github.com/Faithful-Resource-Pack/App#readme",
   "dependencies": {
     "axios": "^0.26.1",
     "btoa": "^1.2.1",
