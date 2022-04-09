@@ -6,7 +6,7 @@
 
 export default {
   global: {
-    name: 'Compliance Webanwendung',
+    name: 'Faithful Webanwendung',
     logout: 'Abmelden',
     login: 'Über Discord anmelden',
     ends_success: 'Erfolgreich abgeschlossen',

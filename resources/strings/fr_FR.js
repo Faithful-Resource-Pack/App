@@ -6,12 +6,12 @@
 
 export default {
   global: {
-    name: 'Application Web Compliance',
+    name: 'Application Web Faithful',
     logout: 'Déconnexion',
     login: 'Se connecter via Discord',
     ends_success: 'Terminé avec succès',
     loading: 'Chargement, veuillez patienter...',
-    no_results: 'Aucun resultat n\'a été trouvé.',
+    no_results: 'Aucun résultat n\'a été trouvé.',
     nyi: 'N\'a pas encore été implémenté.',
     btn: {
       add: 'Ajouter',
@@ -20,7 +20,7 @@ export default {
       cancel: 'Annuler',
       close: 'Fermer',
       save: 'Sauvegarder',
-      edit: 'Editer',
+      edit: 'Éditer',
       delete: 'Supprimer',
       ok: 'OK',
       yes: 'Oui',
@@ -124,7 +124,7 @@ export default {
       select_contributor_type: 'Sélectionnez le type de contributeur',
       search: 'Rechercher',
       texture_result: 'Résultats des textures',
-      import_json_data: 'Importer des donées JSON',
+      import_json_data: 'Importer des données JSON',
       uses: 'Utilisation(s)',
       paths: 'Chemin(s)'
     },
@@ -175,7 +175,7 @@ export default {
       use_id: 'Changer l\'ID de l\'utilisation peut tout casser',
       path_id: 'Changer l\'ID du chemin peut tout casser',
       warning_path: 'L\'utilisation doit être créée avant d\'y ajouter des chemins (actuellement pas très bien supporté et un peu bugué)',
-      path: 'Le chemin doit commencer à partir du répetoire racine (ex: assets/...)',
+      path: 'Le chemin doit commencer à partir du répertoire racine (ex: assets/...)',
       example_scenario: 'Hm, toute la base de donnée est configurée pour télécharger les textures pour la version 1.17 mais il existe désormais une version 1.17.1, cette option est faite pour vous !',
       example_scenario_warn: 'N\'oubliez pas de mettre également à jour toutes les branches GitHub !'
     }
@@ -211,7 +211,7 @@ export default {
         approved_by: 'Approuvé par',
         denied_by: 'Refusé par',
         reason: 'Raison',
-        old_addon: 'Ancien add-on, aucune donées.'
+        old_addon: 'Ancien add-on, aucune données.'
       }
     }
   },
@@ -269,9 +269,9 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Déposez des image(s) additionelles ici, or cliquez pour les sélectionner.',
-          normal: 'Image(s) additionelles',
-          replace: 'Remplacer les images additionelles'
+          drop: 'Déposez des image(s) additionnelles ici, or cliquez pour les sélectionner.',
+          normal: 'Image(s) additionnelles',
+          replace: 'Remplacer les images additionnelles'
         },
         rule: 'Ratio incorrect: Les images qui n\'ont pas un ratio en 16/9 ont été enlevées.'
       }
@@ -339,10 +339,10 @@ export default {
     social: {
       title: 'Réseaux Sociaux',
       edit: {
-        label: 'Editer l\'URL de %s'
+        label: 'Éditer l\'URL de %s'
       },
       select: {
-        label: 'Sélectioner un média'
+        label: 'Sélectionner un média'
       },
       new: {
         placeholder: 'https://www.exemple.com/',
@@ -422,7 +422,7 @@ export default {
         error_message: {
           texture_not_done: 'La texture n\'a pas été faite !',
           user_not_found: 'Utilisateur Inconnu',
-          contribution_not_found: 'Aucune contribution trouvée dans la base de donée!'
+          contribution_not_found: 'Aucune contribution trouvée dans la base de donnée!'
         },
         category: {
           search: 'Rechercher',

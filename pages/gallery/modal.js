@@ -281,11 +281,11 @@ export default {
       switch (path.path.startsWith('assets')) {
         case false:
           if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${res}/${path.versions[0]}/${path.path}`
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Bedrock-${res}/${path.versions[0]}/${path.path}`
 
         default:
           if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${res}/${path.versions[0]}/${path.path}`
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Java-${res}/${path.versions[0]}/${path.path}`
       }
     },
     ucfirst(text) {

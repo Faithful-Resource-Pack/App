@@ -1,6 +1,6 @@
 @font-face {
-  font-family: Compliance;
-  src: url("../fonts/Compliance.ttf") format("truetype");
+  font-family: Faithful;
+  src: url("../fonts/Faithful.ttf") format("truetype");
 }
 
 @font-face {
@@ -250,11 +250,11 @@ img.texture-img {
   border-radius: 0 !important;
 }
 
-.compliance-font {
-  font-family: Compliance;
+.faithful-font {
+  font-family: Faithful;
 }
 
-h2.compliance-font {
+h2.faithful-font {
   font-weight: 600;
 }
 

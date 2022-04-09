@@ -4,7 +4,7 @@
 
 export default {
   global: {
-    name: 'Compliance Web Application',
+    name: 'Faithful Web Application',
     logout: 'Log Out',
     login: 'Log in via Discord',
     ends_success: 'Completed successfully',

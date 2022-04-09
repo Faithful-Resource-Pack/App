@@ -17,7 +17,7 @@
   <v-app id="app" ref="app" :dark="dark" :light="!dark">
     <v-app-bar flat dense bar app v-if="isUserLogged && window.width > 700">
       <span class="monochrome-logo mr-2 d-flex noselect">
-        <img src="https://faithfulpack.net/image/icon/compliance_32x.png">
+        <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png">
       </span>
 
       <v-menu
@@ -80,7 +80,7 @@
       </span>
 
       <span class="monochrome-logo mr-2 d-flex noselect">
-        <img src="https://faithfulpack.net/image/icon/compliance_32x.png" />
+        <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png" />
       </span>
     </v-app-bar>
 
@@ -151,13 +151,13 @@
           'flex-direction': 'column'
         }"
       >
-        <img src="https://faithfulpack.net/image/icon/compliance_32x.png"
+        <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png"
           :style="{
             'height': '256px',
             'image-rendering': 'pixelated'
           }"
         >
-        <h2 id="connect-title" class="compliance-font uppercased-unsized">{{ $root.lang().global.name }}</h2>
+        <h2 id="connect-title" class="faithful-font uppercased-unsized">{{ $root.lang().global.name }}</h2>
         <v-btn 
           href="/api/discord/login" 
           :style="{
@@ -173,7 +173,7 @@
 
     <v-bottom-navigation id="bottom" style="box-shadow: none" height="auto" class="mb-2">
       <span>
-        &copy; Compliance Team {{ year }}
+        &copy; Faithful Team {{ year }}
       </span><v-card id="theme" class="d-inline-block ml-2">
         <v-card
           v-for="(icon, key) in themes"

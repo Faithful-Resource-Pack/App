@@ -291,10 +291,10 @@ export default {
       switch (this.edition) {
         case 'bedrock':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Bedrock-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Bedrock-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
         case 'java':
           if (this.resolution === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
-          return `https://raw.githubusercontent.com/Compliance-Resource-Pack/Compliance-Java-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Java-${this.resolution}/${this.version == 'latest' ? settings.versions[this.edition][0] : this.version}/${path.path}`
       }
 
       // TODO: put a default value
@@ -434,7 +434,7 @@ export default {
         }
       })
 
-      // stuff below are only available in compliance, not default resolution
+      // stuff below are only available in faithful, not default resolution
       if (this.current.resolution === '16x') {
         this.displayedTextures = this.splittedTextures()
         return

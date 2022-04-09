@@ -134,7 +134,7 @@ export default {
     return {
       opened: false,
       closeOnSubmit: true,
-      res: settings.compliance_resolutions,
+      res: settings.faithful_resolutions,
       isSearching: false,
       form: {},
       search: null,
@@ -178,7 +178,7 @@ export default {
     defaultValue: function() {
       return {
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        res: settings.compliance_resolutions[0],
+        res: settings.faithful_resolutions[0],
         textureID: '0',
         contributors: []
       }

@@ -12,7 +12,7 @@ module.exports = {
     return contri.read_raw()
   },
   resolutions: function () {
-    return Promise.resolve(settings.compliance_resolutions)
+    return Promise.resolve(settings.faithful_resolutions)
   },
   contributionsFromID: function (id) {
     if (!id) return Promise.reject(new Error('Texture ID was undefined'))

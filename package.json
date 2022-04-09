@@ -28,6 +28,7 @@
     "node-domexception": "^1.0.0",
     "node-fetch": "^3.2.3",
     "node-localstorage": "^2.2.1",
+    "nodemon": "^2.0.15",
     "twin-bcrypt": "^2.1.1",
     "url": "^0.11.0"
   },
