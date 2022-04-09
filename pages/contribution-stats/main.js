@@ -181,7 +181,7 @@ export default {
           div.transition()
             .duration(200)
             .style("opacity", .9)
-          div.html(timeFormat(d.data.date) + "<br><b>" + reverseKeys[d[0] === 0 ? 0 : 1] + "</b> contributions<br><span class='number'>" + (d[1] - d[0]) + '</span>')
+          div.html(timeFormat(d.data.date) + "<br><b>" + reverseKeysTitle[reverseKeys[d[0] === 0 ? 0 : 1]] + "</b> contributions<br><span class='number'>" + (d[1] - d[0]) + '</span>')
             .style("left", (event.pageX) + "px")
             .style("top", (event.pageY) + "px")
         })
@@ -199,6 +199,11 @@ export default {
       const reverseColors = colors.reverse() // Pour présenter les catégories dans le même sens qu'elles sont utilisées
       const reverseKeys = allRes.reverse()
 
+      const reverseKeysTitle = {
+        'c32': 'faithful_32x',
+        'c64': 'faithful_64x'
+      }
+
       const legend = svg.append('g')
         .attr('transform-origin', 'top right')
         .attr('transform', 'translate(' + (width - 150) + ', 20)')
@@ -210,16 +215,16 @@ export default {
         .enter().append('rect')
         .attr('height', legendCellSize + 'px')
         .attr('width', legendCellSize + 'px')
-        .attr('x', 5)
+        .attr('x', -25)
         .attr('y', (d, i) => i * legendCellSize)
         .style('fill', d => d)
 
       // On procéde de la même façon sur les libellés avec un positionement sur l'axe X de la taille des carrés
       // à laquelle on rajoute 10 px de marge
       legend.selectAll()
-        .data(reverseKeys)
+        .data(reverseKeys.map(e => reverseKeysTitle[e]))
         .enter().append('text')
-        .attr('transform', (d, i) => 'translate(' + (legendCellSize + 10) + ', ' + (i * legendCellSize) + ')')
+        .attr('transform', (d, i) => 'translate(' + (legendCellSize - 20) + ', ' + ((i * legendCellSize) + (legendCellSize - 13) / 2) + ')')
         .attr('dy', legendCellSize / 1.6) // Pour centrer le texte par rapport aux carrés
         .style('font-size', '13px')
         .style('fill', 'grey')
