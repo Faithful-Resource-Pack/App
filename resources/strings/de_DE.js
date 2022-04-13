@@ -279,7 +279,7 @@ export default {
     title: 'Beitragsstatistik',
     label: {
       textures: 'Texturen',
-      contributores: 'Mitwirkende',
+      contributors: 'Mitwirkende',
       contributions: 'Beiträge'
     }
   },

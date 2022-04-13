@@ -22,7 +22,7 @@ export default {
             </v-col>
             <v-col>
               <h3>{{ totalContributors }}</h3>
-              {{ $root.lang().statistics.label.contributores }}
+              {{ $root.lang().statistics.label.contributors }}
             </v-col>
             <v-col>
               <h3>{{ totalContributions }}</h3>

@@ -281,7 +281,7 @@ export default {
     },
     getTextureURL(useID) {
       let use = this.displayed.uses[useID]
-      // fixes bug when sometimes, uses are not upadated yet
+      // fixes bug when sometimes, uses are not updated yet
       if(use === undefined) use = Object.values(this.displayed.uses)[0]
       
       // find path from use and path ID

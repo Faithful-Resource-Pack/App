@@ -40,18 +40,18 @@ export default {
               ></v-date-picker>
             </v-col>
             <v-col class="flex-grow-1 flex-shrink-0">
-              <h3>{{ $root.lang().database.subtitles.resolution }}</h3>
+              <h3>{{ $root.lang().database.subtitles.pack }}</h3>
               <v-select
                 required
-                :items="res"
-                v-model="form.res"></v-select>
+                :items="form.packs"
+                v-model="form.pack"></v-select>
               <h3>{{ $root.lang().database.labels.texture_id }}</h3>
               <v-text-field
                 required
-                v-model="form.textureID" />
+                v-model="form.texture" />
               <h3>{{ $root.lang().database.titles.contributors }}</h3>
               <v-autocomplete
-                v-model="form.contributors"
+                v-model="form.authors"
                 :items="contributorList"
                 :loading="contributors.length == 0 && !isSearching"
                 :search-input.sync="search"
@@ -91,7 +91,7 @@ export default {
 
                 <!-- LIST ITEM PART -->
                 <template v-slot:item="data">
-                  <template v-if="data.item && data.item.contructor && data.item.constructor.name === 'String'">
+                  <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
                     <v-list-item-content v-text="data.item"></v-list-item-content>
                   </template>
                   <template v-else>
@@ -134,7 +134,6 @@ export default {
     return {
       opened: false,
       closeOnSubmit: true,
-      res: settings.faithful_resolutions,
       isSearching: false,
       form: {},
       search: null,
@@ -149,15 +148,14 @@ export default {
     }
   },
   methods: {
-    open: function(inputData = undefined, closeOnSubmit = true) {
+    open: function(inputData = undefined, packs, closeOnSubmit = true) {
       this.opened = true
-      console.log(inputData)
-      if(inputData !== undefined) {
-        this.form = Object.assign({}, this.defaultValue(), inputData)
+      if (inputData !== undefined) {
+        this.form = Object.assign({}, this.defaultValue(packs), inputData)
         const da = new Date(this.form.date)
         this.form.date = (new Date(da - (da).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
       } else {
-        this.form = this.defaultValue()
+        this.form = this.defaultValue(packs)
       }
       this.closeOnSubmit = !!closeOnSubmit
     },
@@ -175,12 +173,12 @@ export default {
       res.date = (new Date(res.date)).getTime()
       this.onSubmit(res)
     },
-    defaultValue: function() {
+    defaultValue: function (packs) {
       return {
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        res: settings.faithful_resolutions[0],
-        textureID: '0',
-        contributors: []
+        packs: packs,
+        texture: '0',
+        authors: []
       }
     },
     remove (id) {

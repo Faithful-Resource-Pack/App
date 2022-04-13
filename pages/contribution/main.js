@@ -16,20 +16,20 @@ export default {
       <v-col>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
         <v-btn
-          v-for="(resobj) in form.resolutions"
-          :key="resobj.key"
+          v-for="(packs_obj) in form.packs"
+          :key="packs_obj.key"
           class="my-2 mr-1"
         ><v-checkbox
-          v-model="resobj.selected"
-          :disabled="resobj.key != all_res && (form.resolutions[0] !== undefined && form.resolutions[0].selected == true)"
-          :label="resobj.key"
-          :id="resobj.key"
+          v-model="packs_obj.selected"
+          :disabled="packs_obj.key != all_packs && (form.packs[0] !== undefined && form.packs[0].selected == true)"
+          :label="packs_obj.value"
+          :id="packs_obj.key"
         ></v-checkbox>
         </v-btn>
       </v-col>
       <v-col>
         <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
-        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
+        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose(), false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
       </v-col>
     </v-row>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.contributor }}</div>
@@ -73,13 +73,13 @@ export default {
 
       <!-- LIST ITEM PART -->
       <template v-slot:item="data">
-        <template v-if="data.item && data.item.contructor && data.item.constructor.name === 'String'">
+        <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
           <v-list-item-content v-text="data.item"></v-list-item-content>
         </template>
         <template v-else>
           <v-list-item-content>
             <v-list-item-title v-text="data.item.username || data.item.id"></v-list-item-title>
-            <v-list-item-subtitle v-html="data.item.occurences + ' contribution' + (data.item.occurences > 1 ? 's' : '')"></v-list-item-subtitle>
+            <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
             <template v-if="data.item.uuid">
@@ -108,15 +108,14 @@ export default {
               'min-width': '64px'
             }"
           >
-            <v-img class="texture-img" v-if="contrib.url" :src="contrib.url" />
-            <v-img class="texture-img" v-else :src="'https://database.faithfulpack.net/images/branding/logos/transparent/512/f' + contrib.res.slice(1) + '_logo.png'" />
+            <v-img class="texture-img" :src="contrib.url" :lazy-src="'https://database.faithfulpack.net/images/branding/logos/transparent/64/f' + contrib.resolution + '_logo.png'"/>
           </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title v-text="(new Date(contrib.date)).toDateString() + ' '+ (!!contrib.textureName ? ' - ' + contrib.textureName : '')"></v-list-item-title>
             <v-list-item-subtitle v-text="(contrib.contributors||[]).map(id => contributors.filter(c => c.id == id)[0].username || '').join(', ')"></v-list-item-subtitle>
 
-            <div><v-chip label x-small class="mr-1">{{ contrib.res }}</v-chip><v-chip label x-small class="mr-1">#{{contrib.textureID }}</v-chip></div>
+            <div><v-chip label x-small class="mr-1">{{ contrib.resolution }}</v-chip><v-chip label x-small class="mr-1">#{{ contrib.texture }}</v-chip></div>
           </v-list-item-content>
 
           <v-list-item-action class="merged">
@@ -136,10 +135,10 @@ export default {
     return {
       maxheight: 170,
       form: {
-        resolutions: [] // [{key: 'all', selected: true }]
+        packs: [] // [{key: 'all', selected: true }]
       },
-      all_res: 'all',
-      resolutions: {},
+      all_packs: 'all',
+      all_packs_display: 'All',
       contributors: [],
       contributors_selected: [],
       search: {
@@ -151,7 +150,7 @@ export default {
   },
   computed: {
     searchDisabled: function () {
-      const resSelected = this.form.resolutions.reduce((a, c) => a || c.selected, false) === false
+      const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false
       const result = this.search.searching || resSelected || this.contributors_selected.length === 0
       return result
     },
@@ -187,88 +186,101 @@ export default {
   },
   methods: {
     getRes: function () {
-      axios.get('/contributions/res')
+      axios.get(`${this.$root.apiURL}/contributions/packs`)
         .then(res => {
           res.data.forEach(r => {
-            this.addRes(r)
+            this.addRes(r, r.replaceAll('_', ' '))
           })
         })
     },
     getAuthors: function () {
-      axios.get('/contributions/authors/')
+      axios.get(`${this.$root.apiURL}/contributions/authors`)
         .then(res => {
-          this.contributors = res.data.map(e => {
-            return Object.merge({
-              username: '',
-              uuid: '',
-              type: [],
-              media: []
-            }, e)
-          })
+          this.contributors = res.data
         })
-        .catch(err => {
-          console.trace(err)
-        })
+        .catch(console.trace)
     },
     remove (id) {
       const index = this.contributors_selected.indexOf(id)
       if (index >= 0) this.contributors_selected.splice(index, 1)
     },
-    addRes (name, value = false) {
-      this.form.resolutions.push({
+    addRes (name, value, boolean = false) {
+      this.form.packs.push({
         key: name,
-        selected: value
+        value: value,
+        selected: boolean
       })
     },
     startSearch: function () {
       this.search.searching = true
-      axios({
-        method: 'get',
-        url: '/contributions/get/',
-        params: {
-          resolutions: this.form.resolutions.filter(r => r.selected).map(r => r.key),
-          authors: this.contributors_selected
-        }
-      })
+      axios.get(`${this.$root.apiURL}/contributions/search/${this.contributors_selected.join('-')}/${this.form.packs.filter(r => r.selected).map(r => r.key).join('-')}`)
         .then(res => {
           res.data.sort((a, b) => b.date - a.date)
-          this.search.search_results = res.data
+          this.search.search_results = res.data.map(c => {
+            return {...c, url: `${this.$root.apiURL}/textures/${c.texture}/url/${c.pack}/latest`}
+          })
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
         .finally(() => {
           this.search.searching = false
         })
     },
+    packsToChoose: function() {
+      return this.form.packs.map(p => p.key).filter(p => p !== this.all_packs);
+    },
+    editContribution: function(contrib) {
+      this.newSubmit = false
+      this.$refs.mod.open(contrib, packsToChoose(), false)
+    },
     onNewSubmit: function(data) {
-      axios.post('/contribution/', this.$root.addToken(data))
+      axios
+        .post(
+          `${this.$root.apiURL}/contributions`, 
+          {
+            date: data.date,
+            resolution: parseInt(data.pack.match(/\d+/)[0], 10),
+            pack: data.pack,
+            authors: data.authors,
+            texture: data.texture
+          },
+          this.$root.apiOptions
+        )
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
     },
-    editContribution: function(contrib) {
-      this.newSubmit = false
-      this.$refs.mod.open(contrib, false)
-    },
     onChangeSubmit: function(data) {
-      console.log(data)
-      axios.put('/contribution/' + data.id, this.$root.addToken(data))
+      axios
+        .put(
+          `${this.$root.apiURL}/contributions/${data.id}`, 
+          {
+            date: data.date,
+            resolution: data.resolution,
+            pack: data.pack,
+            authors: data.authors,
+            texture: data.texture
+          },
+          this.$root.apiOptions
+        )
         .then(() => {
           this.$refs.mod.close()
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.startSearch()
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
     },
     deleteContribution: function(id) {
-      axios.delete('/contribution/' + id, { data: this.$root.addToken({}) })
+      axios.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.startSearch() // actualize shown data
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
     }
   },
   created: function () {
-    this.addRes(this.all_res, true)
+    this.addRes(this.all_packs, this.all_packs_display, true)
   },
   mounted: function () {
     this.getRes()

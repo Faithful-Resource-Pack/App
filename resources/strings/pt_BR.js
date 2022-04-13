@@ -314,7 +314,7 @@ export default {
     title: 'Estatísticas de contribuição',
     label: {
       textures: 'Texturas',
-      contributores: 'Contribuidores',
+      contributors: 'Contribuidores',
       contributions: 'Contribuições'
     }
   },

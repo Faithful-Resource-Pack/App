@@ -118,6 +118,7 @@ export default {
     subtitles: {
       add_manually: 'Add manually',
       resolution: 'Resolution',
+      pack: 'Resource Packs',
       contributor: 'Contributor',
       select_contributor_type: 'Select contributor type',
       search: 'Search',
@@ -320,7 +321,7 @@ export default {
     title: 'Contribution Statistics',
     label: {
       textures: 'Textures',
-      contributores: 'Contributors',
+      contributors: 'Contributors',
       contributions: 'Contributions'
     }
   },

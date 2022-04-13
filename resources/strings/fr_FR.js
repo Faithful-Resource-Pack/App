@@ -110,16 +110,17 @@ export default {
       add_use: 'Ajouter une utilisation',
       add_path: 'Ajouter un chemin',
       add_mc_version: 'Ajouter une nouvelle version Minecraft',
-      change_path: 'Editer le chemin',
-      change_use: 'Editer l\'utilisation',
-      change_texture: 'Editer la texture',
-      change_contributor: 'Editer le contributeur',
+      change_path: 'Éditer le chemin',
+      change_use: 'Éditer l\'utilisation',
+      change_texture: 'Éditer la texture',
+      change_contributor: 'Éditer le contributeur',
       change_mc_version: 'Modifier une version de Minecraft',
       confirm_deletion: 'Confirmer la suppression'
     },
     subtitles: {
       add_manually: 'Ajouter manuellement',
       resolution: 'Résolution',
+      pack: 'Packs de Ressources',
       contributor: 'Contributeur',
       select_contributor_type: 'Sélectionnez le type de contributeur',
       search: 'Rechercher',
@@ -319,7 +320,7 @@ export default {
     title: 'Statistiques des contributions',
     label: {
       textures: 'Textures',
-      contributores: 'Contributeurs',
+      contributors: 'Contributeurs',
       contributions: 'Contributions'
     }
   },
