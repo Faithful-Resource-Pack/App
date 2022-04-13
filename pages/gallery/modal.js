@@ -174,17 +174,17 @@ export default {
     },
     getItems(item) {
       let output = []
-      // console.log(this.textureObj)
+
 
       switch (item) {
         case this.authors[0]:
         case this.authors[1]:
-          return this.textureObj.contributions.filter(el => el.res.includes(parseInt(item, 10))).map(el => {
-            return {
+          return this.textureObj.contributions
+            .filter(el => el.resolution === parseInt(item, 10))
+            .map(el => ({
               date: this.timestampToDate(el.date),
-              contributors: el.contributors.map(el => this.discordIDtoName(el)).join(',\n')
-            }
-          })
+              contributors: el.authors.map(el => this.discordIDtoName(el)).join(',\n')
+            }))
 
         case this.infos[0]:
           return [this.textureObj[item]]

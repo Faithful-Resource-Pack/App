@@ -18,7 +18,7 @@ module.exports = {
     if (!id) return Promise.reject(new Error('Texture ID was undefined'))
 
     return contri.search([{
-      field: 'textureID',
+      field: 'texture',
       criteria: '==',
       value: id
     }])

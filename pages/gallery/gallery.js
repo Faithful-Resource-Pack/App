@@ -159,8 +159,8 @@ export default {
         uses: {},
         textures: {},
         contributions: {
-          c32: [],
-          c64: []
+          faithful_32x: [],
+          faithful_64x: []
         },
         contributors: {}
       },
@@ -229,7 +229,7 @@ export default {
     getAuthor(textureID) {
       let contributionsHTML = ''
 
-      let contributions = this.displayed.contributions[this.current.resolution === '32x' ? 'c32' : 'c64'][textureID]
+      let contributions = this.displayed.contributions[this.current.resolution === '32x' ? 'faithful_32x' : 'faithful_64x'][textureID]
       if (contributions) {
         const timestamp = contributions.reduce((a, b) => a = a > b.date ? a : b.date, 0)
         const contribution = contributions.filter(el => el.date == timestamp)[0]
@@ -330,7 +330,7 @@ export default {
 
       if (this.current.resolution !== '16x') {
         params.push(
-          { message: this.$root.lang().gallery.loading_message.contributions, route: '/contributions/all', key: 'contributions' },
+          { message: this.$root.lang().gallery.loading_message.contributions, route: `${this.$root.apiURL}/contributions/raw`, key: 'contributions' },
         )
       }
 
@@ -367,8 +367,8 @@ export default {
         uses: {},
         textures: {},
         contributions: {
-          c32: [],
-          c64: []
+          faithful_32x: [],
+          faithful_64x: []
         },
         contributors: {}
       }
@@ -441,11 +441,11 @@ export default {
       }
 
       Object.values(this.dataJSON.contributions).forEach(contribution => {
-        if (!contribution.res || !contribution.textureID) return
-        if (!this.displayed.contributions[contribution.res][contribution.textureID]) this.displayed.contributions[contribution.res][contribution.textureID] = []
+        if (!contribution.pack || !contribution.texture) return
+        if (!this.displayed.contributions[contribution.pack][contribution.texture]) this.displayed.contributions[contribution.pack][contribution.texture] = []
 
-        this.displayed.contributions[contribution.res][contribution.textureID].push({
-          contributors: contribution.contributors,
+        this.displayed.contributions[contribution.pack][contribution.texture].push({
+          contributors: contribution.authors,
           date: contribution.date
         })
       })
