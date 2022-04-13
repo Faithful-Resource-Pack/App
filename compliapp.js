@@ -493,7 +493,7 @@ axios.get('./resources/settings.json')
             .then(json => {
               auth.id = json.id
               auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
-              auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/banner/c32.png'
+              auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
               auth.username = `${json.username}#${json.discriminator}`
 
               this.tokenCallback(auth, auth)
