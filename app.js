@@ -478,52 +478,6 @@ app.get('/contributors/:type/:name?/?', function (req, res) {
 
 /**
  * ==========================================
- *               CONTRIBUTIONS
- * ==========================================
- */
-app.get('/contributions/res/?', function (req, res) {
-  contributionsBackend.resolutions()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributions/authors/?', function (req, res) {
-  contributionsBackend.authors()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributions/get/', function (req, res) {
-  const params = req.query
-
-  const authors = params.authors
-  const resolutions = params.resolutions.includes('all') ? undefined : params.resolutions
-
-  contributionsBackend.search(authors, resolutions)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributions/all/', function (req, res) {
-  contributionsBackend.contributions()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributions/stats/', function (req, res) {
-  contributionsStatsBackend.stats()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributions/users/:searchterm', function (req, res) {
-  contributorsBackend.searchUserByUsername(req.params.searchterm)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * ==========================================
  *                 TEXTURES
  * ==========================================
  */

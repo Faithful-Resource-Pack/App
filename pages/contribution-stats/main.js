@@ -17,15 +17,15 @@ export default {
         <v-container>
           <v-row class="text-center">
             <v-col>
-              <h3>{{ totalTextures }}</h3>
+              <h3>{{ texturesCount }}</h3>
               {{ $root.lang().statistics.label.textures }}
             </v-col>
             <v-col>
-              <h3>{{ totalContributors }}</h3>
+              <h3>{{ authorsCount }}</h3>
               {{ $root.lang().statistics.label.contributors }}
             </v-col>
             <v-col>
-              <h3>{{ totalContributions }}</h3>
+              <h3>{{ contributionsCount }}</h3>
               {{ $root.lang().statistics.label.contributions }}
             </v-col>
           </v-row>
@@ -34,24 +34,48 @@ export default {
     </v-container>`,
   data() {
     return {
-      totalTextures: 0,
-      totalContributors: 0,
-      totalContributions: 0,
+      texturesCount: 0,
+      authorsCount: 0,
+      contributionsCount: 0,
       contrib: []
     }
   },
   methods: {
     getData: function () {
-      axios.get('/contributions/stats')
-        .then((response) => {
-          const data = response.data
+      axios.get(`${this.$root.apiURL}/contributions/raw`)
+        .then(res => {
+          this.contributionsCount = res.data.length
 
-          this.totalTextures = data.totalTextures
-          this.totalContributors = data.totalContributors
-          this.totalContributions = data.totalContributions
+          const authors = res.data.map(el => el.authors).flat()
+          const textures = res.data.map(el => el.texture)
+          let packs = res.data.map(el => el.pack)
+          packs.filter((el, index) => authors.indexOf(el) === index)
 
-          this.contrib = data.contrib
+          this.authorsCount = authors.filter((el, index) => authors.indexOf(el) === index).length
+          this.texturesCount = textures.filter((el, index) => textures.indexOf(el) === index).length
 
+          this.contrib = Object.values(res.data.reduce((ac, val) => {
+            val.date = moment(new Date(val.date)).startOf('day').unix() * 1000
+
+            if (!(val.date in ac)) {
+              // start for date
+              ac[val.date] = {
+                date: val.date,
+                pack: {}
+              }
+
+              // start all res to 0
+              packs.forEach(p => {
+                ac[val.date].pack[p] = 0
+              })
+            }
+
+            ac[val.date].pack[val.pack]++
+
+            return ac
+          }, {}))
+
+          this.contrib.sort((a, b) => a.date - b.date)
           this.buildGraph()
         })
         .catch(function (error) {
@@ -64,16 +88,17 @@ export default {
       const width = 800; const height = 500; const spacing = 80; const legendCellSize = 20
 
       let data = this.contrib
+      console.log(this.contrib)
 
       // get all resolutions in provided
-      const allRes = data.length === 0 ? [] : Object.keys(data[0].res).reverse()
+      const allPack = data.length === 0 ? [] : Object.keys(data[0].pack).reverse()
 
       // flat data (because stacked data is dumb)
       data = this.contrib.map((el) => {
-        allRes.forEach(res => {
-          el[res] = el.res[res]
+        allPack.forEach(p => {
+          el[p] = el.pack[p]
         })
-        delete el.res
+        delete el.pack
         el.date = new Date(el.date)
         return el
       })
@@ -86,7 +111,7 @@ export default {
       // first data are fucked
       data = data.slice(4)
 
-      // Juanry first of 2021 is the Firestorm import with unknown dates to filter it too
+      // January first of 2021 is the Firestorm import with unknown dates to filter it too
       data = data.filter((d, index) => index !== 4 && d.date !== new Date('2021-01-01').getTime())
 
       const xScale = d3
@@ -108,7 +133,7 @@ export default {
       // create default time format
       const timeFormat = d3.timeFormat('%b %d %Y')
 
-      // add botom axis
+      // add bottom axis
       const domain = xScale.domain()
       const totalTicks = 8
       const diffVided = Math.round(domain.length / totalTicks)
@@ -131,7 +156,7 @@ export default {
 
       // create stack data from
       const stack = d3.stack()
-        .keys(allRes)
+        .keys(allPack)
         .order(d3.stackOrderNone)
         .offset(d3.stackOffsetNone)
 
@@ -139,7 +164,7 @@ export default {
 
       console.log(series)
 
-      const [max, secondMax] = data.map(d => d.c32 + d.c64).reduce((acc, cur) => {
+      const [max, secondMax] = data.map(d => d.faithful_32x + d.faithful_64x).reduce((acc, cur) => {
         if(cur > acc[0]) {
           acc[1] = acc[0]
           acc[0] = cur
@@ -196,20 +221,20 @@ export default {
             .style("opacity", 0);
         });
 
-      const reverseColors = colors.reverse() // Pour présenter les catégories dans le même sens qu'elles sont utilisées
-      const reverseKeys = allRes.reverse()
+      const reverseColors = colors.reverse() // To show categories in the same order as they are used
+      const reverseKeys = allPack.reverse()
 
       const reverseKeysTitle = {
-        'c32': 'faithful_32x',
-        'c64': 'faithful_64x'
+        'faithful_32x': 'faithful_32x',
+        'faithful_64x': 'faithful_64x'
       }
 
       const legend = svg.append('g')
         .attr('transform-origin', 'top right')
         .attr('transform', 'translate(' + (width - 150) + ', 20)')
 
-      // Pour chaque couleur, on ajoute un carré toujours positionné au même endroit sur l'axe X et décalé en fonction de la
-      // taille du carré et de l'indice de la couleur traitée sur l'axe Y
+      // For each color, we add a square always at the same position on the X axis
+      // and moved depending on the square size & the index of color used in the Y axis 
       legend.selectAll()
         .data(reverseColors)
         .enter().append('rect')
@@ -219,13 +244,12 @@ export default {
         .attr('y', (d, i) => i * legendCellSize)
         .style('fill', d => d)
 
-      // On procéde de la même façon sur les libellés avec un positionement sur l'axe X de la taille des carrés
-      // à laquelle on rajoute 10 px de marge
+      // We do the same with labels but we add 10px of margin
       legend.selectAll()
         .data(reverseKeys.map(e => reverseKeysTitle[e]))
         .enter().append('text')
         .attr('transform', (d, i) => 'translate(' + (legendCellSize - 20) + ', ' + ((i * legendCellSize) + (legendCellSize - 13) / 2) + ')')
-        .attr('dy', legendCellSize / 1.6) // Pour centrer le texte par rapport aux carrés
+        .attr('dy', legendCellSize / 1.6) // To center the text vertically to squares
         .style('font-size', '13px')
         .style('fill', 'grey')
         .text(d => d)
