@@ -937,16 +937,24 @@ body .texture-avatar {
 }
 
 .color-lab-tile {
+  position: relative;
   text-align: center;
 }
 
 .color-lab-tile .actions {
   opacity: 0;
 }
+
+#color-lab-page .theme--dark.v-btn.v-btn--disabled {
+  color: inherit;
+  opacity: .7;
+}
+
 .color-lab-tile:hover .actions {
   opacity: 1;
 }
 .color-lab-tile .actions .v-btn.v-btn--icon {
+  background: inherit;
   color: inherit;
   margin: 7px 0;
 }
@@ -965,4 +973,21 @@ body .texture-avatar {
   font-size: 11px;
   font-weight: 600;
   opacity: 0.6;
+}
+
+.color-lab-tile .plus-zone {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 90px;
+  right: -45px;
+  z-index: 1000;
+}
+
+.color-lab-tile .plus-zone > * {
+  transform: scale(0);
+  transition: all .1s ease;
+}
+.color-lab-tile .plus-zone:hover > * {
+  transform: scale(1);
 }
