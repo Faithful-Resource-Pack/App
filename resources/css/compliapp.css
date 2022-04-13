@@ -53,7 +53,7 @@
 
 /* Keep background from #app when the page is loading */
 .theme--dark.v-application {
-  background: #120e19 url(https://faithfulpack.net/image/background/the_end.jpg) no-repeat center;
+  background: #191919;
   background-attachment: fixed;
 }
 
