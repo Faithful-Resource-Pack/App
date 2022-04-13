@@ -177,6 +177,7 @@ export default {
       return {
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
         packs: packs,
+        pack: packs ? packs[0] : null,
         texture: '0',
         authors: []
       }
