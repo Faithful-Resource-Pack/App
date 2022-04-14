@@ -101,17 +101,7 @@ export default {
 
       Object.keys(data).forEach(k => data[k] = (data[k] === null) ? this.default[k] : data[k]);
 
-      if (this.add) axios.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableDialog(true)
-        })
-        .catch(error => {
-          console.error(error)
-          this.$root.showSnackBar(`${error.message}: ${error.response ? error.response.data.error : error.message}`, 'error')
-        })
-
-      else axios.put(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
+      axios.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)

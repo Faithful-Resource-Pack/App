@@ -424,6 +424,7 @@ export default {
         },
         error_message: {
           texture_not_done: 'La texture n\'a pas été faite !',
+          user_anonymous: 'Anonyme',
           user_not_found: 'Utilisateur Inconnu',
           contribution_not_found: 'Aucune contribution trouvée dans la base de donnée!'
         },

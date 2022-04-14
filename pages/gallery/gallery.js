@@ -258,7 +258,11 @@ export default {
       `
     },
     discordIDtoName(d) {
-      return this.displayed.contributors[d] ? this.displayed.contributors[d].username : this.$root.lang().gallery.error_message.user_not_found
+      return this.displayed.contributors[d] 
+        ? this.displayed.contributors[d].username 
+          ? this.displayed.contributors[d].username
+          : this.$root.lang().gallery.error_message.user_anonymous
+        : this.$root.lang().gallery.error_message.user_not_found
     },
     timestampToDate(t) {
       const a = new Date(t)
@@ -325,7 +329,7 @@ export default {
         { message: this.$root.lang().gallery.loading_message.textures, route: `/gallery/textures/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'textures' },
         { message: this.$root.lang().gallery.loading_message.paths, route: `/gallery/paths/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'paths' },
         { message: this.$root.lang().gallery.loading_message.uses, route: `/gallery/uses/${this.edition}/${this.version}/${this.tag}/${this.search ? this.search : ''}`, key: 'uses' },
-        { message: this.$root.lang().gallery.loading_message.contributors, route: '/contributors/all', key: 'contributors' }
+        { message: this.$root.lang().gallery.loading_message.contributors, route: `${this.$root.apiURL}/contributions/authors`, key: 'contributors' }
       ]
 
       if (this.current.resolution !== '16x') {
@@ -343,7 +347,7 @@ export default {
       if (loadMessage) this.loading.status = true
 
       params.forEach(param => {
-        axios.get(param.route)
+        axios.get(param.route, this.$root.apiOptions)
           .then(res => {
             this.loading.comments.push(param.message)
             this.dataJSON[param.key] = res.data
