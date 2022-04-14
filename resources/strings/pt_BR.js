@@ -62,7 +62,6 @@ export default {
         title: 'banco de dados',
         subtabs: {
           contributions: 'contribuições',
-          contributors: 'contribuidores',
           textures: 'texturas',
           mods: 'mods',
           modpacks: 'modpacks'

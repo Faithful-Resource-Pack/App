@@ -1,7 +1,7 @@
 /* global axios */
 
 export default {
-  name: 'contributor-remove-confirm',
+  name: 'user-remove-confirm',
   template: `
   <v-dialog
       v-model="confirm"
@@ -63,11 +63,7 @@ export default {
   },
   methods: {
     deleteContributor: function () {
-      const data = JSON.parse(JSON.stringify(this.formData))
-      data.id = this.id
-      data.token = this.$root.user.access_token
-
-      axios.post('/contributors/remove', data)
+      axios.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)

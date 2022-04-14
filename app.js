@@ -95,7 +95,7 @@ app.use('/api/discord', require('./api/discord'))
 /**
  * @param {String} token  Discord access token
  * @param {String[]} roles Authorized roles to get access, only 1 of them is necessary
- * @returns {Promise<void>} Resolves if authed correctly
+ * @returns {Promise<void>} Resolves if authored correctly
  */
 const verifyAuth = (token, roles = []) => {
   if (!token) {
@@ -371,7 +371,7 @@ app.post('/profile/roles', function (req, res) {
       contributorsBackend.getUser(userID)
         .then(contributor => {
           res.setHeader('Content-Type', 'application/json')
-          res.send(contributor.type || [])
+          res.send(contributor.roles || [])
           res.end()
         })
         .catch(err => {
@@ -379,7 +379,7 @@ app.post('/profile/roles', function (req, res) {
           // if user not found -> does not exist -> add a new one to the db
           contributorsBackend.add({
             username: username,
-            type: [],
+            roles: [],
             media: [],
             id: userID
           })
@@ -387,7 +387,7 @@ app.post('/profile/roles', function (req, res) {
               contributorsBackend.getUser(userID)
                 .then(contributor => {
                   res.setHeader('Content-Type', 'application/json')
-                  res.send(contributor.type || [])
+                  res.send(contributor.roles || [])
                   res.end()
                 })
             })
@@ -398,82 +398,6 @@ app.post('/profile/roles', function (req, res) {
             })
         })
     })
-})
-
-/**
- * ==========================================
- *                CONTRIBUTOR
- * ==========================================
- */
-
-// POST
-/**
- * Perms: admins + dev
- */
-app.post('/contributors/change', (req, res) => {
-  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return contributorsBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * Perms: admins + dev
- */
-app.post('/contributors/add', (req, res) => {
-  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return contributorsBackend.add(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * Perms: admins + dev
- */
-app.post('/contributors/remove', (req, res) => {
-  verifyAuth(req.body.token, [settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return contributorsBackend.remove(req.body.id)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/contributors/types', function (req, res) {
-  contributorsBackend.userTypes()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/contributors/:type/:name?/?', function (req, res) {
-  let username, type
-
-  if ('type' in req.params && req.params.type && req.params.type !== 'all') type = req.params.type
-  if ('name' in req.params && req.params.name) username = req.params.name // check if field and value not undefined
-
-  const searchOptions = [{
-    field: 'username',
-    criteria: 'includes',
-    value: username || '',
-    ignoreCase: true
-  }]
-
-  if (type) {
-    searchOptions.push({
-      field: 'type',
-      criteria: 'array-contains-any',
-      value: [type, type.toLowerCase(), type.toUpperCase()]
-    })
-  }
-
-  contributorsBackend.search(searchOptions)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
 })
 
 /**

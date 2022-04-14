@@ -1,7 +1,7 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
 const ContributionPage = () => import('./pages/contribution/main.js')
-const ContributorPage = () => import('./pages/contributor/main.js')
+const UsersPage = () => import('./pages/users/main.js')
 const ContributorStatsPage = () => import('./pages/contribution-stats/main.js')
 const TexturePage = () => import('./pages/texture/main.js')
 const ProfilePage = () => import('./pages/profile/main.js')
@@ -117,7 +117,7 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/contributions', component: ContributionPage }] },
-      { routes: [{ path: '/contributors', redirect: '/contributors/all' }, { path: '/contributors/:type?/:name*', component: ContributorPage }] },
+      { routes: [{ path: '/users', redirect: '/users/all' }, { path: '/users/:type?/:name*', component: UsersPage }] },
       { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name*', component: TexturePage }] },
       { routes: [{ path: '/settings', component: SettingsPage }] },
       { routes: [{ path: '/modding/mods', component: ModsPage }] },
@@ -181,7 +181,7 @@ let ALL_TABS = [
     label: 'database',
     subtabs: [
       { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
-      { enabled: true, icon: 'mdi-account-multiple', to: '/contributors', label: 'contributors' },
+      { enabled: true, icon: 'mdi-account-multiple', to: '/users', label: 'users' },
       { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
       { enabled: true, icon: 'mdi-settings', to: '/settings', label: 'settings' },
       { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },

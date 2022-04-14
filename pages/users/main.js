@@ -1,22 +1,24 @@
 /* global axios, Vue */
-const ContributorModal = () => import('./modal.js')
-const ContributorRemoveConfirm = () => import('./remove-confirm.js')
+const UserModal = () => import('./modal.js')
+const UserRemoveConfirm = () => import('./remove-confirm.js')
 
 export default {
   name: 'contributor-page',
   components: {
-    ContributorModal,
-    ContributorRemoveConfirm
+    UserModal,
+    UserRemoveConfirm
   },
   template: `
     <v-container>
-      <contributor-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></contributor-modal>
+      <user-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
+      <user-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></user-remove-confirm>
+
       <div class="text-h4 py-4">
-        {{ $root.lang().database.titles.contributors }}
+        {{ $root.lang().database.titles.users }}
       </div>
       <div>
-        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_contributor_type }}</div>
-        <div><v-btn v-for="t in contributorTypes" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !type && !!name }" :to="contributorURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
+        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_contributor_role }}</div>
+        <div><v-btn v-for="t in usersRoles" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !role && !!name }" :to="userURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
         <div class="my-2">
           <v-text-field
@@ -36,14 +38,14 @@ export default {
         <v-btn block @click="openDialog()">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
         <div class="my-2 text-h5">{{ $root.lang().database.labels.contributors_results }}</div>
-        <v-list rounded v-if="contributors.length" two-line class="main-container">
+        <v-list rounded v-if="users.length" two-line class="main-container">
           <v-row><v-col :cols="12/listColumns" xs="1"
-              v-for="(contrib_arr, index) in splittedContributors"
+              v-for="(users, index) in splittedUsers"
               :key="index"
             >
             <v-list-item
-              v-for="contrib in contrib_arr"
-              :key="contrib.id"
+              v-for="user in users"
+              :key="user.id"
             >
               <v-list-item-avatar
                 :style="{
@@ -53,21 +55,21 @@ export default {
                   'border-radius': '10px'
                 }"
               >
-                <v-img v-if="contrib.uuid" :src="'https://visage.surgeplay.com/head/48/' + contrib.uuid" />
+                <v-img v-if="user.uuid" :src="'https://visage.surgeplay.com/head/48/' + user.uuid" />
                 <v-icon large v-else style="background: rgba(39, 39, 39, 0.8);">mdi-account</v-icon>
               </v-list-item-avatar>
 
               <v-list-item-content>
-                <v-list-item-title v-text="contrib.username"></v-list-item-title>
+                <v-list-item-title v-text="user.username"></v-list-item-title>
 
-                <v-list-item-subtitle v-text="(contrib.type||[]).join(', ')"></v-list-item-subtitle>
+                <v-list-item-subtitle v-text="(user.roles||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
 
               <v-list-item-action class="merged">
-                <v-btn icon @click="openDialog(contrib)">
+                <v-btn icon @click="openDialog(user)">
                   <v-icon color="lighten-1">mdi-pencil</v-icon>
                 </v-btn>
-                <v-btn icon @click="askRemove(contrib)">
+                <v-btn icon @click="askRemove(user)">
                   <v-icon color="red lighten-1">mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
@@ -76,23 +78,16 @@ export default {
         </v-list>
         <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
       </div>
-      <contributor-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></contributor-remove-confirm>
     </v-container>`,
   data () {
     return {
       recompute: false,
-      types: [],
+      roles: [],
       search: '',
-      formData: {
-        username: '',
-        type: '',
-        id: 0,
-        uuid: '',
-        pushToGithub: false
-      },
-      contributors: [],
+      users: [],
       dialogOpen: false,
       dialogData: {},
+      dialogDataAdd: false,
       remove: {
         confirm: false,
         data: {}
@@ -100,26 +95,14 @@ export default {
     }
   },
   methods: {
-    contributorURL (t) {
-      return '/contributors/' + t + '/' + (this.name || '')
-    },
-    send () {
-      const data = JSON.parse(JSON.stringify(this.formData))
-      data.token = this.$root.user.access_token
-
-      axios.post('/contributor', data)
-        .then(function (response) {
-          console.log(response)
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
+    userURL (t) {
+      return '/users/' + t + '/' + (this.name || '')
     },
     startSearch: function () {
       // ok so url is /whatever/ => /whatever/<search>
       // ok so url is /whatever/<oldSearch> => /whatever/<search>
-      // ok so url is /whatever/<type> =>/whatever/<type>/<search>
-      // ok so url is /whatever/<type>/<name> => /whatever/<type>/<search>
+      // ok so url is /whatever/<role> =>/whatever/<role>/<search>
+      // ok so url is /whatever/<role>/<name> => /whatever/<role>/<search>
       let newPath
       if (this.name) {
         const splitted = this.$route.path.split('/')
@@ -139,10 +122,10 @@ export default {
         this.$router.push(newPath)
       }
     },
-    getTypes: function () {
-      axios.get('/contributors/types')
+    getRoles: function () {
+      axios.get(`${this.$root.apiURL}/users/roles`)
         .then((response) => {
-          this.types = response.data
+          this.roles = response.data
         })
         .catch(function (error) {
           console.error(error)
@@ -153,34 +136,33 @@ export default {
           })
         })
     },
-    getContributors: function () {
-      axios.get(this.$route.path)
-        .then((response) => {
-          this.contributors = response.data
+    getUsers: function () {
+      let url = `${this.$root.apiURL}${this.$route.path.split('/').map(str => str === 'users' ? 'users/role' : str).join('/')}`
+      axios.get(url, this.$root.apiOptions)
+        .then((res) => {
+          this.users = res.data
         })
-        .catch(function (error) {
-          console.error(error)
-        })
+        .catch(err => console.error(err))
     },
     update: function () {
-      this.getTypes()
-      this.getContributors()
+      this.getRoles()
+      this.getUsers()
     },
     clearSearch: function () {
       this.search = ''
       this.startSearch()
     },
-    openDialog: function (data = {}) {
-      this.dialogOpen = true
-      this.dialogData = data
+    openDialog: function (data = undefined) {
+      this.dialogData = data;
+      this.dialogDataAdd = data === undefined ? true : false;
+      this.dialogOpen = true;
     },
     disableDialog: function (refresh = false) {
-      this.dialogOpen = false
+      this.dialogOpen = false;
+      this.dialogData = {};
+      this.dialogDataAdd = false;
 
-      if (refresh) {
-        this.getTypes()
-        this.getContributors()
-      }
+      if (refresh) this.update();
     },
     askRemove: function (data) {
       this.remove.data = data
@@ -188,42 +170,42 @@ export default {
     }
   },
   computed: {
-    contributorTypes: function () {
-      return ['all', ...this.types]
+    usersRoles: function () {
+      return ['all', ...this.roles]
     },
-    type: function () {
-      if (this.$route.params.type && this.contributorTypes.includes(this.$route.params.type)) {
-        return this.$route.params.type
+    role: function () {
+      if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role)) {
+        return this.$route.params.role
       }
       return undefined
     },
     name: function () {
-      if (this.type !== undefined) {
+      if (this.role !== undefined) {
         return this.$route.params.name
       }
 
-      return this.$route.params.type
+      return this.$route.params.role
     },
     listColumns: function () {
       let columns = 1
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
+      if (this.$vuetify.breakpoint.mdAndUp && this.users.length >= 6) {
         columns = 2
-        if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
+        if (this.$vuetify.breakpoint.lgAndUp && this.users.length >= 21) {
           columns = 3
         }
       }
 
       return columns
     },
-    splittedContributors: function () {
+    splittedUsers: function () {
       const res = []
       for (let col = 0; col < this.listColumns; ++col) {
         res.push([])
       }
 
       let arrayIndex = 0
-      this.contributors.forEach(contrib => {
+      this.users.forEach(contrib => {
         res[arrayIndex].push(contrib)
         arrayIndex = (arrayIndex + 1) % this.listColumns
       })
@@ -233,7 +215,7 @@ export default {
   },
   watch: {
     $route () {
-      this.getContributors()
+      this.getUsers()
     }
   },
   mounted: function () {

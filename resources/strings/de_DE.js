@@ -60,7 +60,6 @@ export default {
         title: 'Datenbank',
         subtabs: {
           contributions: 'Beiträge',
-          contributors: 'Mitwirkende',
           textures: 'Texturen',
           files: 'Dateien',
           mods: 'mods',

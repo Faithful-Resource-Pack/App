@@ -1,7 +1,7 @@
 /* global axios, Vue */
 
 export default {
-  name: 'contributor-modal',
+  name: 'user-modal',
   template: `
   <v-dialog
       v-model="dialog"
@@ -17,8 +17,10 @@ export default {
               <v-form ref="form" lazy-validation>
                 <v-text-field required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.discord_id"></v-text-field>
                 <v-text-field required clearable v-model="formData.username" :label="$root.lang().database.labels.username"></v-text-field>
-                <v-select required multiple small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.contributor_type"></v-select>
-                <v-text-field required clearable v-model="formData.uuid" :label="$root.lang().database.labels.uuid"></v-text-field>
+                <v-select required multiple small-chips v-model="formData.roles" :items="roles" :label="$root.lang().database.labels.contributor_type"></v-select>
+                <v-text-field clearable v-model="formData.uuid" :label="$root.lang().database.labels.uuid"></v-text-field>
+                <v-checkbox required clearable v-model="formData.anonymous" :label="$root.lang().database.labels.anonymous"></v-checkbox>
+                <v-text v-if="formData.anonymous">{{ $root.lang().database.labels.anonymous_explain }}</v-text>
               </v-form>
             </v-col>
           </v-row>
@@ -61,19 +63,25 @@ export default {
       type: Object,
       required: true
     },
-    types: {
+    roles: {
       type: Array,
-      required: false,
-      default: function () { return ['Member'] }
+      required: true
     }
   },
   data() {
     return {
       formData: {
         username: '',
-        type: undefined,
+        roles: [],
         uuid: '',
+        anonymous: false,
         id: ''
+      },
+      default: {
+        username: '',
+        roles: [],
+        uuid: '',
+        anonymous: false
       }
     }
   },
@@ -84,10 +92,26 @@ export default {
   },
   methods: {
     send: function () {
-      const data = JSON.parse(JSON.stringify(this.formData))
-      data.token = this.$root.user.access_token
+      const data = this.formData;
+      const id = data.id;
 
-      axios.post(this.add ? '/contributors/add' : '/contributors/change', data)
+      delete data.id;    // excess property and therefore is not allowed
+      delete data.media; // excess property and therefore is not allowed
+      delete data.warns; // excess property and therefore is not allowed _yeet_
+
+      Object.keys(data).forEach(k => data[k] = (data[k] === null) ? this.default[k] : data[k]);
+
+      if (this.add) axios.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(error => {
+          console.error(error)
+          this.$root.showSnackBar(`${error.message}: ${error.response ? error.response.data.error : error.message}`, 'error')
+        })
+
+      else axios.put(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)
@@ -99,19 +123,20 @@ export default {
     }
   },
   watch: {
-    dialog: function (newValue, oldValue) {
-      if (oldValue !== newValue && newValue === true) {
-        Vue.nextTick(() => {
-          this.$refs.form.reset()
-
-          if (!this.add) {
-            const keys = Object.keys(this.data)
-            keys.forEach(key => {
-              this.formData[key] = this.data[key]
-            })
-          }
+    dialog: function () {
+      Vue.nextTick(() => {
+        if (!this.add) Object.keys(this.data).forEach(key => {
+          this.formData[key] = this.data[key]
         })
-      }
+
+        else this.formData = {
+          username: '',
+          roles: [],
+          uuid: '',
+          anonymous: false,
+          id: ''
+        }
+      })
     }
   }
 }
