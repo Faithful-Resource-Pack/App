@@ -11,6 +11,13 @@ export default {
     loading: 'Loading, please wait...',
     no_results: 'No results were found.',
     nyi: 'Not yet implemented.',
+    snackbar_system_theme: {
+      sentence: 'System theme changed to %s',
+      themes: {
+        light: 'light',
+        dark: 'dark'
+      }
+    },
     btn: {
       add: 'Add',
       add_download: 'Add Download',

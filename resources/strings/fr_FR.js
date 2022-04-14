@@ -13,6 +13,13 @@ export default {
     loading: 'Chargement, veuillez patienter...',
     no_results: 'Aucun résultat n\'a été trouvé.',
     nyi: 'N\'a pas encore été implémenté.',
+    snackbar_system_theme: {
+      sentence: 'Thème système changé en %s',
+      themes: {
+        light: 'clair',
+        dark: 'sombre'
+      }
+    },
     btn: {
       add: 'Ajouter',
       add_download: 'Ajouter un lien',

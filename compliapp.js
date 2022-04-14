@@ -277,7 +277,7 @@ axios.get('./resources/settings.json')
             }
 
             window.localStorage.setItem('THEME', String(n))
-            const isDark = n != 'light' && (n == 'dark' || window.matchMedia("(prefers-color-scheme: dark)"))
+            const isDark = n != 'light' && (n == 'dark' || window.matchMedia("(prefers-color-scheme: dark)").matches)
             this.$vuetify.theme.dark = isDark
           },
           immediate: true
@@ -458,6 +458,16 @@ axios.get('./resources/settings.json')
             listener(auth.access_token)
           }
         },
+        onMediaChange(isDark) {
+          // only if system theme
+          if(this.theme === Object.keys(this.themes).pop()) {
+            this.$vuetify.theme.dark = isDark
+
+            // nice snackbar sentence
+            const notify = this.lang().global.snackbar_system_theme
+            this.showSnackBar(notify.sentence.replace('%s', isDark ? notify.themes.dark : notify.themes.light), 'success', 2000)
+          }
+        }
       },
       created: function () {
         const authStr = window.localStorage.getItem('auth')
@@ -472,6 +482,14 @@ axios.get('./resources/settings.json')
         setTimeout(() => {
           this.refreshToken(auth.refresh_token)
         }, Math.max(expires_at - 60000 - new Date(), 0))
+
+        // watch color schemes for light and dark
+        window.matchMedia("(prefers-color-scheme: dark)").onchange = (ev) => {
+          if(ev.matches) this.onMediaChange(true)
+        }
+        window.matchMedia("(prefers-color-scheme: light)").onchange = (ev) => {
+          if(ev.matches) this.onMediaChange(false)
+        }
       },
       mounted: function () {
         const urlSearchParams = new URLSearchParams(window.location.search)
