@@ -8,7 +8,7 @@ export default {
     logout: 'Log Out',
     login: 'Log in via Discord',
     ends_success: 'Completed successfully',
-    loading: 'Loading, please wait...',
+    loading: 'Loading, please wait…',
     no_results: 'No results were found.',
     nyi: 'Not yet implemented.',
     snackbar_system_theme: {
@@ -183,7 +183,7 @@ export default {
       use_id: 'Changing the Use ID can break everything!',
       path_id: 'Changing the Path ID can break everything!',
       warning_path: 'Use needs to be created before adding paths to it (currently not well supported and a bit buggy). Adding path before creating the use is planned.',
-      path: 'The path should start from the root directory (ex: assets/...)',
+      path: 'The path should start from the root directory (ex: assets/…)',
       example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
       example_scenario_warn: "Please don't forget to update all GitHub branch names as well!"
     }
@@ -197,7 +197,7 @@ export default {
       approved: 'Approved'
     },
     deny_window: {
-      label: 'Write a reason...',
+      label: 'Write a reason…',
       rule: 'Any reason can be given'
     },
     labels: {
@@ -307,7 +307,7 @@ export default {
     downloads: {
       title: 'Downloads',
       name: {
-        placeholder: 'CurseForge, GitHub...',
+        placeholder: 'CurseForge, GitHub…',
         label: 'Name',
         rules: {
           name_required: 'A name is required.',
@@ -386,13 +386,13 @@ export default {
   gallery: {
     title: 'Gallery',
     loading_message: {
-      general: 'Loading...',
-      textures: 'Getting textures...',
-      paths: 'Getting texture paths...',
-      uses: 'Getting texture uses...',
-      contribution: 'Getting contributions...',
-      contributors: 'Getting contributors...',
-      tags: 'Getting texture tags...'
+      general: 'Loading…',
+      textures: 'Getting textures…',
+      paths: 'Getting texture paths…',
+      uses: 'Getting texture uses…',
+      contribution: 'Getting contributions…',
+      contributors: 'Getting contributors…',
+      tags: 'Getting texture tags…'
     },
     error_message: {
       texture_not_done: 'Texture not done!',
@@ -475,13 +475,13 @@ export default {
     gallery: {
       title: 'Gallery',
       loading_message: {
-        general: 'Loading...',
-        textures: 'Getting textures...',
-        paths: 'Getting texture paths...',
-        uses: 'Getting texture uses...',
-        contribution: 'Getting contributions...',
-        contributors: 'Getting contributors...',
-        tags: 'Getting texture tags...'
+        general: 'Loading…',
+        textures: 'Getting textures…',
+        paths: 'Getting texture paths…',
+        uses: 'Getting texture uses…',
+        contribution: 'Getting contributions…',
+        contributors: 'Getting contributors…',
+        tags: 'Getting texture tags…'
       },
       error_message: {
         texture_not_done: 'Texture not done!',

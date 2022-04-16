@@ -10,7 +10,7 @@ export default {
     logout: 'Déconnexion',
     login: 'Se connecter via Discord',
     ends_success: 'Terminé avec succès',
-    loading: 'Chargement, veuillez patienter...',
+    loading: 'Chargement, veuillez patienter…',
     no_results: 'Aucun résultat n\'a été trouvé.',
     nyi: 'N\'a pas encore été implémenté.',
     snackbar_system_theme: {
@@ -185,7 +185,7 @@ export default {
       use_id: 'Changer l\'ID de l\'utilisation peut tout casser',
       path_id: 'Changer l\'ID du chemin peut tout casser',
       warning_path: 'L\'utilisation doit être créée avant d\'y ajouter des chemins (actuellement pas très bien supporté et un peu bugué)',
-      path: 'Le chemin doit commencer à partir du répertoire racine (ex: assets/...)',
+      path: 'Le chemin doit commencer à partir du répertoire racine (ex: assets/…)',
       example_scenario: 'Hm, toute la base de donnée est configurée pour télécharger les textures pour la version 1.17 mais il existe désormais une version 1.17.1, cette option est faite pour vous !',
       example_scenario_warn: 'N\'oubliez pas de mettre également à jour toutes les branches GitHub !'
     }
@@ -199,7 +199,7 @@ export default {
       approved: 'Accepté(s)'
     },
     deny_window: {
-      label: 'Écrivez une raison...',
+      label: 'Écrivez une raison…',
       rule: 'Toute raison peut être donnée'
     },
     labels: {
@@ -306,7 +306,7 @@ export default {
     downloads: {
       title: 'Téléchargements',
       name: {
-        placeholder: 'CurseForge, GitHub...',
+        placeholder: 'CurseForge, GitHub…',
         label: 'Nom',
         rules: {
           name_required: 'Un nom est requis.',
@@ -343,7 +343,7 @@ export default {
       },
       username: {
         label: 'Pseudonyme',
-        hint: 'Votre pseudonyme sera affiché et utilisé sur le site pour les contributions, les add-ons et bien plus encore...'
+        hint: 'Votre pseudonyme sera affiché et utilisé sur le site pour les contributions, les add-ons et bien plus encore…'
       }
     },
     social: {
@@ -421,13 +421,13 @@ export default {
       gallery: {
         title: 'Galerie',
         loading_message: {
-          general: 'Chargement...',
-          textures: 'Récupération des textures...',
-          paths: 'Récupération des chemins de texture...',
-          uses: 'Récupération des utilisations des textures...',
-          contribution: 'Récupération des contributions...',
-          contributors: 'Récupération des contributeurs...',
-          tags: 'Récupération des tags de texture...'
+          general: 'Chargement…',
+          textures: 'Récupération des textures…',
+          paths: 'Récupération des chemins de texture…',
+          uses: 'Récupération des utilisations des textures…',
+          contribution: 'Récupération des contributions…',
+          contributors: 'Récupération des contributeurs…',
+          tags: 'Récupération des tags de texture…'
         },
         error_message: {
           texture_not_done: 'La texture n\'a pas été faite !',

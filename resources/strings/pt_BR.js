@@ -10,7 +10,7 @@ export default {
     logout: 'Sair',
     login: 'Entrar com Discord',
     ends_success: 'Sucesso',
-    loading: 'Carregando, aguarde...',
+    loading: 'Carregando, aguarde…',
     no_results: 'Nenhum resultado encontrado.',
     nyi: 'Não implementado ainda.',
     btn: {
@@ -171,7 +171,7 @@ export default {
       use_id: 'Alterar o ID do uso pode quebrar tudo',
       path_id: 'Alterar o ID do caminho pode quebrar tudo',
       warning_path: 'Uso precisa ser criado antes de adicionar caminhos a ele (no momento não é bem suportado e um pouco falho), adicionar caminho antes de criar o uso é planejado.',
-      path: 'O caminho deve começar na pasta-mãe (ex.: assets/...)',
+      path: 'O caminho deve começar na pasta-mãe (ex.: assets/…)',
       example_scenario: 'Altera todas as instâncias de uma versão do Minecraft no banco de dados para uma diferente. (ex.: 1.17 → 1.17.1)',
       example_scenario_warn: 'Por favor não se esqueça de atualizar todos os nomes das ramificações no GitHub também!'
     }
@@ -185,7 +185,7 @@ export default {
       approved: 'Aprovado'
     },
     deny_window: {
-      label: 'Escreva um motivo...',
+      label: 'Escreva um motivo…',
       rule: 'Qualquer motivo pode ser dado'
     },
     labels: {
@@ -290,7 +290,7 @@ export default {
     downloads: {
       title: 'Downloads',
       name: {
-        placeholder: 'CurseForge, GitHub...',
+        placeholder: 'CurseForge, GitHub…',
         label: 'Nome',
         rules: {
           name_required: 'Um nome é necessário..',
@@ -347,13 +347,13 @@ export default {
   gallery: {
     title: 'Galeria',
     loading_message: {
-      general: 'Carregando...',
-      textures: 'Carregando texturas...',
-      paths: 'Carregando caminhos das texturas...',
-      uses: 'Carregando usos das texturas...',
-      contribution: 'Carregando contribuições...',
-      contributors: 'Carregando contribuidores...',
-      tags: 'Carregando tags das texturas...'
+      general: 'Carregando…',
+      textures: 'Carregando texturas…',
+      paths: 'Carregando caminhos das texturas…',
+      uses: 'Carregando usos das texturas…',
+      contribution: 'Carregando contribuições…',
+      contributors: 'Carregando contribuidores…',
+      tags: 'Carregando tags das texturas…'
     },
     error_message: {
       texture_not_done: 'Textura não concluída!',
