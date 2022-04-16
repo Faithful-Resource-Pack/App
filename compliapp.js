@@ -55,12 +55,14 @@ import enUS from './resources/strings/en_US.js'
 import frFR from './resources/strings/fr_FR.js'
 import deDE from './resources/strings/de_DE.js'
 import ptBR from './resources/strings/pt_BR.js'
+import csCZ from './resources/strings/cs_CZ.js'
 
 const LANGS = {
   en: enUS,
+  cs: Object.merge({}, enUS, csCZ),
   br: Object.merge({}, enUS, ptBR),
   de: Object.merge({}, enUS, deDE),
-  fr: Object.merge({}, enUS, frFR),
+  fr: Object.merge({}, enUS, frFR)
 }
 
 let lang_value;

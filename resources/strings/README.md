@@ -21,6 +21,7 @@ Finally you can make a pull request with those changes!
 
 ## Translation credits:
 
+- [x] Czech (_@Pomi108_)
 - [x] Brazilian Portuguese (_@PedroESP\_01_)
 - English
 - [x] French (_@Juknum_)
