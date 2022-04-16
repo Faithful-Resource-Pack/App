@@ -136,7 +136,7 @@ export default {
     },
     labels: {
       anonymous: 'Anonymous',
-      anonymous_explain: 'If checked, the user will be named as "Anonymous" and his skin won\'t be displayed. Can only be changed by administrators!',
+      anonymous_explain: 'If checked, the user\'s name will be displayed as "Anonymous" and their skin won\'t show up. Can only be changed by administrators!',
       mcmeta: 'Animated texture',
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
@@ -179,10 +179,10 @@ export default {
       new_mc_version: 'New MC Version'
     },
     hints: {
-      texture_id: 'Changing the Texture ID can break everything',
-      use_id: 'Changing the Use ID can break everything',
-      path_id: 'Changing the Path ID can break everything',
-      warning_path: 'Use needs to be created before adding paths to it (currently not well supported and a bit buggy), adding path before creating the use is planned.',
+      texture_id: 'Changing the Texture ID can break everything!',
+      use_id: 'Changing the Use ID can break everything!',
+      path_id: 'Changing the Path ID can break everything!',
+      warning_path: 'Use needs to be created before adding paths to it (currently not well supported and a bit buggy). Adding path before creating the use is planned.',
       path: 'The path should start from the root directory (ex: assets/...)',
       example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
       example_scenario_warn: "Please don't forget to update all GitHub branch names as well!"
@@ -242,7 +242,7 @@ export default {
       title: 'General',
       name: {
         label: 'Add-on name',
-        hint: 'A short name is always better!',
+        hint: 'A short name is preferred.',
         rules: {
           name_required: 'A name is required.',
           name_too_big: 'Add-on name must be less than %s characters.',
@@ -261,7 +261,7 @@ export default {
       },
       authors: {
         label: 'Select authors for the add-on',
-        hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list who's supposed to be there, contact an Administrator/Developer"
+        hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list, contact an Administrator/Developer"
       }
     },
     images: {
@@ -284,7 +284,7 @@ export default {
           normal: 'Additional image(s)',
           replace: 'Replace additional image(s)'
         },
-        rule: 'Wrong Ratio: Image(s) without a 16:9 side ratio have been removed.'
+        rule: 'Wrong Ratio: All images with a side ratio other than 16:9 have been removed.'
       }
     },
     options: {
@@ -340,7 +340,7 @@ export default {
       title: 'General',
       uuid: {
         label: 'Minecraft profile UUID',
-        hint: 'Your skin will be displayed on submissions you authored.'
+        hint: 'Your skin will be displayed in submissions you authored.'
       },
       username: {
         label: 'Username',
@@ -388,11 +388,11 @@ export default {
     loading_message: {
       general: 'Loading...',
       textures: 'Getting textures...',
-      paths: 'Getting textures paths...',
-      uses: 'Getting textures uses...',
+      paths: 'Getting texture paths...',
+      uses: 'Getting texture uses...',
       contribution: 'Getting contributions...',
       contributors: 'Getting contributors...',
-      tags: 'Getting textures tags...'
+      tags: 'Getting texture tags...'
     },
     error_message: {
       texture_not_done: 'Texture not done!',
@@ -477,11 +477,11 @@ export default {
       loading_message: {
         general: 'Loading...',
         textures: 'Getting textures...',
-        paths: 'Getting textures paths...',
-        uses: 'Getting textures uses...',
+        paths: 'Getting texture paths...',
+        uses: 'Getting texture uses...',
         contribution: 'Getting contributions...',
         contributors: 'Getting contributors...',
-        tags: 'Getting textures tags...'
+        tags: 'Getting texture tags...'
       },
       error_message: {
         texture_not_done: 'Texture not done!',
