@@ -407,6 +407,7 @@ export default {
       edition: 'Edice',
       resolution: 'Rozlišení'
     },
+    all: 'vše',
     modal: {
       items: {
         information: 'informace',
