@@ -142,7 +142,7 @@ export default {
       },
       options: {
         resolutions: ['16x', ...settings.resolutions],
-        tags: ['All'],
+        tags: [this.$root.lang().gallery.all],
         versions: settings.versions.java,
         editions: settings.editions.map(e => e.toLowerCase())
       },
@@ -173,7 +173,7 @@ export default {
   },
   computed: {
     resolutions() { return this.options.resolutions },
-    tags() { return ['all', ...this.options.tags] },
+    tags() { return [this.$root.lang().gallery.all, ...this.options.tags] },
     versions() { return this.options.versions },
     editions() { return this.options.editions },
 
@@ -305,6 +305,10 @@ export default {
       return ''
     },
     updateRoute(data, type) {
+      // TODO: do this in a different way because I'm stupid
+      // Causes the button to not be highlighted when selected in another language
+      if (data == this.$root.lang().gallery.all) data = 'all'
+
       if (this.current[type] === data) return // avoid redundant redirection
       this.current[type] = data
 
@@ -378,7 +382,7 @@ export default {
       }
 
       // set textures tags
-      this.options.tags = ['All']
+      this.options.tags = [this.$root.lang().gallery.all]
       this.dataJSON.tags.forEach(tag => {
         if (!this.options.tags.includes(tag)) this.options.tags.push(tag)
       })

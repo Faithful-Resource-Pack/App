@@ -407,6 +407,7 @@ export default {
       edition: 'Edition',
       resolution: 'Resolution'
     },
+    all: 'all',
     modal: {
       items: {
         information: 'information',
