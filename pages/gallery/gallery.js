@@ -87,7 +87,7 @@ export default {
         <div class="text-h6 py-6" style="padding: 0 10px !important">{{ loading.comments.length }}/{{ loading.steps }} {{ $root.lang().gallery.loading_message.general }}</div>
         <span style="padding: 0 10px;">{{ loading.comments[loading.comments.length - 1] }}</span>
       </template>
-      <template v-if="!loading.status && displayedTextures.length === 0">
+      <template v-if="!loading.status && displayedTextures.length === undefined">
         <div class="text-h6" style="padding: 0 10px !important">{{ $root.lang().global.no_results }}</div>
       </template>
 
