@@ -1,7 +1,3 @@
-/**
- * This file would be used as base for all languages
- */
-
 export default {
   global: {
     name: 'Webová aplikace Faithful',
@@ -35,11 +31,11 @@ export default {
     },
     tabs: {
       user: {
-        title: 'user',
+        title: 'uživatel',
         subtabs: {
-          profile: 'profile',
-          statistics: 'statistics',
-          gallery: 'gallery'
+          profile: 'profil',
+          statistics: 'statistiky',
+          gallery: 'galerie'
         }
       },
       addons: {
