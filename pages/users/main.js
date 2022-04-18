@@ -174,8 +174,8 @@ export default {
       return ['all', ...this.roles]
     },
     role: function () {
-      if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role)) {
-        return this.$route.params.role
+      if (this.$route.params.type && this.usersRoles.includes(this.$route.params.type)) {
+        return this.$route.params.type
       }
       return undefined
     },
@@ -184,7 +184,7 @@ export default {
         return this.$route.params.name
       }
 
-      return this.$route.params.role
+      return this.$route.params.type
     },
     listColumns: function () {
       let columns = 1
