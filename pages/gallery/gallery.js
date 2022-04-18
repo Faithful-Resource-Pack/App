@@ -53,7 +53,7 @@ export default {
       <v-col cols="12" sm="6">
         <div class="my-2 text-h5">{{ $root.lang().gallery.category.tags }}</div>
         <v-btn
-          v-for="t in options.tags"
+          v-for="t in tags"
           :key="t + $route.path"
           style="margin-bottom: 5px"
           v-on:click="updateRoute(t, 'tag')"
@@ -142,7 +142,7 @@ export default {
       },
       options: {
         resolutions: ['16x', ...settings.resolutions],
-        tags: [this.$root.lang().gallery.all],
+        tags: [],
         versions: settings.versions.java,
         editions: settings.editions.map(e => e.toLowerCase())
       },
@@ -382,7 +382,7 @@ export default {
       }
 
       // set textures tags
-      this.options.tags = [this.$root.lang().gallery.all]
+      this.options.tags = []
       this.dataJSON.tags.forEach(tag => {
         if (!this.options.tags.includes(tag)) this.options.tags.push(tag)
       })

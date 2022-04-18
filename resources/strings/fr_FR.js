@@ -472,6 +472,9 @@ export default {
       }
     }
   },
+  gallery: {
+    all: 'Tout'
+  },
   settings: {
     title: "Settings",
     label: {
