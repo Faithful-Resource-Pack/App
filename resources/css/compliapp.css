@@ -485,6 +485,11 @@ code {
 .not-done > span + div {
   width: 100%;
 }
+.not-done div h3 {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
 .gallery-texture-background,
 .gallery-texture-image {
