@@ -112,7 +112,7 @@ export default {
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="(new Date(contrib.date)).toDateString() + ' '+ (!!contrib.textureName ? ' - ' + contrib.textureName : '')"></v-list-item-title>
+            <v-list-item-title v-text="moment(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.textureName ? ' - ' + contrib.textureName : '')"></v-list-item-title>
             <v-list-item-subtitle v-text="(contrib.contributors||[]).map(id => contributors.filter(c => c.id == id)[0].username || '').join(', ')"></v-list-item-subtitle>
 
             <div><v-chip label x-small class="mr-1">{{ contrib.resolution }}</v-chip><v-chip label x-small class="mr-1">#{{ contrib.texture }}</v-chip></div>
