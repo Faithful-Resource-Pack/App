@@ -54,7 +54,7 @@ export default {
                   </div>
 
                   <v-list-item-title v-text="$root.lang().review.addon.titles.description" class="uppercased"/>
-                  <v-container class="markdown text--secondary" style="margin-bottom: 10px; background-color: rgb(33,33,33); border-radius: 5px" v-html="$root.compiledMarkdown(addonInPanel.description)"></v-container>
+                  <v-container class="markdown" :style="['margin-bottom: 10px; border-radius: 5px', { 'background-color': 'rgba(0,0,0, ' + String($root.isDark ? 0.2 : 0.05) + ')' } ]" v-html="$root.compiledMarkdown(addonInPanel.description)"></v-container>
 
                   <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
                   <div class="text--secondary" style="margin-bottom: 10px;">

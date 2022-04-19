@@ -377,6 +377,9 @@ axios.get('./resources/settings.json')
         langBCP47: function () {
           return lang_to_bcp47(this.selectedLang)
         },
+        isDark: function () {
+          return this.$children[0].isDark
+        }
       },
       methods: {
         lang: function () {
