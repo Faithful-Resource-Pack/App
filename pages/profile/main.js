@@ -17,11 +17,11 @@ export default {
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="$root.user.username"></v-list-item-title>
-
-            <v-list-item-subtitle style="font-size: 0.7rem; opacity: 0.8" v-text="$root.user.id"></v-list-item-subtitle>
-
-            <v-list-item-subtitle v-text="($root.user.roles||[]).join(' | ')"></v-list-item-subtitle>
+            <v-list-item-title v-text="$root.user.username"/>
+            <v-list-item-subtitle style="font-size: 0.7rem; opacity: 0.8" v-text="$root.user.id"/>
+            <div>
+              <v-list-item-subtitle v-text="($root.user.roles||[]).join(' | ')"/>
+            </div>
           </v-list-item-content>
         </v-list-item>
 

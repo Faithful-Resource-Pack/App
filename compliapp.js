@@ -247,8 +247,8 @@ axios.get('./resources/settings.json')
           theme: undefined,
           themes: {
             dark: 'mdi-weather-night',
-            light: 'mdi-white-balance-sunny',
             system: 'mdi-theme-light-dark',
+            light: 'mdi-white-balance-sunny',
           },
           atl: []
         }

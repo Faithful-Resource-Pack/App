@@ -256,7 +256,7 @@ export default {
     },
     getUsername: function (id) {
       if (id === null || id === undefined) return 'null/undefined'
-      return this.contributors[id].username || 'Unknown User'
+      return this.contributors.filter(c => c.id === id)[0].username || 'Unknown User'
     }
   }
 }

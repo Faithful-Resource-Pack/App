@@ -8,7 +8,7 @@ export default {
     textureModal
   },
   template: `
-  <v-container>
+  <v-container style="max-width: unset!important">
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
     <v-row>

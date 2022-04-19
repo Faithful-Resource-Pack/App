@@ -30,6 +30,28 @@
   -moz-osx-font-something: grayscale;
 }
 
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #76C945 #191919bb;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #191919bb;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #76C945;
+  border-radius: 12px;
+  border: -1px solid #76C945;
+}
+
 .icon-mojang-red:before {
   content: "\e900";
   color: #ec343c;
@@ -113,6 +135,10 @@ a {
 }
 .theme--dark .monochrome-logo img {
   filter: brightness(0) invert(1);
+}
+
+.container {
+  max-width: 1080px;
 }
 
 div.tooltip {
@@ -593,7 +619,6 @@ code {
 .v-list-item__subtitle {
   word-break: break-word;
   white-space: normal;
-  max-width: fit-content;
 }
 
 .v-dialog > .v-card > .v-card__subtitle,
