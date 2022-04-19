@@ -65,11 +65,32 @@ const LANGS = {
   fr: Object.merge({}, enUS, frFR)
 }
 
+// https://www.techonthenet.com/js/language_tags.php
+// Use for v-calendar date format
+const LANGS_TO_BCP47 = {
+  en: 'en-US',
+  fr: 'fr-FR',
+  de: 'de-DE',
+  br: 'pt-BR',
+  cs: 'cs-CZ'
+}
+
+if(Object.keys(LANGS_TO_BCP47).sort().toString() !== Object.keys(LANGS).sort().toString()) {
+  throw new Error(`langBCP47 keys don't match LANGS keys`)
+}
+
+function lang_to_bcp47(lang) {
+  return LANGS_TO_BCP47[lang]
+}
+
 let lang_value;
 const LANG_KEY = 'lang';
 const LANG_DEFAULT = 'en';
+
+
 const _get_lang = function () {
   lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
+  
   return lang_value;
 }
 
@@ -354,19 +375,7 @@ axios.get('./resources/settings.json')
           return this.user.roles
         },
         langBCP47: function () {
-          // https://www.techonthenet.com/js/language_tags.php
-          // Use for v-calendar date format
-          const res = {
-            en: 'en-US',
-            fr: 'fr-FR',
-            de: 'de-DE',
-            br: 'pt-BR',
-            cs: 'cs-CZ'
-          }
-          if(Object.keys(res).length !== Object.keys(LANGS).length) {
-            throw new Error(`langBCP47 keys don't match LANGS keys`)
-          }
-          return res[this.selectedLang]
+          return lang_to_bcp47(this.selectedLang)
         },
       },
       methods: {
@@ -489,6 +498,7 @@ axios.get('./resources/settings.json')
         }
       },
       created: function () {
+        moment.locale(lang_to_bcp47(_get_lang()))
         const authStr = window.localStorage.getItem('auth')
         if (!authStr) return
 
