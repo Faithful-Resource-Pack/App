@@ -593,6 +593,7 @@ code {
 .v-list-item__subtitle {
   word-break: break-word;
   white-space: normal;
+  max-width: fit-content;
 }
 
 .v-dialog > .v-card > .v-card__subtitle,
