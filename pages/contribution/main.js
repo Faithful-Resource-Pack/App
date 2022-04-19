@@ -149,6 +149,19 @@ export default {
     }
   },
   computed: {
+    queryToIds: function() {
+      if(this.$route.query.ids) {
+        return this.$route.query.ids.split('-')
+      }
+      
+      // use the logged user as default selected contributor
+      return [this.$root.user.id]
+    },
+    idsToQuery: function() {
+      return {
+        ids: this.contributors_selected.join('-')
+      }
+    },
     searchDisabled: function () {
       const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false
       const result = this.search.searching || resSelected || this.contributors_selected.length === 0
@@ -224,6 +237,7 @@ export default {
         .finally(() => {
           this.search.searching = false
         })
+        this.$router.push({path: this.$route.path, query: this.idsToQuery });
     },
     packsToChoose: function() {
       return this.form.packs.map(p => p.key).filter(p => p !== this.all_packs);
@@ -280,14 +294,12 @@ export default {
     }
   },
   created: function () {
+    this.contributors_selected = this.queryToIds
     this.addRes(this.all_packs, this.all_packs_display, true)
   },
   mounted: function () {
     this.getRes()
     this.getAuthors()
-
-    // use the logged user as default selected contributor
-    this.contributors_selected = [this.$root.user.id]
   },
   watch: {
     contributors: {
