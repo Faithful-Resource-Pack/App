@@ -90,7 +90,7 @@ export default {
         </template>
       </template>
     </v-autocomplete>
-    <v-btn block @click="startSearch()" :disabled="searchDisabled">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
+    <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
     <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
@@ -134,6 +134,7 @@ export default {
         :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
         :disabled="displayedResults >= search.search_results.length"
         block
+        color="primary"
         @click="showMore()" 
         :v-if="displayedResults < search.search_results.length"
         elevation="2"

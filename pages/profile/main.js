@@ -171,6 +171,7 @@ export default {
 
         <div :style="{'display': 'flex', 'justify-content': 'center'}">
           <v-btn
+            color="primary"
             @click="send"
             :disabled="!everythingIsOk"
           >

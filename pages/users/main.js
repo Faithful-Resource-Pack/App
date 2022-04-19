@@ -18,7 +18,7 @@ export default {
       </div>
       <div>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_contributor_role }}</div>
-        <div><v-btn v-for="t in usersRoles" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active': t === 'All' && !role && !!name }" :to="userURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
+        <div><v-btn v-for="t in usersRoles" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active primary': (t === 'All' && !role && !!name) || (t && role && t.toLowerCase() === role.toLowerCase()) }" :to="userURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
         <div class="my-2">
           <v-text-field

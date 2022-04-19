@@ -10,7 +10,7 @@ export default {
 <v-container>
   <h2>{{ $root.lang().settings.title }}</h2>
   <div class="my-2">
-    <v-btn :disabled="jsonIsNotValid" block append-icon v-on:click="save">
+    <v-btn color="primary" :disabled="jsonIsNotValid" block append-icon v-on:click="save">
       {{ $root.lang().global.btn.save }} <v-icon small>mdi-content-save</v-icon>
     </v-btn>
   </div>

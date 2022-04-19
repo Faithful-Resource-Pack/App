@@ -19,7 +19,7 @@ export default {
           :key="t + $route.path"
           style="margin-bottom: 5px"
           v-on:click="updateRoute(t, 'resolution')"
-          :class="['mr-1', { 'v-btn--active': t === resolution }]"
+          :class="['mr-1', { 'v-btn--active primary': t === resolution }]"
           v-text="t"
         ></v-btn>
       </v-col>
@@ -31,7 +31,7 @@ export default {
           :key="t + $route.path"
           style="margin-bottom: 5px"
           v-on:click="updateRoute(t, 'edition')"
-          :class="['mr-1', { 'v-btn--active': t === edition }]"
+          :class="['mr-1', { 'v-btn--active primary': t === edition }]"
           v-text="t"
         ></v-btn>
       </v-col>
@@ -45,7 +45,7 @@ export default {
           :key="t + $route.path"
           style="margin-bottom: 5px"
           v-on:click="updateRoute(t, 'version')"
-          :class="{ 'mr-1': true, 'v-btn--active': t === version }"
+          :class="{ 'mr-1': true, 'v-btn--active primary': t === version }"
           v-text="t"
         ></v-btn>
       </v-col>
@@ -57,7 +57,7 @@ export default {
           :key="t + $route.path"
           style="margin-bottom: 5px"
           v-on:click="updateRoute(t, 'tag')"
-          :class="{ 'mr-1': true, 'v-btn--active': t === tag }"
+          :class="{ 'mr-1': true, 'v-btn--active primary': t === tag }"
           v-text="t"
         ></v-btn>
       </v-col>

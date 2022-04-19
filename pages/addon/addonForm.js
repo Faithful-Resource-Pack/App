@@ -271,7 +271,7 @@ export default {
         </div>       
 
         <div class="text-center">
-          <v-btn :disabled="!validForm" @click="onSubmit">
+          <v-btn :disabled="!validForm" @click="onSubmit" color="primary">
             {{ $root.lang().global.btn.submit }}
           </v-btn>
         </div>

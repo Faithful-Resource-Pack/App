@@ -23,7 +23,7 @@ export default {
           <v-form ref="form">
             <v-text-field :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-            <v-select required multiple small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
+            <v-select required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type" color="primary"></v-select>
 
             <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
             <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
@@ -32,7 +32,7 @@ export default {
                 v-for="(use, index) in formData.uses"
                 :key="index"
               >
-                <v-list-item-avatar tile :style="{ 'background': 'rgba(255,255,255,0.5)', 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
+                <v-list-item-avatar tile class="primary" :style="{ 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
 
                 <v-list-item-content>
                   <v-list-item-title>

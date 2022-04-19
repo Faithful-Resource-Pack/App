@@ -553,7 +553,7 @@ axios.get('./resources/settings.json')
           dark: true,
           themes: {
             dark: {
-              primary: '#fafafa',
+              primary: '#76C945',
               accent: '#5e3631',
               success: '#22a831'
             },

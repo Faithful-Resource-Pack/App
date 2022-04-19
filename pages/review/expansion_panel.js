@@ -17,19 +17,20 @@ export default {
       :key="addon.id"
       rounded
       style="background-color: rgba(255, 255, 255, 0.05)"
+      class="addon-expansion-panel"
       @click="getAddon(addon.id)"
     >
-      <v-expansion-panel-header expand-icon="mdi-menu-down">
+      <v-expansion-panel-header expand-icon="mdi-menu-down" color="primary">
         <v-row no-gutters>
           <v-col
             cols="12"
-            class="uppercased"
+            class="uppercased addon-name"
           >
             {{ addon.name }}
           </v-col>
           <v-col
             cols="12"
-            class="text--secondary uppercased"
+            class="uppercased addon-tags"
             style="margin-top: 2.5px;"
           >
             {{ addon.options.tags.join(' | ') }}

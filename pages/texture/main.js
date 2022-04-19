@@ -32,7 +32,7 @@ export default {
       <v-btn
         v-for="t in texturesTypes"
         :key="t"
-        :class="['my-2', 'mr-1', { 'v-btn--active': t === 'All' && !type && !!name }]"
+        :class="['my-2', 'mr-1', { 'v-btn--active primary': (t === 'All' && !type && !!name) || (t && type && t.toLowerCase() === type.toLowerCase()) }]"
         :to="textureURL(t)"
         :exact="t == 'All'"
       >{{ t }}</v-btn>
@@ -65,16 +65,16 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn block @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block color="primary" @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
       <v-row>
         <v-col>
-          <v-btn block @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block color="primary" @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn block @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block color="primary" @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
@@ -113,6 +113,7 @@ export default {
         <v-btn 
           :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
           :disabled="displayedResults >= Object.keys(textures).length"
+          color="primary"
           block
           @click="showMore()" 
           :v-if="displayedResults < Object.keys(textures).length"
@@ -302,7 +303,7 @@ export default {
     },
     selectTextureType(n) {
       if(n) {
-        this.$router.push(this.textureURL(n))
+        this.$router.push(this.textureURL(n)).catch(() => {})
       }
     }
   },
