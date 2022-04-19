@@ -29,16 +29,25 @@ export default {
             clearable
             :placeholder="$root.lang().database.labels.search_username"
             type="text"
+            hide-details 
             v-on:keyup.enter="startSearch"
             @click:append-outer="startSearch"
             @click:clear="clearSearch"
           ></v-text-field>
         </div>
+        
+        <v-btn block color="primary" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
-        <v-btn block @click="openDialog()">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
+        <v-btn block @click="openDialog()" class="my-6">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
         <div class="my-2 text-h5">{{ $root.lang().database.labels.contributors_results }}</div>
-        <v-list rounded v-if="users.length" two-line class="main-container">
+        <div v-if="loading" class="text-center">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        ></v-progress-circular>
+        </div>
+        <v-list rounded v-else-if="users.length" two-line class="main-container">
           <v-row><v-col :cols="12/listColumns" xs="1"
               v-for="(users, index) in splittedUsers"
               :key="index"
@@ -76,7 +85,9 @@ export default {
             </v-list-item>
           </v-col></v-row>
         </v-list>
-        <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
+        <div v-else><br>
+          <p><i>{{ $root.lang().global.no_results }}</i></p>
+        </div>
       </div>
     </v-container>`,
   data () {
@@ -84,7 +95,9 @@ export default {
       recompute: false,
       roles: [],
       search: '',
+      searchPromise: undefined,
       users: [],
+      loading: false,
       dialogOpen: false,
       dialogData: {},
       dialogDataAdd: false,
@@ -114,13 +127,13 @@ export default {
 
       if (!newPath.endsWith('/')) { newPath += '/' }
 
-      newPath += this.search
+      if(this.search)
+        newPath += this.search
 
-      if (newPath === this.$route.path) {
-        console.warn(newPath)
-      } else {
-        this.$router.push(newPath)
+      if (newPath !== this.$route.path) {
+        this.$router.push(newPath).catch(() => {})
       }
+      this.getUsers()
     },
     getRoles: function () {
       axios.get(`${this.$root.apiURL}/users/roles`)
@@ -137,12 +150,16 @@ export default {
         })
     },
     getUsers: function () {
+      this.loading = true
       let url = `${this.$root.apiURL}${this.$route.path.split('/').map(str => str === 'users' ? 'users/role' : str).join('/')}`
       axios.get(url, this.$root.apiOptions)
         .then((res) => {
           this.users = res.data
         })
         .catch(err => console.error(err))
+        .finally(() => {
+          this.loading = false
+        })
     },
     update: function () {
       this.getRoles()
@@ -213,12 +230,7 @@ export default {
       return res
     }
   },
-  watch: {
-    $route () {
-      this.getUsers()
-    }
-  },
   mounted: function () {
-    this.update()
+    this.getRoles()
   }
 }
