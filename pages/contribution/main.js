@@ -78,7 +78,7 @@ export default {
         </template>
         <template v-else>
           <v-list-item-content>
-            <v-list-item-title v-text="data.item.username || data.item.id"></v-list-item-title>
+            <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
             <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
           </v-list-item-content>
           <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
@@ -98,8 +98,9 @@ export default {
           :key="index"
         >
         <v-list-item
-          v-for="contrib in contrib_arr"
+          v-for="(contrib, i) in contrib_arr"
           :key="contrib.id"
+          v-if="i < displayedResults"
         >
           <v-list-item-avatar tile
             :style="{
@@ -112,8 +113,8 @@ export default {
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="moment(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.textureName ? ' - ' + contrib.textureName : '')"></v-list-item-title>
-            <v-list-item-subtitle v-text="(contrib.contributors||[]).map(id => contributors.filter(c => c.id == id)[0].username || '').join(', ')"></v-list-item-subtitle>
+            <v-list-item-title v-text="moment(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
+            <v-list-item-subtitle v-text="(contrib.authors||[]).map(id => contributors.filter(c => c.id == id)[0].username || id).join(', ')"></v-list-item-subtitle>
 
             <div><v-chip label x-small class="mr-1">{{ contrib.resolution }}</v-chip><v-chip label x-small class="mr-1">#{{ contrib.texture }}</v-chip></div>
           </v-list-item-content>
@@ -128,10 +129,21 @@ export default {
           </v-list-item-action>
         </v-list-item>
       </v-col></v-row>
+
+      <v-btn 
+        :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
+        :disabled="displayedResults >= search.search_results.length"
+        block
+        @click="showMore()" 
+        :v-if="displayedResults < search.search_results.length"
+        elevation="2"
+      >{{ $root.lang().global.btn.load_more }}</v-btn>
     </v-list>
     <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
   </v-container>`,
   data () {
+    const INCREMENT = 250
+
     return {
       maxheight: 170,
       form: {
@@ -145,6 +157,7 @@ export default {
         searching: false,
         search_results: []
       },
+      displayedResults: INCREMENT,
       newSubmit: false
     }
   },
@@ -185,6 +198,9 @@ export default {
     }
   },
   methods: {
+    showMore: function() {
+      this.displayedResults += 100;
+    },
     getRes: function () {
       axios.get(`${this.$root.apiURL}/contributions/packs`)
         .then(res => {
@@ -196,7 +212,14 @@ export default {
     getAuthors: function () {
       axios.get(`${this.$root.apiURL}/contributions/authors`)
         .then(res => {
-          this.contributors = res.data
+          // assign the result, but sorted by username
+          this.contributors = res.data.sort((a, b) => {
+            if (!a.username && !b.username) return 0
+            if (a.username && !b.username) return 1;
+            if (!a.username && b.username) return -1;
+
+            return a.username.toLowerCase() > b.username.toLowerCase() ? 1 : ((b.username.toLowerCase() > a.username.toLowerCase()) ? -1 : 0)
+          })
         })
         .catch(console.trace)
     },
@@ -220,17 +243,22 @@ export default {
             return {...c, url: `${this.$root.apiURL}/textures/${c.texture}/url/${c.pack}/latest`}
           })
         })
-        .catch(err => { this.$root.showSnackBar(err, 'error') })
-        .finally(() => {
-          this.search.searching = false
-        })
+
+        // fetch contribution textures names
+        //! TODO: implement something in the API to make this in 1 request instead of one request per contribution F
+        .then(() => this.search.search_results.map(c => c.texture))
+        .then(ids => Promise.all(ids.map(id => axios.get(`${this.$root.apiURL}/textures/${id}`))))
+        .then(texturesFromIds => this.search.search_results.forEach((contrib, index) => contrib.name = texturesFromIds[index].data.name))
+        
+        .finally(() => this.search.searching = false)
+        .catch(err => this.$root.showSnackBar(err, 'error'))
     },
     packsToChoose: function() {
       return this.form.packs.map(p => p.key).filter(p => p !== this.all_packs);
     },
     editContribution: function(contrib) {
       this.newSubmit = false
-      this.$refs.mod.open(contrib, packsToChoose(), false)
+      this.$refs.mod.open(contrib, this.packsToChoose(), false)
     },
     onNewSubmit: function(data) {
       axios
