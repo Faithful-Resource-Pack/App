@@ -37,6 +37,10 @@
   scrollbar-color: #76C945 #191919bb;
 }
 
+.theme--light, .theme--light * {
+  scrollbar-color: #76C945 #ffffffbb;
+}
+
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 12px;

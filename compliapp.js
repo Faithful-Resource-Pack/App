@@ -314,6 +314,20 @@ axios.get('./resources/settings.json')
             this.$vuetify.theme.dark = isDark
           },
           immediate: true
+        },
+        isDark: {
+          handler: function(n, o) {
+            let arr = ['theme--light', 'theme--dark ']
+            if (n == true) {
+              arr = arr.reverse()
+            }
+
+            const html = document.querySelector('html')
+
+            html.classList.add(arr[0])
+            html.classList.remove(arr[1])
+          },
+          immediate: true
         }
       },
       computed: {
@@ -378,7 +392,7 @@ axios.get('./resources/settings.json')
           return lang_to_bcp47(this.selectedLang)
         },
         isDark: function () {
-          return this.$children[0].isDark
+          return this.$vuetify.theme.dark
         }
       },
       methods: {
