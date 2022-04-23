@@ -170,11 +170,7 @@ export default {
     },
     timestampToDate(t) {
       const a = new Date(t)
-      const months = [this.$root.lang().global.months.jan, this.$root.lang().global.months.feb, this.$root.lang().global.months.mar, this.$root.lang().global.months.apr, this.$root.lang().global.months.may, this.$root.lang().global.months.jun, this.$root.lang().global.months.jul, this.$root.lang().global.months.aug, this.$root.lang().global.months.sep, this.$root.lang().global.months.oct, this.$root.lang().global.months.nov, this.$root.lang().global.months.dec]
-      const year = a.getFullYear()
-      const month = months[a.getMonth()]
-      const date = a.getDate().toString().length == 1 ? `0${a.getDate()}` : a.getDate()
-      return `${month} ${date}, ${year}`
+      return moment(a).format('ll')
     },
     getItems(item) {
       let output = []
