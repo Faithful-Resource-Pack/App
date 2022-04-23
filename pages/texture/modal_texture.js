@@ -14,16 +14,16 @@ export default {
       v-model="dialog"
       max-width="600"
     >
-      <use-modal :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
+      <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
       <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
       
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
           <v-form ref="form">
-            <v-text-field :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
-            <v-text-field required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-            <v-select required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type" color="primary"></v-select>
+            <v-text-field :color="color" :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
+            <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
+            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
             <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
             <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
@@ -32,7 +32,7 @@ export default {
                 v-for="(use, index) in formData.uses"
                 :key="index"
               >
-                <v-list-item-avatar tile class="primary" :style="{ 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
+                <v-list-item-avatar tile :class="[color]" :style="{ 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
 
                 <v-list-item-content>
                   <v-list-item-title>
@@ -101,6 +101,11 @@ export default {
       type: Array,
       required: false,
       default: function () { return [] }
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   data () {

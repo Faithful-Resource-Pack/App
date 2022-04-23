@@ -18,21 +18,21 @@ export default {
   template: `
   <v-container>
     
-    <texture-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
-    <version-modal :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
-    <add-multiple-texture :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
-    <add-minecraft-version :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
+    <texture-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
+    <version-modal :color="pageColor" :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
+    <add-multiple-texture :color="pageColor" :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
+    <add-minecraft-version :color="pageColor" :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     <remove-confirm type="texture" :confirm="remove.confirm" :data="remove.data" :disableDialog="() => { remove.confirm = false; }" :on-submit="removeTexture"></remove-confirm>
     
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.textures }}
     </div>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_texture_type }}</div>
-    <div v-if="$vuetify.breakpoint.smAndUp">
+    <div v-if="$vuetify.breakpoint.smAndUp" class="selector">
       <v-btn
         v-for="t in texturesTypes"
         :key="t"
-        :class="['my-2', 'mr-1', { 'v-btn--active primary': (t === 'All' && !type && !!name) || (t && type && t.toLowerCase() === type.toLowerCase()) }]"
+        :class="['my-2 mr-1', activeType(t)]"
         :to="textureURL(t)"
         :exact="t == 'All'"
       >{{ t }}</v-btn>
@@ -54,6 +54,7 @@ export default {
         filled
         clear-icon="mdi-close"
         clearable
+        :color="pageColor"
         :placeholder="$root.lang().database.labels.search_texture"
         type="text"
         v-on:keyup.enter="startSearch"
@@ -65,16 +66,16 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn block color="primary" @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
       <v-row>
         <v-col>
-          <v-btn block color="primary" @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn block color="primary" @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
@@ -113,7 +114,7 @@ export default {
         <v-btn 
           :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
           :disabled="displayedResults >= Object.keys(textures).length"
-          color="primary"
+          :color="pageColor"
           block
           @click="showMore()" 
           :v-if="displayedResults < Object.keys(textures).length"
@@ -128,6 +129,7 @@ export default {
     const INCREMENT = 250
 
     return {
+      pageColor: 'blue lighten-2',
       newVersionModal: false,
       addMultiple: false,
       recompute: false,
@@ -194,6 +196,13 @@ export default {
     }
   },
   methods: {
+    activeType(t) {
+      let res = {}
+      if((t === 'All' && !this.type && !!this.name) || (t && this.type && t.toLowerCase() === this.type.toLowerCase())) {
+        res['v-btn--active ' + this.pageColor] = true
+      }
+      return res
+    },
     textureURL (t, name = undefined) {
       return (this.name || name) ? `/textures/${t}/${name !== undefined ? name : this.name}` : `/textures/${t}`
     },

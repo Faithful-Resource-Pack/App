@@ -23,8 +23,8 @@ export default {
       <v-row>
         <v-col class="col-12" sm="12">
           <v-form ref="form">
-            <v-text-field required v-model="form.actual" :label="$root.lang().database.labels.actual_mc_version"></v-text-field>
-            <v-text-field required v-model="form.new" :label="$root.lang().database.labels.new_mc_version"></v-text-field>
+            <v-text-field :color="color" required v-model="form.actual" :label="$root.lang().database.labels.actual_mc_version"></v-text-field>
+            <v-text-field :color="color" required v-model="form.new" :label="$root.lang().database.labels.new_mc_version"></v-text-field>
           </v-form>
         </v-col>
       </v-row>
@@ -55,6 +55,11 @@ export default {
     disableMCDialog: {
       type: Function,
       required: true
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   data() {

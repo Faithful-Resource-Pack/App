@@ -13,11 +13,11 @@ export default {
         <v-row>
           <v-col class="col-12" :sm="12">
             <v-form ref="form">
-              <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.path_id" v-model="subPathFormData.id" :label="$root.lang().database.labels.path_id"></v-text-field>
-              <v-text-field v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.useID" :label="$root.lang().database.labels.use_id"></v-text-field>
-              <v-text-field :hint="$root.lang().database.hints.path" v-model="subPathFormData.path" :label="$root.lang().database.labels.path"></v-text-field>
-              <v-select required multiple small-chips v-model="subPathFormData.versions" :items="sortedVersions" :label="$root.lang().database.labels.versions"></v-select>
-              <v-checkbox v-model="subPathFormData.mcmeta" :label="$root.lang().database.labels.mcmeta" />
+              <v-text-field :color="color" v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.path_id" v-model="subPathFormData.id" :label="$root.lang().database.labels.path_id"></v-text-field>
+              <v-text-field :color="color" v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.useID" :label="$root.lang().database.labels.use_id"></v-text-field>
+              <v-text-field :color="color" :hint="$root.lang().database.hints.path" v-model="subPathFormData.path" :label="$root.lang().database.labels.path"></v-text-field>
+              <v-select     :color="color" :item-color="color" required multiple small-chips v-model="subPathFormData.versions" :items="sortedVersions" :label="$root.lang().database.labels.versions"></v-select>
+              <v-checkbox   :color="color" v-model="subPathFormData.mcmeta" :label="$root.lang().database.labels.mcmeta" />
             </v-form>
           </v-col>
         </v-row>
@@ -69,6 +69,11 @@ export default {
     useID: {
       type: String,
       required: true
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   data() {

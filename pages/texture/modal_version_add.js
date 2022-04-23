@@ -20,6 +20,11 @@ export default {
     disableDialog: {
       type: Function,
       required: true
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   template: `
@@ -32,9 +37,9 @@ export default {
       <v-card-text class="mb-0">
         <v-form ref="form">
           <v-row>
-            <v-col><v-select class="mb-0" :items="editions" v-model="form.edition" :placeholder="$root.lang().database.labels.new_mc_version_edition"></v-select></v-col>
-            <v-col><v-select class="mb-0" :items="versions" v-model="form.version" :placeholder="$root.lang().database.labels.new_mc_version_path"></v-select></v-col>
-            <v-col><v-text-field class="mb-0" v-model="form.newVersion" :placeholder="$root.lang().database.labels.new_mc_version_name"></v-text-field></v-col>
+            <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="editions" v-model="form.edition" :placeholder="$root.lang().database.labels.new_mc_version_edition"></v-select></v-col>
+            <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions" v-model="form.version" :placeholder="$root.lang().database.labels.new_mc_version_path"></v-select></v-col>
+            <v-col><v-text-field class="mb-0" :color="color" v-model="form.newVersion" :placeholder="$root.lang().database.labels.new_mc_version_name"></v-text-field></v-col>
           </v-row>
         </v-form>
       </v-card-text>

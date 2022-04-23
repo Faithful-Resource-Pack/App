@@ -15,11 +15,11 @@ export default {
               <img alt="avatar" style="width: 100%; max-width: 250" :src="($vuetify.breakpoint.mdAndUp ? 'https://visage.surgeplay.com/full/256/' : 'https://visage.surgeplay.com/head/128/') + formData.uuid" />
             </v-col><v-col :class="'col-' + formData.uuid ? '10' : '12'" :sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12">
               <v-form ref="form" lazy-validation>
-                <v-text-field required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.discord_id"></v-text-field>
-                <v-text-field required clearable v-model="formData.username" :label="$root.lang().database.labels.username"></v-text-field>
-                <v-select required multiple small-chips v-model="formData.roles" :items="roles" :label="$root.lang().database.labels.contributor_type"></v-select>
-                <v-text-field clearable v-model="formData.uuid" :label="$root.lang().database.labels.uuid"></v-text-field>
-                <v-checkbox required clearable v-model="formData.anonymous" :label="$root.lang().database.labels.anonymous"></v-checkbox>
+                <v-text-field :color="color" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.discord_id"></v-text-field>
+                <v-text-field :color="color" required clearable v-model="formData.username" :label="$root.lang().database.labels.username"></v-text-field>
+                <v-select :color="color" :item-color="color" required multiple small-chips v-model="formData.roles" :items="roles" :label="$root.lang().database.labels.contributor_type"></v-select>
+                <v-text-field :color="color" clearable v-model="formData.uuid" :label="$root.lang().database.labels.uuid"></v-text-field>
+                <v-checkbox :color="color" required clearable v-model="formData.anonymous" :label="$root.lang().database.labels.anonymous"></v-checkbox>
                 <v-text v-if="formData.anonymous">{{ $root.lang().database.labels.anonymous_explain }}</v-text>
               </v-form>
             </v-col>
@@ -66,6 +66,11 @@ export default {
     roles: {
       type: Array,
       required: true
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   data() {

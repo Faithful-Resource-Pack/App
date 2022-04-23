@@ -10,7 +10,7 @@ export default {
   },
   template: `
     <v-container>
-      <user-modal :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
+      <user-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
       <user-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></user-remove-confirm>
 
       <div class="text-h4 py-4">
@@ -18,7 +18,14 @@ export default {
       </div>
       <div>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_contributor_role }}</div>
-        <div><v-btn v-for="t in usersRoles" :key="t" :class="{ 'my-2': true, 'mr-1': true, 'v-btn--active primary': (t === 'All' && !role && !!name) || (t && role && t.toLowerCase() === role.toLowerCase()) }" :to="userURL(t)" :exact="t == 'All'">{{ t }}</v-btn></div>
+        <div class="selector">
+          <v-btn
+            v-for="t in usersRoles"
+            :key="t"
+            :class="['my-2 mr-1', activeRole(t)]"
+            :to="userURL(t)"
+            :exact="t == 'All'"
+          >{{ t }}</v-btn></div>
         <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
         <div class="my-2">
           <v-text-field
@@ -29,14 +36,15 @@ export default {
             clearable
             :placeholder="$root.lang().database.labels.search_username"
             type="text"
-            hide-details 
+            hide-details
+            :color="pageColor"
             v-on:keyup.enter="startSearch"
             @click:append-outer="startSearch"
             @click:clear="clearSearch"
           ></v-text-field>
         </div>
         
-        <v-btn block color="primary" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
+        <v-btn block :color="pageColor" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
         <v-btn block @click="openDialog()" class="my-6">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
@@ -44,7 +52,7 @@ export default {
         <div v-if="loading" class="text-center">
         <v-progress-circular
           indeterminate
-          color="primary"
+          :color="pageColor"
         ></v-progress-circular>
         </div>
         <v-list rounded v-else-if="users.length" two-line class="main-container">
@@ -92,6 +100,7 @@ export default {
     </v-container>`,
   data () {
     return {
+      pageColor: 'indigo lighten-2',
       recompute: false,
       roles: [],
       search: '',
@@ -108,6 +117,16 @@ export default {
     }
   },
   methods: {
+    activeRole(t) {
+      let result = {}
+      result['v-btn--active ' + this.pageColor] = (
+        t === 'All' && !this.role && !!this.name
+      ) || (
+        t && this.role && t.toLowerCase() === this.role.toLowerCase()
+      )
+
+      return result
+    },
     userURL (t) {
       return '/users/' + t + '/' + (this.name || '')
     },

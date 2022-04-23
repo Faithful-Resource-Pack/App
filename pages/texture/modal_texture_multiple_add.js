@@ -45,6 +45,11 @@ export default {
       type: Array,
       required: false,
       default: function () { return [] }
+    },
+    color: {
+      type: String,
+      required: false,
+      default: 'primary'
     }
   },
   template: `
@@ -63,15 +68,15 @@ export default {
                     <v-expansion-panel-header class="px-0 py-0"><h2 class="title">{{ $root.lang().database.subtitles.import_json_data }}</h2></v-expansion-panel-header>
                     <v-expansion-panel-content class="mx-n6">
                       <prism-editor class="ma-0 my-editor fixed-height mb-2" v-model="formData.importjson" :highlight="highlighter" line-numbers></prism-editor>
-                      <v-btn block @click="parseJSON">{{ $root.lang().database.labels.parse_json }}</v-btn>
+                      <v-btn block @click="parseJSON" :color="color">{{ $root.lang().database.labels.parse_json }}</v-btn>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
                 </v-expansion-panels>
                 <h2 class="title my-2">{{ $root.lang().database.subtitles.add_manually }}</h2>
                 <v-container fluid class="pa-0" v-for="(texture, t_i) in textures" :key="'tex-' + t_i">
                   <v-row dense>
-                    <v-col><v-text-field class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable /></v-col>
-                    <v-col><v-select class="mb-1" v-model="texture.type" :items="types" :placeholder="$root.lang().database.labels.texture_type" multiple hide-details dense clearable small-chips /></v-col>
+                    <v-col><v-text-field :color="color" class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable /></v-col>
+                    <v-col><v-select :color="color" :item-color="color" class="mb-1" v-model="texture.type" :items="types" :placeholder="$root.lang().database.labels.texture_type" multiple hide-details dense clearable small-chips /></v-col>
                     <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteTexture(t_i)">mdi-close</v-icon></v-col>
                   </v-row>
                   <v-row dense class="mb-2">
@@ -82,8 +87,8 @@ export default {
                     <v-col>
                       <v-container fluid class="pa-0" v-for="(use, u_i) in texture.uses" :key="'tex-' + t_i + '-use-' + u_i">
                         <v-row dense>
-                          <v-col><v-text-field class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
-                          <v-col><v-select class="mb-1" :items="editions" v-model="use.editions[0]" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
+                          <v-col><v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
+                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" v-model="use.editions[0]" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
                           <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon></v-col>
                         </v-row>
                         <v-row dense class="mb-2">
@@ -94,8 +99,8 @@ export default {
                           <v-col>
                             <v-container class="pa-0" fluid v-for="(path, p_i) in use.paths" :key="'tex-' + t_i + '-use-' + u_i + '-p_i-' + p_i">
                               <v-row dense>
-                                <v-col><v-text-field class="mb-0" v-model="path[0]" :placeholder="$root.lang().database.labels.path" hide-details dense clearable /></v-col>
-                                <v-col><v-select class="mb-0" :items="versions" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
+                                <v-col><v-text-field :color="color" class="mb-0" v-model="path[0]" :placeholder="$root.lang().database.labels.path" hide-details dense clearable /></v-col>
+                                <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
                                 <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">mdi-close</v-icon></v-col>
                               </v-row>
                             </v-container>

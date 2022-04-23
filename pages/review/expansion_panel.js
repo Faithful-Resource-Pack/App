@@ -20,7 +20,7 @@ export default {
       class="addon-expansion-panel"
       @click="getAddon(addon.id)"
     >
-      <v-expansion-panel-header expand-icon="mdi-menu-down" color="primary">
+      <v-expansion-panel-header expand-icon="mdi-menu-down" color="deep-purple lighten-2">
         <v-row no-gutters>
           <v-col
             cols="12"

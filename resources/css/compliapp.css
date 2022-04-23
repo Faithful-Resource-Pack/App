@@ -335,6 +335,10 @@ blockquote {
   margin-top: 16px !important;
 }
 
+.selector .v-btn--active::before {
+  opacity: 0;
+}
+
 .small-appbar > * {
   justify-content: space-between;
 }
