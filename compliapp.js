@@ -374,6 +374,9 @@ axios.get('./resources/settings.json')
         year: function () {
           return new Date().getFullYear()
         },
+        isDesktop: function () {
+          return this.$vuetify.breakpoint.lgAndUp
+        },
         /**
          * Tell if the user is logged
          * @returns true if the user is logged
@@ -564,6 +567,9 @@ axios.get('./resources/settings.json')
             })
             .catch(console.error)
         } else this.update()
+
+        // drawer default position
+        this.drawer = this.isDesktop
       },
       vuetify: new Vuetify({
         theme: {
