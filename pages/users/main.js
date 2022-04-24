@@ -10,6 +10,7 @@ export default {
   },
   template: `
     <v-container>
+      <div class="styles" v-html="pageStyles"></div>
       <user-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
       <user-remove-confirm :confirm="remove.confirm" :disableDialog="function() { remove.confirm = false; update() }" :data="remove.data"></user-remove-confirm>
 
@@ -44,7 +45,7 @@ export default {
           ></v-text-field>
         </div>
         
-        <v-btn block :color="pageColor" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
+        <v-btn block :color="pageColor" :class="textColorOnPage" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
         <v-btn block @click="openDialog()" class="my-6">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>
 
@@ -101,6 +102,8 @@ export default {
   data () {
     return {
       pageColor: 'indigo lighten-2',
+      textColorOnPage: 'white--text',
+      pageStyles: '',
       recompute: false,
       roles: [],
       search: '',
@@ -119,7 +122,7 @@ export default {
   methods: {
     activeRole(t) {
       let result = {}
-      result['v-btn--active ' + this.pageColor] = (
+      result['v-btn--active ' + this.pageColor + ' ' + this.textColorOnPage] = (
         t === 'All' && !this.role && !!this.name
       ) || (
         t && this.role && t.toLowerCase() === this.role.toLowerCase()
@@ -251,5 +254,6 @@ export default {
   },
   mounted: function () {
     this.getRoles()
+    window.updatePageStyles(this)
   }
 }

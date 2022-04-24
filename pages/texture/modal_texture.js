@@ -12,6 +12,7 @@ export default {
   template: `
   <v-dialog
       v-model="dialog"
+      content-class="colored"
       max-width="600"
     >
       <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
@@ -32,7 +33,7 @@ export default {
                 v-for="(use, index) in formData.uses"
                 :key="index"
               >
-                <v-list-item-avatar tile :class="[color]" :style="{ 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
+                <v-list-item-avatar tile :class="[color, textColor]" :style="{ 'padding': '0 10px 0 10px', 'border-radius': '4px !important', width: 'auto' }" >#{{ index }}</v-list-item-avatar>
 
                 <v-list-item-content>
                   <v-list-item-title>
@@ -106,6 +107,11 @@ export default {
       type: String,
       required: false,
       default: 'primary'
+    },
+    textColor: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   data () {

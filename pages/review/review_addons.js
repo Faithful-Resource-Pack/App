@@ -11,6 +11,7 @@ export default {
   },
   template: `
   <v-container>
+    <div class="styles" v-html="pageStyles"></div>
     <div class="text-h4 py-4">
       {{ $root.lang().review.titles.addons }}
     </div>
@@ -28,6 +29,7 @@ export default {
       <v-expansion-panels v-if="addons[status].length > 0" style="margin-top: 5px;">
         <exp-panel
           :contributors="contributors"
+          :color="pageColor"
           :addons="addons[status]"
           :reviewAddon="reviewAddon"
           :openDenyPopup="openDenyPopup"
@@ -43,6 +45,9 @@ export default {
   `,
   data() {
     return {
+      pageColor: 'deep-purple lighten-2',
+      pageStyles: '',
+      textColorOnPage: 'white--text',
       colors: {
         pending: 'yellow',
         denied: 'red',
@@ -120,5 +125,6 @@ export default {
   },
   mounted() {
     this.update()
+    window.updatePageStyles(this)
   }
 }

@@ -50,11 +50,17 @@ export default {
       type: String,
       required: false,
       default: 'primary'
+    },
+    textColor: {
+      type: String,
+      required: false,
+      default: ''
     }
   },
   template: `
   <v-dialog
       v-model="dialog"
+      content-class="colored"
       max-width="860"
     >      
       <v-card>
@@ -68,7 +74,7 @@ export default {
                     <v-expansion-panel-header class="px-0 py-0"><h2 class="title">{{ $root.lang().database.subtitles.import_json_data }}</h2></v-expansion-panel-header>
                     <v-expansion-panel-content class="mx-n6">
                       <prism-editor class="ma-0 my-editor fixed-height mb-2" v-model="formData.importjson" :highlight="highlighter" line-numbers></prism-editor>
-                      <v-btn block @click="parseJSON" :color="color">{{ $root.lang().database.labels.parse_json }}</v-btn>
+                      <v-btn block @click="parseJSON" :color="color" :class="[textColor]">{{ $root.lang().database.labels.parse_json }}</v-btn>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
                 </v-expansion-panels>

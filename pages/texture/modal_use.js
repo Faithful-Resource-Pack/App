@@ -12,6 +12,7 @@ export default {
   template: `
   <v-dialog
     v-model="subDialog"
+    content-class="colored"
     max-width="800"
   >
     <path-modal :color="color" :subPathDialog="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>

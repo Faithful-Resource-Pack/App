@@ -5,6 +5,7 @@ export default {
   template: `
   <v-dialog
       v-model="confirm"
+      content-class="colored"
       max-width="600"
     >
       <v-card>

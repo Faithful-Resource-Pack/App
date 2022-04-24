@@ -18,6 +18,48 @@ const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
 
+window.colors = (await import('https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js')).default
+window.colorToHex = function(color) {
+  const color_arr = color.trim().split(' ')
+
+  try {
+    color_arr[0] = color_arr[0].replace(/-./g, x=>x[1].toUpperCase())
+    if(color_arr.length > 1) color_arr[1] = color_arr[1].replace('-', '')
+    return colors[color_arr[0]][color_arr.length > 1 ? color_arr[1] : 'base']
+  } catch (error) {
+    return 'currentcolor'
+  }
+}
+window.updatePageStyles = function(cmp) {
+  if(!cmp.$el) return
+  if(!cmp.$el.id) cmp.$el.id = cmp.name
+
+  const pageId = cmp.$el.id
+  const hex = colorToHex(cmp.pageColor)
+  
+  cmp.pageStyles = `<style>
+  html.theme--light,
+  html.theme--light .colored,
+  html.theme--light .colored *,
+  html.theme--light .v-menu__content,
+  html.theme--light .v-menu__content *,
+  html.theme--light #${pageId},
+  html.theme--light #${pageId} * {
+    scrollbar-color: ${hex} #ffffffbb !important;
+  }
+
+  html.theme--dark,
+  html.theme--dark .colored,
+  html.theme--dark .colored *,
+  html.theme--dark .v-menu__content,
+  html.theme--dark .v-menu__content *,
+  html.theme--dark #${pageId},
+  html.theme--dark #${pageId} * {
+    scrollbar-color: ${hex} #000000bb;
+  }
+  </style>`
+}
+
 Object.defineProperty(Object.prototype, 'isObject', {
   /**
    * @param {*} item to be tested
@@ -226,6 +268,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          colors: colors,
           dark: undefined,
           vapiURL: window.apiURL,
           selectedLang: _get_lang(),

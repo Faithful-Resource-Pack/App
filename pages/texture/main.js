@@ -16,11 +16,11 @@ export default {
     'remove-confirm': RemoveConfirm,
   },
   template: `
-  <v-container>
-    
-    <texture-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
+  <v-container id="texturePage">
+    <div class="styles" v-html="pageStyles"></div>
+    <texture-modal :color="pageColor" :textColor="textColorOnPage" :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
     <version-modal :color="pageColor" :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
-    <add-multiple-texture :color="pageColor" :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
+    <add-multiple-texture :textColor="textColorOnPage" :color="pageColor" :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     <add-minecraft-version :color="pageColor" :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     <remove-confirm type="texture" :confirm="remove.confirm" :data="remove.data" :disableDialog="() => { remove.confirm = false; }" :on-submit="removeTexture"></remove-confirm>
     
@@ -43,6 +43,8 @@ export default {
       :items="texturesTypes.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
       item-text="text"
       item-value="value"
+      :color="pageColor"
+      :item-color="pageColor"
       filled
       v-model="selectTextureType"
     ></v-select>
@@ -66,16 +68,16 @@ export default {
     <div>
       <v-row>
         <v-col>
-          <v-btn block :color="pageColor" @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewMCDialog()">{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
       <br>
       <v-row>
         <v-col>
-          <v-btn block :color="pageColor" @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" :class="[textColorOnPage]" @click="() => { newVersionModal = true }">{{ $root.lang().database.labels.add_mc_version }} <v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
         <v-col>
-          <v-btn block :color="pageColor" @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
+          <v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openModifyMCDialog()">{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon></v-btn>
         </v-col>
       </v-row>
 
@@ -115,6 +117,7 @@ export default {
           :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
           :disabled="displayedResults >= Object.keys(textures).length"
           :color="pageColor"
+          :class="textColorOnPage"
           block
           @click="showMore()" 
           :v-if="displayedResults < Object.keys(textures).length"
@@ -129,7 +132,9 @@ export default {
     const INCREMENT = 250
 
     return {
-      pageColor: 'blue lighten-2',
+      pageColor: 'blue darken-1',
+      pageStyles: '',
+      textColorOnPage: 'white--text',
       newVersionModal: false,
       addMultiple: false,
       recompute: false,
@@ -199,7 +204,7 @@ export default {
     activeType(t) {
       let res = {}
       if((t === 'All' && !this.type && !!this.name) || (t && this.type && t.toLowerCase() === this.type.toLowerCase())) {
-        res['v-btn--active ' + this.pageColor] = true
+        res['v-btn--active ' + this.pageColor + ' ' + this.textColorOnPage] = true
       }
       return res
     },
@@ -318,5 +323,6 @@ export default {
   },
   mounted: function () {
     this.update()
+    window.updatePageStyles(this)
   }
 }
