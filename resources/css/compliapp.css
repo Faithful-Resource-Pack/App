@@ -795,7 +795,8 @@ body .texture-avatar {
   vertical-align: middle;
 }
 
-#theme .active.theme--light > .theme-icon {
+#theme .active.theme--light .theme-icon,
+#theme .active.theme--light .theme-icon::before {
   color: white;
 }
 
