@@ -610,9 +610,6 @@ axios.get('./resources/settings.json')
             })
             .catch(console.error)
         } else this.update()
-
-        // drawer default position
-        this.drawer = this.isDesktop
       },
       vuetify: new Vuetify({
         theme: {
