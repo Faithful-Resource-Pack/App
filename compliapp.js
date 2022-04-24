@@ -551,7 +551,7 @@ axios.get('./resources/settings.json')
         },
         onMediaChange(isDark) {
           // only if system theme
-          if(this.theme === Object.keys(this.themes).pop()) {
+          if(this.theme === 'system') {
             this.$vuetify.theme.dark = isDark
 
             // nice snackbar sentence
@@ -574,16 +574,18 @@ axios.get('./resources/settings.json')
         setTimeout(() => {
           this.refreshToken(auth.refresh_token)
         }, Math.max(expires_at - 60000 - new Date(), 0))
-
+      },
+      mounted: function () {
         // watch color schemes for light and dark
         window.matchMedia("(prefers-color-scheme: dark)").onchange = (ev) => {
+          console.log(ev)
           if(ev.matches) this.onMediaChange(true)
         }
         window.matchMedia("(prefers-color-scheme: light)").onchange = (ev) => {
+          console.log(ev)
           if(ev.matches) this.onMediaChange(false)
         }
-      },
-      mounted: function () {
+
         const urlSearchParams = new URLSearchParams(window.location.search)
         const auth = Object.fromEntries(urlSearchParams.entries())
 
