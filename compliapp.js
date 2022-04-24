@@ -316,8 +316,8 @@ axios.get('./resources/settings.json')
           immediate: true
         },
         isDark: {
-          handler: function(n, o) {
-            let arr = ['theme--light', 'theme--dark ']
+          handler: function(n) {
+            let arr = ['theme--light', 'theme--dark']
             if (n == true) {
               arr = arr.reverse()
             }
