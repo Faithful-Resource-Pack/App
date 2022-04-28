@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js -e js,json,css,html",
+    "dev": "nodemon app.js --watch .env",
     "start": "pm2 start \"node app.js\" --name \"APP\"",
     "watch": "browser-refresh app.js"
   },
