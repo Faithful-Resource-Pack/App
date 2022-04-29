@@ -191,7 +191,7 @@ export default {
   review: {
     titles: {
       addons: 'Review Add-ons',
-      translation: 'Review Translations (Soon)',
+      translation: 'Review Translations',
       pending: 'Pending Approval',
       denied: 'Denied',
       approved: 'Approved'
@@ -221,6 +221,9 @@ export default {
         reason: 'Reason',
         old_addon: 'Old Add-on, no data present for it.'
       }
+    },
+    translations: {
+      description: 'This page has been moved to'
     }
   },
   addons: {

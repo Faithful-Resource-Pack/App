@@ -179,7 +179,7 @@ export default {
   review: {
     titles: {
       addons: 'Analisar add-ons',
-      translation: 'Analisar traduções (em breve)',
+      translation: 'Analisar traduções',
       pending: 'Esperando aprovação',
       denied: 'Negado',
       approved: 'Aprovado'

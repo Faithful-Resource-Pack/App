@@ -193,7 +193,7 @@ export default {
   review: {
     titles: {
       addons: 'Vérifier les Add-ons',
-      translation: 'Vérifier les traductions (Bientôt)',
+      translation: 'Vérifier les traductions',
       pending: 'En attente de validation',
       denied: 'Refusé(s)',
       approved: 'Accepté(s)'

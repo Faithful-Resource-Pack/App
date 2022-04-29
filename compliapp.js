@@ -238,7 +238,7 @@ let ALL_TABS = [
     label: 'review',
     subtabs: [
       { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
-      { enabled: false, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
+      { enabled: true, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
     ],
     roles: ['Administrator']
   },
