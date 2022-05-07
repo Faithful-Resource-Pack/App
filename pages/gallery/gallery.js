@@ -118,6 +118,7 @@ export default {
         </div>
       </div>
     </v-list>
+    <div class="bottomElement"></div>
 
     <texture-modal
       v-model="modalOpen"
@@ -202,8 +203,6 @@ export default {
     // directly add the search to the search bar if there is a search parameter inside the router
     this.current.search = this.$route.params.search ? this.$route.params.search : undefined
     this.options.versions = this.$route.params.edition ? settings.versions[this.$route.params.edition] : settings.versions[0]
-
-    window.addEventListener('scroll', this.handleScroll)
   },
   methods: {
     openModal(id) {
@@ -458,13 +457,21 @@ export default {
     },
     scroll() {
       window.onscroll = () => {
-        let bottomOfWindow = Math.max(window.pageYOffset, document.documentElement.scrollTop, document.body.scrollTop) + window.innerHeight === document.documentElement.offsetHeight
+        let scrolledTo = document.querySelector('.bottomElement')
 
-        if (bottomOfWindow) {
+        if (scrolledTo && this.isScrolledIntoView(scrolledTo)) {
           this.displayedResults += 30
           this.$forceUpdate()
         }
       }
+    },
+    isScrolledIntoView (el) {
+      let rect = el.getBoundingClientRect()
+      let elemTop = rect.top
+      let elemBottom = rect.bottom
+    
+      let isVisible = elemTop < window.innerHeight && elemBottom >= 0
+      return isVisible
     },
     toTop() {
       window.scrollTo({
