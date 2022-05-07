@@ -518,7 +518,7 @@ export default {
       total_roles: 'rolí'
     },
     locale: {
-      on: '​',
+      on: ' ',
       less: 'Více',
       more: 'Méně'
     }
