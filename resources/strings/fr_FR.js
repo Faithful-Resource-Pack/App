@@ -39,6 +39,7 @@ export default {
       user: {
         title: 'utilisateur',
         subtabs: {
+          dashboard: 'dashboard',
           profile: 'profil',
           statistics: 'statistiques',
           gallery: 'galerie'

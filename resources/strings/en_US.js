@@ -37,6 +37,7 @@ export default {
       user: {
         title: 'user',
         subtabs: {
+          dashboard: 'dashboard',
           profile: 'profile',
           statistics: 'statistics',
           gallery: 'gallery'
@@ -506,6 +507,27 @@ export default {
     label: {
       edit_raw: 'Edit raw JSON',
       edit_editor: 'Edit with visual editor'
+    }
+  },
+  dashboard: {
+    welcome_user: 'Welcome %USER%!',
+    welcome: 'Welcome!',
+    totals: {
+      authors: 'authors',
+      contributions: 'contributions',
+      last_week: 'contributions last week',
+      last_month: 'contributions last month'
+    },
+    activity: 'activity',
+    users: {
+      total: 'users',
+      total_anonymous: 'anonymous',
+      total_roles: 'roles'
+    },
+    locale: {
+      on: 'on',
+      less: 'Less',
+      more: 'More'
     }
   }
 }

@@ -17,6 +17,7 @@ const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
+const DashboardPage = () => import('./pages/dashboard/dashboard.js')
 
 window.colors = (await import('https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js')).default
 window.colorToHex = function(color) {
@@ -146,7 +147,7 @@ const _set_lang = function (val) {
 window.settings = undefined
 
 const routes = [
-  { path: '/', redirect: '/profile/' }
+  { path: '/', redirect: '/dashboard/' }
 ]
 
 
@@ -155,6 +156,7 @@ const router = new VueRouter({ routes })
 const ALL_TABS_ROUTES = [
   {
     subtabs: [
+      { routes: [{ path: '/dashboard', component: DashboardPage}]},
       { routes: [{ path: '/profile', component: ProfilePage }] },
       { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
       { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage }] }
@@ -215,6 +217,7 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
+      { enabled: true, icon: 'mdi-view-dashboard', to: '/dashboard', label: 'dashboard' },
       { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
       { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
       { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
@@ -263,6 +266,8 @@ axios.get('./resources/settings.json')
   .then(res => {
     window.settings = res.data
   }).then(() => {
+    Vue.use(VueCalendarHeatmap)
+
     let ins = new Vue({
       router,
       el: '#app',
@@ -442,8 +447,21 @@ axios.get('./resources/settings.json')
         }
       },
       methods: {
-        lang: function () {
-          return this.langs[this.selectedLang]
+        lang: function (path) {
+          let response = this.langs[this.selectedLang]
+          if(path === undefined) return response
+
+          let split = path.split('.')
+
+          while(response !== undefined && split.length > 0) {
+            response = response[split.shift()]
+          }
+
+          if(response === undefined) {
+            console.warn('Cannot find string for "' + path + '"')
+          }
+
+          return String(response) // enforce string to ensure string methods used after
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
           this.snackbar.message = message

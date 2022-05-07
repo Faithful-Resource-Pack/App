@@ -800,9 +800,11 @@ body .texture-avatar {
   color: white;
 }
 
+.theme--dark .main-container, .theme--dark #dashboard-page .dashboard-card {
+  background-color: rgba(255,255,255,.05);
+}
 .theme--dark .main-container {
   color: rgba(255, 255, 255, 0.87);
-  background-color: rgba(255,255,255,.05);
 }
 
 #app.theme--light {
@@ -814,7 +816,7 @@ body .texture-avatar {
 .theme--light .v-app-bar__nav-icon.v-btn.v-btn.v-btn--icon {
   background: transparent;
 }
-.theme--light .main-container {
+.theme--light .main-container, #dashboard-page .dashboard-card {
   background: #f0f0f0;
 }
 .theme--light header.v-toolbar {
@@ -840,4 +842,50 @@ body .texture-avatar {
 
 #app .addon-expansion-panel .v-expansion-panel-header .v-expansion-panel-header__icon .v-icon {
   color: rgba(255, 255, 255, 0.54);
+}
+
+.dashboard-card {
+  width: 100%;
+}
+
+#dashboard-page .title {
+  text-transform: capitalize;
+}
+
+#dashboard-page #dashboard-row > * {
+  display: flex;
+  align-items: stretch;
+}
+
+#dashboard-page p {
+  background-color: rgba(0,0,0,0.08);
+}
+
+#dashboard-page .dashboard-card .v-card__title .v-btn.v-btn--icon {
+  background-color: transparent;
+}
+#dashboard-page .dashboard-card .v-card__title .v-btn.v-btn--icon.v-btn--disabled {
+  opacity: 0.6;
+}
+
+.theme--dark #dashboard-page p {
+  background: rgba(0,0,0,0.2);
+}
+
+.roles-graph svg {
+  background: transparent !important;
+  overflow: visible;
+  width: 100%;
+}
+
+#dashboard-page #addon-card .v-card__text p {
+  width: 100%;
+}
+
+.heatmap-wrapper {
+  min-height: 100px;
+  overflow: auto;
+}
+.heatmap-wrapper svg {
+  min-height: 100px;
 }
