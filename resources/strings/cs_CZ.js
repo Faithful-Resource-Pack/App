@@ -33,6 +33,7 @@ export default {
       user: {
         title: 'uživatel',
         subtabs: {
+          dashboard: 'nástěnka',
           profile: 'profil',
           statistics: 'statistiky',
           gallery: 'galerie'
@@ -499,6 +500,27 @@ export default {
     label: {
       edit_raw: 'Upravit surová JSON data',
       edit_editor: 'Upravit ve vizuálním editoru'
+    }
+  },
+  dashboard: {
+    welcome_user: 'Vítej, uživateli %USER%!',
+    welcome: 'Vítej!',
+    totals: {
+      authors: 'autorů',
+      contributions: 'příspěvků',
+      last_week: 'příspěvků minulý týden',
+      last_month: 'příspěvků minulý měsíc'
+    },
+    activity: 'aktivita',
+    users: {
+      total: 'uživatelů',
+      total_anonymous: 'anonymních uživatelů',
+      total_roles: 'rolí'
+    },
+    locale: {
+      on: '',
+      less: 'Více',
+      more: 'Méně'
     }
   }
 }
