@@ -459,18 +459,18 @@ export default {
       window.onscroll = () => {
         let scrolledTo = document.querySelector('.bottomElement')
 
-        if (scrolledTo && this.isScrolledIntoView(scrolledTo)) {
+        if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
           this.displayedResults += 30
           this.$forceUpdate()
         }
       }
     },
-    isScrolledIntoView (el) {
+    isScrolledIntoView (el, margin = 0) {
       let rect = el.getBoundingClientRect()
       let elemTop = rect.top
       let elemBottom = rect.bottom
     
-      let isVisible = elemTop < window.innerHeight && elemBottom >= 0
+      let isVisible = elemTop < window.innerHeight + margin && elemBottom >= 0
       return isVisible
     },
     toTop() {
