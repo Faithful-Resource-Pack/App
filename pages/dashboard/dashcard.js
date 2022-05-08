@@ -17,7 +17,7 @@ export default {
     },
   },
   template:`
-  <v-card flat class="dashboard-card mb-2">
+  <v-card flat class="dashboard-card">
   <v-card-title class="d-flex align-center pb-2">
     <span class="title text-h5"> {{ title }} </span>
     <v-spacer />

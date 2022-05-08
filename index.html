@@ -40,9 +40,12 @@
           <v-card-title class="banner-btn pl-2">
             <v-avatar size="48" style="margin-right: 10px">
               <img
-                alt="user"
+                v-if="user.avatar"
+                style="line-height: 48px;"
+                :alt="user.username.charAt(0)"
                 :src="user.avatar"
-              >
+              />
+              <span  class="text-center primary font-weight-bold" v-else>{{ user.username.charAt(0) }}</span>
             </v-avatar>
             <span class="white--text">{{ user.username }}</span>
           </v-card-title>

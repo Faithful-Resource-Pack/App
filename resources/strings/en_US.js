@@ -518,7 +518,7 @@ export default {
       last_week: 'contributions last week',
       last_month: 'contributions last month'
     },
-    activity: 'activity',
+    activity: '%s activity',
     users: {
       total: 'users',
       total_anonymous: 'anonymous',

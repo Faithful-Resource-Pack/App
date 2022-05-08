@@ -39,8 +39,8 @@ export default {
   </v-col>
   <v-col cols="12" sm="6">
     <v-row dense>
-      <v-col v-for="(value, index) in values" :key="value[1]" cols="12" sm="6">
-        <p class="rounded-lg pa-2 mb-0">
+      <v-col v-for="(value, index) in values" :key="value[1]" cols="12" sm="6" class="d-flex align-stretch">
+        <p class="rounded-lg pa-2 mb-0 flex-grow-1">
           <span class="mr-1 rounded d-inline-block" :style="{'background-color': shade[index], height: '10px', width: '10px'}"></span>
           <span class="font-weight-medium text--primary">{{ value[2] }}</span> {{ value[1] }}
         </p>

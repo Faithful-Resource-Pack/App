@@ -482,5 +482,26 @@ export default {
       edit_raw: "Éditer le JSON",
       edit_editor: "Éditer avec l'éditeur visuel"
     }
+  },
+  dashboard: {
+    welcome_user: 'Bienvenue %USER%!',
+    welcome: 'Bienvenu!',
+    totals: {
+      authors: 'auteurs',
+      contributions: 'contributions',
+      last_week: 'contributions cette semaine',
+      last_month: 'contributions ce mois'
+    },
+    activity: 'Activité de %s',
+    users: {
+      total: 'utilisateurs',
+      total_anonymous: 'anonymes',
+      total_roles: 'roles'
+    },
+    locale: {
+      on: 'le',
+      less: 'Moins',
+      more: 'Plus'
+    }
   }
 }

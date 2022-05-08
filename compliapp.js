@@ -622,7 +622,7 @@ axios.get('./resources/settings.json')
             .then(response => response.json())
             .then(json => {
               auth.id = json.id
-              auth.avatar = `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024`
+              auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
               auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
               auth.username = `${json.username}#${json.discriminator}`
 

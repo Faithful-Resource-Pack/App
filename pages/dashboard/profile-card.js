@@ -17,10 +17,11 @@ export default {
     <div class="text-center">
       <v-list-item-avatar
         tile
-        class="rounded-lg my-3"
+        class="rounded-lg my-3 mr-0 primary"
         size="80"
       >
-        <v-img :src="user.avatar"></v-img>
+        <v-img :src="user.avatar" v-if="user.avatar"></v-img>
+        <div class="text-h5 text-center text--primary font-weight-medium" v-else>{{ user.username.charAt(0) }} </div>
       </v-list-item-avatar>
     </div>
 
@@ -34,11 +35,9 @@ export default {
       </div>
     </div>
 
-    <v-list dense>
-      <v-list-item dense v-for="role in user.roles" :key="role">
-        <v-list-item-title>{{ role }}</v-list-item-title>
-      </v-list-item>
-    </v-list>
+    <p class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0">
+      <span v-html="user.roles.join('<br>')"></span>
+    </p>
   </v-card-text>
 </dashboard-card>
   `,

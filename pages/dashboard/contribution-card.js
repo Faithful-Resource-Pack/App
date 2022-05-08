@@ -21,8 +21,9 @@ export default {
   :title="$root.lang('global.tabs.database.subtabs.contributions') || ''"
   go_to="/contributions"
   :can_go_to="admin"
+  class="d-flex flex-column"
 >
-  <v-card-text class="pb-3">
+  <v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
     <v-row dense v-if="data">
       <v-col cols="12" sm="4" class="d-flex align-stretch pr-sm-4 pb-sm-8">
         <v-row dense class="d-flex flex-column justify-space-between">
@@ -33,16 +34,17 @@ export default {
           </v-col>
         </v-row>
       </v-col>
-      <v-col class="pr-sm-2">
+      <v-col class="pr-sm-2" cols="12" sm="8" class="d-flex flex-column justify-space-around">
         <div v-for="(values, activity) in data.activity" :key="activity">
           <div class="title text-h6 text--primary">
-            {{ activity.replace('_', ' ') + ' ' + $root.lang('dashboard.activity') }}
+            {{ $root.lang('dashboard.activity').replace('%s', activity.replace('_', ' ')) }}
           </div>
           <div class="heatmap-wrapper">
             <calendar-heatmap
               :values="values"
               :end-date="today"
               :max="data.percentiles[activity]"
+              :tooltip-unit="$root.lang('dashboard.totals.contributions')"
               :locale="locale"
               :range-color="colors"
             />
@@ -78,7 +80,7 @@ export default {
       return {
         months: moment.monthsShort().map(e => e[0].toUpperCase() + e.slice(1)),
         days: moment.weekdaysShort().map(e => e[0].toUpperCase() + e.slice(1)),
-        ...this.$root.lang('dashboard.locale')
+        ...this.$root.lang().dashboard.locale
       }
     },
   },

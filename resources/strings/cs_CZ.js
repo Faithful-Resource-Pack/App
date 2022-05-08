@@ -511,7 +511,7 @@ export default {
       last_week: 'příspěvků minulý týden',
       last_month: 'příspěvků minulý měsíc'
     },
-    activity: 'aktivita',
+    activity: 'aktivita %s',
     users: {
       total: 'uživatelů',
       total_anonymous: 'anonymních uživatelů',
