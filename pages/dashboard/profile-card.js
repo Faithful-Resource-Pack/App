@@ -13,6 +13,7 @@ export default {
   class="d-flex flex-column"
 >
   <v-card-text v-if="user" class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
+  <div v-if="user.roles.length === 0"></div>
 
     <div class="text-center">
       <v-list-item-avatar
@@ -35,9 +36,10 @@ export default {
       </div>
     </div>
 
-    <p class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0">
+    <p class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0" v-if="user.roles.length">
       <span v-html="user.roles.join('<br>')"></span>
     </p>
+    <div v-else></div>
   </v-card-text>
 </dashboard-card>
   `,
