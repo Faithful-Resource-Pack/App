@@ -24,7 +24,7 @@ export default {
   class="d-flex flex-column"
 >
   <v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
-    <v-row dense v-if="data">
+    <v-row dense v-if="data" class="col-12 pa-0">
       <v-col cols="12" sm="4" class="d-flex align-stretch pr-sm-4 pb-sm-8">
         <v-row dense class="d-flex flex-column justify-space-between">
           <v-col v-for="total in totals" :key="total.name" class="flex-sm-shrink-0 flex-grow-0">
