@@ -18,6 +18,7 @@ const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
 const DashboardPage = () => import('./pages/dashboard/dashboard.js')
+const ReconnectPage = () => import('./pages/reconnect/reconnect.js')
 
 window.colors = (await import('https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js')).default
 window.colorToHex = function(color) {
@@ -156,6 +157,7 @@ const router = new VueRouter({ routes })
 const ALL_TABS_ROUTES = [
   {
     subtabs: [
+      { routes: [{ path: '/reconnect', component: ReconnectPage}]},
       { routes: [{ path: '/dashboard', component: DashboardPage}]},
       { routes: [{ path: '/profile', component: ProfilePage }] },
       { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
@@ -497,8 +499,9 @@ axios.get('./resources/settings.json')
             })
             .catch(err => {
               console.error(err)
-              const message = (err && err.response && err.response ? err.response.data.error : undefined) || err.message
-              this.showSnackBar(`${err.message}: ${message}`, 'error')
+              
+              // redirect to reconnect
+              router.push({ path: '/reconnect' }).catch(() => {})
             })
         },
         /**

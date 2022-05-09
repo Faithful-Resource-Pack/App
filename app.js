@@ -357,13 +357,28 @@ app.post('/profile/roles', function (req, res) {
 
   let userID
 
-  fetch('https://discord.com/api/users/@me', {
+  const dis = fetch('https://discord.com/api/users/@me', {
     headers: {
       authorization: `Bearer ${req.body.access_token}`
     }
+  }).then(response => {
+    if(!response.ok) {
+      res.status(response.status)
+      
+      response.json().then(body => {
+        res.send(body)
+        res.end()
+      })
+
+      return false
+    }
+
+    return response.json()
   })
-    .then(response => response.json())
+
+  dis
     .then(json => {
+      if(!json) return
 
       userID = json.id
       username = json.username

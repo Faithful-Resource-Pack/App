@@ -503,5 +503,11 @@ export default {
       less: 'Moins',
       more: 'Plus'
     }
+  },
+  reconnect: {
+    reconnecting: 'Reconnexion...',
+    refreshing_discord_token: 'Mise à jour du token Discord...',
+    dummy_step: 'Téléchargement de RAM...',
+    updating_profile_informations: 'Mise à jour des informations du profil...'
   }
 }

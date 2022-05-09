@@ -529,5 +529,11 @@ export default {
       less: 'Less',
       more: 'More'
     }
+  },
+  reconnect: {
+    reconnecting: 'Reconnecting...',
+    refreshing_discord_token: 'Refreshing Discord token...',
+    dummy_step: 'Downloading RAM...',
+    updating_profile_informations: 'Updating profile informations...'
   }
 }
