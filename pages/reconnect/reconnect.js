@@ -66,7 +66,7 @@ export default {
         if(response.ok)
           return response.json()
         else
-          return response.reject(`Failed to update informations`)
+          return Promise.reject(`Failed to update informations`)
       })
       .then(json => {
         auth.id = json.id
@@ -82,7 +82,7 @@ export default {
       })
       .catch(err => {
         console.error(err)
-        this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        this.showSnackBar(`${err}`, 'error')
       })
   }
 }
