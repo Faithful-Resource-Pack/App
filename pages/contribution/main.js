@@ -259,10 +259,26 @@ export default {
         })
 
         // fetch contribution textures names
-        //! TODO: implement something in the API to make this in 1 request instead of one request per contribution F
         .then(() => this.search.search_results.map(c => c.texture))
-        .then(ids => Promise.all(ids.map(id => axios.get(`${this.$root.apiURL}/textures/${id}`))))
-        .then(texturesFromIds => this.search.search_results.forEach((contrib, index) => contrib.name = texturesFromIds[index].data.name))
+        .then(all_ids => {
+          // split request in groups
+          return Promise.all(all_ids.reduce((acc, cur, index) => {
+            if(index % 30 === 0) { acc.push([])}
+            acc[acc.length-1].push(cur)
+            return acc;
+          }, []).map(ids => {
+            return axios.get(`${this.$root.apiURL}/textures/${ids.join(',')}`);
+          })
+          )
+        })
+        .then(results => {
+          const texturesFromIds = results.map(r => r.data).flat() // remerge results
+          
+          this.search.search_results.forEach((contrib) => {
+            const found_texture = texturesFromIds.find(t => t.id === contrib.texture);
+            contrib.name = found_texture ? found_texture.name : ''; // find texture with null string fallback (sometimes we get a 404)
+          })
+        })
         
         .finally(() => this.search.searching = false)
         .catch(err => this.$root.showSnackBar(err, 'error'))
