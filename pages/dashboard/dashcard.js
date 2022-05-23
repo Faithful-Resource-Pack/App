@@ -2,8 +2,9 @@ export default {
   name: 'dashboard-card',
   props: {
     title: {
-      required: true,
+      required: false,
       type: String,
+      default: ''
     },
     go_to: {
       required: false,

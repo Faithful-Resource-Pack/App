@@ -2,6 +2,7 @@ const AddonCard = () => import('./addon-card.js')
 const ProfileCard = () => import('./profile-card.js')
 const UserCard = () => import('./user-card.js')
 const ContributionCard = () => import('./contribution-card.js')
+const ComplianceCard = () => import('./compliance-card.js')
 
 export default {
   name: 'dashboardPage',
@@ -9,7 +10,8 @@ export default {
     'addon-card': AddonCard,
     'profile-card': ProfileCard,
     'user-card': UserCard,
-    'contribution-card': ContributionCard
+    'contribution-card': ContributionCard,
+    'compliance-card': ComplianceCard
   },
   template: `
 <div id="dashboard-page" class="pa-2 py-sm-4 px-sm-6">
@@ -19,7 +21,8 @@ export default {
 
   <v-row id="dashboard-row">
     <v-col cols="12" sm="3">
-      <profile-card />
+      <profile-card v-if="$root.isUserLogged"/>
+      <compliance-card v-else />
     </v-col>
     <v-col cols="12" sm="9">
       <user-card :admin="admin" :colors="colors"/>
@@ -35,7 +38,13 @@ export default {
 `,
   computed: {
     admin: function() {
+      // if not logged in
+      if(!this.$root.isUserLogged) return false
+
+      // if user not loaded
       if(!this.$root.user) return false
+
+      // check roles
       return this.$root.user.roles.includes('Administrator') || this.$root.user.roles.includes('Developer')
     },
     colors: function() {
