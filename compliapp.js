@@ -161,10 +161,13 @@ const ALL_TABS_ROUTES = [
   {
     subtabs: [
       { routes: [{ path: '/reconnect', component: ReconnectPage}]},
-      { routes: [{ path: '/dashboard', component: DashboardPage}]},
+      { routes: [{ path: '/dashboard', component: DashboardPage }], unlogged: true },
       { routes: [{ path: '/profile', component: ProfilePage }] },
-      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage }] },
-      { routes: [{ path: '/gallery', redirect: '/gallery/java/32x/latest/All/' }, { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage }] }
+      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage}], unlogged: true },
+      { routes: [
+        { path: '/gallery', redirect: '/gallery/java/32x/latest/All/'},
+        { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage}
+      ], unlogged: true }
     ]
   },
   {
@@ -201,9 +204,11 @@ const ALL_TABS_ROUTES = [
 for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
   const tab = ALL_TABS_ROUTES[i]
   tab.subtabs.forEach(subtab => {
-    subtab.routes.forEach(route => {
-      router.addRoute(route)
-    })
+    if(subtab.unlogged) {
+      subtab.routes.forEach(route => {
+        router.addRoute(route)
+      })
+    }
   })
 }
 
@@ -384,6 +389,20 @@ axios.get('./resources/settings.json')
         },
         drawer: function(n) {
           localStorage.setItem(MENU_KEY, String(n))
+        },
+        isUserLogged: function(n) {
+          if(!n) return;
+
+          for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
+            const tab = ALL_TABS_ROUTES[i]
+            tab.subtabs.forEach(subtab => {
+              if(!subtab.unlogged) {
+                subtab.routes.forEach(route => {
+                  router.addRoute(route)
+                })
+              }
+            })
+          }
         }
       },
       computed: {
@@ -482,6 +501,8 @@ axios.get('./resources/settings.json')
           this.user = EMPTY_USER
           window.localStorage.removeItem('auth')
 
+          window.location.hash = '/'
+          window.location.reload()
           this.update()
         },
         logUser: function () {

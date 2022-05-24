@@ -86,6 +86,7 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
 #connect-title {
   text-align: center;
   width: 200px;
+  max-width: 100%;
   margin-bottom: 20px;
   font-size: 1.04rem;
   line-height: 1.6rem;;
@@ -298,6 +299,16 @@ img.texture-img {
 
 h2.faithful-font {
   font-weight: 600;
+}
+
+#login-button {
+  height: auto;
+  background: hsl(235,85.6%,64.7%) !important;
+  color: white;
+  white-space: normal;
+}
+#login-button .v-btn__content {
+  flex: auto;
 }
 
 .router-link {
