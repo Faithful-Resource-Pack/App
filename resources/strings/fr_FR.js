@@ -484,8 +484,8 @@ export default {
     }
   },
   dashboard: {
-    welcome_user: 'Bienvenue %USER% !',
-    welcome: 'Bienvenue !',
+    welcome_user: 'Bienvenue %USER%!',
+    welcome: 'Bienvenu!',
     totals: {
       authors: 'auteurs',
       contributions: 'contributions',

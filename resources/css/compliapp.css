@@ -87,8 +87,6 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
   text-align: center;
   width: 200px;
   margin-bottom: 20px;
-  font-size: 1.04rem;
-  line-height: 1.6rem;;
 }
 .theme--dark #connect-title {
   text-shadow: 2px 2px rgba(0,0,0,.7);
@@ -124,16 +122,6 @@ a {
 
 #app.theme--dark header.v-toolbar {
   border-bottom: 2px solid rgba(0, 0, 0, 0.5);
-}
-
-#app #banner-card {
-  background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/f32.png);
-  background-position: center;
-  background-size: cover;
-}
-
-#banner-card .unlogged {
-  opacity: 0;
 }
 
 #app .v-tabs {
@@ -292,7 +280,7 @@ img.texture-img {
   border-radius: 0 !important;
 }
 
-#app .faithful-font {
+.faithful-font {
   font-family: Faithful;
 }
 

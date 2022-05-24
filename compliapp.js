@@ -219,10 +219,10 @@ let ALL_TABS = [
   {
     label: 'user',
     subtabs: [
-      { enabled: true, icon: 'mdi-view-dashboard', to: '/dashboard', label: 'dashboard', unlogged: true },
+      { enabled: true, icon: 'mdi-view-dashboard', to: '/dashboard', label: 'dashboard' },
       { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics', unlogged: true },
-      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery', unlogged: true }
+      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics' },
+      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery' }
     ]
   },
   {
