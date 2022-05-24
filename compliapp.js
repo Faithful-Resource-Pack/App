@@ -145,6 +145,9 @@ const _set_lang = function (val) {
 }
 ///////////
 
+const MENU_KEY = 'menu_key';
+const MENU_DEFAULT = false;
+
 window.settings = undefined
 
 const routes = [
@@ -293,7 +296,7 @@ axios.get('./resources/settings.json')
             color: '#222',
             timeout: 4000
           },
-          drawer: false,
+          drawer: localStorage.getItem(MENU_KEY) ? localStorage.getItem(MENU_KEY) === 'true' : MENU_DEFAULT,
           theme: undefined,
           themes: {
             dark: 'mdi-weather-night',
@@ -378,6 +381,9 @@ axios.get('./resources/settings.json')
             html.classList.remove(arr[1])
           },
           immediate: true
+        },
+        drawer: function(n) {
+          localStorage.setItem(MENU_KEY, String(n))
         }
       },
       computed: {
