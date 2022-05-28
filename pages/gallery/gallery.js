@@ -369,10 +369,7 @@ export default {
         paths: {},
         uses: {},
         textures: {},
-        contributions: {
-          faithful_32x: [],
-          faithful_64x: []
-        },
+        contributions: {},
         contributors: {}
       }
 
@@ -445,6 +442,7 @@ export default {
 
       Object.values(this.dataJSON.contributions).forEach(contribution => {
         if (!contribution.pack || !contribution.texture) return
+        if (!this.displayed.contributions[contribution.pack]) this.displayed.contributions[contribution.pack] = {}
         if (!this.displayed.contributions[contribution.pack][contribution.texture]) this.displayed.contributions[contribution.pack][contribution.texture] = []
 
         this.displayed.contributions[contribution.pack][contribution.texture].push({
