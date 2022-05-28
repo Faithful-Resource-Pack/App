@@ -127,7 +127,7 @@
           <v-list-item-title class="uppercased-unsized">{{ $root.lang().global.tabs.review.subtabs.translations }}</v-list-item-title>
         </v-list-item>
         <v-radio-group class="px-2 pb-2" row v-model="selectedLang" hide-details>
-          <v-radio class="uppercased pb-1" v-for="key in Object.keys(langs).sort()" :key="key" :label="key" :value="key" hide-details />
+          <v-radio class="uppercased pb-1" v-for="language in languages" :key="language.bcp47" :label="language.lang" :value="language.lang" hide-details />
         </v-radio-group>
       </v-list>
 

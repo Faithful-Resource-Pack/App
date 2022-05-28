@@ -65,7 +65,7 @@ app.use(express.urlencoded({
 }))
 app.use(express.json({ limit: '50mb' }))
 
-app.get(compliappURL, (req, res) => {
+app.get(compliappURL, async (req, res) => {
   let file = fs.readFileSync('./index.html', 'utf8')
 
   file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
@@ -73,6 +73,10 @@ app.get(compliappURL, (req, res) => {
   if (DEV && process.env.BROWSER_REFRESH_URL) {
     file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script></body>`)
   }
+
+  let langs = await getLanguages().catch(errorHandler(res))
+
+  file = file.replace('</body>', '<script>const LANGUAGES = ' + JSON.stringify(langs) + '</script></body>')
 
   res.send(file)
 })
@@ -86,6 +90,26 @@ app.listen(port, () => {
       process.send('online')
   }
 })
+
+// https://www.techonthenet.com/js/language_tags.php
+const langPath = ['resources', 'strings'];
+const languagesPath = path.join(__dirname, ...langPath);
+const getLanguages = function() {
+  return fs.promises.readdir(languagesPath)
+    .then(files => {
+      const result = files.filter(f => f.endsWith('js'))
+        .map(e => {
+          const name = e.split('.').slice(0, -1).join('.')
+          return {
+            lang: name.includes('en') ? 'en' : name.slice(-2).toLowerCase(),
+            bcp47: name.replace('_', '-'),
+            file: ["", ...langPath, e].join("/")
+          }
+        })
+
+      return result
+    })
+}
 
 app.use(express.static('.', {
   extensions: ['html', 'xml', 'json']

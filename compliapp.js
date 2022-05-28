@@ -96,42 +96,14 @@ Object.defineProperty(Object.prototype, 'merge', {
 
 // languages section
 import enUS from './resources/strings/en_US.js'
-import frFR from './resources/strings/fr_FR.js'
-import deDE from './resources/strings/de_DE.js'
-import ptBR from './resources/strings/pt_BR.js'
-import csCZ from './resources/strings/cs_CZ.js'
 
 const LANGS = {
-  en: enUS,
-  cs: Object.merge({}, enUS, csCZ),
-  br: Object.merge({}, enUS, ptBR),
-  de: Object.merge({}, enUS, deDE),
-  fr: Object.merge({}, enUS, frFR)
-}
-
-// https://www.techonthenet.com/js/language_tags.php
-// Use for v-calendar date format
-const LANGS_TO_BCP47 = {
-  en: 'en-US',
-  fr: 'fr-FR',
-  de: 'de-DE',
-  br: 'pt-BR',
-  cs: 'cs-CZ'
-}
-
-if(Object.keys(LANGS_TO_BCP47).sort().toString() !== Object.keys(LANGS).sort().toString()) {
-  throw new Error(`langBCP47 keys don't match LANGS keys`)
-}
-
-function lang_to_bcp47(lang) {
-  return LANGS_TO_BCP47[lang]
+  en: enUS
 }
 
 let lang_value;
 const LANG_KEY = 'lang';
 const LANG_DEFAULT = 'en';
-
-
 const _get_lang = function () {
   lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
   
@@ -288,6 +260,7 @@ axios.get('./resources/settings.json')
           vapiURL: window.apiURL,
           selectedLang: _get_lang(),
           langs: LANGS,
+          languages: LANGUAGES,
           window: {
             width: window.innerWidth,
             height: window.innerHeight
@@ -321,6 +294,8 @@ axios.get('./resources/settings.json')
                 moment.locale(this.langBCP47)
                 this.$forceUpdate()
               }
+            } else {
+              this.loadLanguage(newValue)
             }
           },
           immediate: true
@@ -467,15 +442,47 @@ axios.get('./resources/settings.json')
           return this.user.roles
         },
         langBCP47: function () {
-          return lang_to_bcp47(this.selectedLang)
+          return this.lang_to_bcp47(this.selectedLang)
         },
         isDark: function () {
           return this.$vuetify.theme.dark
         }
       },
       methods: {
+        lang_to_bcp47: function(lang) {
+          return LANGUAGES.filter(l => l.lang === lang)[0].bcp47
+        },
+        loadLanguage: function(language) {
+          const lang = this.languages.filter(l => l.lang === language)[0]
+
+          moment.locale(lang.bcp47)
+
+          if(this.langs[lang.lang]) {
+            return // everything will update
+          }
+
+          import(lang.file)
+            .then(r => {
+              r = r.default
+              console.log(r)
+              this.langs[lang.lang] = Object.merge({}, enUS, r)
+              // we need to wait for this.langs to be updated
+              this.$nextTick(() => {
+                // then we have to force update because this.lang is a method
+                this.$forceUpdate()
+              })
+            })
+            .catch(e => {
+              this.showSnackBar(e.toString(), "error")
+            })
+        },
         lang: function (path) {
           let response = this.langs[this.selectedLang]
+
+          // fallback to default when loading new language
+          if(response === undefined) response = this.langs[Object.keys(this.langs)[0]]
+
+          // if you didn't request a path then 0
           if(path === undefined) return response
 
           let split = path.split('.')
@@ -484,10 +491,12 @@ axios.get('./resources/settings.json')
             response = response[split.shift()]
           }
 
+          // warns user if string not found
           if(response === undefined) {
             console.warn('Cannot find string for "' + path + '"')
           }
 
+          // Shall send string to be chained with other string operations
           return String(response) // enforce string to ensure string methods used after
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
@@ -609,7 +618,7 @@ axios.get('./resources/settings.json')
         }
       },
       created: function () {
-        moment.locale(lang_to_bcp47(_get_lang()))
+        moment.locale(this.lang_to_bcp47(_get_lang()))
         const authStr = window.localStorage.getItem('auth')
         if (!authStr) return
 
