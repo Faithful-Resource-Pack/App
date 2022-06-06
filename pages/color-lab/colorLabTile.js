@@ -2,7 +2,7 @@ export default {
   name: 'color-lab-tile',
   props: ['color', 'plus', 'index', 'buttons'],
   template: `
-<v-card flat :light="isLit" :dark="!isLit" :class="['pa-0 color-lab-tile d-flex flex-column align-center justify-center']" :style="{ 'background' : color.color }">
+<v-card flat :light="isLit" :dark="!isLit" :class="['pa-0 color-lab-tile d-flex flex-column align-center justify-center, rounded-0']" :style="{ 'background' : color.color }">
   <div class="actions d-flex flex-column align-center">
     <v-btn icon>
       <v-icon>mdi-close</v-icon>
@@ -10,14 +10,9 @@ export default {
     <v-btn icon>
       <v-icon>mdi-grid</v-icon>
     </v-btn>
-    <div>
-      <v-btn icon :disabled="buttons.left" @click="$emit('left', index)">
-        <v-icon>mdi-arrow-left</v-icon>
-      </v-btn>
-      <v-btn icon :disabled="buttons.right" @click="$emit('right', index)">
-        <v-icon>mdi-arrow-right</v-icon>
-      </v-btn>
-    </div>
+    <v-btn icon class="my-handle">
+      <v-icon>mdi-arrow-left-right</v-icon>
+    </v-btn>
     <v-btn icon @click="$emit('remove', index)" :disabled="buttons.remove">
       <v-icon>mdi-close</v-icon>
     </v-btn>

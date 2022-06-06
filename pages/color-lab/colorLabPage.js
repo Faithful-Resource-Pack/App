@@ -19,9 +19,6 @@ export default {
       :plus="index != colors.length - 1"
       :index="index"
       :buttons="activeButtons(index)"
-
-      @left="leftColor"
-      @right="rightColor"
       @lock="lockColor"
       @remove="removeColor"
       @add="addColor" />
@@ -31,6 +28,15 @@ export default {
   data: function() {
     return {
       colors: []
+    }
+  },
+  watch: {
+    colors: {
+      handler: function() {
+				this.$nextTick(() => this.createSortable())
+      },
+      deep: true,
+      immediate: true
     }
   },
   computed: {
@@ -96,13 +102,30 @@ export default {
           col.color = random_hex
         }
       }
+    },
+    createSortable: function() {
+      try {
+        let el = document.getElementById('color-lab-main')
+        Sortable.create(el, {
+          handle: '.my-handle',
+          animation: 150,
+          onEnd: (evt) => this.onUpdate(evt)
+        })
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    onUpdate: function (event) {
+      this.colors.splice(event.newIndex, 0, this.colors.splice(event.oldIndex, 1)[0])
     }
   },
   created: function() {
     const scripts = [
-        "/resources/js/ntc.js"
+        "/resources/js/ntc.js",
+        "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"
     ]
 
+    let lastTag = undefined
     scripts.forEach(script => {
         let tag = document.head.querySelector(`[src="${ script }"`)
         if (!tag) {
@@ -111,7 +134,12 @@ export default {
             tag.setAttribute("type", 'text/javascript')
             document.head.appendChild(tag)
         }
+        lastTag = tag
     })
+
+    if(lastTag) {
+      lastTag.onload = () => this.$nextTick(() => this.createSortable())
+    }
   },
   mounted: function() {
     this.generateDefaultPalette()

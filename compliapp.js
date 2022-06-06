@@ -141,7 +141,7 @@ const ALL_TABS_ROUTES = [
         { path: '/gallery', redirect: '/gallery/java/32x/latest/All/'},
         { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage}
       ], unlogged: true },
-      { routes: [{ path: '/color-lab', component: ColorLabPage }]}
+      { routes: [{ path: '/color-lab', component: ColorLabPage }], unlogged: true }
     ]
   },
   {
