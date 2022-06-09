@@ -186,6 +186,11 @@ for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
+// Do not remove tooltip DOM to easily change style
+if(Vue.config.devtools) {
+  VTooltip.default.options.disposeTimeout = null
+}
+
 const EMPTY_USER = {
   avatar: '',
   banner: '',

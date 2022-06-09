@@ -2,6 +2,16 @@
 
 const textureModal = () => import('./modal.js')
 
+const Chain = function(val) {
+  return {
+    value: val,
+    chain: function(predicate) {
+      if(this.value !== undefined) return Chain(predicate(this.value))
+      return this
+    }
+  }
+}
+
 export default {
   name: 'texture-page',
   components: {
@@ -100,7 +110,7 @@ export default {
           :key="texture.id"
           v-if="index <= displayedResults"
           class="gallery-texture-in-container"
-          v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true}"
+          v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true, classes: 'gallery-tooltip' }"
           @click.stop="() => openModal(texture.textureID)"
         >
           <img
@@ -228,7 +238,12 @@ export default {
     getAuthor(textureID) {
       let contributionsHTML = ''
 
-      let contributions = this.displayed.contributions[this.current.resolution === '32x' ? 'faithful_32x' : 'faithful_64x'][textureID]
+      // safely chains operations
+      let contributions = Chain(this.displayed.contributions)
+        .chain((contribs) => contribs[this.current.resolution === '32x' ? 'faithful_32x' : 'faithful_64x'])
+        .chain((res_contribs) => res_contribs[textureID])
+        .value;
+
       if (contributions) {
         const timestamp = contributions.reduce((a, b) => a = a > b.date ? a : b.date, 0)
         const contribution = contributions.filter(el => el.date == timestamp)[0]
