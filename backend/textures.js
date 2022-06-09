@@ -62,7 +62,8 @@ module.exports = {
   texturesIDsFromSearch(ids, name) {
     return textures.searchKeys(ids)
       .then(res => {
-        return res.filter(el => el.name.includes(name)).map(el => el.id)
+        // part of name matches or exact ID match
+        return res.filter(el => el.name.includes(name) || el[ID_FIELD] === name).map(el => el.id)
       })
   },
   texturesIDsFromTags(tag, ids) {
