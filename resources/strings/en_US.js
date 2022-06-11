@@ -399,7 +399,7 @@ export default {
       tags: 'Getting texture tags…'
     },
     error_message: {
-      texture_not_done: 'Texture not done!',
+      texture_not_done: 'Texture is missing or blacklisted!',
       user_anonymous: 'Anonymous',
       user_not_found: 'Unknown User',
       contribution_not_found: 'No contributions found in database!'

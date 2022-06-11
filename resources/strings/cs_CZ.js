@@ -392,7 +392,7 @@ export default {
       tags: 'Nahrávám kategorie textur…'
     },
     error_message: {
-      texture_not_done: 'Textura není hotova!',
+      texture_not_done: 'Textura chybí nebo byla schválně vynechána.',
       user_anonymous: 'Anonym',
       user_not_found: 'Neznámý uživatel',
       contribution_not_found: 'V databázi nebyli nalezeni žádní autoři!'
