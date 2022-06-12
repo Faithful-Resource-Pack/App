@@ -122,67 +122,114 @@ const MENU_DEFAULT = false;
 
 window.settings = undefined
 
-const routes = [
-  { path: '/', redirect: '/dashboard/' }
+const ALL_ROUTES = [
+  { path: '/', redirect: '/dashboard/' },
+  { path: '/reconnect', component: ReconnectPage},
 ]
 
+const router = new VueRouter({ routes: ALL_ROUTES })
 
-const router = new VueRouter({ routes })
-
-const ALL_TABS_ROUTES = [
+// `to` field in subtab will be the firsth route path
+const ALL_TABS = [
   {
-    subtabs: [
-      { routes: [{ path: '/reconnect', component: ReconnectPage}]},
-      { routes: [{ path: '/dashboard', component: DashboardPage }], unlogged: true },
-      { routes: [{ path: '/profile', component: ProfilePage }] },
-      { routes: [{ path: '/contributions-stats', component: ContributorStatsPage}], unlogged: true },
-      { routes: [
+    label: 'user',
+    subtabs: [{ 
+      enabled: true, icon: 'mdi-view-dashboard', label: 'dashboard',
+      unlogged: true,
+      routes: [{ path: '/dashboard', component: DashboardPage }]
+    }, {
+      enabled: true, icon: 'mdi-account', label: 'profile',
+      routes: [{ path: '/profile', component: ProfilePage }]
+    }, { 
+      enabled: true, icon: 'mdi-chart-timeline-variant', label: 'statistics',
+      unlogged: true,
+      routes: [{ path: '/contributions-stats', component: ContributorStatsPage}]
+    }, { 
+      enabled: true, icon: 'mdi-texture', label: 'gallery',
+      unlogged: true,
+      routes: [
         { path: '/gallery', redirect: '/gallery/java/32x/latest/All/'},
         { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage}
-      ], unlogged: true }
-    ]
+      ]
+    }]
   },
   {
-    subtabs: [
-      { routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }] },
-      { routes: [{ path: '/addons/new', component: AddonNewPage }] },
-      { routes: [{ path: '/addons/edit/:id', component: AddonEditPage }] }
-    ]
+    label: 'addons',
+    subtabs: [{
+      enabled: true, icon: 'mdi-folder-multiple', label: 'submissions',
+      routes: [{ path: '/addons/submissions', component: AddonSubmissionsPage }]
+    }, {
+      enabled: true, icon: 'mdi-upload', label: 'upload',
+      routes: [
+        { path: '/addons/new', component: AddonNewPage },
+        { path: '/addons/edit/:id', component: AddonEditPage }
+      ]
+    }]
   },
   {
-    subtabs: [
-      { routes: [{ path: '/modding/mods/new', component: ModNewPage }] },
-      { routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }] }
-    ]
+    label: 'modding',
+    subtabs: [{
+      enabled: false, icon: 'mdi-pipe-wrench', label: 'mod',
+      routes: [{ path: '/modding/mods/new', component: ModNewPage }]
+    }, {
+      enabled: false, icon: 'mdi-memory', label: 'modpack',
+      routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }]
+    }]
   },
   {
-    subtabs: [
-      { routes: [{ path: '/review/addons', component: ReviewAddonsPage }] },
-      { routes: [{ path: '/review/translations', component: ReviewTranslationsPage }] }
-    ]
+    label: 'review',
+    subtabs: [{
+      enabled: true, icon: 'mdi-puzzle', label: 'addons',
+      routes: [{ path: '/review/addons', component: ReviewAddonsPage }]
+    }, {
+      enabled: true, icon: 'mdi-translate', label: 'translations',
+      routes: [{
+        path: '/review/translations', component: ReviewTranslationsPage,
+        beforeEnter() {
+          window.location.href = 'https://translate.faithfulpack.net/';
+        }
+      }]
+    }],
+    roles: ['Administrator']
   },
   {
-    subtabs: [
-      { routes: [{ path: '/contributions', component: ContributionPage }] },
-      { routes: [{ path: '/users', redirect: '/users/all' }, { path: '/users/:type?/:name*', component: UsersPage }] },
-      { routes: [{ path: '/textures', redirect: '/textures/all' }, { path: '/textures/:type?/:name*', component: TexturePage }] },
-      { routes: [{ path: '/settings', component: SettingsPage }] },
-      { routes: [{ path: '/modding/mods', component: ModsPage }] },
-      { routes: [{ path: '/modding/modpacks', component: ModpacksPage }] }
-    ]
+    label: 'database',
+    subtabs: [{
+      enabled: true, icon: 'mdi-file-multiple', label: 'contributions',
+      routes: [{ path: '/contributions', component: ContributionPage }]
+    }, {
+      enabled: true, icon: 'mdi-account-multiple', label: 'users',
+      routes: [
+        { path: '/users', redirect: '/users/all' },
+        { path: '/users/:type?/:name*', component: UsersPage }
+      ]
+    }, {
+      enabled: true, icon: 'mdi-texture', label: 'textures',
+      routes: [
+        { path: '/textures', redirect: '/textures/all' },
+        { path: '/textures/:type?/:name*', component: TexturePage }
+      ]
+    }, {
+      enabled: true, icon: 'mdi-settings', label: 'settings',
+      routes: [{ path: '/settings', component: SettingsPage }]
+    }, {
+      enabled: false, icon: 'mdi-pipe-wrench', label: 'mods',
+      routes: [{ path: '/modding/mods', component: ModsPage }]
+    }, {
+      enabled: false, icon: 'mdi-memory', label: 'modpacks',
+      routes: [{ path: '/modding/modpacks', component: ModpacksPage }]
+    }],
+    roles: ['Developer', 'Administrator']
   }
 ]
 
-for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
-  const tab = ALL_TABS_ROUTES[i]
-  tab.subtabs.forEach(subtab => {
-    if(subtab.unlogged) {
-      subtab.routes.forEach(route => {
-        router.addRoute(route)
-      })
-    }
+// add all tabs routes unlogged
+ALL_TABS.filter(t => t.roles === undefined)
+  .map(t => t.subtabs).flat(1).filter(s => s.unlogged)
+  .map(s => s.routes).flat(1)
+  .forEach(r => {
+    router.addRoute(r)
   })
-}
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
@@ -199,52 +246,6 @@ const EMPTY_USER = {
   email: '',
   roles: []
 }
-
-let ALL_TABS = [
-  {
-    label: 'user',
-    subtabs: [
-      { enabled: true, icon: 'mdi-view-dashboard', to: '/dashboard', label: 'dashboard', unlogged: true },
-      { enabled: true, icon: 'mdi-account', to: '/profile', label: 'profile' },
-      { enabled: true, icon: 'mdi-chart-timeline-variant', to: '/contributions-stats', label: 'statistics', unlogged: true },
-      { enabled: true, icon: 'mdi-texture', to: '/gallery', label: 'gallery', unlogged: true }
-    ]
-  },
-  {
-    label: 'addons',
-    subtabs: [
-      { enabled: true, icon: 'mdi-folder-multiple', to: '/addons/submissions', label: 'submissions' },
-      { enabled: true, icon: 'mdi-upload', to: '/addons/new', label: 'upload' }
-    ]
-  },
-  {
-    label: 'modding',
-    subtabs: [
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods/new', label: 'mod' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks/new', label: 'modpack' }
-    ]
-  },
-  {
-    label: 'review',
-    subtabs: [
-      { enabled: true, icon: 'mdi-puzzle', to: '/review/addons', label: 'addons' },
-      { enabled: true, icon: 'mdi-translate', to: '/review/translations', label: 'translations' }
-    ],
-    roles: ['Administrator']
-  },
-  {
-    label: 'database',
-    subtabs: [
-      { enabled: true, icon: 'mdi-file-multiple', to: '/contributions', label: 'contributions' },
-      { enabled: true, icon: 'mdi-account-multiple', to: '/users', label: 'users' },
-      { enabled: true, icon: 'mdi-texture', to: '/textures', label: 'textures' },
-      { enabled: true, icon: 'mdi-settings', to: '/settings', label: 'settings' },
-      { enabled: false, icon: 'mdi-pipe-wrench', to: '/modding/mods', label: 'mods' },
-      { enabled: false, icon: 'mdi-memory', to: '/modding/modpacks', label: 'modpacks' }
-    ],
-    roles: ['Developer', 'Administrator']
-  }
-]
 
 // convert-import
 
@@ -271,7 +272,13 @@ axios.get('./resources/settings.json')
             height: window.innerHeight
           },
           user: EMPTY_USER,
-          tabs: ALL_TABS,
+          tabs: ALL_TABS.map(t => {
+            t.subtabs = t.subtabs.map(s => {
+              s.to = s.routes[0].path
+              return s
+            })
+            return t
+          }),
           bg: 'transparent',
           snackbar: {
             show: false,
@@ -373,16 +380,39 @@ axios.get('./resources/settings.json')
         isUserLogged: function(n) {
           if(!n) return;
 
-          for (let i = 0; i < ALL_TABS_ROUTES.length; ++i) {
-            const tab = ALL_TABS_ROUTES[i]
-            tab.subtabs.forEach(subtab => {
-              if(!subtab.unlogged) {
-                subtab.routes.forEach(route => {
-                  router.addRoute(route)
-                })
-              }
+          // add all routes with no role
+          ALL_TABS.filter(t => t.roles === undefined)
+            .map(t => t.subtabs).flat(1).filter(s => !s.unlogged)
+            .map(s => s.routes).flat(1)
+            .forEach(r => {
+              router.addRoute(r)
             })
-          }
+        },
+        userRoles: function(n, o) {
+          if(o === undefined || o.length === undefined) return
+          if(n.length === undefined) return
+          // only update routes based on your roles fetched (role list is longer)
+          // leave if new role list is shorter or equal
+          if(n.length <= o.length) return
+
+          // add all routes with matching roles
+          ALL_TABS.filter(t => {
+              if(t.roles === undefined) return false
+
+              let allowed = false
+              let i = 0
+              while(i < t.roles.length && !allowed) {
+                allowed = n.includes(t.roles[i])
+                i++;
+              }
+              
+              return allowed
+            })
+            .map(t => t.subtabs).flat(1).filter(s => !s.unlogged)
+            .map(s => s.routes).flat(1)
+            .forEach(r => {
+              router.addRoute(r)
+            })
         }
       },
       computed: {
