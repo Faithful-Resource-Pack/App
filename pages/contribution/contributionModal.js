@@ -48,6 +48,8 @@ export default {
               <h3>{{ $root.lang().database.labels.texture_id }}</h3>
               <v-text-field
                 required
+                type="number"
+                min="0"
                 v-model="form.texture" />
               <h3>{{ $root.lang().database.titles.contributors }}</h3>
               <v-autocomplete
