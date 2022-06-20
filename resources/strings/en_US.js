@@ -388,6 +388,7 @@ export default {
     }
   },
   gallery: {
+    max_items_per_row: 'Max items per row',
     title: 'Gallery',
     loading_message: {
       general: 'Loading…',

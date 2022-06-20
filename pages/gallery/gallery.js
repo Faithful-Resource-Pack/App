@@ -12,6 +12,8 @@ const Chain = function(val) {
   }
 }
 
+const COLUMN_KEY="gallery_columns";
+
 export default {
   name: 'texture-page',
   components: {
@@ -74,20 +76,49 @@ export default {
     </v-row>
 
     <div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
-    <div class="my-2">
-      <v-text-field
-        v-model="current.search"
-        :append-icon="current.search ? 'mdi-send' : undefined"
-        filled
-        clear-icon="mdi-close"
-        clearable
-        :placeholder="$root.lang().database.labels.search_texture"
-        type="text"
-        v-on:keyup.enter="startSearch"
-        @click:append="startSearch"
-        @click:clear="clearSearch"
-      ></v-text-field>
-    </div>
+    <v-row class="my-2">
+      <v-col cols="12" sm="6">
+        <v-text-field
+          v-model="current.search"
+          :append-icon="current.search ? 'mdi-send' : undefined"
+          filled
+          clear-icon="mdi-close"
+          clearable
+          hide-details
+          :placeholder="$root.lang().database.labels.search_texture"
+          type="text"
+          v-on:keyup.enter="startSearch"
+          @click:append="startSearch"
+          @click:clear="clearSearch"
+        />
+      </v-col>
+      <v-col cols="12" sm="6" class="d-flex justify-center align-center">
+        <v-slider
+          :label="$root.lang('gallery.max_items_per_row')"
+          v-model="columns"
+          step="1"
+          thumb-label  
+          ticks="always"
+          tick-size="4"
+          ticks
+          hide-details
+          min="1"
+          max="12"
+        >
+          
+        <template v-slot:append>
+          <v-text-field
+            v-model="columns"
+            class="mt-0 pt-0 mb-0"
+            type="number"
+            hide-details
+            style="width: 60px"
+            min="1"
+            max="12"
+          ></v-text-field>
+        </v-slider>
+      </v-col>
+    </v-row>
     
     <v-list
       class="main-container pa-2"
@@ -103,7 +134,8 @@ export default {
 
       <div
         v-if="!loading.status"
-        class="gallery-textures-container"
+        class="gallery-textures-container mx-auto"
+        :style="{ 'width': width, 'max-width': '100%' }"
       >
         <div
           v-for="(texture, index) in displayedTextures"
@@ -146,6 +178,7 @@ export default {
   `,
   data() {
     return {
+      columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7), 
       loading: {
         status: false,
         steps: 0,
@@ -193,6 +226,10 @@ export default {
     version() { return this.current.version },
     edition() { return this.current.edition },
     search() { return this.current.search },
+    width() {
+      // .gallery-texture-in-container: 5px non-stacked, 256px wide
+      return `${18 + 266 * this.columns}px`
+    }
   },
   watch: {
     '$route.params': {
@@ -207,6 +244,9 @@ export default {
       },
       deep: true,
       immediate: true
+    },
+    columns: function(n) {
+      localStorage.setItem(COLUMN_KEY, String(n))
     }
   },
   created() {

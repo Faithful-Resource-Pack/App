@@ -474,6 +474,7 @@ export default {
     }
   },
   gallery: {
+    max_items_per_row: 'Maximum d\'items par ligne',
     all: 'Tout'
   },
   settings: {
