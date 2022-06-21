@@ -94,7 +94,7 @@ export default {
                       <v-container fluid class="pa-0" v-for="(use, u_i) in texture.uses" :key="'tex-' + t_i + '-use-' + u_i">
                         <v-row dense>
                           <v-col><v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
-                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" v-model="use.editions[0]" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
+                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use)" v-model="use.editions[0]" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
                           <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon></v-col>
                         </v-row>
                         <v-row dense class="mb-2">
@@ -199,6 +199,17 @@ export default {
       result = (aSplit.length == bSplit.length) ? 0 : (aSplit.length < bSplit.length ? -1 : 1) // longer length wins
 
       return result
+    },
+    onEditionChange: function(value, use) {
+      if(value !== "bedrock") return;
+      
+      if(!use.paths) use.paths = [emptyPath()]
+      use.paths.forEach(path => {
+        // if version is empty
+        if(path[1].length == 0) {
+          path[1].push("bedrock-latest")
+        }
+      })
     },
     versionsLeft: function (textureIndex, useIndex) {
       const otherUseIndex = 1 - useIndex
