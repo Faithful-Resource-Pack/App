@@ -23,7 +23,7 @@ const emptyTexture = function () {
 export default {
   name: 'add-multiple-texture-modal',
   props: {
-    dialog: {
+    value: {
       type: Boolean,
       required: true
     },
@@ -59,7 +59,7 @@ export default {
   },
   template: `
   <v-dialog
-      v-model="dialog"
+      v-model="value"
       content-class="colored"
       max-width="860"
     >      
@@ -218,13 +218,15 @@ export default {
     }
   },
   watch: {
-    dialog: function (newValue, oldValue) {
+    value: function (newValue, oldValue) {
       if (oldValue !== newValue && newValue === true) {
         Vue.nextTick(() => {
           this.textures = [emptyTexture()]
           this.$refs.form.reset()
         })
       }
+      if(newValue !== undefined && !newValue)
+        this.$emit('input', false)
     }
   }
 }

@@ -20,7 +20,7 @@ export default {
     <div class="styles" v-html="pageStyles"></div>
     <texture-modal :color="pageColor" :textColor="textColorOnPage" :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
     <version-modal :color="pageColor" :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
-    <add-multiple-texture :textColor="textColorOnPage" :color="pageColor" :dialog="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
+    <add-multiple-texture :textColor="textColorOnPage" :color="pageColor" v-model="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     <add-minecraft-version :color="pageColor" :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     <remove-confirm type="texture" :confirm="remove.confirm" :data="remove.data" :disableDialog="() => { remove.confirm = false; }" :on-submit="removeTexture"></remove-confirm>
     
