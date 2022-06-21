@@ -290,7 +290,7 @@ export default {
 
         contributionsHTML = `
           <li>
-            <p><i class="icon-people${contribution.contributors.length == 1 ? '' : 's'}"></i>${contribution.contributors.map(c => this.discordIDtoName(c)).join(', ')}</p>
+            <p><i class="icon-people${contribution.contributors.length == 1 ? '' : 's'}"></i>${contribution.contributors.map(c => this.discordIDtoName(c).replace(/\s/g, "&nbsp;")).join(', ')}</p>
             <p><i class="icon-time"></i>${this.timestampToDate(timestamp)}</p>
           </li>
         `
