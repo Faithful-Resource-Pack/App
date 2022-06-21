@@ -106,7 +106,7 @@ export default {
                             <v-container class="pa-0" fluid v-for="(path, p_i) in use.paths" :key="'tex-' + t_i + '-use-' + u_i + '-p_i-' + p_i">
                               <v-row dense>
                                 <v-col><v-text-field :color="color" class="mb-0" v-model="path[0]" :placeholder="$root.lang().database.labels.path" hide-details dense clearable /></v-col>
-                                <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
+                                <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions_sorted" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
                                 <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">mdi-close</v-icon></v-col>
                               </v-row>
                             </v-container>
@@ -150,6 +150,11 @@ export default {
       textures: [emptyTexture()]
     }
   },
+  computed: {
+    versions_sorted: function() {
+      return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b))
+    }
+  },
   methods: {
     highlighter (code) {
       // js highlight example
@@ -172,6 +177,28 @@ export default {
     },
     deletePath: function (textureIndex, useIndex, pathIndex) {
       this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1)
+    },
+    MinecraftSorter: function (a, b) {
+      const aSplit = a.split('.').map(s => parseInt(s))
+      const bSplit = b.split('.').map(s => parseInt(s))
+
+      if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
+        return String(a).localeCompare(String(b)) // compare as strings
+      }
+
+      const upper = Math.min(aSplit.length, bSplit.length)
+      let i = 0
+      let result = 0
+      while (i < upper && result == 0) {
+        result = (aSplit[i] == bSplit[i]) ? 0 : (aSplit[i] < bSplit[i] ? -1 : 1) // each number
+        ++i
+      }
+
+      if (result != 0) return result
+
+      result = (aSplit.length == bSplit.length) ? 0 : (aSplit.length < bSplit.length ? -1 : 1) // longer length wins
+
+      return result
     },
     versionsLeft: function (textureIndex, useIndex) {
       const otherUseIndex = 1 - useIndex
