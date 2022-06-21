@@ -601,6 +601,7 @@ axios.get('./resources/settings.json')
             .catch(err => {
               console.error(err)
               this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+              this.logout()
             })
         },
         update: function () {

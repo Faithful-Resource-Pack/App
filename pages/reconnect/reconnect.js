@@ -82,7 +82,7 @@ export default {
       })
       .catch(err => {
         console.error(err)
-        this.showSnackBar(`${err}`, 'error')
+        this.$root.showSnackBar(`${err}`, 'error')
       })
   }
 }
