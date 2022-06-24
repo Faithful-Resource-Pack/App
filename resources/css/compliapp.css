@@ -349,6 +349,7 @@ blockquote {
 }
 
 .transparent-input > .v-input__control > .v-input__slot {
+  -webkit-backdrop-filter: none !important;
   backdrop-filter: none !important;
 }
 
@@ -522,14 +523,14 @@ code {
 .gallery-texture-in-container {
   height: 256px;
   width: 256px;
-  max-width: 256px;
-  margin: 5px;
   text-align: center;
   position: relative;
   background-size: cover;
   background-position: center;
 }
+
 .theme--dark .gallery-texture-in-container {
+  background-size: cover !important;
   background: url(/resources/transparency.png);
 }
 
@@ -557,8 +558,6 @@ code {
 .gallery-texture-background,
 .gallery-texture-image {
   position: absolute;
-  max-height: 256px;
-  max-width: 256px;
   height: 100%;
   width: 100%;
   object-fit: contain;
@@ -698,6 +697,7 @@ body .texture-avatar {
   background: rgba(39, 39, 39, 0.8);
   padding: 0 10px 0 10px;
   border-radius: 4px !important;
+  width: -moz-fit-content !important;
   width: fit-content !important;
 }
 
@@ -712,6 +712,7 @@ body .texture-avatar {
 }
 
 .json-object-editor > .json-editor-header {
+  -webkit-user-select: none;
   user-select: none;
   cursor: pointer;
 }
@@ -756,6 +757,7 @@ body .texture-avatar {
   font-size: 14px;
   padding: 0 4px;
   margin: 0 4px;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -805,9 +807,9 @@ body .texture-avatar {
 }
 
 .json-editor .json-add-editor td {
-  border-radius: 4px;
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
+  border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.2);
   padding: 2px 4px;
   font-weight: bold;
