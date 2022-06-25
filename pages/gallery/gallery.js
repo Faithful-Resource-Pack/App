@@ -114,13 +114,13 @@ export default {
       <div
         v-if="!loading.status"
         class="gallery-textures-container mx-auto"
-        :style="gap"
+        :style="grid"
       >
         <div
           v-for="(texture, index) in displayedTextures"
           :key="texture.id"
           v-if="index <= displayedResults"
-          :style="width"
+          :style="cell"
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true, classes: 'gallery-tooltip' }"
           @click.stop="() => openModal(texture.textureID)"
@@ -129,7 +129,7 @@ export default {
             class="gallery-texture-image"
             onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
             :src="texture.url"
-            :style="width"
+            :style="cell"
             lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
           <div class="not-done" style="display: none;">
             <span></span><div>
@@ -194,6 +194,10 @@ export default {
       modalTextureID: null,
       modalTextureObj: {},
       modalOpen: false,
+      cell: {
+        'aspect-ratio': '1 / 1',
+      },
+      grid: undefined,
     };
   },
   computed: {
@@ -225,17 +229,6 @@ export default {
     search() {
       return this.current.search;
     },
-    gap() {
-      return {
-        gap: `${200 / (this.columns * 1.5)}px`
-      }
-    },
-    width() {
-      return {
-        width: `calc(${100 / this.columns}vw - ${200 / this.columns}px)`,
-        height: `calc(${100 / this.columns}vw - ${200 / this.columns}px)`,
-      };
-    },
   },
   watch: {
     "$route.params": {
@@ -253,6 +246,7 @@ export default {
     },
     columns: function (n) {
       localStorage.setItem(COLUMN_KEY, String(n));
+      this.computeGrid();
     },
   },
   created() {
@@ -652,8 +646,58 @@ export default {
         behavior: "smooth",
       });
     },
+    computeGrid() {
+      let breakpoints = this.$root.$vuetify.breakpoint;
+      let gap;
+      let number;
+
+      let base_columns = this.columns;
+
+      if(breakpoints.smAndDown) {
+        base_columns = breakpoints.smOnly ? 2 : 1;
+      }
+
+      if(base_columns != 1) {// constants
+        const MIN_WIDTH = 110;
+        const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
+  
+        // real content width
+        let width = this.$el.clientWidth;
+        width -= MARGIN * 2;
+        
+        // * We want to solve n * MIN_WIDTH + (n - 1) * A = width
+        // * where A = 200 / (1.5 * n)
+        // * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
+        // * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
+        // * multiply by n
+        // * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
+        // * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
+        // * solve that and keep positive value
+        let a = MIN_WIDTH;
+        let b = 200/1.5 - width;
+        let c = -200/1.5;
+        let delta = b*b - 4*a*c;
+        let n = (-b + Math.sqrt(delta)) / (2*a);
+        gap = 200 / ( n * 1.5);
+        number = Math.min(base_columns, Math.floor(n));
+      } else {
+        gap = 8;
+        number = 1;
+      }
+      
+      this.grid = {
+        'gap': `${ gap }px`,
+        'grid-template-columns': `repeat(${ number }, 1fr)`,
+      };
+    },
+  },
+  beforeMount: function() {
   },
   mounted() {
     this.scroll();
-  },
+    window.addEventListener('resize', () => {
+      this.computeGrid()
+    })
+    this.computeGrid()
+  }
 };

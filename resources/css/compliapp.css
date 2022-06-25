@@ -513,16 +513,10 @@ code {
 }
 
 .gallery-textures-container {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  display: grid;
 }
 
 .gallery-texture-in-container {
-  height: 256px;
-  width: 256px;
   text-align: center;
   position: relative;
   background-size: cover;
