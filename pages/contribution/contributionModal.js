@@ -46,11 +46,20 @@ export default {
                 :items="form.packs"
                 v-model="form.pack"></v-select>
               <h3>{{ $root.lang().database.labels.texture_id }}</h3>
-              <v-text-field
-                required
-                type="number"
-                min="0"
-                v-model="form.texture" />
+              <div class="d-flex align-center">
+                <v-text-field
+                  required
+                  type="number"
+                  class="mr-2"
+                  min="0"
+                  v-model="form.texture" />
+                <v-btn icon v-on:click="() => { form.texture += 1 }">
+                  <v-icon>mdi-chevron-up</v-icon>
+                </v-btn>
+                <v-btn icon v-on:click="() => { form.texture = Math.max(form.texture - 1, 0) }">
+                  <v-icon>mdi-chevron-down</v-icon>
+                </v-btn>
+              </div>
               <h3>{{ $root.lang().database.titles.contributors }}</h3>
               <v-autocomplete
                 v-model="form.authors"
@@ -180,7 +189,7 @@ export default {
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
         packs: packs,
         pack: packs ? packs[0] : null,
-        texture: '0',
+        texture: 0,
         authors: []
       }
     },
