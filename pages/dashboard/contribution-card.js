@@ -37,7 +37,7 @@ export default {
       <v-col class="pr-sm-2" cols="12" sm="8" class="d-flex flex-column justify-space-around">
         <div v-for="(values, activity) in data.activity" :key="activity">
           <div class="title text-h6 text--primary">
-            {{ $root.lang('dashboard.activity').replace('%s', activity.replace('_', ' ')) }}
+            {{ $root.lang('dashboard.activity').replace('%s', activity.replace(/_/g, ' ')) }}
           </div>
           <div class="heatmap-wrapper">
             <calendar-heatmap
