@@ -14,6 +14,10 @@ export default {
     colors: {
       required: true,
       type: Array
+    },
+    statsListener: {
+      required: true,
+      type: Function
     }
   },
   template: `
@@ -24,32 +28,21 @@ export default {
   class="d-flex flex-column"
 >
   <v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
-    <v-row dense v-if="data" class="col-12 pa-0">
-      <v-col cols="12" sm="4" class="d-flex align-stretch pr-sm-4 pb-sm-8">
-        <v-row dense class="d-flex flex-column justify-space-between">
-          <v-col v-for="total in totals" :key="total.name" class="flex-sm-shrink-0 flex-grow-0">
-            <p class="mb-0 rounded-lg pa-3">
-              <span class="v-card__title pa-0 d-inline text--primary">{{ total.value }}</span>{{ ' ' + $root.lang('dashboard.totals.' + total.name) }}
-            </p>
-          </v-col>
-        </v-row>
-      </v-col>
-      <v-col class="pr-sm-2" cols="12" sm="8" class="d-flex flex-column justify-space-around">
-        <div v-for="(values, activity) in data.activity" :key="activity">
-          <div class="title text-h6 text--primary">
-            {{ $root.lang('dashboard.activity').replace('%s', activity.replace(/_/g, ' ')) }}
-          </div>
-          <div class="heatmap-wrapper">
-            <calendar-heatmap
-              :values="values"
-              :end-date="today"
-              :max="data.percentiles[activity]"
-              :tooltip-unit="$root.lang('dashboard.totals.contributions')"
-              :locale="locale"
-              :range-color="colors"
-            />
-          </div>
-        <div>
+    <v-row class="mb-0" v-if="data" style="width: 100%">
+      <v-col class="pr-sm-2" cols="12" sm="6" class="d-flex flex-column justify-space-around pb-0" v-for="(values, activity) in data.activity" :key="activity">
+        <div class="title text-h6 text--primary">
+          {{ $root.lang('dashboard.activity').replace('%s', activity.replace(/_/g, ' ')) }}
+        </div>
+        <div class="heatmap-wrapper">
+          <calendar-heatmap
+            :values="values"
+            :end-date="today"
+            :max="data.percentiles[activity]"
+            :tooltip-unit="$root.lang('dashboard.totals.contributions')"
+            :locale="locale"
+            :range-color="colors"
+          />
+        </div>
       </v-col>
     </v-row>
   </v-card-text>
@@ -95,4 +88,13 @@ export default {
   created: function() {
     this.get()
   },
+  watch: {
+    totals: function(n, o) {
+      if(!o) return; // o is undefined
+      if(!o.length) return; // o is empty
+
+      // run
+      this.statsListener(n)
+    }
+  }
 }

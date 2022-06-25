@@ -24,15 +24,15 @@ export default {
     <v-row class="py-0 my-0" v-if="data" dense class="d-flex align-stretch">
       <template v-for="status in statuses">
         <v-col v-if="data[status] !== undefined" :key="status" cols="12" :class="['d-flex align-stretch', $root.isUserLogged ? 'col-sm-4' : '']">
-          <p class="mb-0 rounded-lg pa-3">
+          <p class="mb-0 rounded-lg pa-2">
             <span :class="['v-card__title pa-0 d-inline', status_color[status]]">{{ data[status] || 0 }}</span> {{ $root.lang('review.titles.' + status) }}
           </p>
         </v-col>
       </template>
     </v-row>
     <v-row class="mt-1 py-0 my-0 align-self-stretch" v-if="data" dense>
-      <v-col v-for="(number, tag) in data.numbers" :key="tag" cols="12" sm="6" class="d-flex align-stretch">
-        <p class="mb-0 rounded-lg pa-3">
+      <v-col v-for="(number, tag) in data.numbers" :key="tag" cols="12" sm="3" class="d-flex align-stretch">
+        <p class="mb-0 rounded-lg pa-2">
           <span class="v-card__title pa-0 d-inline text--primary">{{ number }}</span>{{ ' ' + tag }}
         </p>
       </v-col>

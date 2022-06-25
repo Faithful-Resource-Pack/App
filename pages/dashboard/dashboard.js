@@ -2,6 +2,7 @@ const AddonCard = () => import('./addon-card.js')
 const ProfileCard = () => import('./profile-card.js')
 const UserCard = () => import('./user-card.js')
 const ContributionCard = () => import('./contribution-card.js')
+const ContributionStatsCard = () => import('./contribution-stats-card.js')
 const ComplianceCard = () => import('./compliance-card.js')
 
 export default {
@@ -11,6 +12,7 @@ export default {
     'profile-card': ProfileCard,
     'user-card': UserCard,
     'contribution-card': ContributionCard,
+    'contribution-stats-card': ContributionStatsCard,
     'compliance-card': ComplianceCard
   },
   template: `
@@ -27,11 +29,14 @@ export default {
     <v-col cols="12" sm="9">
       <user-card :admin="admin" :colors="colors"/>
     </v-col>
-    <v-col cols="12" sm="9">
-      <contribution-card :admin="admin" :colors="colors" />
-    </v-col>
-    <v-col cols="12" sm="3">
+    <v-col cols="12" sm="6">
       <addon-card :admin="admin" />
+    </v-col>
+    <v-col cols="12" sm="6">
+      <contribution-stats-card :admin="admin" ref="cs" />
+    </v-col>
+    <v-col cols="12" sm="12">
+      <contribution-card :admin="admin" :colors="colors" :statsListener="(t) => { $refs.cs.onTotals(t) }" />
     </v-col>
   </v-row>
 </div>  
