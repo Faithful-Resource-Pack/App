@@ -201,12 +201,6 @@ export default {
           <v-row>
               <v-checkbox
                 class="col-6"
-                v-model="submittedForm.options.comments"
-                :label="$root.lang().addons.options.comments.label"
-                color="primary"
-              />
-              <v-checkbox
-                class="col-6"
                 v-model="submittedForm.options.optifine"
                 :label="$root.lang().addons.options.optifine.label"
                 color="primary"
