@@ -53,10 +53,10 @@ export default {
                   class="mr-2"
                   min="0"
                   v-model="form.texture" />
-                <v-btn icon v-on:click="() => { form.texture = Number.parseInt(form.texture, 10) + 1 }">
+                <v-btn icon v-on:click="() => { form.texture = String(Number.parseInt(form.texture, 10) + 1) }">
                   <v-icon>mdi-chevron-up</v-icon>
                 </v-btn>
-                <v-btn icon v-on:click="() => { form.texture = Math.max(Number.parseInt(form.texture - 1, 10), 0) }">
+                <v-btn icon v-on:click="() => { form.texture = String(Math.max(Number.parseInt(form.texture - 1, 10), 0)) }">
                   <v-icon>mdi-chevron-down</v-icon>
                 </v-btn>
               </div>
