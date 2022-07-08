@@ -534,6 +534,17 @@ code {
   background-position: center;
 }
 
+.gallery-texture-in-container .gallery-share {
+  top: 0;
+  right: 0;
+  opacity: 0;
+  transition: all .25s ease;
+}
+
+.gallery-texture-in-container:hover .gallery-share {
+  opacity: 1;
+}
+
 .theme--dark .gallery-texture-in-container {
   background-size: cover !important;
   background: url(/resources/transparency.png);

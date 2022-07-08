@@ -22,6 +22,12 @@ export default {
           
           <template v-if="Object.keys(textureObj).length > 0">
             <v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
+          
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click="() => $parent.copyShareLink(textureID)">
+              <v-icon>mdi-share-variant</v-icon>
+            </v-btn>
           </template>
           <template v-else>
             <v-toolbar-title>{{ $root.lang().global.loading }}</v-toolbar-title>
@@ -129,6 +135,10 @@ export default {
     contributors: {
       type: Object,
       required: true
+    },
+    onClose: {
+      type: Function,
+      default: () => {}
     }
   },
   data() {
@@ -159,6 +169,7 @@ export default {
   },
   methods: {
     closeModal: function() {
+      this.onClose()
       this.opened = false
     },
     discordIDtoName(d) {

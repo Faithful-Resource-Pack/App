@@ -123,7 +123,7 @@ export default {
           :style="cell"
           class="gallery-texture-in-container"
           v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true, classes: 'gallery-tooltip' }"
-          @click.stop="() => openModal(texture.textureID)"
+          @click.stop="() => changeShareURL(texture.textureID)"
         >
           <img
             class="gallery-texture-image"
@@ -138,6 +138,14 @@ export default {
               <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
             </div>
           </div>
+          <v-btn
+            @click.stop="() => copyShareLink(texture.textureID)"
+            class="ma-2 gallery-share"
+            absolute
+            plain
+            icon>
+            <v-icon>mdi-share-variant</v-icon>
+          </v-btn>
         </div>
       </div>
     </v-list>
@@ -148,6 +156,7 @@ export default {
       :textureID="modalTextureID"
       :textureObj="modalTextureObj"
       :contributors="displayed.contributors"
+      :onClose="() => changeShareURL()"
     ></texture-modal>
 
     <v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
@@ -232,7 +241,10 @@ export default {
   },
   watch: {
     "$route.params": {
-      handler(params) {
+      handler(params, old_params) {
+        // if hash changed but not params
+        if(JSON.stringify(params) === JSON.stringify(old_params)) return
+
         this.current.resolution = params.resolution;
         this.current.edition = params.edition;
         this.current.version = params.version;
@@ -257,8 +269,46 @@ export default {
     this.options.versions = this.$route.params.edition
       ? settings.versions[this.$route.params.edition]
       : settings.versions[0];
+
+    window.addEventListener('hashchange', () => {
+      this.checkShare(this.shareID());
+    });
+    this.checkShare(this.shareID());
   },
   methods: {
+    shareID() {
+      let index = location.hash.indexOf("?show=");
+      return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined
+    },
+    changeShareURL(id, dry_run = false) {
+      let index = location.hash.indexOf("?show=");
+
+      let new_hash = location.hash;
+      // we remove it
+      if(index !== -1) {
+        new_hash = new_hash.substring(0, index);
+      }
+
+      if(id !== undefined) {
+        new_hash += "?show=" + id.toString();
+      }
+
+      if(!dry_run) {
+        location.hash = new_hash
+      }
+
+      return location.href.replace(location.hash, '') + new_hash;
+    },
+    copyShareLink(id) {
+      let url = this.changeShareURL(id, true);
+      navigator.clipboard.writeText(url);
+      this.$root.showSnackBar(this.$root.lang('gallery.share_link_copied_to_clipboard'), 'success');
+    },
+    checkShare(n) {
+      if(n === undefined) return;
+      
+      this.openModal(n)
+    },
     openModal(id) {
       this.modalTextureID = id;
       this.modalTextureObj = {}; // changes text back to loading text if reopening modal
