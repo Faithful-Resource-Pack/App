@@ -251,10 +251,13 @@ export default {
     send: function () {
       if (!this.$root.isUserLogged) return
 
-      const data = JSON.parse(JSON.stringify(this.localUser))
-      data.access_token = this.$root.user.access_token
+      const data = {
+        uuid: this.localUser.uuid,
+        username: this.localUser.username,
+        media: this.localUser.media
+      }
 
-      axios.post('/profile/set', data)
+      axios.post(`${this.$root.apiURL}/users/profile/`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
         })
@@ -263,28 +266,20 @@ export default {
           this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
         })
     },
-    getUserInfo: function (accessToken) {
+    getUserInfo: function () {
       if (!this.$root.isUserLogged) return
-
-      const data = JSON.parse(JSON.stringify(this.$root.user))
-      if (accessToken !== undefined) {
-        data.token = accessToken
-      } else {
-        data.token = this.$root.user.access_token
-      }
-
-      axios.post('/profile/get', data)
+      
+      axios.get(`${this.$root.apiURL}/users/profile/`, this.$root.apiOptions)
         .then((res) => {
           this.localUser = res.data
         })
         .catch(err => {
           console.error(err)
-          // this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-          if (this.$root.isUserLogged) this.$root.logout() // classical error 500 after a long time -> logout
+          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
         })
     },
-    update: function (accessToken) {
-      this.getUserInfo(accessToken)
+    update: function () {
+      this.getUserInfo()
     }
   },
   mounted: function () {
