@@ -169,12 +169,18 @@ a {
   max-width: 1080px;
 }
 
+.tippy-tooltip {
+  padding: 0 !important;
+}
+
+.tippy-backdrop {
+  background: transparent;
+}
+
 div.tooltip {
   text-align: center;
   font-family: "Roboto", sans-serif;
-  position: absolute;
   font-size: 12px;
-  padding: 4px 8px;
   color: white;
   border: 0px;
   border-radius: 4px;

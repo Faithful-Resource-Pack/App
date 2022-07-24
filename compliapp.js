@@ -233,11 +233,6 @@ ALL_TABS.filter(t => t.roles === undefined)
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
-// Do not remove tooltip DOM to easily change style
-if(Vue.config.devtools) {
-  VTooltip.default.options.disposeTimeout = null
-}
-
 const EMPTY_USER = {
   avatar: '',
   banner: '',
@@ -254,7 +249,8 @@ axios.get('./resources/settings.json')
   .then(res => {
     window.settings = res.data
   }).then(() => {
-    Vue.use(VueCalendarHeatmap)
+    Vue.use(VueTippy);
+    Vue.component("tippy", VueTippy.TippyComponent);
 
     let ins = new Vue({
       router,

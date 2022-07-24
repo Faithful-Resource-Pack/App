@@ -1,6 +1,7 @@
 /* global axios, Vue, settings */
 
 const textureModal = () => import('./modal.js')
+const GalleryTooltip = () => import('./gallery_tooltip.js')
 
 const Chain = function(val) {
   return {
@@ -18,6 +19,7 @@ export default {
   name: "texture-page",
   components: {
     textureModal,
+    GalleryTooltip,
   },
   template: `
   <v-container style="max-width: unset!important">
@@ -130,30 +132,41 @@ export default {
           v-if="index <= displayedResults"
           :style="styles.cell"
           class="gallery-texture-in-container"
-          v-tooltip.right-start="{content: () => getAuthor(texture.textureID), html: true, classes: 'gallery-tooltip' }"
           @click.stop="() => changeShareURL(texture.textureID)"
         >
-          <img
-            class="gallery-texture-image"
-            onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
-            :src="texture.url"
-            :style="styles.cell"
-            lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
-          <div class="not-done" style="display: none;">
-            <span></span><div>
-              <h1>#{{ texture.textureID }}</h1>
-              <h3>{{ texture.name }}</h3>
-              <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
-            </div>
-          </div>
-          <v-btn
-            @click.stop="() => copyShareLink(texture.textureID)"
-            class="ma-2 gallery-share"
-            absolute
-            plain
-            icon>
-            <v-icon>mdi-share-variant</v-icon>
-          </v-btn>
+          <tippy :to="texture.id" placement="right-start" theme="" maxWidth="none">
+            <template v-slot:trigger>
+              <img
+                class="gallery-texture-image"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
+                :src="texture.url"
+                :style="styles.cell"
+                lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
+              <div class="not-done" style="display: none;">
+                <span></span><div>
+                  <h1>#{{ texture.textureID }}</h1>
+                  <h3>{{ texture.name }}</h3>
+                  <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+                </div>
+              </div>
+              <v-btn
+                @click.stop="() => copyShareLink(texture.textureID)"
+                class="ma-2 gallery-share"
+                absolute
+                plain
+                icon>
+                <v-icon>mdi-share-variant</v-icon>
+              </v-btn>
+            </template>
+
+            <GalleryTooltip
+              :mojang="current.resolution === '16x'" 
+              :texture="texture"
+              :contributions="loadedContributions" 
+              :resolution="current.resolution"
+              :discordIDtoName="discordIDtoName"
+            />
+          </tippy>
         </div>
       </div>
     </v-list>
@@ -330,9 +343,7 @@ export default {
           </li>
         `;
       } else
-        contributionsHTML = `<li class="danger-text"><p>${
-          this.$root.lang().gallery.error_message.contribution_not_found
-        }</p></li>`;
+        contributionsHTML = `<li class="danger-text"><p>$</p></li>`;
 
       if (this.current.resolution === "16x")
         contributionsHTML = `<li><i class="icon-mojang-red"></i>Mojang Studios</li>`;
