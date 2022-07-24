@@ -148,7 +148,7 @@ const ALL_TABS = [
       enabled: true, icon: 'mdi-texture', label: 'gallery',
       unlogged: true,
       routes: [
-        { path: '/gallery', redirect: '/gallery/java/32x/latest/All/'},
+        { path: '/gallery', redirect: '/gallery/java/32x/latest/all/'},
         { path: '/gallery/:edition/:resolution/:version/:tag/:search*', component: GalleryPage}
       ]
     }]
