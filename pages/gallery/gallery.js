@@ -404,7 +404,7 @@ export default {
         }
 
       let route = `/gallery/${this.current.edition}/${this.current.resolution}/${this.current.version}/${this.current.tag}`;
-      route += this.current.search === null ? "" : `/${this.current.search}`;
+      route += !this.current.search ? "" : `/${this.current.search}`;
 
       if (this.$route.path === route) return; // new search is the same as before
       return this.$router.push(route);
