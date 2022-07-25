@@ -1,7 +1,7 @@
 # How to translate the webapp:
 
 First of all, copy the `en_US.js` file en rename it accordingly to your country spoken language.
-Then you can start translating the file. Once you have translated the file, add the newly added language to the `compliapp.js` file :
+Then you can start translating the file. Once you have translated the file, add the newly added language to the `webapp.js` file :
 
 ```js
 import enUS from './resources/strings/en_US.js'

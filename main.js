@@ -12,7 +12,7 @@ const DEV = (process.env.DEV || 'false') === 'true'
 const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2/'
 const app = express()
 app.disable('x-powered-by');
-const compliappURL = '/'
+const webappURL = '/'
 
 const contributorsBackend = require('./backend/contributor')
 const contributionsBackend = require('./backend/contributions')
@@ -65,7 +65,7 @@ app.use(express.urlencoded({
 }))
 app.use(express.json({ limit: '50mb' }))
 
-app.get(compliappURL, async (req, res) => {
+app.get(webappURL, async (req, res) => {
   let file = fs.readFileSync('./index.html', 'utf8')
 
   file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
@@ -84,7 +84,7 @@ app.get(compliappURL, async (req, res) => {
 app.listen(port, () => {
   console.log(`API url at ${API_URL}`);
   console.log(`listening at http://localhost:${port}`)
-  console.log(`Web app at http://localhost:${port}${compliappURL}`)
+  console.log(`Webapp at http://localhost:${port}${webappURL}`)
 
   if (DEV && process.send) {
       process.send('online')

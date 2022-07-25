@@ -4,9 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "dev": "nodemon app.js --watch .env --watch app.js --watch backend/",
-    "start": "pm2 start \"node app.js\" --name \"APP\"",
-    "watch": "browser-refresh app.js"
+    "dev": "nodemon main.js --watch .env --watch main.js --watch backend/",
+    "start": "pm2 start \"node main.js\" --name \"APP\"",
+    "watch": "browser-refresh main.js"
   },
   "repository": {
     "type": "git",
