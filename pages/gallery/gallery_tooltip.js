@@ -62,7 +62,7 @@ export default {
         .chain(res_contribs => res_contribs[this.texture.textureID]).value;
 
       // get best timestamp contrib
-      return contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0]);
+      return contribs ? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0]) : undefined;
     },
     last_contribution_names: function () {
       if (this.last_contribution === undefined) return "";
