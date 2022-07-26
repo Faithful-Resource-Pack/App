@@ -32,6 +32,7 @@
 
 input[type=number] { 
   -moz-appearance: textfield;
+  -webkit-appearance: textfield;
   appearance: textfield;
   margin: 0; 
 }
@@ -559,7 +560,7 @@ code {
 .not-done {
   padding: 0.25rem;
   text-align: center;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 1;
 }
 .not-done,
 .not-done > span {
@@ -576,6 +577,9 @@ code {
   word-wrap: break-word;
   white-space: pre-wrap;
   word-break: break-word;
+}
+.not-done div p {
+  margin-bottom: 0;
 }
 
 .gallery-texture-background,

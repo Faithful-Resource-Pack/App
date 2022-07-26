@@ -13,7 +13,9 @@ const Chain = function(val) {
   }
 }
 
-const COLUMN_KEY="gallery_columns";
+const MIN_ROW_DISPLAYED = 5;
+const COLUMN_KEY = "gallery_columns";
+const STRETCHED_KEY = "gallery_stretched";
 
 export default {
   name: "texture-page",
@@ -22,7 +24,7 @@ export default {
     GalleryTooltip,
   },
   template: `
-  <v-container style="max-width: unset!important">
+  <v-container :style="stretched ? 'max-width: 100% !important' : ''">
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
     <v-row>
@@ -80,27 +82,31 @@ export default {
           max="16"
         ></v-slider>
       </v-col>
+      <v-col cols="12" sm="6">
+        <v-switch
+          :label="$root.lang('gallery.stretched_switcher')"
+          v-model="stretched"
+        ></v-switch>
+      </v-col>
     </v-row>
 
     <div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
-    <v-row class="my-2">
-      <v-col cols="12" sm="6" class="d-flex justify-center align-center">
-        <v-text-field
-          v-model="current.search"
-          :append-icon="current.search ? 'mdi-send' : undefined"
-          filled
-          clear-icon="mdi-close"
-          clearable
-          hide-details
-          :placeholder="$root.lang().database.labels.search_texture"
-          type="text"
-          v-on:keyup.enter="startSearch"
-          @click:append="startSearch"
-          @click:clear="clearSearch"
-        />
-      </v-col>
-    </v-row>
-    
+    <v-text-field
+      v-model="current.search"
+      :append-icon="current.search ? 'mdi-send' : undefined"
+      filled
+      clear-icon="mdi-close"
+      clearable
+      hide-details
+      :placeholder="$root.lang().database.labels.search_texture"
+      type="text"
+      v-on:keyup.enter="startSearch"
+      @click:append="startSearch"
+      @click:clear="clearSearch"
+    />
+
+    <br>
+
     <v-list
       class="main-container pa-2"
       two-line
@@ -142,11 +148,12 @@ export default {
                 :src="texture.url"
                 :style="styles.cell"
                 lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
+              
               <div class="not-done" style="display: none;">
                 <span></span><div>
-                  <h1>#{{ texture.textureID }}</h1>
-                  <h3>{{ texture.name }}</h3>
-                  <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+                  <h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
+                  <h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
+                  <p :style="styles.not_done.message">{{ $root.lang().gallery.error_message.texture_not_done }}</p>
                 </div>
               </div>
               <v-btn
@@ -189,6 +196,9 @@ export default {
   `,
   data() {
     return {
+      // whether the page shouldn't be stretched to the full width
+      stretched:
+        localStorage.getItem(STRETCHED_KEY, "true") === "true" ? true : false,
       // number of columns you want to display
       columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
       // whether search is loading
@@ -211,7 +221,7 @@ export default {
         search: null,
       },
       // number of displayed results
-      displayedResults: 20,
+      displayedResults: 1,
       // result
       displayedTextures: [],
       // loaded contributions
@@ -228,26 +238,32 @@ export default {
       styles: {
         // gallery cell styles
         cell: {
-          'aspect-ratio': '1 / 1',
+          "aspect-ratio": "1",
         },
         // grid styles
         grid: undefined,
-      }
+        // placeholder font size styles
+        not_done: {
+          texture_id: "font-size: 2em;",
+          texture_name: "font-size: 1.17em;",
+          message: "font-size: 16px",
+        },
+      },
     };
   },
   computed: {
-    displayedTexturesObject: function() {
+    displayedTexturesObject: function () {
       return this.displayedTextures.reduce((acc, cur) => {
         acc[cur.textureID] = cur;
         return acc;
-      }, {})
-    }
+      }, {});
+    },
   },
   watch: {
     "$route.params": {
       handler(params, old_params) {
         // if hash changed but not params
-        if(JSON.stringify(params) === JSON.stringify(old_params)) return
+        if (JSON.stringify(params) === JSON.stringify(old_params)) return;
 
         this.current.resolution = params.resolution;
         this.current.edition = params.edition;
@@ -260,44 +276,53 @@ export default {
       deep: true,
       immediate: true,
     },
-    columns: function (n) {
+    columns(n) {
       localStorage.setItem(COLUMN_KEY, String(n));
+      this.computeGrid();
+    },
+    stretched(n) {
+      localStorage.setItem(STRETCHED_KEY, n);
       this.computeGrid();
     },
   },
   methods: {
     shareID() {
       let index = location.hash.indexOf("?show=");
-      return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined
+      return index !== -1
+        ? Number.parseInt(location.hash.substring(index + 6), 10)
+        : undefined;
     },
     changeShareURL(id, dry_run = false) {
       let index = location.hash.indexOf("?show=");
 
       let new_hash = location.hash;
       // we remove it
-      if(index !== -1) {
+      if (index !== -1) {
         new_hash = new_hash.substring(0, index);
       }
 
-      if(id !== undefined) {
+      if (id !== undefined) {
         new_hash += "?show=" + id.toString();
       }
 
-      if(!dry_run) {
-        location.hash = new_hash
+      if (!dry_run) {
+        location.hash = new_hash;
       }
 
-      return location.href.replace(location.hash, '') + new_hash;
+      return location.href.replace(location.hash, "") + new_hash;
     },
     copyShareLink(id) {
       let url = this.changeShareURL(id, true);
       navigator.clipboard.writeText(url);
-      this.$root.showSnackBar(this.$root.lang('gallery.share_link_copied_to_clipboard'), 'success');
+      this.$root.showSnackBar(
+        this.$root.lang("gallery.share_link_copied_to_clipboard"),
+        "success"
+      );
     },
     checkShare(n) {
-      if(n === undefined) return;
-      
-      this.openModal(n)
+      if (n === undefined) return;
+
+      this.openModal(n);
     },
     openModal(id) {
       this.modalTextureID = id;
@@ -342,8 +367,7 @@ export default {
             <p><i class="icon-time"></i>${this.timestampToDate(timestamp)}</p>
           </li>
         `;
-      } else
-        contributionsHTML = `<li class="danger-text"><p>$</p></li>`;
+      } else contributionsHTML = `<li class="danger-text"><p>$</p></li>`;
 
       if (this.current.resolution === "16x")
         contributionsHTML = `<li><i class="icon-mojang-red"></i>Mojang Studios</li>`;
@@ -357,17 +381,20 @@ export default {
           <ul align="left" class="encased">${contributionsHTML}</ul>
         </div>
         <div class="texture-tags-container">
-          <span class="encased">#${this.displayedTexturesObject[textureID].tags.join(
-            '</span><span class="encased">#'
-          )}</span>
+          <span class="encased">#${this.displayedTexturesObject[
+            textureID
+          ].tags.join('</span><span class="encased">#')}</span>
         </div>
       </div>
       `;
     },
     discordIDtoName(d) {
-      return new Chain(this.loadedContributors[d])
-        .chain(c => c.username || this.$root.lang().gallery.error_message.user_anonymous).value
-        || this.$root.lang().gallery.error_message.user_not_found;
+      return (
+        new Chain(this.loadedContributors[d]).chain(
+          (c) =>
+            c.username || this.$root.lang().gallery.error_message.user_anonymous
+        ).value || this.$root.lang().gallery.error_message.user_not_found
+      );
     },
     timestampToDate(t) {
       const a = new Date(t);
@@ -377,7 +404,7 @@ export default {
       this.updateRoute(null, null, true);
     },
     clearSearch() {
-      this.updateRoute(null, 'search', true);
+      this.updateRoute(null, "search", true);
     },
     updateRoute(data, type, force = false) {
       if (this.current[type] === data && !force) return; // avoid redundant redirection
@@ -409,34 +436,42 @@ export default {
       if (this.$route.path === route) return; // new search is the same as before
       return this.$router.push(route);
     },
-    updateSearch: function() {
-      if(this.loading) return;
+    updateSearch: function () {
+      if (this.loading) return;
       this.loading = true;
       this.displayedTextures = [];
 
-      const version = this.current.version === "latest" ? this.options.versions[0] : this.current.version;
+      const version =
+        this.current.version === "latest"
+          ? this.options.versions[0]
+          : this.current.version;
 
       // /gallery/{res}/{edition}/{mc_version}/{tag}
-      axios.get(`${this.$root.apiURL}/gallery/${this.current.resolution}/${
-        this.current.edition}/${version}/${this.current.tag
-        }${this.current.search ? `?search=${this.current.search}` : ''}`)
-      .then(res => {
-        this.displayedTextures = res.data;
-      })
-      .catch(e => {
-        console.error(e);
-        this.error = `${e.statusCode}: ${e.response.message}`;
-      })
-      .finally(() => {
-        this.loading = false;
-      })
+      axios
+        .get(
+          `${this.$root.apiURL}/gallery/${this.current.resolution}/${
+            this.current.edition
+          }/${version}/${this.current.tag}${
+            this.current.search ? `?search=${this.current.search}` : ""
+          }`
+        )
+        .then((res) => {
+          this.displayedTextures = res.data;
+        })
+        .catch((e) => {
+          console.error(e);
+          this.error = `${e.statusCode}: ${e.response.message}`;
+        })
+        .finally(() => {
+          this.loading = false;
+        });
     },
     scroll() {
       window.onscroll = () => {
         let scrolledTo = document.querySelector(".bottomElement");
 
         if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
-          this.displayedResults += 30;
+          this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
           this.$forceUpdate();
         }
       };
@@ -462,18 +497,18 @@ export default {
 
       let base_columns = this.columns;
 
-      if(breakpoints.smAndDown) {
+      if (breakpoints.smAndDown) {
         base_columns = breakpoints.smOnly ? 2 : 1;
       }
 
-      if(base_columns != 1) {// constants
-        const MIN_WIDTH = 110;
-        const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
-  
-        // real content width
-        let width = this.$el.clientWidth;
-        width -= MARGIN * 2;
-        
+      // constants
+      const MIN_WIDTH = 110;
+      const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
+
+      // real content width
+      const width = this.$el.clientWidth - MARGIN * 2;
+
+      if (base_columns != 1) {
         // * We want to solve n * MIN_WIDTH + (n - 1) * A = width
         // * where A = 200 / (1.5 * n)
         // * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
@@ -483,25 +518,33 @@ export default {
         // * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
         // * solve that and keep positive value
         let a = MIN_WIDTH;
-        let b = 200/1.5 - width;
-        let c = -200/1.5;
-        let delta = b*b - 4*a*c;
-        let n = (-b + Math.sqrt(delta)) / (2*a);
-        gap = 200 / ( n * 1.5);
+        let b = 200 / 1.5 - width;
+        let c = -200 / 1.5;
+        let delta = b * b - 4 * a * c;
+        let n = (-b + Math.sqrt(delta)) / (2 * a);
+        gap = 200 / (n * 1.5);
         number = Math.min(base_columns, Math.floor(n));
       } else {
         gap = 8;
         number = 1;
       }
-      
+
+      const font_size = width / number / 20;
+
+      this.styles.not_done = {
+        texture_id: { "font-size": `${font_size * 4}px` },
+        texture_name: { "font-size": `${font_size * 2}px` },
+        message: { "font-size": `${font_size * 1.2}px` },
+      };
+
       this.styles.grid = {
-        'gap': `${ gap }px`,
-        'grid-template-columns': `repeat(${ number }, 1fr)`,
+        gap: `${gap}px`,
+        "grid-template-columns": `repeat(${number}, 1fr)`,
       };
     },
   },
   created() {
-    window.addEventListener('hashchange', () => {
+    window.addEventListener("hashchange", () => {
       this.checkShare(this.shareID());
     });
     this.checkShare(this.shareID());
@@ -516,24 +559,28 @@ export default {
       }, {});
     });
     axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
-      this.loadedContributions = res.data.filter(contribution => contribution.pack && contribution.texture).reduce((acc, cur) => {
-        if(!acc[cur.pack]) acc[cur.pack] = {};
-        if(!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
+      this.loadedContributions = res.data
+        .filter((contribution) => contribution.pack && contribution.texture)
+        .reduce((acc, cur) => {
+          if (!acc[cur.pack]) acc[cur.pack] = {};
+          if (!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
 
-        acc[cur.pack][cur.texture].push({
-          contributors: cur.authors,
-          date: cur.date,
-        });
+          acc[cur.pack][cur.texture].push({
+            contributors: cur.authors,
+            date: cur.date,
+          });
 
-        return acc;
-      }, {});
+          return acc;
+        }, {});
     });
+
+    this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
   },
   mounted() {
     this.scroll();
-    window.addEventListener('resize', () => {
-      this.computeGrid()
-    })
-    this.computeGrid()
-  }
+    window.addEventListener("resize", () => {
+      this.computeGrid();
+    });
+    this.computeGrid();
+  },
 };

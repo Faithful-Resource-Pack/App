@@ -388,6 +388,7 @@ export default {
     }
   },
   gallery: {
+    stretched_switcher: 'Full width view',
     share_link_copied_to_clipboard: 'Share link copied to clipboard',
     max_items_per_row: 'Max items per row',
     title: 'Gallery',
