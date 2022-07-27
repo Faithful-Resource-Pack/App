@@ -1,6 +1,6 @@
 /* global axios, Vue, settings */
 
-const textureModal = () => import('./modal.js')
+const GalleryModal = () => import('./modal/modal.js')
 const GalleryTooltip = () => import('./gallery_tooltip.js')
 
 const Chain = function(val) {
@@ -20,7 +20,7 @@ const STRETCHED_KEY = "gallery_stretched";
 export default {
   name: "texture-page",
   components: {
-    textureModal,
+    GalleryModal,
     GalleryTooltip,
   },
   template: `
@@ -179,13 +179,12 @@ export default {
     </v-list>
     <div class="bottomElement"></div>
 
-    <texture-modal
+    <GalleryModal
       v-model="modalOpen"
-      :textureID="modalTextureID"
-      :textureObj="modalTextureObj"
       :contributors="loadedContributors"
+      :data="modalData"
       :onClose="() => changeShareURL()"
-    ></texture-modal>
+    ></GalleryModal>
 
     <v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
       <v-icon>
@@ -228,10 +227,8 @@ export default {
       loadedContributions: [],
       // loaded contributors
       loadedContributors: [],
-      // modal opened ID
-      modalTextureID: null,
-      // modal texture opened
-      modalTextureObj: {},
+      // modal data
+      modalData: {},
       // whether modal is opened
       modalOpen: false,
       // styles
@@ -325,13 +322,28 @@ export default {
       this.openModal(n);
     },
     openModal(id) {
-      this.modalTextureID = id;
-      this.modalTextureObj = {}; // changes text back to loading text if reopening modal
-      this.modalOpen = true;
+      axios.get(`${this.$root.apiURL}/textures/${id}/all`)
+        .then((res) => {
+          this.modalData = res.data;
+          this.modalOpen = true;
 
-      axios.get("/gallery/dialog/" + id).then((res) => {
-        this.modalTextureObj = res.data;
-      });
+          this.modalData = {
+            ...this.modalData,
+
+            options: {
+              resolution: {
+                current: this.current.resolution,
+                available: ["16x", ...settings.resolutions],
+              },
+              edition: {
+                current: this.current.edition,
+                available: settings.editions.map((el) => el.toLowerCase()),
+              }
+            },
+          };
+
+          console.log(this.modalData);
+        })
     },
     getAuthor(textureID) {
       let contributionsHTML = "";

@@ -1,7 +1,7 @@
 /* global axios, Vue */
 
 export default {
-  name: 'texture-modal',
+  name: "texture-modal-old",
   template: `
     <v-dialog
       v-model="opened"
@@ -20,12 +20,12 @@ export default {
             <v-icon>mdi-close</v-icon>
           </v-btn>
           
-          <template v-if="Object.keys(textureObj).length > 0">
-            <v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
+          <template v-if="Object.keys(data).length > 0">
+            <v-toolbar-title>[#{{ data.id }}] {{ data.name }}</v-toolbar-title>
           
             <v-spacer></v-spacer>
 
-            <v-btn icon @click="() => $parent.copyShareLink(textureID)">
+            <v-btn icon @click="() => $parent.copyShareLink(data.id)">
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
           </template>
@@ -34,7 +34,7 @@ export default {
           </template>
         </v-toolbar>
 
-        <template v-if="Object.keys(textureObj).length > 0">
+        <template v-if="Object.keys(data).length > 0">
 
           <div class="gallery-dialog-container">
             <div class="gallery-dialog-textures">
@@ -122,93 +122,91 @@ export default {
   props: {
     value: {
       type: Boolean,
-      required: true
+      required: true,
     },
-    textureID: {
-      type: String,
-      required: true
-    },
-    textureObj: {
+    data: {
       type: Object,
-      required: true
+      required: true,
     },
     contributors: {
       type: Object,
-      required: true
+      required: true,
     },
     onClose: {
       type: Function,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
   data() {
     return {
-      resolutions: ['16x', ...settings.resolutions],
+      resolutions: ["16x", ...settings.resolutions],
       tab: null,
       items: [
         this.$root.lang().gallery.modal.items.information,
         this.$root.lang().gallery.modal.items.authors,
         this.$root.lang().gallery.modal.items.animated,
-        this.$root.lang().gallery.modal.items.model
+        this.$root.lang().gallery.modal.items.model,
       ],
       infos: ["texture", "uses", "paths"],
       authors: settings.resolutions,
       opened: false,
-    }
+    };
   },
   watch: {
     value: {
       handler(n) {
-        this.opened = n
+        this.opened = n;
       },
-      immediate: true
+      immediate: true,
     },
     opened(n) {
-      this.$emit('input', n);
-    }
+      this.$emit("input", n);
+    },
   },
   methods: {
-    closeModal: function() {
-      this.onClose()
-      this.opened = false
+    closeModal: function () {
+      this.onClose();
+      this.opened = false;
     },
     discordIDtoName(d) {
-      return this.contributors[d] 
-        ? this.contributors[d].username 
+      return this.contributors[d]
+        ? this.contributors[d].username
           ? this.contributors[d].username
           : this.$root.lang().gallery.error_message.user_anonymous
-        : this.$root.lang().gallery.error_message.user_not_found
+        : this.$root.lang().gallery.error_message.user_not_found;
     },
     timestampToDate(t) {
-      const a = new Date(t)
-      return moment(a).format('ll')
+      const a = new Date(t);
+      return moment(a).format("ll");
     },
     getItems(item) {
-      let output = []
+      let output = [];
 
+      // switch (item) {
+      //   case this.authors[0]:
+      //   case this.authors[1]:
+      //     return this.data.contributions
+      //       .filter((el) => el.resolution === parseInt(item, 10))
+      //       .map((el) => ({
+      //         date: this.timestampToDate(el.date),
+      //         contributors: el.authors
+      //           .map((el) => this.discordIDtoName(el))
+      //           .join(",\n"),
+      //       }));
 
-      switch (item) {
-        case this.authors[0]:
-        case this.authors[1]:
-          return this.textureObj.contributions
-            .filter(el => el.resolution === parseInt(item, 10))
-            .map(el => ({
-              date: this.timestampToDate(el.date),
-              contributors: el.authors.map(el => this.discordIDtoName(el)).join(',\n')
-            }))
+      //   case this.infos[0]:
+      //     return [this.data[item]];
+      //   case this.infos[1]:
+      //     return Object.values(this.data[item]);
 
-        case this.infos[0]:
-          return [this.textureObj[item]]
-        case this.infos[1]:
-          return Object.values(this.textureObj[item])
+      //   case this.infos[2]:
+      //     console.log(this.data[item])
+      //     this.data[item].forEach((paths) => {
+      //       paths.forEach((path) => output.push(path));
+      //     });
 
-        case this.infos[2]:
-          this.textureObj[item].forEach(paths => {
-            paths.forEach(path => output.push(path))
-          })
-
-          return output
-      }
+      //     return output;
+      // }
     },
     getHeaders(item) {
       switch (item) {
@@ -217,90 +215,90 @@ export default {
           return [
             {
               text: this.$root.lang().gallery.modal.tabs.date,
-              value: "date"
+              value: "date",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.authors,
-              value: "contributors"
-            }
-          ]
+              value: "contributors",
+            },
+          ];
         case this.infos[0]:
           return [
             {
               text: this.$root.lang().gallery.modal.tabs.id,
-              value: 'id',
-              sortable: false
+              value: "id",
+              sortable: false,
             },
             {
               text: this.$root.lang().gallery.modal.tabs.name,
-              value: 'name',
-              sortable: false
+              value: "name",
+              sortable: false,
             },
             {
               text: this.$root.lang().gallery.modal.tabs.tags,
-              value: 'type',
-              sortable: false
-            }
-          ]
+              value: "type",
+              sortable: false,
+            },
+          ];
         case this.infos[1]:
           return [
             {
               text: this.$root.lang().gallery.modal.tabs.use_id,
-              value: 'id'
+              value: "id",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.use_name,
-              value: 'textureUseName'
+              value: "textureUseName",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.editions,
-              value: 'editions'
+              value: "editions",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.texture_id,
-              value: 'textureID'
-            }
-          ]
+              value: "textureID",
+            },
+          ];
 
         case this.infos[2]:
           return [
             {
               text: this.$root.lang().gallery.modal.tabs.path_id,
-              value: 'id'
+              value: "id",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.resource_pack_path,
-              value: 'path'
+              value: "path",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.mc_versions,
-              value: 'versions'
+              value: "versions",
             },
             {
               text: this.$root.lang().gallery.modal.tabs.use_id,
-              value: 'useID'
-            }
-          ]
+              value: "useID",
+            },
+          ];
       }
-
-
     },
     getTextureURL(res) {
-      const path = this.textureObj.paths[0][0]
+      const path = this.data.paths[0];
 
       // todo: use settings here
-      switch (path.path.startsWith('assets')) {
+      switch (path.name.startsWith("assets")) {
         case false:
-          if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Bedrock-${res}/${path.versions[0]}/${path.path}`
+          if (res === "16x")
+            return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${path.versions[0]}/${path.name}`;
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Bedrock-${res}/${path.versions[0]}/${path.name}`;
 
         default:
-          if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Java-${res}/${path.versions[0]}/${path.path}`
+          if (res === "16x")
+            return `https://raw.githubusercontent.com/CompliBot/Default-Java/${path.versions[0]}/${path.name}`;
+          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Java-${res}/${path.versions[0]}/${path.name}`;
       }
     },
     ucfirst(text) {
-      return text[0].toUpperCase() + text.substring(1)
+      return text[0].toUpperCase() + text.substring(1);
     },
   },
   computed: {
@@ -309,7 +307,7 @@ export default {
         texture: this.ucfirst(this.$root.lang().gallery.modal.infos.texture),
         uses: this.ucfirst(this.$root.lang().gallery.modal.infos.uses),
         paths: this.ucfirst(this.$root.lang().gallery.modal.infos.paths),
-      }
+      };
     },
-  }
-}
+  },
+};
