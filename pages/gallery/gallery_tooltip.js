@@ -67,7 +67,7 @@ export default {
     last_contribution_names: function () {
       if (this.last_contribution === undefined) return "";
       return this.last_contribution.contributors.map(d => {
-        return this.discordIDtoName(d).replace(/\s/g, '&nbsp;')
+        return this.discordIDtoName(d).replace(/\s/gm, '\u00A0')
       }).join(', ');
     },
     icon: function () {
