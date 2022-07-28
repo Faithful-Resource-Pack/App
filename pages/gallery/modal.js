@@ -35,28 +35,36 @@ export default {
         </v-toolbar>
 
         <template v-if="Object.keys(textureObj).length > 0">
-
-          <div class="gallery-dialog-container">
-            <div class="gallery-dialog-textures">
-              <template v-for="res in resolutions">
-                <div class="gallery-dialog-texture-container">
-                  <div class="gallery-dialog-texture">
-                    <img class="gallery-texture-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')" :src="getTextureURL(res)" lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
-                    <div class="not-done" style="display: none;">
-                      <span></span><div>
-                        <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+          <div class="gallery-dialog-container d-sm-flex flex-column flex-sm-row pa-2 pa-sm-7">
+            <div class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0">
+              <template v-for="(group,i) in grouped" key="i">
+                <div class="gallery-dialog-intern d-flex flex-row pb-2 pb-sm-0">
+                  <template v-for="(url,j) in group" key="i + '-' + j">
+                    <div class="gallery-dialog-texture-container px-1 pb-sm-2">
+                      <div class="gallery-dialog-texture">
+                        <img
+                          class="gallery-texture-image"
+                          onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
+                          :src="url[1]"
+                          lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
+                        <div class="not-done" style="display: none;">
+                          <span></span><div>
+                            <p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+                          </div>
+                        </div>
                       </div>
+                      <h2>{{ packToName(url[0]) }}</h2>
                     </div>
-                  </div>
-                  <h2>{{ res }}</h2>
+                  </template>
                 </div>
               </template>
             </div>
 
-            <div style="width: 70%; padding: 30px">
+            <div class="pl-sm-7">
               <v-tabs
+                id="infos-tabs"
                 v-model="tab"
-                align-with-title
+                :show-arrows="false"
               >
                 <v-tabs-slider></v-tabs-slider>
 
@@ -69,14 +77,14 @@ export default {
                 </v-tab>
               </v-tabs>
 
-              <v-tabs-items v-model="tab">
+              <v-tabs-items v-model="tab" class="infos-table">
                 <v-tab-item
                   v-for="item in items"
                   :key="item"
                 >
                   <template v-if="item === items[0]">
                     <template v-for="i in infos">
-                      <div style="padding: 15px">
+                      <div class="infos">
                         <h2>{{ infosText[i] }}</h2>
                         <v-data-table
                           dense
@@ -168,6 +176,12 @@ export default {
     }
   },
   methods: {
+    packToName: function(pack) {
+      if(pack === 'default') {
+        return '16x'
+      }
+      return pack.split('_').map(word => this.ucfirst(word)).join(' ')
+    },
     closeModal: function() {
       this.onClose()
       this.opened = false
@@ -198,13 +212,19 @@ export default {
             }))
 
         case this.infos[0]:
-          return [this.textureObj[item]]
+          return [{
+            ...this.textureObj[item],
+            tags: this.textureObj[item].tags.join(', ')
+          }]
         case this.infos[1]:
           return Object.values(this.textureObj[item])
 
         case this.infos[2]:
-          this.textureObj[item].forEach(paths => {
-            paths.forEach(path => output.push(path))
+          this.textureObj[item].forEach(path => {
+            output.push({
+              ...path,
+              versions: path.versions.join(', ')
+            })
           })
 
           return output
@@ -238,7 +258,7 @@ export default {
             },
             {
               text: this.$root.lang().gallery.modal.tabs.tags,
-              value: 'type',
+              value: 'tags',
               sortable: false
             }
           ]
@@ -250,15 +270,15 @@ export default {
             },
             {
               text: this.$root.lang().gallery.modal.tabs.use_name,
-              value: 'textureUseName'
+              value: 'name'
             },
             {
               text: this.$root.lang().gallery.modal.tabs.editions,
-              value: 'editions'
+              value: 'edition'
             },
             {
               text: this.$root.lang().gallery.modal.tabs.texture_id,
-              value: 'textureID'
+              value: 'texture'
             }
           ]
 
@@ -270,7 +290,7 @@ export default {
             },
             {
               text: this.$root.lang().gallery.modal.tabs.resource_pack_path,
-              value: 'path'
+              value: 'name'
             },
             {
               text: this.$root.lang().gallery.modal.tabs.mc_versions,
@@ -278,26 +298,12 @@ export default {
             },
             {
               text: this.$root.lang().gallery.modal.tabs.use_id,
-              value: 'useID'
+              value: 'use'
             }
           ]
       }
 
 
-    },
-    getTextureURL(res) {
-      const path = this.textureObj.paths[0][0]
-
-      // todo: use settings here
-      switch (path.path.startsWith('assets')) {
-        case false:
-          if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Bedrock/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Bedrock-${res}/${path.versions[0]}/${path.path}`
-
-        default:
-          if (res === '16x') return `https://raw.githubusercontent.com/CompliBot/Default-Java/${path.versions[0]}/${path.path}`
-          return `https://raw.githubusercontent.com/Faithful-Resource-Pack/Faithful-Java-${res}/${path.versions[0]}/${path.path}`
-      }
     },
     ucfirst(text) {
       return text[0].toUpperCase() + text.substring(1)
@@ -311,5 +317,17 @@ export default {
         paths: this.ucfirst(this.$root.lang().gallery.modal.infos.paths),
       }
     },
+    grouped: function() {
+      const result = [];
+
+      if(this.textureObj) {
+        for(let i = 0; i < this.textureObj.urls.length; ++i) {
+          if(i % 2 === 0) result.push([])
+          result[result.length -1].push(this.textureObj.urls[i]);
+        }
+      }
+
+      return result
+    }
   }
 }

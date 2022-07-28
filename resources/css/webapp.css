@@ -607,23 +607,31 @@ code {
 }
 
 .gallery-dialog-container {
-  display: flex;
   flex-direction: row;
-  height: 100%;
-  margin-top: 10px;
+  width: 100%;
+  overflow: auto;
 }
 
 .gallery-dialog-textures {
   display: flex;
-  flex-direction: column;
-  padding: 30px;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+.gallery-dialog-textures + * {
+  flex-grow: 1;
+  flex-shrink: 0;
 }
 
 .gallery-dialog-texture-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 10px;
+  text-align: center;
+}
+
+.gallery-dialog-texture-container h2 {
+  font-size: 0.95em;
 }
 
 .gallery-dialog-texture {
@@ -641,6 +649,14 @@ code {
   position: absolute;
   height: 196px;
   width: 196px;
+}
+
+#infos-tabs .v-slide-group__prev {
+  display: none;
+}
+
+.gallery-dialog-container .infos-table .infos {
+  padding: 15px 0;
 }
 
 .theme--dark.v-data-table {

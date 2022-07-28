@@ -329,7 +329,7 @@ export default {
       this.modalTextureObj = {}; // changes text back to loading text if reopening modal
       this.modalOpen = true;
 
-      axios.get("/gallery/dialog/" + id).then((res) => {
+      axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
         this.modalTextureObj = res.data;
       });
     },
