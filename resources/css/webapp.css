@@ -643,6 +643,150 @@ code {
   width: 196px;
 }
 
+.gallery-modal-textures-col {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.gallery-modal-textures {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 5px;
+  width: 45%;
+}
+
+@media (max-width: 1085px) {
+  .gallery-modal-textures-col {
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+  }
+
+  .gallery-modal-textures {
+    width: 100%;
+  }
+}
+
+.gallery-modal-texture {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.gallery-modal-texture > img {
+  width: 100%;
+  /* aspect-ratio: 1; */
+  image-rendering: pixelated;
+}
+
+.gallery-modal-texture > span {
+  height: 30px;
+  font-size: smaller;
+  text-align: center;
+}
+
+.gallery-modal-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(100% / 3);
+}
+
+.gallery-modal-content {
+  margin: 40px;
+  margin-bottom: 0;
+}
+
+/* 
+.gallery-modal-information-texture-name,
+.gallery-modal-information-texture-uses,
+.gallery-modal-information-texture-use {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.gallery-modal-information-paths {
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+.gallery-modal-information-texture-image {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.gallery-modal-information-id-square {
+  height: 100px;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #272727;
+  border-radius: 5px;
+}
+
+.gallery-modal-information-info {
+  gap: 5px;
+  display: grid;
+  align-items: start;
+  align-content: center
+}
+
+.gallery-modal-information-text-box,
+.gallery-modal-information-text-box-vertical {
+  background-color: #272727;
+  padding: 5px 10px;
+  border-radius: 5px;
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.gallery-modal-information-text-box-vertical {
+  writing-mode: vertical-lr;
+  width: 29px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.gallery-modal-information-tags {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+
+.gallery-modal-information-tags > span {
+  text-transform: lowercase;
+}
+
+.gallery-paths-per-use,
+.gallery-paths-resolutions {
+  gap: 20px;
+  display: flex;
+}
+
+.gallery-paths-per-use > div > img {
+  height: 150px;
+  width: 150px;
+  object-fit: contain;
+}
+
+.gallery-paths-resolutions {
+  margin-left: 70px;
+} */
+
 .theme--dark.v-data-table {
   background-color: rgba(0, 0, 0, 0.2);
   padding: 5px;

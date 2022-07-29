@@ -146,8 +146,7 @@ export default {
                 class="gallery-texture-image"
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
                 :src="texture.url"
-                :style="styles.cell"
-                lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
+                :style="styles.cell"/>
               
               <div class="not-done" style="display: none;">
                 <span></span><div>
@@ -180,10 +179,10 @@ export default {
     <div class="bottomElement"></div>
 
     <GalleryModal
-      v-model="modalOpen"
       :contributors="loadedContributors"
-      :data="modalData"
+      :receivedData="modalData"
       :onClose="() => changeShareURL()"
+      :opened="modalOpen"
     ></GalleryModal>
 
     <v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
@@ -306,6 +305,8 @@ export default {
         location.hash = new_hash;
       }
 
+      this.modalOpen = false;
+
       return location.href.replace(location.hash, "") + new_hash;
     },
     copyShareLink(id) {
@@ -318,32 +319,27 @@ export default {
     },
     checkShare(n) {
       if (n === undefined) return;
-
       this.openModal(n);
     },
     openModal(id) {
-      axios.get(`${this.$root.apiURL}/textures/${id}/all`)
-        .then((res) => {
-          this.modalData = res.data;
-          this.modalOpen = true;
-
-          this.modalData = {
-            ...this.modalData,
-
-            options: {
-              resolution: {
-                current: this.current.resolution,
-                available: ["16x", ...settings.resolutions],
-              },
-              edition: {
-                current: this.current.edition,
-                available: settings.editions.map((el) => el.toLowerCase()),
-              }
-            },
-          };
-
-          console.log(this.modalData);
-        })
+      this.modalData = {
+        id: id,
+        options: {
+          resolutions: {
+            current: this.current.resolution,
+            available: ["16x", ...settings.resolutions],
+          },
+          editions: {
+            current: this.current.edition,
+            available: settings.editions.map((el) => el.toLowerCase()),
+          },
+          versions: {
+            current: this.current.version,
+            available: [...settings.versions.java, ...settings.versions.bedrock],
+          },
+        },
+      };
+      this.modalOpen = true;
     },
     getAuthor(textureID) {
       let contributionsHTML = "";
