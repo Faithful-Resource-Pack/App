@@ -1,4 +1,4 @@
-/* global axios, Vue, settings */
+/* global axios, Vue, settings, animate */
 
 const GalleryModal = () => import('./modal/modal.js')
 const GalleryTooltip = () => import('./gallery_tooltip.js')
@@ -134,7 +134,7 @@ export default {
       >
         <div
           v-for="(texture, index) in displayedTextures"
-          :key="texture.id"
+          :key="texture.textureID"
           v-if="index <= displayedResults"
           :style="styles.cell"
           class="gallery-texture-in-container"
@@ -143,10 +143,18 @@ export default {
           <tippy :to="texture.id" placement="right-start" theme="" maxWidth="none">
             <template v-slot:trigger>
               <img
+                v-if="texture.mcmeta === null || Object.keys(texture.mcmeta).length === 0"
                 class="gallery-texture-image"
                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
                 :src="texture.url"
                 :style="styles.cell"/>
+
+              <canvas
+                v-else
+                class="gallery-texture-image"
+                :style="styles.cell"
+                :ref="texture.textureID" :id="texture.textureID"
+              ></canvas>
               
               <div class="not-done" style="display: none;">
                 <span></span><div>
@@ -245,6 +253,7 @@ export default {
           message: "font-size: 16px",
         },
       },
+      alreadyAnimated: {},
     };
   },
   computed: {
@@ -335,7 +344,10 @@ export default {
           },
           versions: {
             current: this.current.version,
-            available: [...settings.versions.java, ...settings.versions.bedrock],
+            available: [
+              ...settings.versions.java,
+              ...settings.versions.bedrock,
+            ],
           },
         },
       };
@@ -590,5 +602,17 @@ export default {
       this.computeGrid();
     });
     this.computeGrid();
+  },
+  updated() {
+    this.displayedTextures
+      .filter((el) => el.mcmeta !== null)
+      .map((el) => ({ id: el.textureID, url: el.url, mcmeta: el.mcmeta }))
+      .forEach((texture) => {
+        if (this.alreadyAnimated[texture.id] || document.getElementById(texture.id) === null) return;
+        
+        
+        animate(texture.mcmeta, texture.id, texture.url);
+        this.alreadyAnimated[texture.id] = true;
+      });
   },
 };

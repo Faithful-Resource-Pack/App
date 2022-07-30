@@ -688,9 +688,9 @@ code {
 .gallery-modal-texture > canvas {
   width: 100%;
   image-rendering: pixelated;
-  background: url('/resources/transparency.png');
-  background-repeat: no-repeat;
+  background: url('/resources/transparency.png') center;
   background-size: contain;
+  /* height: 50%; */
 }
 
 .gallery-modal-texture > span {
