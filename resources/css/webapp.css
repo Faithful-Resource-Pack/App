@@ -684,7 +684,8 @@ code {
   width: 100%;
 }
 
-.gallery-modal-texture > img {
+.gallery-modal-texture > img,
+.gallery-modal-texture > canvas {
   width: 100%;
   image-rendering: pixelated;
   background: url('/resources/transparency.png');
