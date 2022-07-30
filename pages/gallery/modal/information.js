@@ -61,8 +61,12 @@ export default {
       const canvas = document.getElementById(ref);
       const context = canvas.getContext("2d");
 
-      canvas.width = 256;
-      canvas.height = 256;
+      // make it visually fill the positioned parent
+      canvas.style.width = '100%';
+
+      // ...then set the internal size to match
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetWidth;
 
       const image = new Image();
       image.src = this.getURL(ref);
@@ -157,7 +161,7 @@ export default {
       const [name, url] = this.data.urls.find((el) => el[0] === pack) || [null, null];
 
       if (url) return url;
-      return null;
+      return '';
     },
   },
   template: `
@@ -170,7 +174,7 @@ export default {
             <div v-for="(res, index) in data.options.resolutions.available" :key="res" class="gallery-modal-col">
               <span>{{ res }}</span>
               <div v-for="(pack, pack_index) in packs[pack_type.id][res]" :key="pack" class="gallery-modal-texture">
-                <img v-if="Object.keys(data.mcmeta).length === 0" :src="getURL(pack)" :alt="pack" onerror="this.src = '/resources/transparency.png'">
+                <img v-if="Object.keys(data.mcmeta).length === 0" :src="getURL(pack)" :alt="pack" onerror="this.src='/resources/transparency.png'">
                 <canvas v-else :ref="pack" :id="pack"></canvas>
                 <span>{{ pack_names[pack] }}</span>
               </div>
