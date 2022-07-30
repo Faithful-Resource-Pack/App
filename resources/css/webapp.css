@@ -651,10 +651,17 @@ code {
 
 .gallery-modal-textures {
   display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 45%;
+}
+
+.gallery-modal-textures > div {
+  display: flex;
   flex-direction: row;
   justify-content: space-between;
   gap: 5px;
-  width: 45%;
+  width: 100%;
 }
 
 @media (max-width: 1085px) {
@@ -679,8 +686,10 @@ code {
 
 .gallery-modal-texture > img {
   width: 100%;
-  /* aspect-ratio: 1; */
   image-rendering: pixelated;
+  background: url('/resources/transparency.png');
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .gallery-modal-texture > span {
