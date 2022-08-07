@@ -299,7 +299,7 @@ export default {
             resolution: parseInt(data.pack.match(/\d+/)[0], 10),
             pack: data.pack,
             authors: data.authors,
-            texture: data.texture
+            texture: String(data.texture)
           },
           this.$root.apiOptions
         )
@@ -317,7 +317,7 @@ export default {
             resolution: data.resolution,
             pack: data.pack,
             authors: data.authors,
-            texture: data.texture
+            texture: String(data.texture)
           },
           this.$root.apiOptions
         )
