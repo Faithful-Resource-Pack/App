@@ -460,7 +460,7 @@ export default {
         })
         .catch((e) => {
           console.error(e);
-          this.error = `${e.statusCode}: ${e.response.message}`;
+          this.error = `${e.statusCode}: ${Chain(e).chain(e => e.response).chain(r => r.message).value}`;
         })
         .finally(() => {
           this.loading = false;
