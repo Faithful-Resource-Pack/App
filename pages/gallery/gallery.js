@@ -343,61 +343,6 @@ export default {
         this.modalTextureObj = res.data;
       });
     },
-    getAuthor(textureID) {
-      let contributionsHTML = "";
-
-      // safely chains operations
-      let contributions = Chain(this.loadedContributions)
-        .chain(
-          (contribs) =>
-            contribs[
-              this.current.resolution === "32x"
-                ? "faithful_32x"
-                : "faithful_64x"
-            ]
-        )
-        .chain((res_contribs) => res_contribs[textureID]).value;
-
-      if (contributions) {
-        const timestamp = contributions.reduce(
-          (a, b) => (a = a > b.date ? a : b.date),
-          0
-        );
-        const contribution = contributions.filter(
-          (el) => el.date == timestamp
-        )[0];
-
-        contributionsHTML = `
-          <li>
-            <p><i class="icon-people${
-              contribution.contributors.length == 1 ? "" : "s"
-            }"></i>${contribution.contributors
-          .map((c) => this.discordIDtoName(c).replace(/\s/g, "&nbsp;"))
-          .join(", ")}</p>
-            <p><i class="icon-time"></i>${this.timestampToDate(timestamp)}</p>
-          </li>
-        `;
-      } else contributionsHTML = `<li class="danger-text"><p>$</p></li>`;
-
-      if (this.current.resolution === "16x")
-        contributionsHTML = `<li><i class="icon-mojang-red"></i>Mojang Studios</li>`;
-
-      return `
-      <div class="texture-tooltip">
-        <div class="texture-info-container">
-          <h1 align="left" class="encased">#${textureID}&nbsp;&dash;&nbsp;${
-        this.displayedTexturesObject[textureID].name
-      }</h1>
-          <ul align="left" class="encased">${contributionsHTML}</ul>
-        </div>
-        <div class="texture-tags-container">
-          <span class="encased">#${this.displayedTexturesObject[
-            textureID
-          ].tags.join('</span><span class="encased">#')}</span>
-        </div>
-      </div>
-      `;
-    },
     discordIDtoName(d) {
       return (
         new Chain(this.loadedContributors[d]).chain(
