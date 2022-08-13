@@ -59,7 +59,9 @@ export default {
 
       <v-col cols="12" sm="6">
         <v-select
-          :items="options.tags"
+          :items="tagItems"
+          item-text="label"
+          item-value="value"
           :value="current.tag"
           :label="$root.lang('gallery.category.tags')"
           v-on:change="updateRoute($event, 'tag')"
@@ -258,6 +260,14 @@ export default {
         return acc;
       }, {});
     },
+    tagItems: function() {
+      return this.options.tags.map((e,i) => {
+        return {
+          label: e,
+          value: i === 0 ? 'all' : e
+        }
+      })
+    }
   },
   watch: {
     "$route.params": {
