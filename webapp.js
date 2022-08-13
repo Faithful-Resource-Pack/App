@@ -295,8 +295,8 @@ axios.get('./resources/settings.json')
       watch: {
         selectedLang: {
           handler: function (newValue, oldValue) {
+            _set_lang(newValue)
             if (Object.keys(this.langs).includes(newValue)) {
-              _set_lang(newValue)
 
               if (Object.keys(this.langs).includes(oldValue)) {
                 moment.locale(this.langBCP47)
