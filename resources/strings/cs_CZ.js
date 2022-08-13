@@ -265,7 +265,7 @@ export default {
       title: 'Obrázky',
       header: {
         labels: {
-          drop: 'Přetáhni obrázek sem, nebo sem klikni pro ruční vybrání.',
+          drop: 'Kliknutím vyberte obrázek záhlaví',
           normal: 'Hlavní obrázek',
           replace: 'Změnit hlavní obrázek'
         },
@@ -277,7 +277,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Přetáhni další obrázky sem, nebo sem klikni pro ruční vybrání.',
+          drop: 'Kliknutím vyberte další obrázky',
           normal: 'Další obrázky',
           replace: 'Změnit další obrázky'
         },

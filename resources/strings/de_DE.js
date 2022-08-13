@@ -216,7 +216,7 @@ export default {
       title: 'Screenshots',
       header: {
         labels: {
-          drop: 'Header-Bild hier ablegen oder zum Auswählen klicken.',
+          drop: 'Klicken Sie, um zusätzliche Bilder auszuwählen',
           normal: 'Header-Bild',
           replace: 'Header-Bild ersetzen'
         },
@@ -228,7 +228,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Weitere Bilder hier ablegen oder zum Auswählen klicken.',
+          drop: 'Klicken Sie, um zusätzliche Bilder auszuwählen',
           normal: 'Zusätzliche(s) Bild(er)',
           replace: 'Zusätzliche(s) Bild(er) ersetzen'
         },

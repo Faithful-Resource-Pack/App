@@ -251,7 +251,7 @@ export default {
       title: 'Imagens',
       header: {
         labels: {
-          drop: 'Solte a imagem de cabeçalho aqui ou clique para selecioná-la.',
+          drop: 'Clique para selecionar a imagem do cabeçalho',
           normal: 'Imagem de cabeçalho',
           replace: 'Substituir imagem de cabeçalho'
         },
@@ -263,7 +263,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Solte imagem(ns) adicional(is) aqui, ou clique para selecioná-la(s).',
+          drop: 'Clique para selecionar imagens adicionais',
           normal: 'Imagem(ns) adicional(is)',
           replace: 'Substituir imagem(ns) adicional(is)'
         },
