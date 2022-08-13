@@ -142,7 +142,7 @@ export default {
           class="gallery-texture-in-container"
           @click.stop="() => changeShareURL(texture.textureID)"
         >
-          <tippy :to="texture.id" placement="right-start" theme="" maxWidth="none">
+          <tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
             <template v-slot:trigger>
               <img
                 class="gallery-texture-image"
