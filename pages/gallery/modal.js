@@ -206,11 +206,11 @@ export default {
         case this.authors[1]:
           return this.textureObj.contributions
             .filter(el => el.resolution === parseInt(item, 10))
+            .sort((a,b) => b.date - a.date)
             .map(el => ({
               date: this.timestampToDate(el.date),
               contributors: el.authors.map(el => this.discordIDtoName(el)).join(',\n')
             }))
-
         case this.infos[0]:
           return [{
             ...this.textureObj[item],
