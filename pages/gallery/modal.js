@@ -180,7 +180,7 @@ export default {
       if(pack === 'default') {
         return '16x'
       }
-      return pack.split('_').map(word => this.ucfirst(word)).join(' ')
+      return pack.replace('progart', 'programmer art').split('_').map(word => this.ucfirst(word)).join(' ')
     },
     closeModal: function() {
       this.onClose()

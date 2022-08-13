@@ -630,10 +630,6 @@ code {
   text-align: center;
 }
 
-.gallery-dialog-texture-container h2 {
-  font-size: 0.95em;
-}
-
 .gallery-dialog-texture {
   height: 196px;
   width: 196px;
@@ -641,6 +637,13 @@ code {
   background-size: cover;
   background-position: center;
 }
+
+.gallery-dialog-texture-container h2 {
+  max-width: 196px;
+  height: 48px;
+  font-size: 1em;
+}
+
 .theme--dark .gallery-dialog-texture {
   background: url(/resources/transparency.png) center
 }
