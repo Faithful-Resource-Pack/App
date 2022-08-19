@@ -32,66 +32,83 @@ export default {
         <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose(), false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
       </v-col>
     </v-row>
-    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.contributor }}</div>
-    <v-autocomplete
-      v-model="contributors_selected"
-      :items="contributors"
-      :loading="contributors.length == 0"
-      item-text="username"
-      item-value="id"
-      :label="$root.lang().database.labels.one_contributor"
-      multiple
-      chips
-    >
-      <!-- SELECTED THINGY -->
-      <template v-slot:selection="data">
-        <v-chip
-          :key="data.item.id"
-          v-bind="data.attrs"
-          :input-value="data.selected"
-          :disabled="data.disabled"
-          close
-          @click:close="remove(data.item.id)"
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
+    <div class="row">
+      <div class="col-sm-6 col-12">
+        <div class="my-sm-2 text-h6">{{ $root.lang().database.subtitles.contributor }}</div>
+        <v-autocomplete
+          v-model="contributors_selected"
+          :items="contributors"
+          :loading="contributors.length == 0"
+          item-text="username"
+          item-value="id"
+          :label="$root.lang().database.labels.one_contributor"
+          multiple
+          hide-details
+          class="mb-0"
+          chips
         >
-          <v-avatar
-            :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
-            left
-          >
-            <template v-if="data.item.uuid != undefined">
-              <v-img eager
-                :src="'https://visage.surgeplay.com/face/24/' + (data.item.uuid || 'X-Alex')"
-                :alt="data.item.username.slice(0, 1).toUpperCase()"
-              />
+          <!-- SELECTED THINGY -->
+          <template v-slot:selection="data">
+            <v-chip
+              :key="data.item.id"
+              v-bind="data.attrs"
+              :input-value="data.selected"
+              :disabled="data.disabled"
+              close
+              @click:close="remove(data.item.id)"
+            >
+              <v-avatar
+                :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
+                left
+              >
+                <template v-if="data.item.uuid != undefined">
+                  <v-img eager
+                    :src="'https://visage.surgeplay.com/face/24/' + (data.item.uuid || 'X-Alex')"
+                    :alt="data.item.username.slice(0, 1).toUpperCase()"
+                  />
+                </template>
+                <template v-else>
+                  {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
+                </template>
+              </v-avatar>
+              {{ data.item.username || data.item.id }}
+            </v-chip>
+          </template>
+
+          <!-- LIST ITEM PART -->
+          <template v-slot:item="data">
+            <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
+              <v-list-item-content v-text="data.item"></v-list-item-content>
             </template>
             <template v-else>
-              {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
+              <v-list-item-content>
+                <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
+                <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
+                <template v-if="data.item.uuid">
+                  <v-img eager :src="'https://visage.surgeplay.com/head/48/' + (data.item.uuid || 'X-Alex')" />
+                </template>
+                <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
+              </v-list-item-avatar>
             </template>
-          </v-avatar>
-          {{ data.item.username || data.item.id }}
-        </v-chip>
-      </template>
-
-      <!-- LIST ITEM PART -->
-      <template v-slot:item="data">
-        <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
-          <v-list-item-content v-text="data.item"></v-list-item-content>
-        </template>
-        <template v-else>
-          <v-list-item-content>
-            <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
-            <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
-            <template v-if="data.item.uuid">
-              <v-img eager :src="'https://visage.surgeplay.com/head/48/' + (data.item.uuid || 'X-Alex')" />
-            </template>
-            <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
-          </v-list-item-avatar>
-        </template>
-      </template>
-    </v-autocomplete>
-    <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
-
+          </template>
+        </v-autocomplete>
+      </div>
+      <div class="col-sm-6 col-12">
+        <div class="my-sm-2 text-h6">{{ $root.lang().database.titles.textures }}</div>
+        <v-text-field
+          style="margin-top: 10px"
+          type="search"
+          v-model="textureSearch"
+          class="pt-5 mb-0"
+          :label="$root.lang().database.labels.search_texture"
+          hide-details
+        />
+      </div>
+    </div>
+    <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
     <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
           v-for="(contrib_arr, index) in splittedResults"
@@ -158,6 +175,7 @@ export default {
         searching: false,
         search_results: []
       },
+      textureSearch: '',
       displayedResults: INCREMENT,
       newSubmit: false
     }
@@ -178,7 +196,8 @@ export default {
     },
     searchDisabled: function () {
       const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false
-      const result = this.search.searching || resSelected || this.contributors_selected.length === 0
+      const invalidTextSearch = this.textureSearch.length < 3 && Number.isNaN(Number.parseInt(this.textureSearch))
+      const result = this.search.searching || resSelected || (this.contributors_selected.length === 0 && invalidTextSearch)
       return result
     },
     listColumns: function () {
@@ -250,7 +269,10 @@ export default {
     },
     startSearch: function () {
       this.search.searching = true
-      axios.get(`${this.$root.apiURL}/contributions/search/${this.contributors_selected.join('-')}/${this.form.packs.filter(r => r.selected).map(r => r.key).join('-')}`)
+      axios.get(`${this.$root.apiURL}/contributions/search
+?packs=${this.form.packs.filter(r => r.selected).map(r => r.key).join('-')}
+&users=${this.contributors_selected.join('-')}
+&search=${this.textureSearch}`)
         .then(res => {
           res.data.sort((a, b) => b.date - a.date)
           this.search.search_results = res.data.map(c => {
@@ -267,7 +289,8 @@ export default {
             acc[acc.length-1].push(cur)
             return acc;
           }, []).map(ids => {
-            return axios.get(`${this.$root.apiURL}/textures/${ids.join(',')}`);
+            // optimize array search by deleting double
+            return axios.get(`${this.$root.apiURL}/textures/${ids.filter((v, i, a) => a.indexOf(v) === i).join(',')}`);
           })
           )
         })
