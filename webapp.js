@@ -532,7 +532,8 @@ axios.get('./resources/settings.json')
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
           this.snackbar.message = message
-          if (message.response && message.response.data && message.response.data.error) this.snackbar.message += ':\n' + message.response.data.error
+          if (message.response && message.response.data && message.response.data.error) this.snackbar.message += ': ' + message.response.data.error
+          if (message.response && message.response.data && message.response.data.message) this.snackbar.message += ': ' + message.response.data.message
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true
