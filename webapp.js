@@ -179,7 +179,7 @@ const ALL_TABS = [
   {
     label: 'review',
     subtabs: [{
-      enabled: true, icon: 'mdi-puzzle', label: 'addons',
+      enabled: true, icon: 'mdi-puzzle', label: 'addons', badge: '/addons/pending',
       routes: [{ path: '/review/addons', component: ReviewAddonsPage }]
     }, {
       enabled: true, icon: 'mdi-translate', label: 'translations',
@@ -257,6 +257,7 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          badges: {},
           colors: colors,
           dark: undefined,
           vapiURL: window.apiURL,
@@ -392,7 +393,7 @@ axios.get('./resources/settings.json')
           if(n.length <= o.length) return
 
           // add all routes with matching roles
-          ALL_TABS.filter(t => {
+          const subtabs = ALL_TABS.filter(t => {
               if(t.roles === undefined) return false
 
               let allowed = false
@@ -405,6 +406,13 @@ axios.get('./resources/settings.json')
               return allowed
             })
             .map(t => t.subtabs).flat(1).filter(s => !s.unlogged)
+          subtabs.forEach(s => {
+            if(s.badge) {
+              this.loadBadge(s.badge)
+            }
+          })
+
+          subtabs
             .map(s => s.routes).flat(1)
             .forEach(r => {
               router.addRoute(r)
@@ -506,6 +514,24 @@ axios.get('./resources/settings.json')
             .catch(e => {
               this.showSnackBar(e.toString(), "error")
             })
+        },
+        loadBadge: function(url) {
+          axios.get(this.apiURL + url, this.apiOptions)
+            .then(r => {
+              const res = r.data;
+              let val;
+              if(Array.isArray(res) && res.length) {
+                val = res.length
+              } else if(res.length) {
+                val = res.length
+              } else {
+                val = 0
+              }
+              Vue.set(this.badges, url, val);
+            })
+          setTimeout(() => {
+            this.loadBadge(url)
+          }, 15000);
         },
         lang: function (path) {
           let response = this.langs[this.selectedLang]

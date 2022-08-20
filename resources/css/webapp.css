@@ -427,6 +427,20 @@ blockquote {
   font-weight: 500;
 }
 
+.nav-badge {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.nav-badge-inner {
+  height: 24px;
+  font-size: 12px;
+  width: 24px;
+  border-radius: 50%;
+  line-height: 24px;
+  text-align: center;
+}
+
 .markdown > h1 {
   font-size: 1.3em;
   padding-bottom: 8px;

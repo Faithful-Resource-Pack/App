@@ -105,14 +105,22 @@
             <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;">
               <v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-title v-text="subtab.labelText" class="uppercased" />
+            <v-list-item-title v-text="subtab.labelText" class="uppercased"></v-list-item-title>
+
+            <v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
+              <span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
+            </v-list-item-action>
           </v-list-item>
 
           <v-list-item link v-if="tab.to" :to="tab.to" :disabled="!tab.enabled" class="uppercased-unsized">
             <v-list-item-icon v-if="tab.icon" style="margin-right: 5px;">
               <v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
             </v-list-item-icon>
-            <v-list-item-title v-text="tab.labelText" class="uppercased" />
+            <v-list-item-title v-text="tab.labelText" class="uppercased"></v-list-item-title>
+
+            <v-list-item-action class="nav-badge" v-if="tab.badge && badges[tab.badge]">
+              <span class="nav-badge-inner error">{{ badges[tab.badge] }}</span>
+            </v-list-item-action>
           </v-list-item>
         </v-list>
         <v-divider
