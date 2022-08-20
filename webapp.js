@@ -474,6 +474,20 @@ axios.get('./resources/settings.json')
           return this.user && this.user.id !== 0 && this.user.id != null
         },
         /**
+         * Tell if the user is an admin
+         * @returns true if user has damin role
+         */
+        isAdmin: function() {
+          // if not logged in
+          if(!this.isUserLogged) return false
+
+          // if user not loaded
+          if(!this.user) return false
+
+          // check roles
+          return this.user.roles.includes('Administrator')
+        },
+        /**
          * Get in real time the roles of a user
          * @returns user discord roles
          */

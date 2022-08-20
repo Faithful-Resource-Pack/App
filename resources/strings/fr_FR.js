@@ -24,6 +24,7 @@ export default {
       add: 'Ajouter',
       add_download: 'Ajouter un lien',
       submit: 'Soumettre',
+      submit_and_approve: 'Soumettre et approuver',
       cancel: 'Annuler',
       close: 'Fermer',
       save: 'Sauvegarder',

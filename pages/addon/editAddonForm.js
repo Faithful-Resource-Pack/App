@@ -41,11 +41,28 @@ export default {
     }
   },
   methods: {
-    handleSubmit: function(data) {
+    handleSubmit: function(data, approve) {
       console.log('edit submit')
-      axios.patch(this.$root.apiURL + '/addons/' + this.id, data, this.$root.apiOptions)
+      let prom = axios.patch(this.$root.apiURL + '/addons/' + this.id, data, this.$root.apiOptions)
       .then(() => {
         this.$root.showSnackBar('Saved', 'success')
+      })
+
+      if(approve === true) {
+        prom = prom
+        .then(() => {
+          return axios.put(this.$root.apiURL + '/addons/' + this.id + '/review', {
+            status: "approved",
+            reason: "Admin edit"
+          }, this.$root.apiOptions)
+        })
+        .then(() => {
+          this.$root.showSnackBar('Approved', 'success')
+        })
+      }
+      
+      prom.catch(err => {
+        this.$root.showSnackBar(err, 'error')
       })
     },
     handleHeader: function(file, remove=false) {

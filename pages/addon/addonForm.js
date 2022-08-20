@@ -265,6 +265,9 @@ export default {
         </div>       
 
         <div class="text-center">
+          <v-btn v-if="$root.isAdmin" :disabled="!validForm" @click="() => onSubmit(true)" color="primary">
+            {{ $root.lang('global.btn.submit_and_approve') }}
+          </v-btn>
           <v-btn :disabled="!validForm" @click="onSubmit" color="primary">
             {{ $root.lang().global.btn.submit }}
           </v-btn>
@@ -513,12 +516,12 @@ export default {
         this.carouselDoNotVerify = false
       })
     },
-    onSubmit: function() {
+    onSubmit: function(approve = false) {
       const valid = this.$refs.form.validate()
 
       if(!valid) return
 
-      this.$emit('submit', this.submittedData)
+      this.$emit('submit', this.submittedData, approve)
     },
     validateRatio: function (ctx) {
       const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78
