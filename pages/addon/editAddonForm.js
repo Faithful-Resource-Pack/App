@@ -17,6 +17,7 @@ export default {
       :addon-data="addonData"
 
       :screen-sources="screenSources"
+      :screen-ids="screenIds"
       :header-source="headerSource"
 
       v-on:submit="handleSubmit"
@@ -29,7 +30,8 @@ export default {
     return {
       addonData: undefined,
       headerSource: undefined,
-      screenSources: []
+      screenSources: [],
+      screenIds: []
     }
   },
   computed: {
@@ -98,22 +100,38 @@ export default {
         this.headerSource = undefined;
       })
     },  
-    handleScreenshot: function(screenshots, index, remove=false) {
+    handleScreenshot: async function(screenshots, index, remove=false, id) {
       if(Array.isArray(screenshots) && screenshots.length === 0) return
 
       let promise
       if(remove) {
-        promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/screenshots/' + index, this.$root.apiOptions)
+        if(id !== undefined) {
+          promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/screenshots/' + id, this.$root.apiOptions)
+        } else {
+          promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/screenshots/' + index, this.$root.apiOptions)
+        }
       } else {
         // add all of them
-        const promises = []
-        screenshots.forEach(screen => {
+        // fix to stabilize upload and make one request then another...
+        let i = 0
+        let successful = true
+        let err
+        while(i < screenshots.length && successful) {
+          const screen = screenshots[i]
           const form = new FormData()
           form.set("file", screen, screen.name)
-          promises.push(axios.post(this.$root.apiURL + '/addons/' + this.id + '/screenshots', form, this.$root.apiOptions))
-        })
+
+          successful = await axios.post(this.$root.apiURL + '/addons/' + this.id + '/screenshots', form, this.$root.apiOptions)
+            .then(() => true)
+            .catch((error) => {
+              err = error
+              return false
+            })
+
+          i++
+        }
         
-        promise = Promise.all(promises)
+        promise = successful ? Promise.resolve() : Promise.reject(err)
       }
 
       promise.then(() => {
@@ -129,6 +147,10 @@ export default {
       axios.get(this.$root.apiURL + '/addons/' + (this.id || this.$route.params.id) + '/files/screenshots', this.$root.apiOptions)
       .then(res => {
         this.screenSources = res.data
+      })
+      axios.get(this.$root.apiURL + '/addons/' + (this.id || this.$route.params.id) + '/files/screenshots-ids', this.$root.apiOptions)
+      .then(res => {
+        this.screenIds = res.data
       })
     }
   },

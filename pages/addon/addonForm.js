@@ -30,7 +30,12 @@ export default {
     },
     screenSources: {
       required: false
-    }
+    },
+    screenIds: {
+      required: false,
+      type: Array,
+      default: undefined
+    },
   },
   template: `
   <v-container>
@@ -109,7 +114,7 @@ export default {
           <div class="text-h5 mb-3">{{ $root.lang().addons.images.title }}</div>
 
           <!-- upload field for images -->
-          <ImagePreviewer :sources="carouselSources" @item-delete="onDeleteCarousel" />
+          <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
 
           <div class="pt-5">
             <v-file-input
@@ -508,10 +513,10 @@ export default {
     linkRemove: function(download_index, link_index) {
       this.submittedForm.downloads[download_index].links.splice(link_index, 1)
     },
-    onDeleteCarousel: function (item, index) {
+    onDeleteCarousel: function (item, index, id) {
       this.carouselDoNotVerify = true
       this.submittedForm.carouselFiles.splice(index, 1)
-      this.$emit('screenshot', undefined, index, true)
+      this.$emit('screenshot', undefined, index, true, id)
       Vue.nextTick(() => {
         this.carouselDoNotVerify = false
       })

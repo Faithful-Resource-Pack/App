@@ -41,6 +41,11 @@ export default {
       required: true,
       type: Array
     },
+    ids: {
+      required: false,
+      type: Array,
+      default: undefined
+    },
   },
   data: function() {
     return {
@@ -56,7 +61,12 @@ export default {
   methods: {
     onDelete: function(item, index, e) {
       if(e) e.target.blur();
-      this.$emit('item-delete', item, index)
+
+      if(this.ids !== undefined) {
+        this.$emit('item-delete', item, index, this.ids[index])
+      } else {
+        this.$emit('item-delete', item, index, undefined)
+      }
     },
     onFullscreen: function(item, index, e) {
       if (e) e.target.blur();

@@ -30,7 +30,7 @@ export default {
       // 1. Upload 
       let id
       axios.post(this.$root.apiURL + '/addons', data, this.$root.apiOptions)
-      .then(response => {
+      .then(async (response) => {
         const addon = response.data
         id = addon.id
         
@@ -46,10 +46,28 @@ export default {
           promises.push(axios.post(this.$root.apiURL + '/addons/' + id + '/header', form, this.$root.apiOptions))
         }
         if(this.screenshots.length) {
-          this.screenshots.forEach(screen => {
+          // add all of them
+          // fix to stabilize upload and make one request then another...
+          let i = 0
+          let successful = true
+          let err
+          let screenshots = this.screenshots
+          while(i < screenshots.length && successful) {
+            const screen = screenshots[i]
+            const form = new FormData()
             form.set("file", screen, screen.name)
-            promises.push(axios.post(this.$root.apiURL + '/addons/' + id + '/screenshots', form, this.$root.apiOptions))
-          })
+  
+            successful = await axios.post(this.$root.apiURL + '/addons/' + this.id + '/screenshots', form, this.$root.apiOptions)
+              .then(() => true)
+              .catch((error) => {
+                err = error
+                return false
+              })
+  
+            i++
+          }
+          
+          promise.push(successful ? Promise.resolve() : Promise.reject(err))
         }
 
         return Promise.all(promises)
@@ -59,9 +77,8 @@ export default {
         this.$router.push('/addons/submissions')
       })
       .catch(err => {
-        const message = err.response ? err.response.data.message : String(err)
-        console.error(err.response ? err.response.data : message)
-        this.$root.showSnackBar(`${err.message}: ${message}`, 'error')
+        console.error(err)
+        this.$root.showSnackBar(err, 'error')
 
         // delete what is left of addon
         // if we have id then we at least successfully created the file
