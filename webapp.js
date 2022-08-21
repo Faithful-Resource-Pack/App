@@ -280,6 +280,7 @@ axios.get('./resources/settings.json')
           snackbar: {
             show: false,
             message: '',
+            submessage: '',
             color: '#222',
             timeout: 4000
           },
@@ -571,9 +572,26 @@ axios.get('./resources/settings.json')
           return String(response) // enforce string to ensure string methods used after
         },
         showSnackBar: function (message, color = '#222', timeout = 4000) {
-          this.snackbar.message = message
-          if (message.response && message.response.data && message.response.data.error) this.snackbar.message += ': ' + message.response.data.error
-          if (message.response && message.response.data && message.response.data.message) this.snackbar.message += ': ' + message.response.data.message
+          this.snackbar.submessage = ''
+          if(typeof message === 'string') {
+            let newline = message.indexOf('\n')
+            if(newline !== -1) {
+              this.snackbar.message = message.substring(0, newline) + ':'
+              this.snackbar.submessage = message.substring(newline+1)
+            } else {
+              this.snackbar.message = message
+            }
+          }
+          else {
+            this.snackbar.message = message.message
+
+            if (message.response && message.response.data) {
+              let submessage = message.response.data.error || message.response.data.message
+              this.snackbar.message += ':'
+              this.snackbar.submessage = submessage
+            }
+          }
+
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true
