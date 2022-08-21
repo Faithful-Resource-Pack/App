@@ -204,6 +204,7 @@ export default {
       ],
       usernameRules: [
         u => this.validForm(!!u, 'Username is required.'),
+        u => this.validForm(u && typeof(u) === 'string' && u.trim().length > 0, `Username cannot be empty`),
         u => this.validForm(u && u.length <= this.usernameMaxLength, `Username must be less than ${this.usernameMaxLength} characters.`)
       ],
       localUser: {}
@@ -263,7 +264,7 @@ export default {
         })
         .catch(error => {
           console.error(error)
-          this.$root.showSnackBar(`${error.message}: ${error.response.data.error}`, 'error')
+          this.$root.showSnackBar(error, 'error')
         })
     },
     getUserInfo: function () {
