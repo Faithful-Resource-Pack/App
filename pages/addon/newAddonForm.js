@@ -67,7 +67,7 @@ export default {
             i++
           }
           
-          promise.push(successful ? Promise.resolve() : Promise.reject(err))
+          promises.push(successful ? Promise.resolve() : Promise.reject(err))
         }
 
         return Promise.all(promises)
