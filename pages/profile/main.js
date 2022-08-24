@@ -252,10 +252,11 @@ export default {
     send: function () {
       if (!this.$root.isUserLogged) return
 
+      // fix if new user
       const data = {
-        uuid: this.localUser.uuid,
-        username: this.localUser.username,
-        media: this.localUser.media
+        uuid: this.localUser.uuid || '',
+        username: this.localUser.username || '',
+        media: this.localUser.media || []
       }
 
       axios.post(`${this.$root.apiURL}/users/profile/`, data, this.$root.apiOptions)
@@ -273,6 +274,11 @@ export default {
       axios.get(`${this.$root.apiURL}/users/profile/`, this.$root.apiOptions)
         .then((res) => {
           this.localUser = res.data
+
+          // fix if new user or empty user
+          this.localUser.uuid = this.localUser.uuid || ''
+          this.localUser.username = this.localUser.username || ''
+          this.localUser.media = this.localUser.media || []
         })
         .catch(err => {
           console.error(err)
