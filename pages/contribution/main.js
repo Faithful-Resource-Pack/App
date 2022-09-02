@@ -21,15 +21,15 @@ export default {
           class="my-2 mr-1"
         ><v-checkbox
           v-model="packs_obj.selected"
-          :disabled="packs_obj.key != all_packs && (form.packs[0] !== undefined && form.packs[0].selected == true)"
           :label="packs_obj.value"
           :id="packs_obj.key"
+          @change="(val) => onPackChange(val, packs_obj.key)"
         ></v-checkbox>
         </v-btn>
       </v-col>
       <v-col>
         <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
-        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose(), false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
+        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose, false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
       </v-col>
     </v-row>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
@@ -212,6 +212,15 @@ export default {
 
       return columns
     },
+    packsSelected: function() {
+      return this.form.packs
+        .filter(entry => entry.selected)
+    },
+    packsToChoose: function() {
+      return this.form.packs
+        .filter(entry => entry.key !== this.all_packs)
+        .map(entry => entry.key)
+    },
     splittedResults: function () {
       const res = []
       for (let col = 0; col < this.listColumns; ++col) {
@@ -270,7 +279,7 @@ export default {
     startSearch: function () {
       this.search.searching = true
       axios.get(`${this.$root.apiURL}/contributions/search
-?packs=${this.form.packs.filter(r => r.selected).map(r => r.key).join('-')}
+?packs=${this.packsSelected.map(r => r.key).join('-')}
 &users=${this.contributors_selected.join('-')}
 &search=${this.textureSearch}`)
         .then(res => {
@@ -306,12 +315,9 @@ export default {
         .finally(() => this.search.searching = false)
         .catch(err => this.$root.showSnackBar(err, 'error'))
     },
-    packsToChoose: function() {
-      return this.form.packs.map(p => p.key).filter(p => p !== this.all_packs);
-    },
     editContribution: function(contrib) {
       this.newSubmit = false
-      this.$refs.mod.open(contrib, this.packsToChoose(), false)
+      this.$refs.mod.open(contrib, this.packsToChoose, false)
     },
     onNewSubmit: function(data) {
       axios
@@ -330,6 +336,44 @@ export default {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
+    },
+    onPackChange: function(selected, key) {
+      if(key === this.all_packs) {
+        if(selected) {
+          // just checked all, unckeck others
+          // better to make all of them not selected instead of replacing data
+          // more stable if more data in entries
+          this.form.packs.forEach(entry => {
+            if(entry.key === this.all_packs) return
+
+            entry.selected = false
+          })
+        } else {
+          this.onPackUnselected(key)
+        }
+      } else {
+        // other pack
+        if(selected) {
+          // uncheck all
+          const index_all = this.form.packs.findIndex(entry => entry.key === this.all_packs)
+          this.form.packs[index_all].selected = false
+        } else {
+          this.onPackUnselected(key)
+        }
+      }
+    },
+    onPackUnselected: function(key) {
+      // ensure at least one selected
+      if(this.packsSelected.length === 0) {
+        const index_entry = this.form.packs.findIndex(entry => entry.key === key)
+
+        // needs to be changed on next tick, cannot change same data on same cycle
+        this.$nextTick(() => {
+          Vue.set(this.form.packs[index_entry], 'selected', true)
+        })
+      } else {
+        // do nothing, at least one is selected
+      }
     },
     onChangeSubmit: function(data) {
       axios
