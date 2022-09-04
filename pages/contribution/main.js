@@ -8,7 +8,7 @@ export default {
   name: 'contribution-page',
   template: `
   <v-container>
-    <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit'></contribution-modal>
+    <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit' :multiple="multiple"></contribution-modal>
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.contributions }}
     </div>
@@ -177,7 +177,7 @@ export default {
       },
       textureSearch: '',
       displayedResults: INCREMENT,
-      newSubmit: false
+      newSubmit: false,
     }
   },
   computed: {
@@ -211,6 +211,9 @@ export default {
       }
 
       return columns
+    },
+    multiple: function() {
+      return this.newSubmit
     },
     packsSelected: function() {
       return this.form.packs
@@ -319,8 +322,10 @@ export default {
       this.newSubmit = false
       this.$refs.mod.open(contrib, this.packsToChoose, false)
     },
-    onNewSubmit: function(data) {
-      axios
+    onNewSubmit: async function(entries) {
+      for(let i = 0; i < entries.length; ++i) {
+        const data = entries[i];
+        await axios
         .post(
           `${this.$root.apiURL}/contributions`, 
           {
@@ -336,6 +341,7 @@ export default {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
         })
         .catch(err => { this.$root.showSnackBar(err, 'error') })
+      }
     },
     onPackChange: function(selected, key) {
       if(key === this.all_packs) {

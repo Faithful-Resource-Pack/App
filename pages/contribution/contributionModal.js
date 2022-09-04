@@ -1,9 +1,12 @@
 /* global axios */
 
-const SEARCH_DELAY = 300
+const contributionForm = () => import("./contributionForm.js")
 
 export default {
   name: 'contribution-modal',
+  components: {
+    'contribution-form': contributionForm
+  },
   props: {
     contributors: {
       required: true,
@@ -18,7 +21,12 @@ export default {
       required: false,
       type: Function,
       default: function() {}
-    }
+    },
+    multiple: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
   },
   template: `
     <v-dialog
@@ -29,9 +37,9 @@ export default {
         <v-card-title class="headline" v-text="$root.lang().database.titles.contributions"></v-card-title>
         <v-card-text>
           <v-row>
-            <v-col class="flex-grow-0 flex-shrink-1">
+            <v-col class="flex-grow-0 flex-shrink-1" v-if="selectedFormIndex !== undefined">
               <v-date-picker
-                v-model="form.date"
+                v-model="forms[selectedFormIndex].date"
                 :locale="$root.langBCP47"
                 :max="(new Date()).toISOString().substr(0, 10)"
                 flat
@@ -39,85 +47,41 @@ export default {
                 show-adjacent-months
               ></v-date-picker>
             </v-col>
-            <v-col class="flex-grow-1 flex-shrink-0">
-              <h3>{{ $root.lang().database.subtitles.pack }}</h3>
-              <v-select
-                required
-                :items="form.packs"
-                v-model="form.pack"></v-select>
-              <h3>{{ $root.lang().database.labels.texture_id }}</h3>
-              <div class="d-flex align-center">
-                <v-text-field
-                  required
-                  type="number"
-                  class="mr-2"
-                  min="0"
-                  v-model="form.texture" />
-                <v-btn icon v-on:click="() => { form.texture = String(Number.parseInt(form.texture, 10) + 1) }">
-                  <v-icon>mdi-chevron-up</v-icon>
-                </v-btn>
-                <v-btn icon v-on:click="() => { form.texture = String(Math.max(Number.parseInt(form.texture - 1, 10), 0)) }">
-                  <v-icon>mdi-chevron-down</v-icon>
-                </v-btn>
-              </div>
-              <h3>{{ $root.lang().database.titles.contributors }}</h3>
-              <v-autocomplete
-                v-model="form.authors"
-                :items="contributorList"
-                :loading="contributors.length == 0 && !isSearching"
-                :search-input.sync="search"
-                item-text="username"
-                item-value="id"
-                :label="$root.lang().database.labels.one_contributor"
-                multiple
-                chips
-              >
-                <!-- SELECTED THINGY -->
-                <template v-slot:selection="data">
-                  <v-chip
-                    :key="data.item.id"
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    :disabled="data.disabled"
-                    close
-                    @click:close="remove(data.item.id)"
+            <v-col :class="['flex-grow-1 flex-shrink-0', {'px-0': multiple }]">
+              <template v-if="multiple">
+                <div>
+                  <v-expansion-panels
+                    v-model="panel"
+                    class="mb-2"
+                    :disabled="forms.length < 2"
                   >
-                    <v-avatar
-                      :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
-                      left
+                    <v-expansion-panel
+                      v-for="(form,form_index) in forms"
+                      :key="form.formId"
                     >
-                      <template v-if="data.item.uuid != undefined">
-                        <v-img eager
-                          :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
-                          :alt="(data.item.username || ('' + data.item.id)).slice(0, 1)"
-                        />
-                      </template>
-                      <template v-else>
-                        {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
-                      </template>
-                    </v-avatar>
-                    {{ data.item.username || data.item.id }}
-                  </v-chip>
-                </template>
-
-                <!-- LIST ITEM PART -->
-                <template v-slot:item="data">
-                  <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
-                    <v-list-item-content v-text="data.item"></v-list-item-content>
-                  </template>
-                  <template v-else>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
-                    </v-list-item-content>
-                    <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
-                      <template v-if="data.item.uuid">
-                        <v-img eager :src="'https://visage.surgeplay.com/head/48/' + data.item.uuid" />
-                      </template>
-                      <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
-                    </v-list-item-avatar>
-                  </template>
-                </template>
-              </v-autocomplete>
+                      <v-expansion-panel-header
+                        style="min-height: 24px"
+                        disable-icon-rotate
+                      >
+                        {{ panelLabels[form_index] }}
+                      
+                        <template v-slot:actions>
+                          <v-icon color="error" @click="() => removeForm(form_index)">
+                            mdi-delete
+                          </v-icon>
+                        </template>
+                      </v-expansion-panel-header>
+                      <v-expansion-panel-content>
+                        <contribution-form v-model="form" :contributors="contributors"></contribution-form>
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-expansion-panels>
+                  <v-btn block @click="addNewForm">{{ $root.lang('global.btn.add') }}</v-btn>
+                </div>
+              </template>
+              <template v-else>
+                <contribution-form v-model="forms[0]" :contributors="contributors"></contribution-form>
+              </template>
             </v-col>
           </v-row>
         </v-card-text>
@@ -141,32 +105,63 @@ export default {
       </v-card>
     </v-dialog>
   `,
+  computed: {
+    panelLabels: function() {
+      return this.multiple ? this.forms.map(f => `#${
+        f.texture
+      } | ${
+        f.pack
+      } | ${
+        moment(new Date(f.date)).format('ll')
+      }`) : ['']
+    },
+    selectedFormIndex: function() {
+      return this.multiple ? this.panel : 0
+    }
+  },
   data () {
     return {
       opened: false,
       closeOnSubmit: true,
-      isSearching: false,
-      form: {},
-      search: null,
-      loadedContributors: {},
-      searchTimeout: undefined,
-      previousSearches: []
-    }
-  },
-  computed: {
-    contributorList: function() {
-      return [ ...this.contributors, ...Object.values(this.loadedContributors)]
+      forms: [{}],
+      packs: undefined,
+      lastId: 0,
+      panel: 0,
     }
   },
   methods: {
+    addNewForm: function() {
+      // create new form
+      let form = this.defaultValue(this.packs)
+
+      // match last opened form
+      if(this.panel !== undefined) {
+        // make a copy
+        form = JSON.parse(JSON.stringify(this.forms[this.panel]))
+      }
+
+      // add form
+      this.forms.push(form)
+
+      // open last expansion panel
+      this.panel = this.forms.length - 1
+    },
     open: function(inputData = undefined, packs, closeOnSubmit = true) {
+      this.packs = packs
       this.opened = true
       if (inputData !== undefined) {
-        this.form = Object.assign({}, this.defaultValue(packs), inputData)
-        const da = new Date(this.form.date)
-        this.form.date = (new Date(da - (da).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
+        // set forms as array
+        this.forms = [Object.assign({}, this.defaultValue(packs), inputData)]
+
+        // override default date with given date
+        const da = new Date(this.forms[0].date)
+        this.forms[0].date = (new Date(da - (da).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
       } else {
-        this.form = this.defaultValue(packs)
+        // get one empty form
+        this.forms = [this.defaultValue(packs)]
+
+        // open first panel
+        this.panel = 0
       }
       this.closeOnSubmit = !!closeOnSubmit
     },
@@ -180,78 +175,36 @@ export default {
     closeOrAndSubmit: function() {
       this.opened = !this.closeOnSubmit
 
-      const res = Object.assign({}, this.form)
+      const data = this.forms.map(f => {
+        delete f.formId
+        return f
+      })
+
+      const res = Object.assign({}, this.multiple ? data : data[0])
       res.date = (new Date(res.date)).getTime()
       this.onSubmit(res)
     },
     defaultValue: function (packs) {
+      this.lastId++;
+
       return {
         date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
         packs: packs,
         pack: packs ? packs[0] : null,
         texture: 0,
-        authors: []
+        authors: [],
+        formId: this.lastId
       }
     },
-    remove (id) {
-      const index = this.form.authors.indexOf(id)
-      if (index >= 0) this.form.authors.splice(index, 1)
-    },
-    startSearch(val) {
-      val = val.trim()
+    removeForm: function(form_index) {
+      // set next panel opened
+      this.panel = (form_index+1) % this.forms.length
 
-      // limit search on client and server side
-      if(val.length < 3) return
-
-      // make search only if not searched before
-      let alreadySearched = false
-      let i = 0
-      while(i < this.previousSearches.length && !alreadySearched) {
-        alreadySearched = this.previousSearches[i].includes(val)
-        ++i
-      } 
-      if(alreadySearched) return
-
-      this.previousSearches.push(val)
-      this.isSearching = true
-
-      axios.get(`/contributions/users/${val}`)
-        .then(res => {
-          const results = res.data
-          console.log(results)
-          results.forEach(result => {
-            // in case some clever guy forgot its username or uuid or anything
-            Vue.set(this.loadedContributors, result.id, Object.merge({
-              username: '',
-              uuid: '',
-              type: [],
-              media: []
-            }, result))
-          })
-        })
-        .catch(err => {
-          console.error(err)
-        })
-        .finally(() => {
-          this.isSearching = false
-        })
+      this.forms.splice(form_index, 1)
+      this.$forceUpdate()
     }
   },
   created: function() {
     this.form = this.defaultValue()
   },
-  watch: {
-    search(val) {
-      if(!val) return
-
-      if(this.searchTimeout) {
-        clearTimeout(this.searchTimeout)
-      }
-
-      this.searchTimeout = setTimeout(() => {
-        this.searchTimeout = undefined
-        this.startSearch(val)
-      }, SEARCH_DELAY)
-    }
-  }
 }
