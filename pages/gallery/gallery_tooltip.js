@@ -39,7 +39,8 @@ export default {
             {{ texture.textureID + '&nbsp;&dash;&nbsp;' + texture.name }}
         </h1>
         <ul align="left" class="encased">
-          <li v-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
+          <li v-if="modded"><i class="v-icon notranslate mdi mdi-wrench" style="font-size: 14px; margin-right: 0.2rem"></i> Modded texture</li>
+          <li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
           <li v-else-if="last_contribution !== undefined">
             <p><i :class="icon"></i> {{ last_contribution_names }}</p>
             <p><i class="icon-time"></i> {{ timestampToDate(last_contribution.date) }}</p>
@@ -72,6 +73,11 @@ export default {
     },
     icon: function () {
       return 'icon-people' + (this.last_contribution.contributors.length === 1 ? '' : 's');
+    },
+    modded: function() {
+        let something_with_path = this.texture.url
+        return ['assets/forge', 'assets/fml', 'assets/fabric', 'assets/modmenu']
+            .reduce((_, cur) => cur || something_with_path.includes(cur), false)
     }
   },
   methods: {
