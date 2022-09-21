@@ -32,6 +32,7 @@ export default {
       yes: 'Yes',
       deny: 'Deny',
       approve: 'Approve',
+      archive: 'Archive',
       load_more: 'Load More'
     },
     tabs: {
@@ -196,7 +197,8 @@ export default {
       translation: 'Review Translations',
       pending: 'Pending Approval',
       denied: 'Denied',
-      approved: 'Approved'
+      approved: 'Approved',
+      archived: 'Archived',
     },
     deny_window: {
       label: 'Write a reason…',

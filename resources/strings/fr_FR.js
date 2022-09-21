@@ -34,6 +34,7 @@ export default {
       yes: 'Oui',
       deny: 'Refuser',
       approve: 'Approuver',
+      archive: 'Archiver',
       load_more: 'Charger plus'
     },
     tabs: {
@@ -198,7 +199,8 @@ export default {
       translation: 'Vérifier les traductions',
       pending: 'En attente de validation',
       denied: 'Refusé(s)',
-      approved: 'Accepté(s)'
+      approved: 'Accepté(s)',
+      archived: 'Archivé(s)',
     },
     deny_window: {
       label: 'Écrivez une raison…',

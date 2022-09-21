@@ -51,22 +51,26 @@ export default {
       colors: {
         pending: 'yellow',
         denied: 'red',
-        approved: 'teal'
+        approved: 'teal',
+        archived: 'grey'
       },
       addons: {
         pending: [],
         denied: [],
-        approved: []
+        approved: [],
+        archived: []
       },
       loading: {
         pending: true,
         denied: true,
-        approved: true
+        approved: true,
+        archived: true
       },
       contributors: [],
 
       showDenyPopup: false,
-      denyAddon: {}
+      denyAddon: {},
+      archive: false
     }
   },
   methods: {
@@ -91,9 +95,10 @@ export default {
     },
     closeDenyPopup: function (send = false, reason) {
       this.showDenyPopup = false
-      if (send) this.reviewAddon(this.denyAddon, 'denied', reason)
+      if (send) this.reviewAddon(this.denyAddon, this.archive ? 'archived' : 'denied', reason)
     },
-    openDenyPopup: function (addon) {
+    openDenyPopup: function (addon, archive=undefined) {
+      this.archive = !!archive
       this.showDenyPopup = true
       this.denyAddon = addon
     },
@@ -121,6 +126,7 @@ export default {
       this.getAddonsByStatus('pending')
       this.getAddonsByStatus('denied')
       this.getAddonsByStatus('approved')
+      this.getAddonsByStatus('archived')
     }
   },
   mounted() {

@@ -139,7 +139,7 @@ export default {
               <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
             </v-col>
           </v-row>
-          <v-row v-if="addonInPanel.approval.status === 'denied'">
+          <v-row v-if="addonInPanel.approval.status === 'denied' || addonInPanel.approval.status === 'archived'">
             <v-col style="padding-left: 16px">
               <v-list-item-title v-text="$root.lang().review.addon.labels.denied_by" class="uppercased"/>
               <p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
@@ -164,6 +164,14 @@ export default {
                 @click="openDenyPopup(addonInPanel)"
               >
                 {{ $root.lang().global.btn.deny }}
+              </v-btn>
+              <v-btn
+                text
+                color="gray"
+                :disabled="status == 'archived'"
+                @click="openDenyPopup(addonInPanel, 'archive')"
+              >
+                {{ $root.lang().global.btn.archive }}
               </v-btn>
               <!-- TODO: use the global modal edit -->
               <v-btn
