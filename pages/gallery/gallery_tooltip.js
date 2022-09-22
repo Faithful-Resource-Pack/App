@@ -77,7 +77,7 @@ export default {
     modded: function() {
         let something_with_path = this.texture.url
         return ['assets/forge', 'assets/fml', 'assets/fabric', 'assets/modmenu']
-            .reduce((_, cur) => cur || something_with_path.includes(cur), false)
+            .reduce((acc, cur) => acc || something_with_path.includes(cur), false)
     }
   },
   methods: {
