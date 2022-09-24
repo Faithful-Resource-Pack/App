@@ -27,8 +27,8 @@ export default {
         <template v-else>
             <div class="pb-2 d-flex align-center">
                 <div>
-                    <h2 class="h6" style="line-height: 24px">{{addonInPanel.name}}</h2>
-                    <div class="text--secondary subtitle-2 mt-1" style="line-height: 14px;">{{addonInPanel.options.tags.join(' | ')}}</div>
+                    <h2 class="h6" style="line-height: 24px">{{addonInPanel.name}} <span class="text--secondary font-weight-regular">{{ '#' + addonInPanel.id }}</span></h2>
+                    <div class="text--secondary subtitle-2 mt-1" style="line-height: 14px;">{{([...addonInPanel.options.tags]||[]).sort().join(' | ')}}</div>
                 </div>
                 <v-btn
                     id="edit-btn"
@@ -89,8 +89,8 @@ export default {
                     
                     <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
                     <div>
-                        <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }}
-                        <br>
+                        <!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->
+                        <!-- <br> -->
                         <v-icon small v-text="addonInPanel.options.optifine ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.optifine }}
                     </div>
                 </v-col>
@@ -107,6 +107,9 @@ export default {
     </v-card>
     <div v-if="addonInPanelLoading === false" id="review-actions" class="mt-2 rounded-lg pa-2 d-flex align-center">
         <div class="mr-auto">
+            <div v-if="addonInPanel.approval.status === 'approved'">
+                {{ $root.lang().review.addon.labels.approved_by + ' ' + getUsername(addonInPanel.approval.author) }}
+            </div>
             <div v-if="addonInPanel.approval.status === 'denied' || addonInPanel.approval.status === 'archived'">
                 <div>{{ $root.lang().review.addon.labels.denied_by + ' ' + getUsername(addonInPanel.approval.author) + ':' }}</div>
                 <div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
@@ -205,7 +208,7 @@ export default {
       this.update()
     },
     getUsername: function (id) {
-      if (id === null || id === undefined) return 'null/undefined'
+      if (id === null || id === undefined) return 'Herobrine'
       return this.contributors.filter(c => c.id === id)[0].username || 'Unknown User'
     },
     openDenyPopup: function(...args) {

@@ -19,7 +19,8 @@ export default {
     <v-col 
         v-for="(cat, cat_i) in categories"
         :key="cat.value"
-        cols="6"
+        cols="12"
+        md="6"
         :lg="12/(categories.length||1)"
     >
         <v-card

@@ -26,7 +26,22 @@ export default {
 
             const loaded = this.search_load();
             loaded.set(name, str_val);
-            let query_str = '?' + loaded.toString();
+
+            this._search_update(loaded);
+        },
+        search_delete: function(name) {
+            const loaded = this.search_load();
+            
+            loaded.delete(name);
+
+            this._search_update(loaded);
+        },
+        /**
+         * update hash search
+         * @param {URLSearchParams} search_params updated params
+         */
+        _search_update: function(search_params) {
+            let query_str = '?' + search_params.toString();
 
             let hash = location.hash;
             if(hash.indexOf('?') !== -1) hash = hash.substring(0, hash.indexOf('?'));

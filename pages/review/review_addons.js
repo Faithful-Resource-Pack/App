@@ -36,9 +36,11 @@ export default {
         :empty="empty"
     />
 
-    <div id="review-content" class="mt-1 mb-2">
-        <div v-if="selectedItems.length === 0" id="empty" class="rounded-lg d-flex text-center align-center justify-center">
-<div><pre>
+    <div id="review-content" :class="['mt-1 mb-2', {desktop: $vuetify.breakpoint.mdAndUp}]">
+        <div v-if="selectedItems.length === 0" id="empty">
+            <div class="rounded-lg d-flex text-center align-center justify-center">
+                <div>
+                    <pre v-if="$vuetify.breakpoint.mdAndUp">
     d8888   .d8888b.      d8888  
    d8P888  d88P  Y88b    d8P888  
   d8P 888  888    888   d8P 888  
@@ -47,46 +49,43 @@ d88   888  888    888 d88   888
 8888888888 888    888 8888888888 
       888  Y88b  d88P       888  
       888   "Y8888P"        888  
-</pre>
-            <p class="my-2">{{ empty }}</p>
+</pre><p v-else class="text-h2 my-2">404</p><p class="my-2 px-2">{{ empty }}</p>
+                </div>
             </div>
         </div>
         <template v-if="selectedItems && selectedItems.length > 0">
-            <div id="review-list">
-                <ReviewList 
-                    :items="selectedItems"
+            <template v-if="$vuetify.breakpoint.mdAndUp">
+                <div id="review-list">
+                    <ReviewList
+                        :items="selectedItems"
+                        v-model="selectedAddonId"
+                        :activeColor="pageColor"
+                        :empty="empty"
+                    />
+                </div><div id="review-previewer">
+                    <ReviewPreview
+                        :addonId="selectedAddonId"
+                        color="#9575cd"
+                    />
+                </div>
+            </template>
+            <template v-else>
+                <v-expansion-panels v-if="addons[status].length > 0" style="margin-top: 5px;">
+                    <exp-panel
                     v-model="selectedAddonId"
-                    :activeColor="pageColor"
-                    :empty="empty"
-                />
-            </div><div id="review-previewer">
-                <ReviewPreview
-                    :addonId="selectedAddonId"
-                    color="#9575cd"
-                />
-            </div>
+                    :contributors="contributors"
+                    :color="pageColor"
+                    :addons="addons[status]"
+                    :reviewAddon="reviewAddon"
+                    :openDenyPopup="openDenyPopup"
+                    :update="update"
+                    :status="status"
+                    />
+                </v-expansion-panels>
+                <template v-else-if="loading[status] === true"><v-container>{{ $root.lang().global.loading }}</v-container></template>
+                <template v-else><v-container>{{ $root.lang().review.labels[status] }}</v-container></template>
+            </template>
         </template>
-    </div>
-
-    <div
-      v-for="status in Object.keys(addons)"
-      :key="status"
-    >
-      <v-badge inline dot left :color="colors[status]"><h5 class="text-h5" style="margin-left: 5px;">{{ $root.lang().review.titles[status] }}</h5></v-badge>
-      <v-expansion-panels v-if="addons[status].length > 0" style="margin-top: 5px;">
-        <exp-panel
-          :contributors="contributors"
-          :color="pageColor"
-          :addons="addons[status]"
-          :reviewAddon="reviewAddon"
-          :openDenyPopup="openDenyPopup"
-          :update="update"
-          :status="status"
-        />
-      </v-expansion-panels>
-      <template v-else-if="loading[status] === true"><v-container>{{ $root.lang().global.loading }}</v-container></template>
-      <template v-else><v-container>{{ $root.lang().review.labels[status] }}</v-container></template>
-      <br>
     </div>
   </v-container>
   `,
@@ -130,7 +129,9 @@ d88   888  888    888 d88   888
     },
     selectedAddonId: function(n) {
         if(n !== undefined)
-        this.search_set('id', n)
+            this.search_set('id', n)
+        else
+            this.search_delete('id')
     }
   },
   computed: {
