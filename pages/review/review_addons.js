@@ -2,15 +2,23 @@
 
 const ExpPanel = () => import('./expansion_panel.js')
 const DenyPopup = () => import('./deny_popup.js')
+const ReviewCategories = () => import('./review_categories.js')
+const ReviewList = () => import('./review_list.js')
+const ReviewPreview = () => import('./review_previewer.js')
+import searchMixin from '../../mixins/searchMixin.js'
 
 export default {
   name: 'review-addons-page',
   components: {
     ExpPanel,
-    DenyPopup
+    DenyPopup,
+    ReviewCategories,
+    ReviewList,
+    ReviewPreview
   },
+  mixins: [searchMixin],
   template: `
-  <v-container>
+  <v-container id="review-addons">
     <div class="styles" v-html="pageStyles"></div>
     <div class="text-h4 py-4">
       {{ $root.lang().review.titles.addons }}
@@ -20,6 +28,45 @@ export default {
       :reasonPopup="showDenyPopup"
       :closePopup="closeDenyPopup"
     />
+
+    <ReviewCategories
+        :categories="categories"
+        v-model="status"
+        :activeColor="pageColor"
+        :empty="empty"
+    />
+
+    <div id="review-content" class="mt-1 mb-2">
+        <div v-if="selectedItems.length === 0" id="empty" class="rounded-lg d-flex text-center align-center justify-center">
+<div><pre>
+    d8888   .d8888b.      d8888  
+   d8P888  d88P  Y88b    d8P888  
+  d8P 888  888    888   d8P 888  
+ d8P  888  888    888  d8P  888  
+d88   888  888    888 d88   888  
+8888888888 888    888 8888888888 
+      888  Y88b  d88P       888  
+      888   "Y8888P"        888  
+</pre>
+            <p class="my-2">{{ empty }}</p>
+            </div>
+        </div>
+        <template v-if="selectedItems && selectedItems.length > 0">
+            <div id="review-list">
+                <ReviewList 
+                    :items="selectedItems"
+                    v-model="selectedAddonId"
+                    :activeColor="pageColor"
+                    :empty="empty"
+                />
+            </div><div id="review-previewer">
+                <ReviewPreview
+                    :addonId="selectedAddonId"
+                    color="#9575cd"
+                />
+            </div>
+        </template>
+    </div>
 
     <div
       v-for="status in Object.keys(addons)"
@@ -70,7 +117,59 @@ export default {
 
       showDenyPopup: false,
       denyAddon: {},
-      archive: false
+      archive: false,
+      status: 'pending',
+      selectedAddonId: undefined,
+    }
+  },
+  watch: {
+    status: function(n) {
+        // select first if not empty
+        this.search_set('status', n)
+        this.selectedAddonId = this.addons[n].length > 0 ? this.addons[n][0].id : undefined
+    },
+    selectedAddonId: function(n) {
+        if(n !== undefined)
+        this.search_set('id', n)
+    }
+  },
+  computed: {
+    stats: function() {
+        return Object.values(this.addons)
+            .map(v => v.length)
+    },
+    categories: function() {
+        return Object.keys(this.addons).map((s,i) => {
+            return {
+                label: this.$root.lang(`review.titles.${s}`),
+                color: this.colors[s],
+                value: s,
+                count: this.stats[i] !== undefined ? String(this.stats[i]) : ''
+            }
+        })
+    },
+    items: function() {
+        return Object.entries(this.addons).map(([state, list]) => {
+            return {
+                state,
+                items: list.map(addon => {
+                    return {
+                        key: String(addon.id),
+                        primary: addon.name,
+                        secondary: addon.options.tags.join(' | ')
+                    }
+                })
+            }
+        }).reduce((acc, cur) => {
+            acc[cur.state] = cur.items
+            return acc
+        }, {})
+    },
+    selectedItems: function() {
+        return this.items[this.status]
+    },
+    empty: function() {
+        return this.$root.lang(`review.labels.${this.status}`)
     }
   },
   methods: {
@@ -86,6 +185,7 @@ export default {
         .put(`${this.$root.apiURL}/addons/${addon.id}/review`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.selectedAddonId = undefined
           this.update()
         })
         .catch(err => {
@@ -127,10 +227,27 @@ export default {
       this.getAddonsByStatus('denied')
       this.getAddonsByStatus('approved')
       this.getAddonsByStatus('archived')
+    },
+    search_update: function() {
+        const params = this.search_load()
+        this.status = params.get('status') || this.status;
+        this.$nextTick(() => {
+            this.selectedAddonId = params.get('id') || this.selectedAddonId;
+        })
     }
+  },
+  created: function() {
+    this.search_update();
+    window.addEventListener('hashchange', () => {
+        this.search_update();
+    }, false);
   },
   mounted() {
     this.update()
     window.updatePageStyles(this)
+
+    this.$root.$on('openDenyPopup', (args) => {
+        this.openDenyPopup(...args)
+    })
   }
 }

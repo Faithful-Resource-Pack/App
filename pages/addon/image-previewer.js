@@ -11,7 +11,7 @@ export default {
     <div class="scroller-content">
       <v-card class="pa-0 mr-2" style="display: inline-block;" v-for="(item, index) in sources" :key="index">
         <v-img
-          class="rounded"
+          class="rounded image-fullscreen-thumb"
           :src="item"
           height="150"
           :width="150*16/9"
@@ -22,7 +22,7 @@ export default {
         <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
           <v-icon small class="ma-1" @click.stop="(e) => onFullscreen(item, index, e)">
             mdi-fullscreen
-          </v-icon><v-icon small class="ma-1" @click.stop="(e) => onDelete(item, index, e)">
+          </v-icon><v-icon v-if="deletable" small class="ma-1" @click.stop="(e) => onDelete(item, index, e)">
             mdi-delete
           </v-icon>
         </v-card>
@@ -46,6 +46,11 @@ export default {
       type: Array,
       default: undefined
     },
+    deletable: {
+        required: false,
+        type: Boolean,
+        default: true
+    }
   },
   data: function() {
     return {
