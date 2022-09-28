@@ -282,7 +282,8 @@ d88   888  888    888 d88   888
       this.getAddonsByStatus('approved'),
       this.getAddonsByStatus('archived')])
       .then(() => {
-        this.selectedAddonId = (this.selectedItems[0]||{}).key || this.selectedAddonId;
+        if(!this.selectedAddonId)
+            this.selectedAddonId = (this.selectedItems[0]||{}).key || this.selectedAddonId;
       })
       .catch(err => {
         this.$root.showSnackBar(err, 'error')
