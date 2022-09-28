@@ -19,13 +19,17 @@ export default {
     },
     template: `
 <div>
-    <div
-        v-if="addonId === undefined"
-        class="rounded-xl d-flex align-center justify-center"
-        :style="{border: '4px solid ' + color}"
-    >
-        <h2 class="h3">PREVIEW HERE</h2>
-    </div>
-    <ReviewPreview v-show="addonId !== undefined" :addonId="addonId" />
+    <template v-if="addonId === undefined">
+        <div
+            id="preview-here"
+            class="rounded-xl d-flex align-center justify-center"
+            :style="{border: '4px solid ' + color}"
+        >
+            <h2 class="h3">PREVIEW HERE</h2>
+        </div>
+    </template>
+    <template v-else>
+        <ReviewPreview :addonId="addonId" />
+    </template>
 </div>`
 }

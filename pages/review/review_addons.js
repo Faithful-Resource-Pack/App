@@ -5,7 +5,60 @@ const DenyPopup = () => import('./deny_popup.js')
 const ReviewCategories = () => import('./review_categories.js')
 const ReviewList = () => import('./review_list.js')
 const ReviewPreview = () => import('./review_previewer.js')
-import searchMixin from '../../mixins/searchMixin.js'
+
+const searchMixin  = {
+    methods: {
+        /**
+         * Loads all search params
+         * @returns {URLSearchParams}
+         */
+        search_load: function() {
+            const query_str = location.hash.split('?')[1] || '';
+            return new URLSearchParams(query_str);
+        },
+        /**
+         * Gets a specific param
+         * @param {string} name Search param name
+         * @returns {String|null} param value
+         */
+        search_get: function(name) {
+            return this.load().get(name)
+        },
+        /**
+         * Updates search param with new 
+         * @param {string} name Search param name
+         * @param {any} value given value
+         */
+        search_set: function(name, value) {
+            const str_val = String(value);
+
+            const loaded = this.search_load();
+            loaded.set(name, str_val);
+
+            this._search_update(loaded);
+        },
+        search_delete: function(name) {
+            const loaded = this.search_load();
+            
+            loaded.delete(name);
+
+            this._search_update(loaded);
+        },
+        /**
+         * update hash search
+         * @param {URLSearchParams} search_params updated params
+         */
+        _search_update: function(search_params) {
+            let query_str = '?' + search_params.toString();
+
+            let hash = location.hash;
+            if(hash.indexOf('?') !== -1) hash = hash.substring(0, hash.indexOf('?'));
+            hash += query_str;
+
+            location.hash = hash;
+        }
+    }
+}
 
 export default {
   name: 'review-addons-page',
@@ -204,7 +257,7 @@ d88   888  888    888 d88   888
       this.denyAddon = addon
     },
     getAddonsByStatus(status) {
-      axios.get(`${this.$root.apiURL}/addons/${status}`, this.$root.apiOptions).then(res => {
+      return axios.get(`${this.$root.apiURL}/addons/${status}`, this.$root.apiOptions).then(res => {
         this.addons[status] = res.data
         this.addons[status].forEach(addon => (addon.options.tags = addon.options.tags.sort()))
         this.loading[status] = false
@@ -223,13 +276,19 @@ d88   888  888    888 d88   888
         })
     },
     update: function () {
-      this.getContributors()
-      this.getAddonsByStatus('pending')
-      this.getAddonsByStatus('denied')
-      this.getAddonsByStatus('approved')
-      this.getAddonsByStatus('archived')
+      Promise.all([this.getContributors(),
+      this.getAddonsByStatus('pending'),
+      this.getAddonsByStatus('denied'),
+      this.getAddonsByStatus('approved'),
+      this.getAddonsByStatus('archived')])
+      .then(() => {
+        this.selectedAddonId = (this.selectedItems[0]||{}).key || this.selectedAddonId;
+      })
+      .catch(err => {
+        this.$root.showSnackBar(err, 'error')
+      })
     },
-    search_update: function() {
+    search_update: function(updateId = false) {
         const params = this.search_load()
         this.status = params.get('status') || this.status;
         this.$nextTick(() => {
