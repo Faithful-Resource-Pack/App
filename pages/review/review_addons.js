@@ -228,6 +228,7 @@ d88   888  888    888 d88   888
   },
   methods: {
     reviewAddon: function (addon, status, reason = null) {
+      const id = typeof(addon) === 'object' ? addon.id : addon;
       if (!this.$root.isUserLogged) return
 
       const data = {
@@ -236,7 +237,7 @@ d88   888  888    888 d88   888
       }
 
       axios
-        .put(`${this.$root.apiURL}/addons/${addon.id}/review`, data, this.$root.apiOptions)
+        .put(`${this.$root.apiURL}/addons/${id}/review`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.selectedAddonId = undefined
@@ -309,6 +310,10 @@ d88   888  888    888 d88   888
 
     this.$root.$on('openDenyPopup', (args) => {
         this.openDenyPopup(...args)
+    })
+
+    this.$root.$on('reviewAddon', (args) => {
+        this.reviewAddon(...args)
     })
   }
 }

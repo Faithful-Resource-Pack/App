@@ -119,7 +119,7 @@ export default {
             text
             color="teal"
             :disabled="status == 'approved'"
-            @click="reviewAddon(addon, 'approved')"
+            @click="reviewAddon(addonId, 'approved')"
         >
         {{ $root.lang().global.btn.approve }}
         </v-btn><v-btn
@@ -213,6 +213,9 @@ export default {
     },
     openDenyPopup: function(...args) {
         this.$root.$emit('openDenyPopup', args)
+    },
+    reviewAddon: function(...args) {
+      this.$root.$emit('reviewAddon', args)
     }
   },
   created: function() {
