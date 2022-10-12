@@ -127,7 +127,7 @@ export default {
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
           this.disableDialog(true)
         })
 
@@ -135,7 +135,7 @@ export default {
         this.disableDialog(true)
       }).catch(err => {
         console.error(err)
-        this.$root.showSnackBar(`${err.message} : ${err.response.data.error}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       })
 
     }

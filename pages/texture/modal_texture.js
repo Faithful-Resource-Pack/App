@@ -162,7 +162,7 @@ export default {
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     },
     getUses: function (textureID) {

@@ -247,6 +247,7 @@ export default {
     },
     general: {
       loading_addon: 'Loading addon',
+      rules: 'Make sure the add-on respects the add-on rules as described in the documentation',
       title: 'General',
       name: {
         label: 'Add-on name',

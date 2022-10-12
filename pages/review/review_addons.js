@@ -245,7 +245,7 @@ d88   888  888    888 d88   888
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     },
     closeDenyPopup: function (send = false, reason) {
@@ -273,7 +273,7 @@ d88   888  888    888 d88   888
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     },
     update: function () {

@@ -79,8 +79,7 @@ export default {
           this.buildGraph()
         })
         .catch(function (error) {
-          console.error(error)
-          this.$root.showSnackBar(String(error), "error")
+          this.$root.showSnackBar(err, "error")
         })
     },
 

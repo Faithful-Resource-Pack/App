@@ -84,6 +84,9 @@ export default {
         // if we have id then we at least successfully created the file
         if(id)
           axios.delete(this.$root.apiURL + '/addons/' + id, this.$root.apiOptions)
+          .catch(err => {
+            this.$root.showSnackBar(err, 'error')
+          })
       })
     },
     handleHeader: function(file, remove=false) {
