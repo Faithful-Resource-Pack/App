@@ -57,6 +57,12 @@ export default {
       <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
 
         <div class="container">
+          <v-alert type="warning" class="pb-4">
+          <a href="https://docs.faithfulpack.net/pages/addons/rules"
+             style="color: inherit; text-decoration: underline;" target="_blank"
+          >{{ $root.lang('addons.general.rules') }}</a> <a
+            href="https://docs.faithfulpack.net/pages/addons/rules"><v-icon small>mdi-open-in-new</v-icon></a>
+          </v-alert>
           <div class="row">
             <!-- LEFT PART : INPUT -->
             <div class="col pb-0">
