@@ -57,7 +57,7 @@ export default {
             const form = new FormData()
             form.set("file", screen, screen.name)
   
-            successful = await axios.post(this.$root.apiURL + '/addons/' + this.id + '/screenshots', form, this.$root.apiOptions)
+            successful = await axios.post(this.$root.apiURL + '/addons/' + id + '/screenshots', form, this.$root.apiOptions)
               .then(() => true)
               .catch((error) => {
                 err = error
