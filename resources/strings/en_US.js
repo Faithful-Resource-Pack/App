@@ -251,7 +251,7 @@ export default {
       title: 'General',
       name: {
         label: 'Add-on name',
-        hint: 'A short name is preferred.',
+        hint: 'A shorter name is preferred.',
         rules: {
           name_required: 'A name is required.',
           name_too_big: 'Add-on name must be less than %s characters.',
