@@ -289,7 +289,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Click to select additionnal images',
+          drop: 'Click to select additional images',
           normal: 'Additional image(s)',
           replace: 'Replace additional image(s)'
         },
