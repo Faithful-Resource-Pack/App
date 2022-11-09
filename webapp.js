@@ -619,9 +619,9 @@ axios.get('./resources/settings.json')
 
           const data = JSON.parse(JSON.stringify(this.user))
 
-          axios.post('/profile/roles', data)
+          axios.get(this.$root.apiURL + '/users/profile', this.$root.apiOptions)
             .then((res) => {
-              this.user.roles = res.data
+              this.user.roles = res.data.roles
             })
             .catch(err => {
               console.error(err)

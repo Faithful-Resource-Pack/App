@@ -41,7 +41,7 @@ export default {
                       <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
                       <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
                     </v-list-item>
-                    <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
+                    <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="use.edition"></v-list-item-subtitle>
                   </v-list-item-title>
                 </v-list-item-content>
 
@@ -166,11 +166,7 @@ export default {
         })
     },
     getUses: function (textureID) {
-      axios.get('/uses/search', {
-        params: {
-          textureID: textureID
-        }
-      })
+      axios.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
         .then((res) => {
           const temp = res.data
           this.formData.uses = {}

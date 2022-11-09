@@ -30,7 +30,7 @@ export default {
                 :key="index"
               >
                 <v-list-item-title>
-                  {{ path.path }}
+                  {{ path.name }}
                   <v-list-item-subtitle v-text="'#' + path.id + ' — ' + path.versions.join(', ')"></v-list-item-subtitle>
                 </v-list-item-title>
               </v-list-item>
@@ -94,11 +94,7 @@ export default {
   },
   methods: {
     getPaths: function (useID) {
-      axios.get('/paths/search', {
-        params: {
-          useID: useID
-        }
-      })
+      axios.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
         .then((res) => {
           const temp = res.data
           this.data.paths = {}

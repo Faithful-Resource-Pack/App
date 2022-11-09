@@ -146,7 +146,7 @@ const verifyAuth = (token, roles = []) => {
 
       let i = 0
       while (roles.length >= i) {
-        if (user.type.includes(roles[i])) return Promise.resolve(user[ID_FIELD])
+        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user[ID_FIELD])
         i++
       }
 
@@ -459,22 +459,6 @@ app.post('/uses/remove', (req, res) => {
       return usesBackend.remove(req.body.id, req.body.deletePaths)
     })
     .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/uses/search/', function (req, res) {
-  const params = req.query
-  const textureID = params.textureID
-
-  usesBackend.search(textureID)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/uses/all/', function (req, res) {
-  usesBackend.uses()
-    .then(getSuccess(res))
     .catch(errorHandler(res))
 })
 

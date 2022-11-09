@@ -15,7 +15,7 @@
         "--experimental-modules",
         "--trace-warnings"
       ],
-      "program": "${workspaceFolder}\\app.js"
+      "program": "${workspaceFolder}\\main.js"
     }
   ]
 }

@@ -263,7 +263,11 @@ d88   888  888    888 d88   888
         this.addons[status].forEach(addon => (addon.options.tags = addon.options.tags.sort()))
         this.loading[status] = false
         this.$forceUpdate()
-      }) // todo: add API verification for 404 errors
+      })
+	  .catch(err => {
+		console.error(err)
+		this.$root.showSnackBar(err, 'error')
+	  })
     },
     getContributors: function () {
       axios
