@@ -23,6 +23,7 @@ export default {
       <v-card-text>
         <v-form ref="form">
           <v-text-field :color="color"v-model="subFormData.textureUseName" :label="$root.lang().database.labels.use_name"></v-text-field>
+          <v-text-field :color="color"v-model="subFormData.assets" :label="$root.lang('database.labels.assets')"></v-text-field>
           <v-text-field :color="color" v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
           <v-text-field :color="color" v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
           <v-select :color="color" :item-color="color" required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
@@ -116,6 +117,7 @@ export default {
     return {
       subFormData: {
         editions: [],
+        assets: '',
         id: '',
         textureID: '',
         textureUseName: '',
@@ -219,10 +221,11 @@ export default {
     subDialog: function (n, o) {
       Vue.nextTick(() => {
         if (!this.add) {
-          this.subFormData.editions = this.data.editions
+          this.subFormData.editions = [this.data.edition]
           this.subFormData.id = this.data.id
-          this.subFormData.textureUseName = this.data.textureUseName
-          this.subFormData.textureID = this.data.textureID
+          this.subFormData.textureUseName = this.data.name
+          this.subFormData.assets = this.data.assets
+          this.subFormData.textureID = this.data.texture
           this.getPaths(this.data.id)
         } else {
           this.$refs.form.reset()

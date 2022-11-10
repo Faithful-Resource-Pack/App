@@ -172,6 +172,7 @@ export default {
       texture_uses: 'Texture use(s)',
       use_name: 'Use name',
       use_id: 'Use ID',
+      assets: 'Assets folder',
       use_edition: 'Use edition',
       path: 'Path',
       path_id: 'Path ID',

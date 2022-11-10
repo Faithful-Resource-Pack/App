@@ -173,6 +173,7 @@ export default {
       texture_id: 'ID de la texture',
       texture_uses: 'Utilisation(s) de la texture',
       use_name: 'Nom de l\'utilisation',
+      assets: 'Dossier d\'asset',
       use_id: 'ID de l\'utilisation',
       use_edition: 'Edition de l\'utilisation',
       path: 'Chemin',
