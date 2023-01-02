@@ -1,4 +1,4 @@
-<img src="https://database.faithfulpack.net/images/branding/logos/transparent/256/plain_logo.png" alt="Faithful Logo" align="right">
+<img src="https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/logos/transparent/256/plain_logo.png" alt="Faithful Logo" align="right">
 <div align="center">
   <h1>Faithful Webapp</h1>
   <h3>The official Web Application for the Faithful Website</h3>
