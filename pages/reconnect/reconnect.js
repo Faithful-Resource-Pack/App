@@ -82,7 +82,12 @@ export default {
       })
       .catch(err => {
         console.error(err)
-        this.$root.showSnackBar(`${err}`, 'error')
+        this.$root.showSnackBar(err, 'error')
+        
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
+        
+        this.$root.logout()
       })
   }
 }

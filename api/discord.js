@@ -16,8 +16,12 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/refresh', (req, res) => {
+  // ? can bas cauded by a corrupted localStorage with no refresh token
+  // ? thus sending empty json
   if (!req.body.refresh_token) {
-    res.status(400).send('No refresh token given')
+    res.status(400).json({
+      message: 'No refresh token provided'
+    })
     return
   }
 

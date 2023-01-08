@@ -543,6 +543,8 @@ export default {
     reconnecting: 'Reconnecting...',
     refreshing_discord_token: 'Refreshing Discord token...',
     dummy_step: 'Downloading RAM...',
-    updating_profile_informations: 'Updating profile informations...'
+    updating_profile_informations: 'Updating profile informations...',
+    failed_to_reconnect: 'Failed to reconnect',
+    loggging_out: 'Logging out...',
   }
 }
