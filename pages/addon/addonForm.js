@@ -151,6 +151,16 @@ export default {
           :hint="$root.lang().addons.general.description.hint"
         />
 
+        <!-- Embed description -->
+        <v-text-field
+          clearable
+          v-model="submittedForm.embed_description"
+          :label="$root.lang().addons.general.embed_description.label"
+          :hint="$root.lang().addons.general.embed_description.hint"
+          :counter="form.embed_description.counter.max"
+          persistent-hint
+        />
+
         <!-- Addon description preview -->
         <v-container
           id="addon-description-preview"
@@ -279,7 +289,7 @@ export default {
           <v-btn v-if="$root.isAdmin" :disabled="!validForm" @click="() => onSubmit(true)" color="primary">
             {{ $root.lang('global.btn.submit_and_approve') }}
           </v-btn>
-          <v-btn :disabled="!validForm" @click="onSubmit" color="primary">
+          <v-btn :disabled="!validForm" @click="() => onSubmit(false)" color="primary">
             {{ $root.lang().global.btn.submit }}
           </v-btn>
         </div>
@@ -319,6 +329,14 @@ export default {
           counter: {
             min: 32,
             max: 4096
+          }
+        },
+        embed_description: {
+          rules: [
+            desc => (desc && desc.length > this.form.embed_description.counter.max) || this.$root.lang().addons.general.embed_description.rules.too_big.replace('%s', this.form.embed_description.counter.max),
+          ],
+          counter: {
+            max: 160
           }
         },
         name: {

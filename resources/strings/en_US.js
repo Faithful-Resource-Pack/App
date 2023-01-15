@@ -269,6 +269,19 @@ export default {
           description_too_small: 'Description must be at least %s characters long.'
         }
       },
+      embed_description: {
+        label: 'Embed description',
+        hint: 'Description seen when sharing the add-on on social medias',
+        rules: {
+          too_big: 'Embed description must be less than %s characters.',
+        },
+      },
+      reason: {
+        title: 'Update reason',
+        text: 'Please tell us what you updated to ease add-on review',
+        required: 'Update reason is required',
+        bounds: 'Update reason muse be between %s and %s'
+      },
       authors: {
         label: 'Select authors for the add-on',
         hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list, contact an Administrator/Developer"

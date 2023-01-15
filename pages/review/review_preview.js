@@ -103,40 +103,49 @@ export default {
 
             <v-list-item-title v-text="$root.lang().review.addon.titles.description" class="uppercased py-2"/>
             <v-container class="markdown" :style="{ 'background-color': 'rgba(0,0,0, ' + String($root.isDark ? 0.2 : 0.05) + ')' }" v-html="$root.compiledMarkdown(addonInPanel.description)" />
+
         </template>
     </v-card>
-    <div v-if="addonInPanelLoading === false" id="review-actions" class="mt-2 rounded-lg pa-2 d-flex align-center">
-        <div class="mr-auto">
-            <div v-if="addonInPanel.approval.status === 'approved'">
-                {{ $root.lang().review.addon.labels.approved_by + ' ' + getUsername(addonInPanel.approval.author) }}
-            </div>
-            <div v-if="addonInPanel.approval.status === 'denied' || addonInPanel.approval.status === 'archived'">
-                <div>{{ $root.lang().review.addon.labels.denied_by + ' ' + getUsername(addonInPanel.approval.author) + ':' }}</div>
-                <div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
-            </div>
+    <div v-if="addonInPanel.approval.status === 'pending'" class="mt-2 rounded-lg pa-2">
+        <v-list-item-title v-text="$root.lang().addons.general.reason.title" class="uppercased pb-1"/>
+        <div>
+            {{ addonInPanel.approval.reason }}
         </div>
-        <v-btn
-            text
-            color="teal"
-            :disabled="status == 'approved'"
-            @click="reviewAddon(addonId, 'approved')"
-        >
-        {{ $root.lang().global.btn.approve }}
-        </v-btn><v-btn
-            text
-            color="red"
-            :disabled="status == 'denied'"
-            @click="openDenyPopup(addonInPanel)"
-        >
-        {{ $root.lang().global.btn.deny }}
-        </v-btn><v-btn
-            text
-            color="gray"
-            :disabled="status == 'archived'"
-            @click="openDenyPopup(addonInPanel, 'archive')"
-        >
-        {{ $root.lang().global.btn.archive }}
-        </v-btn>
+    </div>
+    <div v-if="addonInPanelLoading === false" id="review-actions" class="mt-2 rounded-lg pa-2">
+        <div class="d-flex align-center">
+            <div class="mr-auto">
+                <div v-if="addonInPanel.approval.status === 'approved'">
+                    {{ $root.lang().review.addon.labels.approved_by + ' ' + getUsername(addonInPanel.approval.author) }}
+                </div>
+                <div v-if="addonInPanel.approval.status === 'denied' || addonInPanel.approval.status === 'archived'">
+                    <div>{{ $root.lang().review.addon.labels.denied_by + ' ' + getUsername(addonInPanel.approval.author) + ':' }}</div>
+                    <div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
+                </div>
+            </div>
+            <v-btn
+                text
+                color="teal"
+                :disabled="status == 'approved'"
+                @click="reviewAddon(addonId, 'approved')"
+            >
+            {{ $root.lang().global.btn.approve }}
+            </v-btn><v-btn
+                text
+                color="red"
+                :disabled="status == 'denied'"
+                @click="openDenyPopup(addonInPanel)"
+            >
+            {{ $root.lang().global.btn.deny }}
+            </v-btn><v-btn
+                text
+                color="gray"
+                :disabled="status == 'archived'"
+                @click="openDenyPopup(addonInPanel, 'archive')"
+            >
+            {{ $root.lang().global.btn.archive }}
+            </v-btn>
+        </div>
     </div>
 </div>`,
   data() {
