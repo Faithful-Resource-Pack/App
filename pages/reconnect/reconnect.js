@@ -52,10 +52,10 @@ export default {
       })
       .then(json => {
         console.log(json)
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
 
         this.$root.tokenCallback(json, auth)
-        
+
         return fetch('https://discord.com/api/users/@me', {
             headers: {
               authorization: `Bearer ${json.access_token}`
@@ -83,10 +83,10 @@ export default {
       .catch(err => {
         console.error(err)
         this.$root.showSnackBar(err, 'error')
-        
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
-        
+
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
+
         this.$root.logout()
       })
   }
