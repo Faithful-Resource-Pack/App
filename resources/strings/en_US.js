@@ -122,7 +122,7 @@ export default {
       change_use: 'Edit use',
       change_texture: 'Edit texture',
       change_contributor: 'Edit contributor',
-      change_mc_version: 'Modify a Minecraft Version',
+      change_mc_version: 'Modify a Minecraft version',
       confirm_deletion: 'Confirm deletion'
     },
     subtitles: {
@@ -139,7 +139,7 @@ export default {
     },
     labels: {
       anonymous: 'Anonymous',
-      anonymous_explain: 'If checked, the user\'s name will be displayed as "Anonymous" and their skin won\'t show up. Can only be changed by administrators!',
+      anonymous_explain: 'If checked, the user\'s name will be displayed as "Anonymous" and their skin won\'t show up. Can only be changed by managers!',
       mcmeta: 'Animated texture',
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
@@ -154,7 +154,7 @@ export default {
       add_texture: 'Add textures',
       add_mc_version: 'Add new Minecraft Version',
       ask_deletion: 'Do you want to delete %s (%d)?',
-      contributors_results: 'Users results',
+      contributors_results: 'User results',
       contributor_type: 'User roles',
       discord_id: 'Discord ID',
       edit_mc_version: 'Modify a Minecraft Version',
@@ -209,7 +209,7 @@ export default {
       pending: 'There are currently no pending add-ons!',
       denied: 'There are currently no denied add-ons!',
       archived: 'There are currently no archived add-ons!',
-      load_approved: 'Load approved Add-ons'
+      load_approved: 'Load approved add-ons'
     },
     addon: {
       titles: {
@@ -225,7 +225,7 @@ export default {
         approved_by: 'Approved by',
         denied_by: 'Denied by',
         reason: 'Reason',
-        old_addon: 'Old Add-on, no data present for it.'
+        old_addon: 'Old add-on, no data present for it.'
       }
     },
     translations: {
@@ -234,8 +234,8 @@ export default {
   },
   addons: {
     titles: {
-      submit: 'Submit a new Add-on',
-      edit: 'Edit addon',
+      submit: 'Submit a new add-on',
+      edit: 'Edit add-on',
       submissions: 'Submissions',
       details: 'Details'
     },
@@ -247,7 +247,7 @@ export default {
       }
     },
     general: {
-      loading_addon: 'Loading addon',
+      loading_addon: 'Loading add-on',
       rules: 'Make sure to read the add-on rules before submitting',
       title: 'General',
       name: {
@@ -284,7 +284,7 @@ export default {
       },
       authors: {
         label: 'Select authors for the add-on',
-        hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list, contact an Administrator/Developer"
+        hint: "Any author can modify the add-on once it is submitted! | If you can't find anybody in the list, contact a Manager or Developer"
       }
     },
     images: {
@@ -443,7 +443,7 @@ export default {
       },
       type: {
         label: 'File type',
-        hint: 'Describes the type of file giveb',
+        hint: 'Describes the type of file given',
         rules: {
           name_required: 'A value is required.',
           name_too_big: 'File type must be less than %s characters.',
@@ -556,7 +556,7 @@ export default {
     reconnecting: 'Reconnecting...',
     refreshing_discord_token: 'Refreshing Discord token...',
     dummy_step: 'Downloading RAM...',
-    updating_profile_informations: 'Updating profile informations...',
+    updating_profile_informations: 'Updating profile information...',
     failed_to_reconnect: 'Failed to reconnect',
     loggging_out: 'Logging out...',
   }
