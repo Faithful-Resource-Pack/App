@@ -728,6 +728,12 @@ code {
   padding-right: 24px;
 }
 
+.texture-preview, .texture-preview > a {
+  height: 64px !important;
+  width: 64px !important;
+  min-width: 64px !important;
+}
+
 .v-list-item__action.merged {
   margin-top: 4px;
   margin-bottom: 4px;

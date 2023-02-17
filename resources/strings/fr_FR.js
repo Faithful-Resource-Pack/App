@@ -463,6 +463,7 @@ export default {
           },
           tabs: {
             date: "Date",
+            pack: "Pack",
             authors: "Auteur(s)",
             id: "ID",
             name: "Nom",

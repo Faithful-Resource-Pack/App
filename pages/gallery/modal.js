@@ -180,7 +180,7 @@ export default {
       if(pack === 'default') {
         return '16x'
       }
-      return pack.replace('progart', 'programmer art').split('_').map(word => this.ucfirst(word)).join(' ')
+      return pack.replace('progart', 'programmer_art').split('_').map(word => this.ucfirst(word)).join(' ')
     },
     closeModal: function() {
       this.onClose()
@@ -209,6 +209,7 @@ export default {
             .sort((a,b) => b.date - a.date)
             .map(el => ({
               date: this.timestampToDate(el.date),
+              pack: this.packToName(el.pack),
               contributors: el.authors.map(el => this.discordIDtoName(el)).join(',\n')
             }))
         case this.infos[0]:
@@ -238,6 +239,10 @@ export default {
             {
               text: this.$root.lang().gallery.modal.tabs.date,
               value: "date"
+            },
+            {
+              text: this.$root.lang('gallery.modal.tabs.pack'),
+              value: "pack"
             },
             {
               text: this.$root.lang().gallery.modal.tabs.authors,

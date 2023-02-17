@@ -104,6 +104,7 @@ export default {
           v-model="textureSearch"
           class="pt-5 mb-0"
           :label="$root.lang().database.labels.search_texture"
+          @keydown.enter="startSearch()"
           hide-details
         />
       </div>
@@ -119,21 +120,22 @@ export default {
           :key="contrib.id"
           v-if="i < displayedResults"
         >
-          <v-list-item-avatar tile
-            :style="{
-              'height': '64px',
-              'width': '64px',
-              'min-width': '64px'
-            }"
-          >
+          <v-list-item-avatar tile class="texture-preview">
+            <a :href="'/#/gallery?show=' + contrib.texture">
             <v-img class="texture-img" :src="contrib.url" :lazy-src="'https://database.faithfulpack.net/images/branding/logos/transparent/64/f' + contrib.resolution + '_logo.png'"/>
+            </a>
           </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title v-text="moment(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
             <v-list-item-subtitle v-text="(contrib.authors||[]).map(id => contributors.filter(c => c.id == id)[0].username || id).join(', ')"></v-list-item-subtitle>
 
-            <div><v-chip label x-small class="mr-1">{{ contrib.resolution }}</v-chip><v-chip label x-small class="mr-1">#{{ contrib.texture }}</v-chip></div>
+            <div><v-chip label x-small class="mr-1">
+              {{ packToCode(contrib.pack) }}
+            </v-chip><a :href="'/#/gallery?show=' + contrib.texture" target="_blank"><v-chip style="cursor: pointer" label x-small class="mr-1">
+              #{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1"></span>
+            </v-chip></a>
+            </div>
           </v-list-item-content>
 
           <v-list-item-action class="merged">
@@ -240,6 +242,25 @@ export default {
     }
   },
   methods: {
+    packToCode: function(pack) {
+      if(pack === 'default') {
+        return '16x'
+      }
+      if(pack.includes('classic_faithful_32x')) {
+        if(pack.includes('progart'))
+          pack = pack.replace('progart', '__p_a')
+        else
+          pack += "__j_a_p_p_a"
+
+        console.log(pack)
+      }
+      return pack
+        .split('_').map(word => {
+          let number = Number.parseInt(word, 10);
+          
+          return Number.isNaN(number) ? (word[0] || ' ').toUpperCase() : number
+        }).join('')
+    },
     showMore: function() {
       this.displayedResults += 100;
     },
