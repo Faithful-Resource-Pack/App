@@ -50,11 +50,11 @@ export default {
         this.reconnect_steps.push(this.$root.lang('reconnect.dummy_step'))
         return response.data
       })
-      .then(json => {
+      .then(async (json) => {
         console.log(json)
         this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
 
-        this.$root.tokenCallback(json, auth)
+        await this.$root.tokenCallback(json, auth)
         
         return fetch('https://discord.com/api/users/@me', {
             headers: {
@@ -68,13 +68,13 @@ export default {
         else
           return Promise.reject(`Failed to update informations`)
       })
-      .then(json => {
+      .then(async (json) => {
         auth.id = json.id
         auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
         auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
         auth.username = `${json.username}#${json.discriminator}`
 
-        this.$root.tokenCallback(auth, auth)
+        await this.$root.tokenCallback(auth, auth)
       })
       .then(() => {
         // working but not perfect, will refresh page and reload $root.user with correct data

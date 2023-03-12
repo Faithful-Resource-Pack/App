@@ -627,7 +627,10 @@ axios.get('./resources/settings.json')
               console.error(err)
               
               // redirect to reconnect
-              router.push({ path: '/reconnect' }).catch(() => {})
+              this.showSnackBar(err, 'error', 3000)
+              setTimeout(() => {
+                router.push({ path: '/reconnect' }).catch(() => {})
+              }, 3000)
             })
         },
         /**
@@ -651,7 +654,7 @@ axios.get('./resources/settings.json')
               return response.data
             })
             .then(json => {
-              this.tokenCallback(json, auth)
+              return this.tokenCallback(json, auth)
             })
             .catch(err => {
               console.error(err)
@@ -663,14 +666,20 @@ axios.get('./resources/settings.json')
           this.logUser()
           this.fetchRoles()
         },
-        tokenCallback: function (accessJSON, auth = {}) {
+        tokenCallback: async function (accessJSON, auth = {}) {
           auth.expires_at = new Date((new Date()).getTime() + (accessJSON.expires_in * 1000) - 60000)
           auth.refresh_token = accessJSON.refresh_token
           auth.access_token = accessJSON.access_token
 
           window.localStorage.setItem('auth', JSON.stringify(auth))
           window.location.href = window.location.origin + window.location.pathname + window.location.hash
-          this.emitConnected()
+
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              this.emitConnected()
+              resolve()
+            }, 300)
+          })
         },
         addToken(data) {
           data.token = this.user.access_token
@@ -750,13 +759,13 @@ axios.get('./resources/settings.json')
             }
           })
             .then(response => response.json())
-            .then(json => {
+            .then(async (json) => {
               auth.id = json.id
               auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
               auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
               auth.username = `${json.username}#${json.discriminator}`
 
-              this.tokenCallback(auth, auth)
+              await this.tokenCallback(auth, auth)
             })
             .catch(console.error)
         } else this.update()
