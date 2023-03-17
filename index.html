@@ -2,7 +2,7 @@
 <html lang="EN">
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.6.4/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <meta name="theme-color" content="#272727">
@@ -53,13 +53,12 @@
           <div class="px-2 py-5" v-else>
             <v-btn
               block
+              class="burple"
               href="/api/discord/login" 
               :style="{
-                'background': 'hsl(235,85.6%,64.7%) !important',
                 'color': '#FFF'
               }"
             >
-              <v-icon left>mdi-discord</v-icon>
               {{ $root.lang().global.login }}
             </v-btn>
           </div>

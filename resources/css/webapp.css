@@ -325,9 +325,19 @@ h2.faithful-font {
   font-weight: 600;
 }
 
+.burple {
+  background-color: #5865F2 !important;
+}
+.burple > *:first-child::before {
+  content: url(/resources/icons/discord_white.svg);
+  width: 1em;
+  height: 1em;
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
 #login-button {
   height: auto;
-  background: hsl(235,85.6%,64.7%) !important;
   color: white;
   white-space: normal;
 }
