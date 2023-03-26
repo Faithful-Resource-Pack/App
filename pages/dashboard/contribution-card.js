@@ -29,7 +29,7 @@ export default {
 >
   <v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
     <v-row class="mb-0" v-if="data" style="width: 100%">
-      <v-col class="pr-sm-2" cols="12" sm="6" class="d-flex flex-column justify-space-around pb-0" v-for="(values, activity) in data.activity" :key="activity">
+      <v-col cols="12" sm="6" class="pr-sm-2 d-flex flex-column justify-space-around pb-0" v-for="(values, activity) in data.activity" :key="activity">
         <div class="title text-h6 text--primary">
           {{ $root.lang('dashboard.activity').replace('%s', activity.replace(/_/g, ' ')) }}
         </div>
