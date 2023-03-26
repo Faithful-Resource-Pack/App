@@ -70,6 +70,11 @@ app.get(webappURL, async (req, res) => {
 
   file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
 
+  // change Vue to dev version for devtools
+  if(DEV) {
+    file = file.replace('/vue.min.js', '/vue.js')
+  }
+
   if (DEV && process.env.BROWSER_REFRESH_URL) {
     file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script></body>`)
   }
