@@ -117,6 +117,7 @@ const _set_lang = function (val) {
 }
 ///////////
 
+const AUTH_STORAGE_KEY = 'auth';
 const MENU_KEY = 'menu_key';
 const MENU_DEFAULT = false;
 
@@ -233,15 +234,6 @@ ALL_TABS.filter(t => t.roles === undefined)
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
-const EMPTY_USER = {
-  avatar: '',
-  banner: '',
-  id: 0,
-  username: '',
-  email: '',
-  roles: []
-}
-
 // convert-import
 
 window.v = undefined
@@ -249,6 +241,9 @@ axios.get('./resources/settings.json')
   .then(res => {
     window.settings = res.data
   }).then(() => {
+    const pinia = Pinia.createPinia();
+    
+    Vue.use(pinia);
     Vue.use(VueTippy);
     Vue.component("tippy", VueTippy.TippyComponent);
 
@@ -257,6 +252,9 @@ axios.get('./resources/settings.json')
       el: '#app',
       data() {
         return {
+          discordAuth: discordAuthStore(),
+          discordUser: discordUserStore(),
+          appUser: appUserStore(),
           badges: {},
           colors: colors,
           dark: undefined,
@@ -268,7 +266,6 @@ axios.get('./resources/settings.json')
             width: window.innerWidth,
             height: window.innerHeight
           },
-          user: EMPTY_USER,
           tabs: ALL_TABS.map(t => {
             t.subtabs = t.subtabs.map(s => {
               s.to = s.routes[0].path
@@ -309,14 +306,6 @@ axios.get('./resources/settings.json')
             }
           },
           immediate: true
-        },
-        user: {
-          handler(n, o) {
-            if (Vue.config.devtools && n.access_token && n.access_token !== o.access_token) {
-              console.info(n.access_token)
-            }
-          },
-          deep: true
         },
         dark: {
           handler(n, o) {
@@ -421,6 +410,18 @@ axios.get('./resources/settings.json')
         }
       },
       computed: {
+        user: function() {
+          return {
+            access_token: this.discordAuth.access_token,
+
+            avatar: this.discordUser.discordAvatar,
+            banner: this.discordUser.discordBanner,
+
+            id: this.appUser.appUserId,
+            username: this.discordUser.discordName,
+            roles: this.appUser.appUserRoles || [],
+          }
+        },
         apiURL: function() {
           if(Vue.config.devtools && this.vapiURL && this.vapiURL.includes('localhost') && window.location.host !== 'localhost')
             return this.vapiURL.replace('localhost', window.location.host)
@@ -472,7 +473,7 @@ axios.get('./resources/settings.json')
          * @returns true if the user is logged
          */
         isUserLogged: function () {
-          return this.user && this.user.id !== 0 && this.user.id != null
+          return this.user && this.user.id && this.user.id !== undefined
         },
         /**
          * Tell if the user is an admin
@@ -544,9 +545,14 @@ axios.get('./resources/settings.json')
               }
               Vue.set(this.badges, url, val);
             })
-          setTimeout(() => {
-            this.loadBadge(url)
-          }, 15000);
+
+          if(this.isAdmin) {
+            setTimeout(() => {
+              if(this.admin) {
+                this.loadBadge(url)
+              }
+            }, 15000);
+          }
         },
         lang: function (path) {
           let response = this.langs[this.selectedLang]
@@ -597,41 +603,7 @@ axios.get('./resources/settings.json')
           this.snackbar.show = true
         },
         logout: function () {
-          this.user = EMPTY_USER
-          window.localStorage.removeItem('auth')
-
-          window.location.hash = '/'
-          window.location.reload()
-          this.update()
-        },
-        logUser: function () {
-          let auth
-          try {
-            auth = JSON.parse(window.localStorage.getItem('auth'))
-          } catch (err) {
-            auth = {}
-          }
-
-          this.user = Object.assign({}, this.user, auth)
-        },
-        fetchRoles: function () {
-          if (!this.isUserLogged) return
-
-          const data = JSON.parse(JSON.stringify(this.user))
-
-          axios.get(this.$root.apiURL + '/users/profile', this.$root.apiOptions)
-            .then((res) => {
-              this.user.roles = res.data.roles
-            })
-            .catch(err => {
-              console.error(err)
-              
-              // redirect to reconnect
-              this.showSnackBar(err, 'error', 3000)
-              setTimeout(() => {
-                router.push({ path: '/reconnect' }).catch(() => {})
-              }, 3000)
-            })
+          this.discordAuth.logout()
         },
         /**
          * Use this function in sub-components to check perms
@@ -644,66 +616,19 @@ axios.get('./resources/settings.json')
           if (markdown === null || !markdown) return ''
           return marked(markdown, { sanitize: true })
         },
-        refreshToken: function () {
-          const authStr = window.localStorage.getItem('auth')
-          const auth = JSON.parse(authStr)
-          const data = { refresh_token: auth.refresh_token }
-
-          axios.post('/api/discord/refresh', data)
-            .then(response => {
-              return response.data
-            })
-            .then(json => {
-              return this.tokenCallback(json, auth)
-            })
-            .catch(err => {
-              console.error(err)
-              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-              this.logout()
-            })
-        },
-        update: function () {
-          this.logUser()
-          this.fetchRoles()
-        },
-        tokenCallback: async function (accessJSON, auth = {}) {
-          auth.expires_at = new Date((new Date()).getTime() + (accessJSON.expires_in * 1000) - 60000)
-          auth.refresh_token = accessJSON.refresh_token
-          auth.access_token = accessJSON.access_token
-
-          window.localStorage.setItem('auth', JSON.stringify(auth))
-          window.location.href = window.location.origin + window.location.pathname + window.location.hash
-
-          return new Promise((resolve, reject) => {
-            setTimeout(() => {
-              this.emitConnected()
-              resolve()
-            }, 300)
-          })
-        },
         addToken(data) {
           data.token = this.user.access_token
           return data
         },
         emitConnected() {
-          const authStr = window.localStorage.getItem('auth')
-          if (!authStr) return
-
-          const auth = JSON.parse(authStr)
-
           this.atl.forEach(lis => {
-            lis(auth.access_token)
+            lis(this.user.access_token)
           })
         },
         addAccessTokenListener(listener) {
           this.atl.push(listener)
           if (this.isUserLogged) {
-            const authStr = window.localStorage.getItem('auth')
-            if (!authStr) return
-
-            const auth = JSON.parse(authStr)
-
-            listener(auth.access_token)
+            listener(this.user.access_token)
           }
         },
         onMediaChange(isDark) {
@@ -717,20 +642,39 @@ axios.get('./resources/settings.json')
           }
         }
       },
+      beforeCreate() {
+        pinia._a = this
+      },
       created: function () {
         moment.locale(this.lang_to_bcp47(_get_lang()))
-        const authStr = window.localStorage.getItem('auth')
-        if (!authStr) return
 
-        const auth = JSON.parse(authStr)
-        if (!auth.expires_at) return
+        this.discordAuth.begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
+        .then(() => {
+          window.location.search = ''
+        })
+        .catch((err) => {
+          this.showSnackBar(err, 'error', 3000)
+        })
+        this.discordUser.watchDiscordAuth(this.discordAuth, (err) => {
+          this.showSnackBar(err, 'error', 3000)
+        })
+        this.appUser.watchDiscordAuth(this.discordAuth, this.apiURL, (err) => {
+          this.showSnackBar(err, 'error', 3000)
+        })
 
-        const expires_at = new Date(auth.expires_at)
-        if (new Date() > expires_at) return this.refreshToken(auth.refresh_token)
-
-        setTimeout(() => {
-          this.refreshToken(auth.refresh_token)
-        }, Math.max(expires_at - 60000 - new Date(), 0))
+        this.discordAuth.$subscribe(() => {
+          if(this.discordAuth.access_token === undefined) {
+            // remove
+            window.localStorage.removeItem(AUTH_STORAGE_KEY)
+            this.emitConnected()
+          } else {
+            // persist
+            window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state))
+            setTimeout(() => {
+              this.discordAuth.refresh()
+            }, (new Date(this.discordAuth.expires_at).getTime()) - (new Date().getTime()))
+          }
+        })
       },
       mounted: function () {
         // watch color schemes for light and dark
@@ -742,33 +686,10 @@ axios.get('./resources/settings.json')
           console.log(ev)
           if(ev.matches) this.onMediaChange(false)
         }
-
-        const urlSearchParams = new URLSearchParams(window.location.search)
-        const auth = Object.fromEntries(urlSearchParams.entries())
-
         window.addEventListener('resize', () => {
           this.window.width = window.innerWidth
           this.window.height = window.innerHeight
         })
-
-        if (auth.access_token && auth.refresh_token && auth.expires_in) {
-
-          fetch('https://discord.com/api/users/@me', {
-            headers: {
-              authorization: `Bearer ${auth.access_token}`
-            }
-          })
-            .then(response => response.json())
-            .then(async (json) => {
-              auth.id = json.id
-              auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
-              auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
-              auth.username = `${json.username}#${json.discriminator}`
-
-              await this.tokenCallback(auth, auth)
-            })
-            .catch(console.error)
-        } else this.update()
       },
       vuetify: new Vuetify({
         theme: {
