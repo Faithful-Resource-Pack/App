@@ -127,7 +127,7 @@ export default {
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="moment(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
+            <v-list-item-title v-text="momo(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
             <v-list-item-subtitle v-text="(contrib.authors||[]).map(id => contributors.filter(c => c.id == id)[0].username || id).join(', ')"></v-list-item-subtitle>
 
             <div><v-chip label x-small class="mr-1">
@@ -242,6 +242,9 @@ export default {
     }
   },
   methods: {
+    momo: function(...args) {
+      return moment(...args)
+    },
     packToCode: function(pack) {
       if(pack === 'default') {
         return '16x'
