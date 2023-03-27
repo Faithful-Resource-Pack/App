@@ -1,45 +1,13 @@
 const firestorm_users = require('../helpers/firestorm/users')
+const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2/'
 
 module.exports = {
-  userTypes: function() {
-    return firestorm_users.select({ fields: [ "type" ] })
-      .then((users) => {
-        // create array type
-        let types = []
-        Object.values(users).forEach(user => {
-          types = [ ...types, ...(user.type || []) ]
-        })
-
-        // delete duplicates
-        types = types.filter((t, index) => {
-          return types.indexOf(t) == index && (types.indexOf(t.toLowerCase()) == -1 || types.indexOf(t.toLowerCase()) == index)
-        })
-
-        return types
-      })
-  },
-  searchUserByUsername: function(searchterm) {
-    if(!searchterm || searchterm.length < 3) return Promise.reject(new Error('User search requires at least 3 letters'))
-
-    return this.search([{
-      criteria: "includes",
-      field: "username",
-      value: searchterm,
-      ignoreCase: true
-    }])
-  },
-  /**
-   * @param {import('../helpers/firestorm/index').SearchOption[]} searchOptions search options
-   */
-  search: function(searchOptions) {
-    return firestorm_users.search(searchOptions)
-  },
   /**
    * @param {String} id Discord User ID
    * @returns {Promise<import('../helpers/firestorm/users').User>}
    */
   getUser: function(id) {
-    return firestorm_users.get(id)
+    return axios.get(`${API_URL}/v2/users/${id}`).then(r => r.data)
   },
   change: function(body) {
     const element_id = body.id
