@@ -653,7 +653,8 @@ axios.get('./resources/settings.json')
           window.location.search = ''
         })
         .catch((err) => {
-          this.showSnackBar(err, 'error', 3000)
+          if(!err.message.includes('auth method'))
+            this.showSnackBar(err, 'error', 3000)
         })
         this.discordUser.watchDiscordAuth(this.discordAuth, (err) => {
           this.showSnackBar(err, 'error', 3000)
@@ -668,6 +669,7 @@ axios.get('./resources/settings.json')
             window.localStorage.removeItem(AUTH_STORAGE_KEY)
             this.emitConnected()
           } else {
+            if(Vue.config.devtools) console.log(this.discordAuth.access_token)
             // persist
             window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state))
             setTimeout(() => {
