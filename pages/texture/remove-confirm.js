@@ -13,8 +13,9 @@ export default {
         <v-card-text>
           <v-form ref="form" lazy-validation>
             <p>Do you want to delete this {{ type }}?</p>
-
-            <v-checkbox v-if="type == 'use'" v-model="deletePaths" label="Delete all paths attached (Highly Recommended)"></v-checkbox>
+            <v-alert v-if="type == 'use'" type="warning" class="px-2" outlined dense>
+              {{ $root.lang('database.messages.deleting_use_will_delete_paths') }}
+            </v-alert>
             <blockquote v-if="type == 'use'">
               <v-btn
                 text
@@ -110,13 +111,23 @@ export default {
         })
     },
     deleteData: function () {
-      const data = {
-        id: this.data.id,
-        deletePaths: this.deletePaths,
-        token: this.$root.user.access_token
+      if(this.type === 'use') {
+        const useId = this.data.id;
+        axios.delete(`${this.$root.apiURL}/uses/${useId}`, this.$root.apiOptions)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+          this.disableDialog(true)
+        })
+        .catch(err => {
+          console.error(err)
+          this.$root.showSnackBar(err, 'error')
+          this.disableDialog(true)
+        })
+        return;
       }
 
-      axios.post(`/${this.type}s/remove`, data)
+      let pathId = this.data.id;
+      axios.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)

@@ -190,6 +190,9 @@ export default {
       path: 'The path should start from the root directory (ex: assets/…)',
       example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
       example_scenario_warn: "Please don't forget to update all GitHub branch names as well!"
+    },
+    messages: {
+      deleting_use_will_delete_paths: 'Deleting the use will also delete all the paths associated.'
     }
   },
   review: {

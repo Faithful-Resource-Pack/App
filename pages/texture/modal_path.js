@@ -121,12 +121,23 @@ export default {
       return result
     },
     send: function () {
-      const newData = JSON.parse(JSON.stringify(this.subPathFormData))
-      newData.token = this.$root.user.access_token
+      const data = {
+        name: this.subPathFormData.path || '', // texture relative path
+        use: this.subPathFormData.useID || '', // Use ID
+        mcmeta: this.subPathFormData.mcmeta, // is animated
+        versions: this.subPathFormData.versions.sort(this.MinecraftSorter) // ordered minecraft versions
+      }
 
-      if (this.add) newData.useID = this.useID
+      let method = 'put'
+      let pathId = ''
+      if (this.add) {
+        data.use = this.useID
+        method = 'post'
+      } else {
+        pathId = this.subPathFormData.id
+      }
 
-      axios.post(`/paths/${this.add ? 'add' : 'change'}`, newData)
+      axios[method](`${this.$root.apiURL}/paths/${pathId}`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableSubPathDialog(true)

@@ -22,7 +22,7 @@ export default {
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
           <v-form ref="form">
-            <v-text-field :color="color" :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
+            <v-text-field :color="color" persistent-hint :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
             <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
@@ -38,7 +38,7 @@ export default {
                 <v-list-item-content>
                   <v-list-item-title>
                     <v-list-item style="display: inline; padding: 0 0 0 5px;">
-                      <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
+                      <template v-if="use.textureUseName || use.name">{{ use.textureUseName || use.name }}</template>
                       <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
                     </v-list-item>
                     <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="use.edition"></v-list-item-subtitle>

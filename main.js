@@ -297,90 +297,12 @@ app.post('/textures/remove', (req, res) => {
     .catch(errorHandler(res))
 })
 
-/**
- * ==========================================
- *                    USES
- * ==========================================
- */
-
-// POST
-app.post('/uses/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/uses/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.add(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/uses/remove', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.remove(req.body.id, req.body.deletePaths)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * ==========================================
- *                   PATHS
- * ==========================================
- */
-
-// POST
-app.post('/paths/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
 app.post('/paths/version-update/', (req, res) => {
   verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.update(req.body.actual, req.body.new)
     })
     .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/paths/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.add(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/paths/remove', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.remove(req.body.id)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/paths/search/', function (req, res) {
-  const params = req.query
-  const useID = params.useID
-
-  pathsBackend.search(useID)
-    .then(getSuccess(res))
     .catch(errorHandler(res))
 })
 
