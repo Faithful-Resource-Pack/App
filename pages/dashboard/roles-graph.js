@@ -9,6 +9,10 @@ export default {
       required: true,
       type: Array
     },
+    loading: {
+      required: true,
+      type: Boolean
+    },
     colors: {
       required: true,
       type: Array
@@ -16,7 +20,8 @@ export default {
   },
   template: `
 <v-row class="roles-graph mt-0" dense>
-  <v-col class="flex-sm-shrink-0 flex-grow-0" cols="12" sm="6">
+  <v-col class="flex-sm-shrink-0 flex-grow-0" cols="12" sm="6" id="roles-graph-cell">
+    <v-skeleton-loader v-if="loading || !renderComponent" id="graph-loader" type="image" />
     <graph-treemap
       v-if="renderComponent"
       
@@ -39,12 +44,21 @@ export default {
   </v-col>
   <v-col cols="12" sm="6">
     <v-row dense>
-      <v-col v-for="(value, index) in values" :key="value[1]" cols="12" sm="6" class="d-flex align-stretch">
-        <p class="rounded-lg pa-2 mb-0 flex-grow-1">
-          <span class="mr-1 rounded d-inline-block" :style="{'background-color': shade[index], height: '10px', width: '10px'}"></span>
-          <span class="font-weight-medium text--primary">{{ value[2] }}</span> {{ value[1] }}
-        </p>
-      </v-col>
+      <template v-if="loading">
+        <v-col v-for="i in 14" :key="'list-contributor-skeleton-' + i" cols="12" sm="6" class="d-flex align-stretch">
+          <div class="p rounded-lg pa-2 mb-0 flex-grow-1 d-flex align-center" style="min-height: 38px">
+            <v-skeleton-loader type="text" class="" width="75%" />
+          </div>
+        </v-col>
+      </template>
+      <template v-else>
+        <v-col v-for="(value, key, index) in types" :key="'list-contributor-' + key" cols="12" sm="6" class="d-flex align-stretch">
+          <p class="rounded-lg pa-2 mb-0 flex-grow-1">
+            <span class="mr-1 rounded d-inline-block" :style="{'background-color': shade[index], height: '10px', width: '10px'}"></span>
+            <span class="font-weight-medium text--primary">{{ value }}</span> {{ key }}
+          </p>
+        </v-col>
+      </template>
     </v-row>
   </v-col>
 </v-row>
@@ -53,7 +67,7 @@ export default {
     return {
       ratio: 5/3,
       height: 314,
-      renderComponent: true
+      renderComponent: false
     }
   },
   computed: {
@@ -62,6 +76,9 @@ export default {
     },
     theme: function() {
       return this.$root.isDark ? "dark" : "classic"
+    },
+    types: function() {
+      return this.labels.reduce((acc, cur, i) => ({...acc, [cur]: this.series[i] }), {})
     },
     values: function() {
       return this.series.map((e, i) => {
@@ -128,6 +145,12 @@ export default {
   watch: {
     theme: function() {
       this.forceRerender()
+    },
+    loading: function(n) {
+      console.log(JSON.stringify(this.series))
+      if(n === false) {
+        this.renderComponent = true
+      }
     }
   }
 }

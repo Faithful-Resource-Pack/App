@@ -45,6 +45,12 @@ export default {
         </div>
       </v-col>
     </v-row>
+    <v-row class="mb-0" v-else style="width: 100%">
+      <v-col cols="12" sm="6" class="pr-sm-2 d-flex flex-column justify-space-around pb-0" v-for="i in 5" :key="'skeleton-'+i">
+        <v-skeleton-loader height="24" type="heading" class="mb-2" />
+        <v-skeleton-loader height="130" type="card" />
+      </v-col>
+    </v-row>
   </v-card-text>
 </dashboard-card>
   `,

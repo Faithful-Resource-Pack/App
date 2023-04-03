@@ -5,12 +5,18 @@ export default {
   components: {
     'dashboard-card': DashBoardCard
   },
+  props: {
+    show: {
+      required: true
+    },
+  },
   template: `
 <dashboard-card
   :title="$root.lang('global.tabs.user.subtabs.profile') || ''"
   go_to="/profile"
   :can_go_to="true"
   class="d-flex flex-column"
+  :style="{ display: show ? 'inherit' : 'none !important' }"
 >
   <v-card-text v-if="user" class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
   <div v-if="user.roles.length === 0"></div>

@@ -969,7 +969,7 @@ body .texture-avatar {
   align-items: stretch;
 }
 
-#dashboard-page p {
+#dashboard-page p, #dashboard-page .p {
   background-color: rgba(0,0,0,0.08);
 }
 
@@ -980,8 +980,29 @@ body .texture-avatar {
   opacity: 0.6;
 }
 
-.theme--dark #dashboard-page p {
+.theme--dark #dashboard-page p, .theme--dark #dashboard-page .p {
   background: rgba(0,0,0,0.2);
+}
+
+.roles-graph #roles-graph-cell {
+  position: relative;
+}
+
+.roles-graph #graph-loader {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+}
+
+.roles-graph #graph-loader > *, .roles-graph #graph-loader > *::after {
+  height: 100%;
+  bottom: 0;
+}
+
+.roles-graph .v-skeleton-loader__text {
+  margin-bottom: 0;
 }
 
 .roles-graph svg {
@@ -992,6 +1013,20 @@ body .texture-avatar {
 
 #dashboard-page #addon-card .v-card__text p, #dashboard-page #contribution-stats-card .v-card__text p {
   width: 100%;
+}
+
+#addon-card .loader > * {
+  width: 100%;
+  min-height: 17px;
+  margin-bottom: 0;
+}
+
+#addon-card .loader .v-skeleton-loader__heading {
+  border-radius: 8px;
+}
+
+#addon-card .paragraph-loader {
+  min-height: 48px;
 }
 
 .heatmap-wrapper {
