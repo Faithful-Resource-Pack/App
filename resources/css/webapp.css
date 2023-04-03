@@ -140,7 +140,7 @@ a {
 }
 
 #app #banner-card {
-  background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/f32.png);
+  background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/f32.png?w=320);
   background-position: center;
   background-size: cover;
 }
