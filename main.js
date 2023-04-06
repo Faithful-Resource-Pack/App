@@ -218,19 +218,6 @@ filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess
  * ==========================================
  */
 
-// POST
-/**
- * Perms: admins + dev
- */
-app.post('/textures/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
 /**
  * Perms: admins + dev
  */
