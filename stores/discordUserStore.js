@@ -44,8 +44,8 @@ const discordUserStore = Pinia.defineStore('discordUser', {
 							discordId: json.id,
 							discordAvatar: json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null,
 							discordBanner: json.banner != null ?
-								`https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 
-								'https://database.faithfulpack.net/images/branding/backgrounds/f32.png',
+								`https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` :
+								'https://database.faithfulpack.net/images/branding/backgrounds/forest.png',
 							discordName: `${json.username}#${json.discriminator}`,
 						})
 						// console.log(this.$state)

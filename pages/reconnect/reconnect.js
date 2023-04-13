@@ -55,7 +55,7 @@ export default {
         this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
 
         await this.$root.tokenCallback(json, auth)
-        
+
         return fetch('https://discord.com/api/users/@me', {
             headers: {
               authorization: `Bearer ${json.access_token}`
@@ -71,7 +71,7 @@ export default {
       .then(async (json) => {
         auth.id = json.id
         auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
-        auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
+        auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/forest.png'
         auth.username = `${json.username}#${json.discriminator}`
 
         await this.$root.tokenCallback(auth, auth)
@@ -83,10 +83,10 @@ export default {
       .catch(err => {
         console.error(err)
         this.$root.showSnackBar(err, 'error')
-        
+
         this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
         this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
-        
+
         this.$root.logout()
       })
   }
