@@ -305,12 +305,11 @@ export default {
       this.update()
     },
     removeTexture: function(data) {
-      const body = {
-        id: data.id,
-        token: this.$root.user.access_token
-      }
-
-      return axios.post('/textures/remove', body)
+      const textureId = data.id
+      return axios.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
+        .then(() => {
+          this.startSearch()
+        })
     }
   },
   watch: {

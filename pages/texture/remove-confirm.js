@@ -124,27 +124,28 @@ export default {
           this.disableDialog(true)
         })
         return;
-      }
-
-      let pathId = this.data.id;
-      axios.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+      } else if(this.type === 'path')
+      {
+        let pathId = this.data.id;
+        axios.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
+          .then(() => {
+            this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
+            this.disableDialog(true)
+          })
+          .catch(err => {
+            console.error(err)
+            this.$root.showSnackBar(err, 'error')
+            this.disableDialog(true)
+          })
+      } else if(this.type === 'texture')
+      {
+        this.onSubmit(this.data).then(() => {
           this.disableDialog(true)
-        })
-        .catch(err => {
+        }).catch(err => {
           console.error(err)
           this.$root.showSnackBar(err, 'error')
-          this.disableDialog(true)
         })
-
-      this.onSubmit(this.data).then(() => {
-        this.disableDialog(true)
-      }).catch(err => {
-        console.error(err)
-        this.$root.showSnackBar(err, 'error')
-      })
-
+      }
     }
   }
 }
