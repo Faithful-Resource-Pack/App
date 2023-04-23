@@ -145,7 +145,7 @@ const verifyAuth = (token, roles = []) => {
     .then(json => {
       const userID = json.id
 
-      return contributorsBackend.getUser(userID)
+      return contributorsBackend.getUser(userID, token)
     })
     .then(user => {
       if (roles.length == 0) return Promise.resolve(user[ID_FIELD])

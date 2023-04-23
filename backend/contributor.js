@@ -1,13 +1,18 @@
 const firestorm_users = require('../helpers/firestorm/users')
 const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2/'
+const axios = require('axios')
 
 module.exports = {
   /**
    * @param {String} id Discord User ID
    * @returns {Promise<import('../helpers/firestorm/users').User>}
    */
-  getUser: function(id) {
-    return axios.get(`${API_URL}/v2/users/${id}`).then(r => r.data)
+  getUser: function (id, token) {
+    return axios.get(`${API_URL}/users/${id}`, {
+      headers: {
+        discord: token
+      }
+    }).then(r => r.data)
   },
   change: function(body) {
     const element_id = body.id
