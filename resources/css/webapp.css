@@ -325,10 +325,10 @@ h2.faithful-font {
   font-weight: 600;
 }
 
-.burple {
+.blurple {
   background-color: #5865F2 !important;
 }
-.burple > *:first-child::before {
+.blurple > *:first-child::before {
   content: url(/resources/icons/discord_white.svg);
   width: 1em;
   height: 1em;
