@@ -211,7 +211,7 @@ const ALL_TABS = [
         { path: '/textures/:type?/:name*', component: TexturePage }
       ]
     }, {
-      enabled: true, icon: 'mdi-settings', label: 'settings',
+      enabled: true, icon: 'mdi-wrench', label: 'settings',
       routes: [{ path: '/settings', component: SettingsPage }]
     }, {
       enabled: false, icon: 'mdi-pipe-wrench', label: 'mods',
@@ -444,7 +444,7 @@ axios.get('./resources/settings.json')
             let found = false
 
             const tab = this.tabs[i]
-            tab.labelText = this.lang().global.tabs[this.tabs[i].label]?.title
+            tab.labelText = this.lang(`global.tabs.${this.tabs[i].label}.title`)
 
             if (this.tabs[i].roles) {
               this.tabs[i].roles.forEach(role => {
@@ -455,7 +455,7 @@ axios.get('./resources/settings.json')
             if (found) {
               res.push(this.tabs[i])
               this.tabs[i].subtabs.forEach(subtab => {
-                subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label]
+                subtab.labelText = this.lang(`global.tabs.${this.tabs[i].label}.subtabs.${subtab.label}`)
               })
             }
           }
@@ -574,7 +574,7 @@ axios.get('./resources/settings.json')
           }
 
           // Shall send string to be chained with other string operations
-          return String(response) // enforce string to ensure string methods used after
+          return String(response || path) // enforce string to ensure string methods used after
         },
         showSnackBar: function (err, color = '#222', timeout = 4000) {
           let message = ''
