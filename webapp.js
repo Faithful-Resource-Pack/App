@@ -614,7 +614,7 @@ axios.get('./resources/settings.json')
         },
         compiledMarkdown: function (markdown) {
           if (markdown === null || !markdown) return ''
-          return marked(markdown, { sanitize: true })
+          return DOMPurify.sanitize(marked.parse(markdown, { breaks: true, gfm: true }))
         },
         addToken(data) {
           data.token = this.user.access_token
