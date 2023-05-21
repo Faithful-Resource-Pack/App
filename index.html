@@ -163,8 +163,8 @@
       bottom
       right
     >
-      <div>{{ snackbar.message }}</div>
-      <div>{{ snackbar.submessage }}</div>
+      <div v-html="snackbar.message"></div>
+      <div v-html="snackbar.submessage"></div>
     </v-snackbar>
   </v-app>
 

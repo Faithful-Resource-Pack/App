@@ -577,26 +577,47 @@ axios.get('./resources/settings.json')
           // Shall send string to be chained with other string operations
           return String(response) // enforce string to ensure string methods used after
         },
-        showSnackBar: function (message, color = '#222', timeout = 4000) {
+        showSnackBar: function (err, color = '#222', timeout = 4000) {
+          let message = ''
+          let submessage = ''
+
+          this.snackbar.message = ''
           this.snackbar.submessage = ''
-          if(typeof message === 'string') {
-            let newline = message.indexOf('\n')
+
+          if (typeof err === 'string') {
+            let newline = err.indexOf('\n')
             if(newline !== -1) {
-              this.snackbar.message = message.substring(0, newline) + ':'
-              this.snackbar.submessage = message.substring(newline+1)
+              message = err.substring(0, newline) + ':'
+              submessage = err.substring(newline + 1).replaceAll('\n', '<br>')
             } else {
-              this.snackbar.message = message
+              message = err
             }
           }
           else {
-            this.snackbar.message = message.message
+            // normal error
+            message = err.message
 
-            if (message.response && message.response.data) {
-              let submessage = message.response.data.error || message.response.data.message
-              this.snackbar.message += ':'
-              this.snackbar.submessage = submessage
+            // parse YAMLException
+            if (err.message && err.reason) {
+              message = err.reason
+              submessage = err.message
+            }
+            if (err.response && err.response.data) {
+              submessage = err.response.data.error || err.response.data.message
+              message += ':'
             }
           }
+
+          // remove duplicate lines
+          message = message.split('\n').filter(s => s.trim().length !== 0).join('\n')
+          submessage = submessage.split('\n').filter(s => s.trim().length !== 0).join('\n')
+
+          console.error(message)
+          if (submessage)
+            console.error(submessage)
+
+          this.snackbar.message = message.replace('\n', '<br>')
+          this.snackbar.submessage = submessage.replace('\n', '<br>')
 
           this.snackbar.color = color
           this.snackbar.timeout = timeout
