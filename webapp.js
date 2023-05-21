@@ -519,7 +519,6 @@ axios.get('./resources/settings.json')
           import(lang.file)
             .then(r => {
               r = r.default
-              console.log(r)
               this.langs[lang.lang] = Object.merge({}, enUS, r)
               // we need to wait for this.langs to be updated
               this.$nextTick(() => {
@@ -702,11 +701,9 @@ axios.get('./resources/settings.json')
       mounted: function () {
         // watch color schemes for light and dark
         window.matchMedia("(prefers-color-scheme: dark)").onchange = (ev) => {
-          console.log(ev)
           if(ev.matches) this.onMediaChange(true)
         }
         window.matchMedia("(prefers-color-scheme: light)").onchange = (ev) => {
-          console.log(ev)
           if(ev.matches) this.onMediaChange(false)
         }
         window.addEventListener('resize', () => {
