@@ -163,10 +163,9 @@ export default {
 
         <!-- Addon description preview -->
         <v-container
-          id="addon-description-preview"
+          id="description-preview"
           v-if="submittedForm.description && submittedForm.description.length > 0"
           class="markdown"
-          style="background-color: rgba(33,33,33,1); border-radius: 5px;"
           v-html="$root.compiledMarkdown(submittedForm.description)"
         />
 

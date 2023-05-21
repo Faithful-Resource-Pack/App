@@ -54,6 +54,13 @@ export default {
           upload: 'upload'
         }
       },
+      posts: {
+        title: 'Posts',
+        subtabs: {
+          list: 'Liste',
+          new: 'Nouveau'
+        }
+      },
       modding: {
         title: 'modding',
         subtabs: {

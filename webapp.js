@@ -19,6 +19,9 @@ const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
 const DashboardPage = () => import('./pages/dashboard/dashboard.js')
 const ReconnectPage = () => import('./pages/reconnect/reconnect.js')
+const ArticleNewPage = () => import('./pages/posts/new.js')
+const ArticleEditPage = () => import('./pages/posts/edit.js')
+const ArticleListPage = () => import('./pages/posts/list.js')
 
 window.colors = (await import('https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js')).default
 window.colorToHex = function(color) {
@@ -190,6 +193,21 @@ const ALL_TABS = [
           window.location.href = 'https://translate.faithfulpack.net/';
         }
       }]
+    }],
+    roles: ['Administrator']
+  },
+  {
+    label: 'posts',
+    subtabs: [{
+      enabled: true, icon: 'mdi-text-box', label: 'list',
+      routes: [{ path: '/posts/list', component: ArticleListPage }]
+    },
+    {
+      enabled: true, icon: 'mdi-text-box-plus', label: 'new',
+      routes: [
+        { path: '/posts/new', component: ArticleNewPage },
+        { path: '/posts/edit/:id', component: ArticleEditPage }
+      ]
     }],
     roles: ['Administrator']
   },

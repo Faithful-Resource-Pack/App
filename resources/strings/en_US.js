@@ -52,6 +52,13 @@ export default {
           upload: 'upload'
         }
       },
+      posts: {
+        title: 'Posts',
+        subtabs: {
+          list: 'List',
+          new: 'New'
+        }
+      },
       modding: {
         title: 'modding',
         subtabs: {
@@ -350,6 +357,25 @@ export default {
       approved: 'Approved',
       denied: 'Denied',
       pending: 'Pending'
+    }
+  },
+  posts: {
+    titles: {
+      list: "Article list",
+      new: "Write a new article",
+    },
+    status: {
+      published: "Published",
+      unpublished: "Unpublished"
+    },
+    confirm: {
+      title: "Are you sure you want to delete this post?",
+      message: "No for real, do you want this? There is no other save. You will still have to erase the header image: "
+    },
+    form: {
+      title: {
+        loading_post: "Loading post..."
+      }
     }
   },
   statistics: {
