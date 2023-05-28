@@ -10,10 +10,6 @@ const AddonEditPage = () => import('./pages/addon/editAddonForm.js')
 const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
 const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
 const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
-const ModNewPage = () => import('./pages/modding/mods_new.js')
-const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
-const ModsPage = () => import('./pages/modding/mods.js')
-const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
@@ -38,7 +34,7 @@ window.updatePageStyles = function(cmp) {
 
   const pageId = cmp.$el.id
   const hex = colorToHex(cmp.pageColor)
-  
+
   cmp.pageStyles = `<style>
   html.theme--light,
   html.theme--light .colored,
@@ -72,8 +68,8 @@ Object.defineProperty(Object.prototype, 'isObject', {
 
 Object.defineProperty(Object.prototype, 'merge', {
   /**
-   * @param {Object} target 
-   * @param  {...Object} sources 
+   * @param {Object} target
+   * @param  {...Object} sources
    */
   value: (target, ...sources) => {
     if (!sources.length) return target
@@ -106,7 +102,7 @@ const LANG_KEY = 'lang';
 const LANG_DEFAULT = 'en';
 const _get_lang = function () {
   lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
-  
+
   return lang_value;
 }
 
@@ -134,18 +130,18 @@ const router = new VueRouter({ routes: ALL_ROUTES })
 const ALL_TABS = [
   {
     label: 'user',
-    subtabs: [{ 
+    subtabs: [{
       enabled: true, icon: 'mdi-view-dashboard', label: 'dashboard',
       unlogged: true,
       routes: [{ path: '/dashboard', component: DashboardPage }]
     }, {
       enabled: true, icon: 'mdi-account', label: 'profile',
       routes: [{ path: '/profile', component: ProfilePage }]
-    }, { 
+    }, {
       enabled: true, icon: 'mdi-chart-timeline-variant', label: 'statistics',
       unlogged: true,
       routes: [{ path: '/contributions-stats', component: ContributorStatsPage}]
-    }, { 
+    }, {
       enabled: true, icon: 'mdi-texture', label: 'gallery',
       unlogged: true,
       routes: [
@@ -165,16 +161,6 @@ const ALL_TABS = [
         { path: '/addons/new', component: AddonNewPage },
         { path: '/addons/edit/:id', component: AddonEditPage }
       ]
-    }]
-  },
-  {
-    label: 'modding',
-    subtabs: [{
-      enabled: false, icon: 'mdi-pipe-wrench', label: 'mod',
-      routes: [{ path: '/modding/mods/new', component: ModNewPage }]
-    }, {
-      enabled: false, icon: 'mdi-memory', label: 'modpack',
-      routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }]
     }]
   },
   {
@@ -211,14 +197,8 @@ const ALL_TABS = [
         { path: '/textures/:type?/:name*', component: TexturePage }
       ]
     }, {
-      enabled: true, icon: 'mdi-settings', label: 'settings',
+      enabled: true, icon: 'mdi-cog', label: 'settings',
       routes: [{ path: '/settings', component: SettingsPage }]
-    }, {
-      enabled: false, icon: 'mdi-pipe-wrench', label: 'mods',
-      routes: [{ path: '/modding/mods', component: ModsPage }]
-    }, {
-      enabled: false, icon: 'mdi-memory', label: 'modpacks',
-      routes: [{ path: '/modding/modpacks', component: ModpacksPage }]
     }],
     roles: ['Developer', 'Administrator']
   }
@@ -242,7 +222,7 @@ axios.get('./resources/settings.json')
     window.settings = res.data
   }).then(() => {
     const pinia = Pinia.createPinia();
-    
+
     Vue.use(pinia);
     Vue.use(VueTippy);
     Vue.component("tippy", VueTippy.TippyComponent);
@@ -392,7 +372,7 @@ axios.get('./resources/settings.json')
                 allowed = n.includes(t.roles[i])
                 i++;
               }
-              
+
               return allowed
             })
             .map(t => t.subtabs).flat(1).filter(s => !s.unlogged)
