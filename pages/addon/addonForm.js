@@ -307,7 +307,7 @@ export default {
               header => (header && header.size < this.form.files.header.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)
             ],
             counter: {
-              max: 500000
+              max: 3000000
             }
           },
           carousel: {
@@ -315,7 +315,7 @@ export default {
               (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)).filter(r => typeof r === "string")[0] || true }
             ],
             counter: {
-              max: 500000
+              max: 3000000
             }
           },
           value: ''
