@@ -66,13 +66,13 @@ export default {
         if(response.ok)
           return response.json()
         else
-          return Promise.reject(`Failed to update informations`)
+          return Promise.reject(`Failed to update information`)
       })
       .then(async (json) => {
         auth.id = json.id
         auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
         auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/forest.png'
-        auth.username = `${json.username}#${json.discriminator}`
+        auth.username = `${json.username}${json.discriminator != 0 ? "#" + json.discriminator : ""}`
 
         await this.$root.tokenCallback(auth, auth)
       })
