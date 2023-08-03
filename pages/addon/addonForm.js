@@ -58,10 +58,10 @@ export default {
 
         <div class="container">
           <v-alert type="warning" class="pb-4">
-          <a href="https://docs.faithfulpack.net/pages/addons/rules"
+          <a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
              style="color: inherit; text-decoration: underline;" target="_blank"
           >{{ $root.lang('addons.general.rules') }}</a> <a
-            href="https://docs.faithfulpack.net/pages/addons/rules"><v-icon small>mdi-open-in-new</v-icon></a>
+            href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"><v-icon small>mdi-open-in-new</v-icon></a>
           </v-alert>
           <div class="row">
             <!-- LEFT PART : INPUT -->
@@ -171,7 +171,7 @@ export default {
         />
 
         <!-- Addon authors selection -->
-        <user-list 
+        <user-list
           v-model="submittedForm.authors"
           :label="$root.lang().addons.general.authors.label"
           :hint="$root.lang().addons.general.authors.hint"
@@ -243,7 +243,7 @@ export default {
               ></v-text-field>
             </v-col>
             <v-col cols="9">
-              <v-row 
+              <v-row
                 v-for="(link, indexLinks) in obj.links"
                 :key="indexLinks"
                 :style="{
@@ -283,7 +283,7 @@ export default {
           <v-btn block @click="downloadAdd()">
             {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
           </v-btn>
-        </div>       
+        </div>
 
         <div class="text-center">
           <v-btn v-if="$root.isAdmin" :disabled="!validForm" @click="() => onSubmit(true)" color="primary">
@@ -407,11 +407,11 @@ export default {
     header: function () {
       return this.addonNew ?
         (this.headerValidating == false && this.headerValid && this.submittedForm.headerFile ?
-          URL.createObjectURL(this.submittedForm.headerFile) : undefined) : 
+          URL.createObjectURL(this.submittedForm.headerFile) : undefined) :
         (this.headerSource ? this.headerSource : undefined)
     },
     carouselSources: function () {
-      return this.addonNew ? 
+      return this.addonNew ?
         (this.carouselValidating === false && this.carouselValid && this.submittedForm.carouselFiles.length ?
           this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []) :
         (this.screenSources ? this.screenSources : [])
@@ -514,7 +514,7 @@ export default {
           this.headerValid = false
           this.headerError = error.message
           console.error(error)
-          
+
           // input is changed so we delete parent component value
           if(this.addonNew) this.$emit('header', undefined, true)
           // if not addon new will delete file
