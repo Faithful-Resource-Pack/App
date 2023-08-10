@@ -1,3 +1,4 @@
 {
-  "ignore": ["resources/settings.json"]
+  "ignore": ["resources/settings.json"],
+  "$schema": "https://raw.githubusercontent.com/SchemaStore/schemastore/master/src/schemas/json/nodemon.json"
 }

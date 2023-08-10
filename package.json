@@ -2,11 +2,15 @@
   "name": "app",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "main.js",
   "scripts": {
     "dev": "nodemon main.js --watch .env --watch main.js --watch backend/",
     "start": "pm2 start \"node main.js\" --name \"APP\"",
-    "watch": "browser-refresh main.js"
+    "watch": "browser-refresh main.js",
+    "test:app": "env-cmd -f ./tests/.env.test node main.js",
+    "test:mocha": "mocha --recursive tests/**/*.test.js",
+    "nodemon:app:test": "nodemon --exec pnpm run test:app",
+    "nodemon:mock_server": "nodemon --exec node tests/mock_server.js"
   },
   "repository": {
     "type": "git",
@@ -28,8 +32,16 @@
     "node-domexception": "^1.0.0",
     "node-fetch": "^3.2.3",
     "node-localstorage": "^2.2.1",
-    "nodemon": "^2.0.15",
     "twin-bcrypt": "^2.1.1",
     "url": "^0.11.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "chai": "^4.3.7",
+    "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^2.0.22",
+    "puppeteer": "^21.0.2"
   }
 }

@@ -68,7 +68,15 @@ app.use(express.json({ limit: '50mb' }))
 app.get(webappURL, async (req, res) => {
   let file = fs.readFileSync('./index.html', 'utf8')
 
-  file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
+  const WINDOW_ENV = {
+    DISCORD_USER_URL: process.env['DISCORD_USER_URL'] || undefined
+  }
+
+  file = file.replace('</head>',
+      `  <script>\n`
+    + `    window.apiURL = '${API_URL}'\n`
+    + `    window.env = ${JSON.stringify(WINDOW_ENV)}\n`
+    + `  </script>\n</head>`)
 
   // change Vue to dev version for devtools
   if(DEV) {

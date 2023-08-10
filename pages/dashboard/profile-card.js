@@ -33,7 +33,7 @@ export default {
     </div>
 
     <div class="my-2">
-      <div class="text-h5 text-center text--primary">
+      <div class="text-h5 text-center text--primary" id="user-username">
         {{ user.username }}
       </div>
 

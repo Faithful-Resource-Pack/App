@@ -3,7 +3,6 @@ const discordAuthStore = Pinia.defineStore('discordAuth', {
 		access_token: undefined,
 		refresh_token: undefined,
 		expires_at: undefined,
-		create_account: undefined,
 	}),
 
 	actions: {
@@ -69,20 +68,16 @@ const discordAuthStore = Pinia.defineStore('discordAuth', {
 		},
 
 		begin: function(search, storedAuth) {
-			let auth = undefined
-			let present = false
+			const res = this.verifySearchParams(search)
+			let has_auth_query_params = res[0]
+			let auth = res[1]
 			let expired = false
 
-			const res = this.verifySearchParams(search)
-			present = res[0]
-			auth = res[1]
-			const createAccount = present // create account if new auth from discord
-
-			if(!present) {
-				[present, expired, auth] = this.verifyLocalStorage(storedAuth)
+			if(!has_auth_query_params) {
+				[has_auth_query_params, expired, auth] = this.verifyLocalStorage(storedAuth)
 			}
 
-			if(!present) {
+			if(!has_auth_query_params) {
 				return Promise.reject(new Error("No auth method provided"))
 			}
 
@@ -92,8 +87,7 @@ const discordAuthStore = Pinia.defineStore('discordAuth', {
 				this.$patch({
 					access_token: auth.access_token,
 					refresh_token: auth.refresh_token,
-					expires_at: auth.expires_at,
-					create_account: createAccount
+					expires_at: auth.expires_at
 				})
 				// console.log(this.$state)
 				return // void
