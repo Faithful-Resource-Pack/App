@@ -1,5 +1,6 @@
 const discordUserStore = Pinia.defineStore('discordUser', {
 	state: () => ({
+		discordUserURL: 'https://discord.com/api/users/@me',
 		discordId: undefined,
 		discordAvatar: undefined,
 		discordBanner: undefined,
@@ -7,8 +8,13 @@ const discordUserStore = Pinia.defineStore('discordUser', {
 	}),
 
 	actions: {
+		params: function(newdiscordUserURL) {
+			this.$patch({
+				discordUserURL: newdiscordUserURL || this.discordUserURL
+			})
+		},
 		getInfos: function(accessToken) {
-			return fetch('https://discord.com/api/users/@me', {
+			return fetch(this.discordUserURL, {
 				headers: {
 					authorization: `Bearer ${accessToken}`
 				}

@@ -53,9 +53,7 @@ const appUserStore = Pinia.defineStore('appUser', {
 					return
 				}
 
-				return (auth.create_account ? 
-					this.getOrCreateUser(rootApiURL, auth.access_token) :
-					this.getUser(rootApiURL, auth.access_token))
+				return this.getOrCreateUser(rootApiURL, auth.access_token)
 					.then((infos) => {
 						this.$patch({
 							appUserId: infos.id,

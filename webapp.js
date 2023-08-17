@@ -231,9 +231,12 @@ axios.get('./resources/settings.json')
       router,
       el: '#app',
       data() {
+        let discordUser = discordUserStore()
+        discordUser.params(window.env?.DISCORD_USER_URL)
+
         return {
           discordAuth: discordAuthStore(),
-          discordUser: discordUserStore(),
+          discordUser,
           appUser: appUserStore(),
           badges: {},
           colors: colors,
@@ -485,10 +488,12 @@ axios.get('./resources/settings.json')
       },
       methods: {
         lang_to_bcp47: function(lang) {
-          return LANGUAGES.filter(l => l.lang === lang)[0].bcp47
+          return LANGUAGES.filter(l => l.lang === lang)[0]?.bcp47
         },
         loadLanguage: function(language) {
           const lang = this.languages.filter(l => l.lang === language)[0]
+
+          if(!lang) return
 
           moment.locale(lang.bcp47)
 

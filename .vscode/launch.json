@@ -5,7 +5,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Launch App",
       "skipFiles": [
@@ -15,6 +15,20 @@
         "--experimental-modules",
         "--trace-warnings"
       ],
+      "program": "${workspaceFolder}\\main.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch test App",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": [
+        "--experimental-modules",
+        "--trace-warnings"
+      ],
+      "envFile": "${workspaceFolder}/tests/.env.test",
       "program": "${workspaceFolder}\\main.js"
     }
   ]
