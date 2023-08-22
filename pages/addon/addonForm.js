@@ -36,6 +36,11 @@ export default {
       type: Array,
       default: undefined
     },
+    disabledHeaderInput: {
+      required: false,
+      type: Boolean,
+      default: () => false
+    }
   },
   template: `
   <v-container>
@@ -53,10 +58,8 @@ export default {
         indeterminate
       ></v-progress-circular>
     </div>
-    <v-list v-else :class="['main-container', 'my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
-      <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
-
-        <div class="container">
+    <v-list v-else :class="['main-container', 'my-2 pa-4', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
+      <v-form lazy-validation v-model="validForm" ref="form">
           <v-alert type="warning" class="pb-4">
           <a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
              style="color: inherit; text-decoration: underline;" target="_blank"
@@ -78,50 +81,55 @@ export default {
                 :hint="$root.lang().addons.general.name.hint"
               />
 
-              <div class="pt-5">
-                <v-file-input
-                  dense
-                  show-size
-                  small-chips
-                  :counter="addonNew ? 1 : undefined"
-                  prepend-icon="mdi-image"
-                  v-model="submittedForm.headerFile"
-                  accept="image/jpg, image/jpeg, image/png, image/gif"
-                  :label="$root.lang().addons.images.header.labels.drop"
-                  :rules="headerRules"
-                  ref="headerInput"
-                  v-on:change="headerChange"
-                  :on-error="o => $root.showSnackBar(o.message, o.colour)"
-                />
-              </div>
+              <div class="text-h5 mb-3" v-if="!$vuetify.breakpoint.smAndDown">{{ $root.lang().addons.images.title }}</div>
             </div>
             <!-- RIGHT PART: HEADER IMAGE PREVIEW -->
-            <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center" v-if="hasHeader">
+            <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
               <div class="col">
-                <div style="position: relative">
+                <div style="position: relative" v-if="hasHeader">
                   <v-img
                     @click.stop="(e) => $refs.headerPreview.open()"
                     style="border-radius: 10px"
                     :aspect-ratio="16/9"
                     :src="header"
                   />
-                  <v-card v-if="!addonNew" class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
+                  <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
                     <v-icon small class="ma-1" @click.stop="(e) => $refs.headerPreview.open()">
                       mdi-fullscreen
-                    </v-icon><v-icon small class="ma-1" @click="$emit('header', undefined, true)">
+                    </v-icon><v-icon small class="ma-1" @click="() => { $emit('header', undefined, true); submittedForm.headerFile = undefined; }">
                       mdi-delete
                     </v-icon>
                   </v-card>
                 </div>
+                <v-responsive :aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16/9" min-height="100px" class="pt-3" v-else>
+                  <v-file-input
+                    class="file-uploader-drop"
+                    outlined
+                    dense
+                    show-size
+                    small-chips
+                    :disabled="disabledHeaderInput"
+                    prepend-icon=""
+                    v-model="submittedForm.headerFile"
+                    accept="image/jpg, image/jpeg, image/png, image/gif"
+                    :rules="headerRules"
+                    ref="headerInput"
+                    v-on:change="headerChange"
+                    v-on:click="headerInput"
+                    v-on:update:error="o => $root.showSnackBar(o.message, o.colour)"
+                  >
+                    <template v-slot:label>
+                      <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.header.labels.drop }}</span>
+                    </template>
+                  </v-file-input>
+                </v-responsive>
               </div>
             </div>
           </div>
 
-          <div class="text-h5 mb-3">{{ $root.lang().addons.images.title }}</div>
+          <div class="text-h5 mb-3" v-if="$vuetify.breakpoint.smAndDown">{{ $root.lang().addons.images.title }}</div>
 
           <!-- upload field for images -->
-          <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
-
           <div class="pt-5">
             <v-file-input
               dense
@@ -138,6 +146,7 @@ export default {
               ref="carouselInput"
             />
           </div>
+          <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
 
         <div class="text-h5">{{ $root.lang().addons.titles.details }}</div>
 
@@ -487,6 +496,9 @@ export default {
         .finally(() => {
           this.carouselValidating = false
         })
+    },
+    headerInput() {
+      this.$refs.headerInput.blur()
     },
     headerChange: function(file) {
       // delete not uploaded file

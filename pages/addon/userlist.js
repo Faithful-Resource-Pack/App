@@ -70,7 +70,7 @@ export default {
         </v-list-item-content>
         <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
           <template v-if="data.item.uuid">
-            <v-img eager :src="'https://visage.surgeplay.com/head/48/' + (data.item.uuid || 'X-Alex')">
+            <v-img eager :src="'https://visage.surgeplay.com/head/48/' + (data.item.uuid || 'X-Alex')" />
           </template>
           <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
         </v-list-item-avatar>

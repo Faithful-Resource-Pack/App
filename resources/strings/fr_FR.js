@@ -274,7 +274,7 @@ export default {
       title: 'Captures d\'écran',
       header: {
         labels: {
-          drop: 'Cliquez pour sélectionner l\'image d\'en-tête',
+          drop: 'Glissez l\'image d\'en-tête ou cliquez pour sélectionner',
           normal: 'Image d\'en-tête',
           replace: 'Changer l\'image d\'en-tête'
         },

@@ -16,6 +16,8 @@ export default {
       :loading="loading"
       :addon-data="addonData"
 
+      :disabled-header-input="hidisabled"
+
       :screen-sources="screenSources"
       :screen-ids="screenIds"
       :header-source="headerSource"
@@ -68,6 +70,7 @@ export default {
   `,
   data: function() {
     return {
+      hidisabled: false,
       reasonDialog: false,
       reasonData: undefined,
       reasonRules: [
@@ -144,6 +147,8 @@ export default {
       })
     },
     handleHeader: function(file, remove=false) {
+      this.hidisabled = true
+
       let promise
       if(remove) {
         promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/header', this.$root.apiOptions)
@@ -160,6 +165,9 @@ export default {
       .catch(err => {
         console.error(err)
         this.$root.showSnackBar(err, 'error')
+      })
+      .finally(() => {
+        this.hidisabled = false
       })
     },
     getHeader: function() {

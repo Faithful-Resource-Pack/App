@@ -294,7 +294,7 @@ export default {
       title: 'Screenshots',
       header: {
         labels: {
-          drop: 'Click to select header image',
+          drop: 'Drag and drop header image or click to upload',
           normal: 'Header image',
           replace: 'Replace header image'
         },

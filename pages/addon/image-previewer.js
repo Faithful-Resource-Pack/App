@@ -6,7 +6,7 @@ export default {
     FullscreenPreview
   },
   template: `
-<div>
+<v-container :class="[notEmpty ? 'px-0 pt-0' : 'pa-0']">
   <div class="scroller" style="overflow: auto; white-space: nowrap;">
     <div class="scroller-content">
       <v-card class="pa-0 mr-2" style="display: inline-block;" v-for="(item, index) in sources" :key="index">
@@ -62,6 +62,9 @@ export default {
       if (this.fullscreenIndex === undefined) return undefined
       return this.sources[this.fullscreenIndex]
     },
+    notEmpty: function() {
+      return this.sources && !!this.sources.length
+    }
   },
   methods: {
     onDelete: function(item, index, e) {
