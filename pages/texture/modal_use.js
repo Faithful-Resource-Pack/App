@@ -36,7 +36,10 @@ export default {
               :key="index"
             >
               <v-list-item-content>
-                <v-list-item-title :title="path.path" v-text="path.path"></v-list-item-title>
+                <v-list-item-title
+                  :title="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
+                  v-text="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
+                />
                 <v-list-item-subtitle :title="(path.versions||[]).join(', ')" v-text="(path.versions||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
 
