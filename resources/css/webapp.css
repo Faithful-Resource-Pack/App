@@ -286,6 +286,29 @@ img.texture-img {
   display: flex;
   flex-direction: column;
   justify-content: left;
+  position: relative;
+}
+
+.texture-info-container .texture-id {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: bold;
+  padding: 0 6px;
+
+  font-size: 14px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 11px;
+  margin-left: -3px;
+  margin-top: -11px;
+}
+.texture-info-container h1 {
+  padding-top: 8px;
+  text-align: center;
+}
+.texture-info-container h1 {
+  word-break: break-all;
 }
 
 .texture-tags-container {
@@ -299,15 +322,35 @@ img.texture-img {
   list-style: none;
 }
 
-.encased {
-  padding: 0.2rem 0.4rem;
-  margin-bottom: 5px;
-  margin-right: 5px;
-  border-radius: 3px;
+.encased, .texture-info-container .texture-id {
   background-color: #272727;
 
-  -webkit-box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
-  box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
+  -webkit-box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
+}
+
+.tippy-popper, .tippy-popper * {
+  overflow: visible !important;
+}
+
+.encased {
+  padding: 0.2rem 0.4rem;
+  margin-bottom: 3px;
+  margin-right: 3px;
+  border-radius: 3px;
+}
+.texture-info-container h1.encased {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.texture-info-container ul.encased {
+  border-bottom-right-radius: 6px;
+}
+.texture-tags-container .encased:first-child {
+  border-bottom-left-radius: 6px;
+}
+.texture-tags-container .encased:last-child {
+  border-bottom-right-radius: 6px;
 }
 
 .v-chip {

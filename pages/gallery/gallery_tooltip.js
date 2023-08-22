@@ -35,9 +35,8 @@ export default {
   template: `
 <div class="tooltip"><div class="texture-tooltip">
     <div class="texture-info-container">
-        <h1 align="left" class="encased">
-            {{ texture.textureID + '&nbsp;&dash;&nbsp;' + texture.name }}
-        </h1>
+        <span class="texture-id" v-text="'#' + texture.textureID" />
+        <h1 align="left" class="encased" v-text="texture.name" />
         <ul align="left" class="encased">
           <li v-if="modded"><i class="v-icon notranslate mdi mdi-wrench" style="font-size: 14px; margin-right: 0.2rem"></i> Modded texture</li>
           <li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
