@@ -614,7 +614,7 @@ code {
   transform: translateX(-5px) translateY(-7px) scale(0.75) !important;
 }
 
-.file-uploader-drop .v-input__append-inner {
+.file-uploader-drop.small .v-input__append-inner {
   margin-top: 0 !important;
 }
 

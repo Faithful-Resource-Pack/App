@@ -103,7 +103,7 @@ export default {
                 </div>
                 <v-responsive :aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16/9" min-height="100px" class="pt-3" v-else>
                   <v-file-input
-                    class="file-uploader-drop"
+                    class="file-uploader-drop small"
                     outlined
                     dense
                     show-size
@@ -116,7 +116,6 @@ export default {
                     ref="headerInput"
                     v-on:change="headerChange"
                     v-on:click="headerInput"
-                    v-on:update:error="o => $root.showSnackBar(o.message, o.colour)"
                   >
                     <template v-slot:label>
                       <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.header.labels.drop }}</span>
@@ -132,19 +131,24 @@ export default {
           <!-- upload field for images -->
           <div class="pt-5">
             <v-file-input
+              class="file-uploader-drop"
+              style="height: 96px"
               dense
               show-size
+              outlined
               multiple
               small-chips
-              prepend-icon="mdi-image"
+              prepend-icon=""
               v-model="submittedForm.carouselFiles"
               accept="image/jpg, image/jpeg, image/png, image/gif"
-              :label="$root.lang().addons.images.carousel.labels.drop"
               :rules="carouselRules"
-              :on-error="o => $root.showSnackBar(o.message, o.colour)"
               v-on:change="carouselChange"
               ref="carouselInput"
-            />
+            >
+              <template v-slot:label>
+                <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.carousel.labels.drop }}</span>
+              </template>
+            </v-file-input>
           </div>
           <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
 
@@ -420,10 +424,7 @@ export default {
         (this.headerSource ? this.headerSource : undefined)
     },
     carouselSources: function () {
-      return this.addonNew ?
-        (this.carouselValidating === false && this.carouselValid && this.submittedForm.carouselFiles.length ?
-          this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []) :
-        (this.screenSources ? this.screenSources : [])
+      return this.screenSources ? this.screenSources : []
     },
     headerValidSentence: function () {
       if (this.headerValidating) {
@@ -482,10 +483,8 @@ export default {
         .then(() => {
           this.carouselValid = true
           this.$emit('screenshot', files)
-          if(!this.addonNew) {
-            this.submittedForm.carouselFiles = []
-            this.$refs.carouselInput.value = []
-          }
+          this.submittedForm.carouselFiles = []
+          this.$refs.carouselInput.value = []
           this.$refs.carouselInput.blur()
         })
         .catch((error) => {

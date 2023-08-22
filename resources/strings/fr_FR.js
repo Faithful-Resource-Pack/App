@@ -286,7 +286,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Cliquez pour sélectionner des images additionnelles',
+          drop: 'Glissez ou cliquez pour ajouter des images additionnelles',
           normal: 'Image(s) additionnelles',
           replace: 'Remplacer les images additionnelles'
         },

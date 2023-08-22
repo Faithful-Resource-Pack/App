@@ -574,7 +574,7 @@ axios.get('./resources/settings.json')
             }
           }
           else {
-            this.snackbar.message = message.message
+            this.snackbar.message = message?.message
 
             if (message.response && message.response.data) {
               let submessage = message.response.data.error || message.response.data.message
