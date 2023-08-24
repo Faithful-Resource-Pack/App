@@ -596,74 +596,55 @@ code {
   color: white;
 }
 
-.file-uploader-drop fieldset {
-  border-style: dashed;
-}
-.file-uploader-drop.v-input--is-focused fieldset {
-  border-style: solid;
-}
-
-.file-uploader-drop, .file-uploader-drop .v-input__control {
-  height: 100%;
-}
-
-.file-uploader-drop .v-input__slot {
+.drop-zone {
+  display: flex;
   flex-grow: 1;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  padding: 0 10px;
+}
+.drop-zone, .drop-zone * {
+  cursor: pointer;
 }
 
-.file-uploader-drop .v-text-field__details {
-  flex-grow: 0;
-}
-
-.file-uploader-drop .v-text-field__slot {
-  align-items: stretch;
-  min-height: 0 !important;
-}
-
-.file-uploader-drop .v-text-field__slot input {
-  background: red;
-  z-index: 5;
+.drop-zone .dropzone-border {
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  max-height: none;
-  pointer-events: all;
+
+  border: 1px dashed currentColor;
+  z-index: 5;
+  border-radius: 10px;
 }
 
-.file-uploader-drop .v-label {
-  white-space: normal;
-  overflow: initial;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  height: auto !important;
-  max-height: auto !important;
-
-  max-width: 100%;
-  top: 50% !important;
-  transform: translateY(-50%);
+.drop-zone.disabled {
+  pointer-events: none;
 }
-.file-uploader-drop .v-label--active {
+
+.drop-zone.disabled .dropzone-border, .drop-zone.disabled .label {
+  opacity: 0.5;
+}
+.drop-zone .dropzone-border, .drop-zone .label {
+  opacity: 0.7;
+  transition: opacity 250ms ease;
+}
+.drop-zone.enabled:hover .dropzone-border, .drop-zone.enabled:hover .label  {
+  opacity: 1;
+}
+.drop-zone .hidden-input {
+  opacity: 0;
   overflow: hidden;
-  white-space: nowrap;
-
-  max-width: 133%;
-  top: 0 !important;
-  transform: translateX(-5px) translateY(-7px) scale(0.75) !important;
+  position: absolute;
+  width: 1px;
+  height: 1px;
 }
-
-.file-uploader-drop.small .v-input__append-inner {
-  margin-top: 0 !important;
-}
-
-.file-uploader-drop .v-file-input__text--chips {
-  align-items: baseline;
-  padding-top: 6px !important;
+.drop-zone .label  {
+  font-size: 16px;
+  display: block;
 }
 
 .v-image__image--preload {

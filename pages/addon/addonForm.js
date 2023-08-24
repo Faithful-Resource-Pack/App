@@ -2,13 +2,15 @@
 const UserList = () => import('./userlist.js')
 const ImagePreviewer = () => import('./image-previewer.js')
 const FullscreenPreview = () => import('./fullscreen-preview.js')
+const DropZone = () => import('../components/drop-zone.js')
 
 export default {
   name: 'addon-form',
   components: {
     UserList,
     ImagePreviewer,
-    FullscreenPreview
+    FullscreenPreview,
+    DropZone,
   },
   props: {
     addonNew: {
@@ -86,7 +88,7 @@ export default {
             <!-- RIGHT PART: HEADER IMAGE PREVIEW -->
             <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
               <div class="col">
-                <div style="position: relative" v-if="hasHeader">
+                <div style="position: relative" v-if="hasHeader" class="mt-3">
                   <v-img
                     @click.stop="(e) => $refs.headerPreview.open()"
                     style="border-radius: 10px"
@@ -101,26 +103,18 @@ export default {
                     </v-icon>
                   </v-card>
                 </div>
-                <v-responsive :aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16/9" min-height="100px" class="pt-3" v-else>
-                  <v-file-input
-                    class="file-uploader-drop small"
-                    outlined
-                    dense
-                    show-size
-                    small-chips
+                <v-responsive :aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16/9" min-height="100px" class="mt-3" v-else>
+                  <DropZone
                     :disabled="disabledHeaderInput"
-                    prepend-icon=""
                     v-model="submittedForm.headerFile"
                     accept="image/jpg, image/jpeg, image/png, image/gif"
-                    :rules="headerRules"
-                    ref="headerInput"
                     v-on:change="headerChange"
-                    v-on:click="headerInput"
+                    style="height: 100%"
                   >
                     <template v-slot:label>
                       <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.header.labels.drop }}</span>
                     </template>
-                  </v-file-input>
+                  </DropZone>
                 </v-responsive>
               </div>
             </div>
@@ -129,26 +123,18 @@ export default {
           <div class="text-h5 mb-3" v-if="$vuetify.breakpoint.smAndDown">{{ $root.lang().addons.images.title }}</div>
 
           <!-- upload field for images -->
-          <div class="pt-5">
-            <v-file-input
-              class="file-uploader-drop"
-              style="height: 96px"
-              dense
-              show-size
-              outlined
+          <div class="py-5">
+            <DropZone
               multiple
-              small-chips
-              prepend-icon=""
               v-model="submittedForm.carouselFiles"
               accept="image/jpg, image/jpeg, image/png, image/gif"
-              :rules="carouselRules"
               v-on:change="carouselChange"
-              ref="carouselInput"
+              style="height: 70px"
             >
               <template v-slot:label>
                 <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.carousel.labels.drop }}</span>
               </template>
-            </v-file-input>
+            </DropZone>
           </div>
           <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
 
@@ -484,20 +470,16 @@ export default {
           this.carouselValid = true
           this.$emit('screenshot', files)
           this.submittedForm.carouselFiles = []
-          this.$refs.carouselInput.value = []
-          this.$refs.carouselInput.blur()
         })
         .catch((error) => {
           console.error(error)
           this.carouselValid = false
           this.carouselError = error.message
+          this.$root.showSnackBar(error, 'error')
         })
         .finally(() => {
           this.carouselValidating = false
         })
-    },
-    headerInput() {
-      this.$refs.headerInput.blur()
     },
     headerChange: function(file) {
       // delete not uploaded file
@@ -517,8 +499,6 @@ export default {
           this.$emit('header', file)
           if(!this.addonNew) {
             this.submittedForm.headerFile = undefined
-            this.$refs.headerInput.value = null
-            this.$refs.headerInput.blur()
           }
         })
         .catch((error) => {
