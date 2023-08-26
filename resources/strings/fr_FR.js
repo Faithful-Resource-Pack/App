@@ -34,6 +34,7 @@ export default {
       yes: 'Oui',
       deny: 'Refuser',
       approve: 'Approuver',
+      archive: 'Archiver',
       load_more: 'Charger plus'
     },
     tabs: {
@@ -174,6 +175,7 @@ export default {
       texture_id: 'ID de la texture',
       texture_uses: 'Utilisation(s) de la texture',
       use_name: 'Nom de l\'utilisation',
+      assets: 'Dossier d\'asset',
       use_id: 'ID de l\'utilisation',
       use_edition: 'Edition de l\'utilisation',
       path: 'Chemin',
@@ -200,7 +202,8 @@ export default {
       translation: 'Vérifier les traductions',
       pending: 'En attente de validation',
       denied: 'Refusé(s)',
-      approved: 'Accepté(s)'
+      approved: 'Accepté(s)',
+      archived: 'Archivé(s)',
     },
     deny_window: {
       label: 'Écrivez une raison…',
@@ -209,6 +212,7 @@ export default {
     labels: {
       pending: 'Il n\'y a actuellement aucun add-on en attente !',
       denied: 'Il n\'y a actuellement aucun add-on refusé !',
+      archived: 'Il n\'y a actuellement aucun add-on archivé !',
       load_approved: 'Charger les add-on approuvés'
     },
     addon: {
@@ -244,6 +248,7 @@ export default {
     },
     general: {
       loading_addon: 'Chargement de l\'addon',
+      rules: 'Assurez-vous que l\'add-on suit les règles décrites dans la documentation',
       title: 'Général',
       name: {
         label: 'Nom de l\'add-on',
@@ -271,7 +276,7 @@ export default {
       title: 'Captures d\'écran',
       header: {
         labels: {
-          drop: 'Cliquez pour sélectionner l\'image d\'en-tête',
+          drop: 'Glissez l\'image d\'en-tête ou cliquez pour sélectionner',
           normal: 'Image d\'en-tête',
           replace: 'Changer l\'image d\'en-tête'
         },
@@ -283,7 +288,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Cliquez pour sélectionner des images additionnelles',
+          drop: 'Glissez ou cliquez pour ajouter des images additionnelles',
           normal: 'Image(s) additionnelles',
           replace: 'Remplacer les images additionnelles'
         },
@@ -460,6 +465,7 @@ export default {
           },
           tabs: {
             date: "Date",
+            pack: "Pack",
             authors: "Auteur(s)",
             id: "ID",
             name: "Nom",
@@ -512,7 +518,9 @@ export default {
     reconnecting: 'Reconnexion...',
     refreshing_discord_token: 'Mise à jour du token Discord...',
     dummy_step: 'Téléchargement de RAM...',
-    updating_profile_informations: 'Mise à jour des informations du profil...'
+    updating_profile_informations: 'Mise à jour des informations du profil...',
+    failed_to_reconnect: 'Impossible de se reconnecter',
+    loggging_out: 'Déconnexion...',
   },
   datepicker: {
     year: 'Année',

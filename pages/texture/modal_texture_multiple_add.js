@@ -237,7 +237,7 @@ export default {
         this.textures = data
       } catch (err) {
         console.error(err)
-        this.$root.showSnackBar(`${err.message}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       }
     },
     send: function () {
@@ -251,7 +251,7 @@ export default {
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     }
   },

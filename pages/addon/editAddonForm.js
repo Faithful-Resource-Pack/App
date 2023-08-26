@@ -7,7 +7,7 @@ export default {
   },
   template: `
   <div class="container">
-    <h4 class="text-h4 py-4">{{ $root.lang().addons.titles.edit }} </h4>
+    <h4 class="text-h4 py-4">{{ $root.lang().addons.titles.edit }} <span id="addon-id">#{{this.id}}</span></h4>
     <addon-form
       class="pa-0"
       
@@ -15,6 +15,8 @@ export default {
 
       :loading="loading"
       :addon-data="addonData"
+
+      :disabled-header-input="hidisabled"
 
       :screen-sources="screenSources"
       :screen-ids="screenIds"
@@ -24,10 +26,63 @@ export default {
       v-on:header="handleHeader"
       v-on:screenshot="handleScreenshot"
      />
+    <v-dialog 
+      v-model="reasonDialog"
+      persistent
+      max-width="600px"
+    >
+    <v-card>
+      <v-card-title>
+        <span class="text-h5">{{ this.$root.lang('addons.general.reason.title') }}</span>
+      </v-card-title>
+      <v-form lazy-validation v-model="validForm" ref="reasonForm">
+        <v-card-text>
+          <p>{{ this.$root.lang('addons.general.reason.text') }}</p>
+            <v-text-field
+              :label="this.$root.lang('addons.general.reason.title')"
+              required
+              :rules="reasonRules"
+              v-model="reason"
+              :counter="reasonCounter.max"
+            />
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="gray"
+            text
+            @click="() => handleReasonDialog(false)"
+          >
+            {{ $root.lang('global.btn.cancel') }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            text
+            @click="() => handleReasonDialog(true)"
+          >
+            {{ $root.lang('global.btn.submit') }}
+          </v-btn>
+        </v-card-actions>
+      </v-form>
+      </v-card>
+     </v-dialog>
   </div>
   `,
   data: function() {
     return {
+      hidisabled: false,
+      reasonDialog: false,
+      reasonData: undefined,
+      reasonRules: [
+        () => !!(this.reason && this.reason.trim()) || this.$root.lang('addons.general.reason.required'),
+        () => (this.reason.trim().length < this.reasonCounter.min || this.reason.trim().length > this.reasonCounter.max) ? this.$root.lang('addons.general.reason.bounds').replace('%s', this.reasonCounter.min).replace('%s', this.reasonCounter.max) : true,
+      ],
+      reasonCounter: {
+        min: 10,
+        max: 150
+      },
+      reason: '',
+      validForm: false,
       addonData: undefined,
       headerSource: undefined,
       screenSources: [],
@@ -43,8 +98,32 @@ export default {
     }
   },
   methods: {
+    handleReasonDialog(submitted) {
+      const valid = this.$refs.reasonForm.validate()
+      if(!valid) return
+
+      this.reasonDialog = false
+      if(submitted) {
+        this.confirmSubmit(this.reasonData, false)
+      } else {
+        this.reason = ''
+      }
+    },
     handleSubmit: function(data, approve) {
-      console.log('edit submit')
+      if(!approve) {
+        this.reasonData = data
+        this.reasonDialog = true
+      } else {
+        this.confirmSubmit(data, approve)
+      }
+    },
+    confirmSubmit: function(data, approve) {
+      if(approve) {
+        data.reason = "Admin edit"
+      } else {
+        data.reason = this.reason.trim()
+        this.reason = ''
+      }
       let prom = axios.patch(this.$root.apiURL + '/addons/' + this.id, data, this.$root.apiOptions)
       .then(() => {
         this.$root.showSnackBar('Saved', 'success')
@@ -68,6 +147,8 @@ export default {
       })
     },
     handleHeader: function(file, remove=false) {
+      this.hidisabled = true
+
       let promise
       if(remove) {
         promise = axios.delete(this.$root.apiURL + '/addons/' + this.id + '/header', this.$root.apiOptions)
@@ -84,6 +165,9 @@ export default {
       .catch(err => {
         console.error(err)
         this.$root.showSnackBar(err, 'error')
+      })
+      .finally(() => {
+        this.hidisabled = false
       })
     },
     getHeader: function() {
@@ -166,6 +250,7 @@ export default {
         ...res[0].data,
         downloads: res[1].data 
       }
+      delete addon_loaded.last_updated
       delete addon_loaded.slug
       delete addon_loaded.approval
       delete addon_loaded.id

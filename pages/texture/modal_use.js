@@ -21,11 +21,12 @@ export default {
     <v-card>
       <v-card-title class="headline" v-text="subDialogTitle"></v-card-title>
       <v-card-text>
-        <v-form ref="form">
+        <v-form ref="form" v-model="formValid">
           <v-text-field :color="color"v-model="subFormData.textureUseName" :label="$root.lang().database.labels.use_name"></v-text-field>
-          <v-text-field :color="color" v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
-          <v-text-field :color="color" v-if="add == false" :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
-          <v-select :color="color" :item-color="color" required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
+          <v-text-field :color="color"v-model="subFormData.assets" :label="$root.lang('database.labels.assets')"></v-text-field>
+          <v-text-field :color="color" required persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
+          <v-text-field :color="color" v-if="add == false" persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
+          <v-select required :color="color" :item-color="color" required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
           <h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
           <p v-if="add" align="center" style="color: red">⚠️<br><strong>{{ $root.lang().database.hints.warning_path }}</strong></p>
           <v-list v-if="Object.keys(subFormData.paths).length && add == false" label="Texture Paths">
@@ -35,7 +36,10 @@ export default {
               :key="index"
             >
               <v-list-item-content>
-                <v-list-item-title :title="path.path" v-text="path.path"></v-list-item-title>
+                <v-list-item-title
+                  :title="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
+                  v-text="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
+                />
                 <v-list-item-subtitle :title="(path.versions||[]).join(', ')" v-text="(path.versions||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
 
@@ -69,6 +73,7 @@ export default {
           color="darken-1"
           text
           @click="send"
+          :disabled="!formValid"
         >
           {{ $root.lang().global.btn.save }}
         </v-btn>
@@ -114,8 +119,10 @@ export default {
   },
   data() {
     return {
+      formValid: false,
       subFormData: {
         editions: [],
+        assets: '',
         id: '',
         textureID: '',
         textureUseName: '',
@@ -173,37 +180,49 @@ export default {
       return result
     },
     send: function () {
-      const newData = JSON.parse(JSON.stringify(this.subFormData))
-      newData.token = this.$root.user.access_token
+      const formData = this.subFormData;
+      const data = {
+        name: formData.textureUseName || '',
+        texture: formData.textureID,
+        edition: formData.editions[0],
+        assets: formData.assets || '',
+      };
 
+      let method = 'put';
+      let useId = '';
       if (this.add) {
-        newData.id = this.textureID + this.suffix[this.usesLength]
-        newData.textureID = parseInt(this.textureID, 10)
+        data.id = formData.id;
+        data.texture = Number.parseInt(this.$props.textureID, 10);
+        method = 'post';
+      } else {
+        useId = formData.id;
       }
 
-      axios.post(`/uses/${this.add ? 'add' : 'change'}`, newData)
+      axios[method](`${this.$root.apiURL}/uses/${useId}`, data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableSubDialog(true)
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     },
-    getPaths: function (useID) {
-      axios.get('/paths/search', {
-        params: {
-          useID: useID
-        }
-      })
+    getPaths: function (useId) {
+      axios.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
         .then((res) => {
           const temp = res.data
           this.subFormData.paths = {}
 
           for (let i = 0; i < temp.length; i++) {
             temp[i].versions.sort(this.MinecraftSorter)
-            this.subFormData.paths[temp[i].id] = temp[i]
+            this.subFormData.paths[temp[i].id] = {
+              ...temp[i],
+              useId: temp[i].useId || temp[i].use,
+              useID: temp[i].useId || temp[i].use,
+              use: temp[i].use || temp[i].useId,
+              path: temp[i].path || temp[i].name
+            }
           }
         })
         .catch(function (err) {
@@ -219,10 +238,11 @@ export default {
     subDialog: function (n, o) {
       Vue.nextTick(() => {
         if (!this.add) {
-          this.subFormData.editions = this.data.editions
+          this.subFormData.editions = [this.data.edition]
           this.subFormData.id = this.data.id
-          this.subFormData.textureUseName = this.data.textureUseName
-          this.subFormData.textureID = this.data.textureID
+          this.subFormData.textureUseName = this.data.name
+          this.subFormData.assets = this.data.assets
+          this.subFormData.textureID = this.data.texture
           this.getPaths(this.data.id)
         } else {
           this.$refs.form.reset()

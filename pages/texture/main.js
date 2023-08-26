@@ -214,8 +214,13 @@ export default {
     startSearch: function () {
       let newPath = this.textureURL(this.type, this.search)
 
-      if (newPath === this.$route.path) return // DO NOT CHANGE ROUTE IF SAME PATH
-      else this.$router.push(newPath)
+      // DO NOT CHANGE ROUTE IF SAME PATH
+      if (newPath !== this.$route.path) {
+        this.$router.push(newPath)
+      } else {
+        // else get textures manually
+        this.getTextures()
+      }
     },
     clearSearch: function () {
       this.search = ''
@@ -289,9 +294,9 @@ export default {
           console.error(err)
         })
     },
-    update: function () {
+    update: function (textures=true) {
       this.getTypes()
-      this.getTextures()
+      if(textures) this.getTextures()
       this.getEditions()
       this.getVersions()
     },
@@ -300,12 +305,11 @@ export default {
       this.update()
     },
     removeTexture: function(data) {
-      const body = {
-        id: data.id,
-        token: this.$root.user.access_token
-      }
-
-      return axios.post('/textures/remove', body)
+      const textureId = data.id
+      return axios.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
+        .then(() => {
+          this.startSearch()
+        })
     }
   },
   watch: {
@@ -322,7 +326,7 @@ export default {
     }
   },
   mounted: function () {
-    this.update()
+    this.update(false)
     window.updatePageStyles(this)
   }
 }

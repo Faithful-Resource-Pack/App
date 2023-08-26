@@ -23,8 +23,8 @@ export default {
 
   <v-row id="dashboard-row">
     <v-col cols="12" sm="3">
-      <profile-card v-if="$root.isUserLogged"/>
-      <compliance-card v-else />
+      <profile-card :show="$root.isUserLogged" />
+      <compliance-card :show="!$root.isUserLogged" />
     </v-col>
     <v-col cols="12" sm="9">
       <user-card :admin="admin" :colors="colors"/>

@@ -68,7 +68,21 @@ app.use(express.json({ limit: '50mb' }))
 app.get(webappURL, async (req, res) => {
   let file = fs.readFileSync('./index.html', 'utf8')
 
-  file = file.replace('</head>', `  <script>window.apiURL='${API_URL}'</script>\n</head>`)
+  const WINDOW_ENV = {
+    DISCORD_USER_URL: process.env['DISCORD_USER_URL'] || undefined
+  }
+
+  file = file.replace('</head>',
+      `  <script>\n`
+    + `    window.apiURL = '${API_URL}'\n`
+    + `    window.env = ${JSON.stringify(WINDOW_ENV)}\n`
+    + `  </script>\n</head>`)
+
+  // change Vue to dev version for devtools
+  if(DEV) {
+    file = file.replace('/vue.min.js', '/vue.js')
+    file = file.replace('/pinia.iife.min.js', '/pinia.iife.js')
+  }
 
   if (DEV && process.env.BROWSER_REFRESH_URL) {
     file = file.replace('</body>', `<script src="${process.env.BROWSER_REFRESH_URL}"></script></body>`)
@@ -139,14 +153,14 @@ const verifyAuth = (token, roles = []) => {
     .then(json => {
       const userID = json.id
 
-      return contributorsBackend.getUser(userID)
+      return contributorsBackend.getUser(userID, token)
     })
     .then(user => {
       if (roles.length == 0) return Promise.resolve(user[ID_FIELD])
 
       let i = 0
       while (roles.length >= i) {
-        if (user.type.includes(roles[i])) return Promise.resolve(user[ID_FIELD])
+        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user[ID_FIELD])
         i++
       }
 
@@ -208,255 +222,9 @@ filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess
 
 /**
  * ==========================================
- *                   REVIEW
- * ==========================================
- */
-
-// POST
-/**
- * Perms: admins
- */
-const APPROVAL_NAMES = {
-  deny: 'denied',
-  approve: 'approved'
-}
-
-Object.keys(APPROVAL_NAMES).forEach(approvalKey => {
-  app.post('/review/addons/' + approvalKey, (req, res) => {
-    verifyAuth(req.body.token, [settings.roles.admin.name])
-      .then(() => {
-        return addonsBackend.approval(req.body.approval, APPROVAL_NAMES[approvalKey], req.body.id)
-      })
-      .then(postSuccess(res))
-      .catch(errorHandler(res))
-  })
-})
-
-/**
- * ==========================================
- *                   ADD-ONS
- * ==========================================
- */
-
-// POST
-/**
- * Perms: only members+ can submit addons
- * -> to be a member, log in using Discord
- */
-app.post('/addons/submit', function (req, res) {
-  verifyAuth(req.body.token)
-    .then(() => {
-      return addonsBackend.submit(req.body.data)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * Perms: anyone
- */
-app.post('/addons/edit', function (req, res) {
-  verifyAuth(req.body.token)
-    .then(userID => {
-      return addonsBackend.edit(req.body.data, userID)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * Perms: anyone
- * TODO : ONLY AUTHORS & ADMINS CAN EDIT IT
- */
-app.post('/addons/remove', function (req, res) {
-  verifyAuth(req.body.token)
-    .then(userID => {
-      return addonsBackend.remove(req.body.id, userID)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/addons/search/author', function (req, res) {
-  const params = req.query
-  const authorID = params.authorID
-
-  addonsBackend.search(authorID, 'author')
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-const approvalStatus = ['pending', 'denied', 'approved']
-approvalStatus.forEach(approvalKey => {
-  app.get('/addons/search/' + approvalKey, function (req, res) {
-    addonsBackend.search(approvalKey, 'status')
-      .then(getSuccess(res))
-      .catch(errorHandler(res))
-  })
-})
-
-app.get('/addons/get/names', function (req, res) {
-  addonsBackend.get(['name'])
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * ==========================================
- *                   PROFILE
- * ==========================================
- */
-
-// POST
-/**
- * Perms: self
- */
-app.post('/profile/set', function (req, res) {
-  if (!req.body.access_token) {
-    res.status(400)
-    res.end()
-    return
-  }
-
-  fetch('https://discord.com/api/users/@me', {
-    headers: {
-      authorization: `Bearer ${req.body.access_token}`
-    }
-  })
-    .then(response => response.json())
-    .then(json => {
-      const data = req.body
-      data.id = json.id
-
-      contributorsBackend.change(data)
-        .then(postSuccess(res))
-        .catch(err => {
-          res.status(500)
-          res.send(err)
-          res.end()
-        })
-    })
-})
-
-/**
- * Perms: self
- */
-app.post('/profile/get', function (req, res) {
-  if (!req.body.access_token) {
-    res.status(400)
-    res.end()
-    return
-  }
-
-  let userID
-
-  fetch('https://discord.com/api/users/@me', {
-    headers: {
-      authorization: `Bearer ${req.body.access_token}`
-    }
-  })
-    .then(response => response.json())
-    .then(json => {
-      userID = json.id
-      contributorsBackend.getUser(userID)
-        .then(getSuccess(res))
-        .catch(err => {
-          res.status(500)
-          res.send(err)
-          res.end()
-        })
-    })
-})
-
-/**
- * Perms: self
- */
-app.post('/profile/roles', function (req, res) {
-  if (!req.body.access_token) {
-    res.status(400)
-    res.end()
-    return
-  }
-
-  let userID
-
-  const dis = fetch('https://discord.com/api/users/@me', {
-    headers: {
-      authorization: `Bearer ${req.body.access_token}`
-    }
-  }).then(response => {
-    if(!response.ok) {
-      res.status(response.status)
-      
-      response.json().then(body => {
-        res.send(body)
-        res.end()
-      })
-
-      return false
-    }
-
-    return response.json()
-  })
-
-  dis
-    .then(json => {
-      if(!json) return
-
-      userID = json.id
-      username = json.username
-
-      contributorsBackend.getUser(userID)
-        .then(contributor => {
-          res.setHeader('Content-Type', 'application/json')
-          res.send(contributor.roles || [])
-          res.end()
-        })
-        .catch(err => {
-
-          // if user not found -> does not exist -> add a new one to the db
-          contributorsBackend.add({
-            username: username,
-            roles: [],
-            media: [],
-            id: userID
-          })
-            .then(() => {
-              contributorsBackend.getUser(userID)
-                .then(contributor => {
-                  res.setHeader('Content-Type', 'application/json')
-                  res.send(contributor.roles || [])
-                  res.end()
-                })
-            })
-            .catch(err => {
-              res.status(500)
-              res.send(err)
-              res.end()
-            })
-        })
-    })
-})
-
-/**
- * ==========================================
  *                 TEXTURES
  * ==========================================
  */
-
-// POST
-/**
- * Perms: admins + dev
- */
-app.post('/textures/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
 
 /**
  * Perms: admins + dev
@@ -524,106 +292,12 @@ app.post('/textures/remove', (req, res) => {
     .catch(errorHandler(res))
 })
 
-/**
- * ==========================================
- *                    USES
- * ==========================================
- */
-
-// POST
-app.post('/uses/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/uses/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.add(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/uses/remove', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return usesBackend.remove(req.body.id, req.body.deletePaths)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/uses/search/', function (req, res) {
-  const params = req.query
-  const textureID = params.textureID
-
-  usesBackend.search(textureID)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/uses/all/', function (req, res) {
-  usesBackend.uses()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-/**
- * ==========================================
- *                   PATHS
- * ==========================================
- */
-
-// POST
-app.post('/paths/change', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.change(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
 app.post('/paths/version-update/', (req, res) => {
   verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
       return pathsBackend.update(req.body.actual, req.body.new)
     })
     .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/paths/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.add(req.body)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/paths/remove', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.remove(req.body.id)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/paths/search/', function (req, res) {
-  const params = req.query
-  const useID = params.useID
-
-  pathsBackend.search(useID)
-    .then(getSuccess(res))
     .catch(errorHandler(res))
 })
 

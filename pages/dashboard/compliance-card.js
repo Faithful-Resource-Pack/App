@@ -5,10 +5,17 @@ export default {
   components: {
     'dashboard-card': DashBoardCard
   },
+  props: {
+    show: {
+      required: true
+    },
+  },
   template: `
 <dashboard-card
   :title="''"
+  id="compliance-card"
   class="d-flex flex-column"
+  :style="{ display: show ? 'inherit' : 'none !important' }"
 >
   <v-card-text class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
     <div class="text-center">
@@ -31,12 +38,11 @@ export default {
       </div>
     </div>
 
-    <v-btn 
+    <v-btn
       id="login-button"
-      class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-2"
+      class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-2 blurple"
       href="/api/discord/login"
     >
-      <v-icon left>mdi-discord</v-icon>
       {{ $root.lang().global.login }}
     </v-btn>
   </v-card-text>

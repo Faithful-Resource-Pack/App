@@ -10,10 +10,6 @@ const AddonEditPage = () => import('./pages/addon/editAddonForm.js')
 const AddonSubmissionsPage = () => import('./pages/addon/submissions.js')
 const ReviewAddonsPage = () => import('./pages/review/review_addons.js')
 const ReviewTranslationsPage = () => import('./pages/review/review_translations.js')
-const ModNewPage = () => import('./pages/modding/mods_new.js')
-const ModpackNewPage = () => import('./pages/modding/modpacks_new.js')
-const ModsPage = () => import('./pages/modding/mods.js')
-const ModpacksPage = () => import('./pages/modding/modpacks.js')
 const filesPage = () => import('./pages/files/pageFiles.js')
 const GalleryPage = () => import('./pages/gallery/gallery.js')
 const SettingsPage = () => import('./pages/settings/settingsPage.js')
@@ -38,7 +34,7 @@ window.updatePageStyles = function(cmp) {
 
   const pageId = cmp.$el.id
   const hex = colorToHex(cmp.pageColor)
-  
+
   cmp.pageStyles = `<style>
   html.theme--light,
   html.theme--light .colored,
@@ -72,8 +68,8 @@ Object.defineProperty(Object.prototype, 'isObject', {
 
 Object.defineProperty(Object.prototype, 'merge', {
   /**
-   * @param {Object} target 
-   * @param  {...Object} sources 
+   * @param {Object} target
+   * @param  {...Object} sources
    */
   value: (target, ...sources) => {
     if (!sources.length) return target
@@ -106,7 +102,7 @@ const LANG_KEY = 'lang';
 const LANG_DEFAULT = 'en';
 const _get_lang = function () {
   lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
-  
+
   return lang_value;
 }
 
@@ -117,6 +113,7 @@ const _set_lang = function (val) {
 }
 ///////////
 
+const AUTH_STORAGE_KEY = 'auth';
 const MENU_KEY = 'menu_key';
 const MENU_DEFAULT = false;
 
@@ -133,18 +130,18 @@ const router = new VueRouter({ routes: ALL_ROUTES })
 const ALL_TABS = [
   {
     label: 'user',
-    subtabs: [{ 
+    subtabs: [{
       enabled: true, icon: 'mdi-view-dashboard', label: 'dashboard',
       unlogged: true,
       routes: [{ path: '/dashboard', component: DashboardPage }]
     }, {
       enabled: true, icon: 'mdi-account', label: 'profile',
       routes: [{ path: '/profile', component: ProfilePage }]
-    }, { 
+    }, {
       enabled: true, icon: 'mdi-chart-timeline-variant', label: 'statistics',
       unlogged: true,
       routes: [{ path: '/contributions-stats', component: ContributorStatsPage}]
-    }, { 
+    }, {
       enabled: true, icon: 'mdi-texture', label: 'gallery',
       unlogged: true,
       routes: [
@@ -164,16 +161,6 @@ const ALL_TABS = [
         { path: '/addons/new', component: AddonNewPage },
         { path: '/addons/edit/:id', component: AddonEditPage }
       ]
-    }]
-  },
-  {
-    label: 'modding',
-    subtabs: [{
-      enabled: false, icon: 'mdi-pipe-wrench', label: 'mod',
-      routes: [{ path: '/modding/mods/new', component: ModNewPage }]
-    }, {
-      enabled: false, icon: 'mdi-memory', label: 'modpack',
-      routes: [{ path: '/modding/modpacks/new', component: ModpackNewPage }]
     }]
   },
   {
@@ -210,14 +197,8 @@ const ALL_TABS = [
         { path: '/textures/:type?/:name*', component: TexturePage }
       ]
     }, {
-      enabled: true, icon: 'mdi-settings', label: 'settings',
+      enabled: true, icon: 'mdi-cog', label: 'settings',
       routes: [{ path: '/settings', component: SettingsPage }]
-    }, {
-      enabled: false, icon: 'mdi-pipe-wrench', label: 'mods',
-      routes: [{ path: '/modding/mods', component: ModsPage }]
-    }, {
-      enabled: false, icon: 'mdi-memory', label: 'modpacks',
-      routes: [{ path: '/modding/modpacks', component: ModpacksPage }]
     }],
     roles: ['Developer', 'Administrator']
   }
@@ -233,15 +214,6 @@ ALL_TABS.filter(t => t.roles === undefined)
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
-const EMPTY_USER = {
-  avatar: '',
-  banner: '',
-  id: 0,
-  username: '',
-  email: '',
-  roles: []
-}
-
 // convert-import
 
 window.v = undefined
@@ -249,6 +221,9 @@ axios.get('./resources/settings.json')
   .then(res => {
     window.settings = res.data
   }).then(() => {
+    const pinia = Pinia.createPinia();
+
+    Vue.use(pinia);
     Vue.use(VueTippy);
     Vue.component("tippy", VueTippy.TippyComponent);
 
@@ -256,7 +231,13 @@ axios.get('./resources/settings.json')
       router,
       el: '#app',
       data() {
+        let discordUser = discordUserStore()
+        discordUser.params(window.env?.DISCORD_USER_URL)
+
         return {
+          discordAuth: discordAuthStore(),
+          discordUser,
+          appUser: appUserStore(),
           badges: {},
           colors: colors,
           dark: undefined,
@@ -268,7 +249,6 @@ axios.get('./resources/settings.json')
             width: window.innerWidth,
             height: window.innerHeight
           },
-          user: EMPTY_USER,
           tabs: ALL_TABS.map(t => {
             t.subtabs = t.subtabs.map(s => {
               s.to = s.routes[0].path
@@ -309,14 +289,6 @@ axios.get('./resources/settings.json')
             }
           },
           immediate: true
-        },
-        user: {
-          handler(n, o) {
-            if (Vue.config.devtools && n.access_token && n.access_token !== o.access_token) {
-              console.info(n.access_token)
-            }
-          },
-          deep: true
         },
         dark: {
           handler(n, o) {
@@ -403,7 +375,7 @@ axios.get('./resources/settings.json')
                 allowed = n.includes(t.roles[i])
                 i++;
               }
-              
+
               return allowed
             })
             .map(t => t.subtabs).flat(1).filter(s => !s.unlogged)
@@ -421,6 +393,18 @@ axios.get('./resources/settings.json')
         }
       },
       computed: {
+        user: function() {
+          return {
+            access_token: this.discordAuth.access_token,
+
+            avatar: this.discordUser.discordAvatar,
+            banner: this.discordUser.discordBanner,
+
+            id: this.appUser.appUserId,
+            username: this.discordUser.discordName,
+            roles: this.appUser.appUserRoles || [],
+          }
+        },
         apiURL: function() {
           if(Vue.config.devtools && this.vapiURL && this.vapiURL.includes('localhost') && window.location.host !== 'localhost')
             return this.vapiURL.replace('localhost', window.location.host)
@@ -472,7 +456,7 @@ axios.get('./resources/settings.json')
          * @returns true if the user is logged
          */
         isUserLogged: function () {
-          return this.user && this.user.id !== 0 && this.user.id != null
+          return this.user && this.user.id && this.user.id !== undefined
         },
         /**
          * Tell if the user is an admin
@@ -504,10 +488,12 @@ axios.get('./resources/settings.json')
       },
       methods: {
         lang_to_bcp47: function(lang) {
-          return LANGUAGES.filter(l => l.lang === lang)[0].bcp47
+          return LANGUAGES.filter(l => l.lang === lang)[0]?.bcp47
         },
         loadLanguage: function(language) {
           const lang = this.languages.filter(l => l.lang === language)[0]
+
+          if(!lang) return
 
           moment.locale(lang.bcp47)
 
@@ -544,9 +530,14 @@ axios.get('./resources/settings.json')
               }
               Vue.set(this.badges, url, val);
             })
-          setTimeout(() => {
-            this.loadBadge(url)
-          }, 15000);
+
+          if(this.isAdmin) {
+            setTimeout(() => {
+              if(this.admin) {
+                this.loadBadge(url)
+              }
+            }, 15000);
+          }
         },
         lang: function (path) {
           let response = this.langs[this.selectedLang]
@@ -583,7 +574,7 @@ axios.get('./resources/settings.json')
             }
           }
           else {
-            this.snackbar.message = message.message
+            this.snackbar.message = message?.message
 
             if (message.response && message.response.data) {
               let submessage = message.response.data.error || message.response.data.message
@@ -597,38 +588,7 @@ axios.get('./resources/settings.json')
           this.snackbar.show = true
         },
         logout: function () {
-          this.user = EMPTY_USER
-          window.localStorage.removeItem('auth')
-
-          window.location.hash = '/'
-          window.location.reload()
-          this.update()
-        },
-        logUser: function () {
-          let auth
-          try {
-            auth = JSON.parse(window.localStorage.getItem('auth'))
-          } catch (err) {
-            auth = {}
-          }
-
-          this.user = Object.assign({}, this.user, auth)
-        },
-        fetchRoles: function () {
-          if (!this.isUserLogged) return
-
-          const data = JSON.parse(JSON.stringify(this.user))
-
-          axios.post('/profile/roles', data)
-            .then((res) => {
-              this.user.roles = res.data
-            })
-            .catch(err => {
-              console.error(err)
-              
-              // redirect to reconnect
-              router.push({ path: '/reconnect' }).catch(() => {})
-            })
+          this.discordAuth.logout()
         },
         /**
          * Use this function in sub-components to check perms
@@ -641,60 +601,19 @@ axios.get('./resources/settings.json')
           if (markdown === null || !markdown) return ''
           return marked(markdown, { sanitize: true })
         },
-        refreshToken: function () {
-          const authStr = window.localStorage.getItem('auth')
-          const auth = JSON.parse(authStr)
-          const data = { refresh_token: auth.refresh_token }
-
-          axios.post('/api/discord/refresh', data)
-            .then(response => {
-              return response.data
-            })
-            .then(json => {
-              this.tokenCallback(json, auth)
-            })
-            .catch(err => {
-              console.error(err)
-              this.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
-              this.logout()
-            })
-        },
-        update: function () {
-          this.logUser()
-          this.fetchRoles()
-        },
-        tokenCallback: function (accessJSON, auth = {}) {
-          auth.expires_at = new Date((new Date()).getTime() + (accessJSON.expires_in * 1000) - 60000)
-          auth.refresh_token = accessJSON.refresh_token
-          auth.access_token = accessJSON.access_token
-
-          window.localStorage.setItem('auth', JSON.stringify(auth))
-          window.location.href = window.location.origin + window.location.pathname + window.location.hash
-          this.emitConnected()
-        },
         addToken(data) {
           data.token = this.user.access_token
           return data
         },
         emitConnected() {
-          const authStr = window.localStorage.getItem('auth')
-          if (!authStr) return
-
-          const auth = JSON.parse(authStr)
-
           this.atl.forEach(lis => {
-            lis(auth.access_token)
+            lis(this.user.access_token)
           })
         },
         addAccessTokenListener(listener) {
           this.atl.push(listener)
           if (this.isUserLogged) {
-            const authStr = window.localStorage.getItem('auth')
-            if (!authStr) return
-
-            const auth = JSON.parse(authStr)
-
-            listener(auth.access_token)
+            listener(this.user.access_token)
           }
         },
         onMediaChange(isDark) {
@@ -708,20 +627,41 @@ axios.get('./resources/settings.json')
           }
         }
       },
+      beforeCreate() {
+        pinia._a = this
+      },
       created: function () {
         moment.locale(this.lang_to_bcp47(_get_lang()))
-        const authStr = window.localStorage.getItem('auth')
-        if (!authStr) return
 
-        const auth = JSON.parse(authStr)
-        if (!auth.expires_at) return
+        this.discordAuth.begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
+        .then(() => {
+          window.location.search = ''
+        })
+        .catch((err) => {
+          if(!err.message.includes('auth method'))
+            this.showSnackBar(err, 'error', 3000)
+        })
+        this.discordUser.watchDiscordAuth(this.discordAuth, (err) => {
+          this.showSnackBar(err, 'error', 3000)
+        })
+        this.appUser.watchDiscordAuth(this.discordAuth, this.apiURL, (err) => {
+          this.showSnackBar(err, 'error', 3000)
+        })
 
-        const expires_at = new Date(auth.expires_at)
-        if (new Date() > expires_at) return this.refreshToken(auth.refresh_token)
-
-        setTimeout(() => {
-          this.refreshToken(auth.refresh_token)
-        }, Math.max(expires_at - 60000 - new Date(), 0))
+        this.discordAuth.$subscribe(() => {
+          if(this.discordAuth.access_token === undefined) {
+            // remove
+            window.localStorage.removeItem(AUTH_STORAGE_KEY)
+            this.emitConnected()
+          } else {
+            if(Vue.config.devtools) console.log(this.discordAuth.access_token)
+            // persist
+            window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state))
+            setTimeout(() => {
+              this.discordAuth.refresh()
+            }, (new Date(this.discordAuth.expires_at).getTime()) - (new Date().getTime()))
+          }
+        })
       },
       mounted: function () {
         // watch color schemes for light and dark
@@ -733,33 +673,10 @@ axios.get('./resources/settings.json')
           console.log(ev)
           if(ev.matches) this.onMediaChange(false)
         }
-
-        const urlSearchParams = new URLSearchParams(window.location.search)
-        const auth = Object.fromEntries(urlSearchParams.entries())
-
         window.addEventListener('resize', () => {
           this.window.width = window.innerWidth
           this.window.height = window.innerHeight
         })
-
-        if (auth.access_token && auth.refresh_token && auth.expires_in) {
-
-          fetch('https://discord.com/api/users/@me', {
-            headers: {
-              authorization: `Bearer ${auth.access_token}`
-            }
-          })
-            .then(response => response.json())
-            .then(json => {
-              auth.id = json.id
-              auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
-              auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/f32.png'
-              auth.username = `${json.username}#${json.discriminator}`
-
-              this.tokenCallback(auth, auth)
-            })
-            .catch(console.error)
-        } else this.update()
       },
       vuetify: new Vuetify({
         theme: {

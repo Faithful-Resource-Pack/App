@@ -75,7 +75,7 @@ export default {
       })
       .catch(err => {
         console.error(err)
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       })
     }
   },
@@ -109,7 +109,7 @@ export default {
     })
     .catch(err => {
       console.error(err)
-      this.$root.showSnackBar(`${err.message}: ${err.response ? err.response.data.error : err.message}`, 'error')
+      this.$root.showSnackBar(err, 'error')
     })
   }
 }

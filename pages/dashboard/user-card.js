@@ -32,7 +32,14 @@ export default {
         </p>
       </v-col>
     </v-row>
-    <roles-graph v-if="data" :series="series" :labels="labels" :colors="colors" />
+    <v-row class="py-0 my-0" v-else dense>
+      <v-col v-for="i in 2" :key="'user-stats-'+ i" cols="12" sm="6">
+        <div style="min-height: 56px" class="p mb-0 rounded-lg pa-3 d-flex align-center">
+          <v-skeleton-loader height="24" type="heading" width="100%" />
+        </div>
+      </v-col>
+    </v-row>
+    <roles-graph :loading="data === undefined" :series="series" :labels="labels" :colors="colors" />
   </v-card-text>
 </dashboard-card>
   `,

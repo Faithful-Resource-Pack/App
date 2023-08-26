@@ -22,7 +22,7 @@ export default {
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
           <v-form ref="form">
-            <v-text-field :color="color" :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
+            <v-text-field :disabled="!add" :color="color" persistent-hint :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
             <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
@@ -38,10 +38,10 @@ export default {
                 <v-list-item-content>
                   <v-list-item-title>
                     <v-list-item style="display: inline; padding: 0 0 0 5px;">
-                      <template v-if="use.textureUseName">{{ use.textureUseName }}</template>
+                      <template v-if="use.textureUseName || use.name">{{ use.textureUseName || use.name }}</template>
                       <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
                     </v-list-item>
-                    <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="(use.editions||[]).join(', ')"></v-list-item-subtitle>
+                    <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="use.edition"></v-list-item-subtitle>
                   </v-list-item-title>
                 </v-list-item-content>
 
@@ -152,25 +152,33 @@ export default {
     },
     send: function () {
       if (!this.$root.isUserLogged) return
-      const data = JSON.parse(JSON.stringify(this.formData))
-      data.token = this.$root.user.access_token
 
-      axios.post(`/textures/${this.add ? 'add' : 'change'}`, data)
+      let promise = Promise.resolve();
+      if(this.add) {
+        // this modal is NEVER used to add textures but anyway
+        const data = JSON.parse(JSON.stringify(this.formData))
+        data.token = this.$root.user.access_token
+        promise = axios.post(`/textures/add`, data)
+      } else {
+        const data = {
+          name: this.formData.name,
+          tags: this.formData.type
+        }
+        promise = axios.put(`${this.$root.apiURL}/textures/${this.formData.id}`, data, this.$root.apiOptions)
+      }
+
+      promise
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableDialog(true)
         })
         .catch(err => {
           console.error(err)
-          this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+          this.$root.showSnackBar(err, 'error')
         })
     },
     getUses: function (textureID) {
-      axios.get('/uses/search', {
-        params: {
-          textureID: textureID
-        }
-      })
+      axios.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
         .then((res) => {
           const temp = res.data
           this.formData.uses = {}

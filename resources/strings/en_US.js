@@ -32,6 +32,7 @@ export default {
       yes: 'Yes',
       deny: 'Deny',
       approve: 'Approve',
+      archive: 'Archive',
       load_more: 'Load More'
     },
     tabs: {
@@ -121,7 +122,7 @@ export default {
       change_use: 'Edit use',
       change_texture: 'Edit texture',
       change_contributor: 'Edit contributor',
-      change_mc_version: 'Modify a Minecraft Version',
+      change_mc_version: 'Modify a Minecraft version',
       confirm_deletion: 'Confirm deletion'
     },
     subtitles: {
@@ -140,7 +141,7 @@ export default {
     },
     labels: {
       anonymous: 'Anonymous',
-      anonymous_explain: 'If checked, the user\'s name will be displayed as "Anonymous" and their skin won\'t show up. Can only be changed by administrators!',
+      anonymous_explain: 'If checked, the user\'s name will be displayed as "Anonymous" and their skin won\'t show up. Can only be changed by managers!',
       mcmeta: 'Animated texture',
       new_mc_version_edition: 'Edition to add the version to',
       new_mc_version_path: 'Path version to add the version to',
@@ -155,7 +156,7 @@ export default {
       add_texture: 'Add textures',
       add_mc_version: 'Add new Minecraft Version',
       ask_deletion: 'Do you want to delete %s (%d)?',
-      contributors_results: 'Users results',
+      contributors_results: 'User results',
       contributor_type: 'User roles',
       discord_id: 'Discord ID',
       edit_mc_version: 'Modify a Minecraft Version',
@@ -173,6 +174,7 @@ export default {
       texture_uses: 'Texture use(s)',
       use_name: 'Use name',
       use_id: 'Use ID',
+      assets: 'Assets folder',
       use_edition: 'Use edition',
       path: 'Path',
       path_id: 'Path ID',
@@ -190,6 +192,9 @@ export default {
       path: 'The path should start from the root directory (ex: assets/…)',
       example_scenario: 'Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)',
       example_scenario_warn: "Please don't forget to update all GitHub branch names as well!"
+    },
+    messages: {
+      deleting_use_will_delete_paths: 'Deleting the use will also delete all the paths associated.'
     }
   },
   review: {
@@ -198,7 +203,8 @@ export default {
       translation: 'Review Translations',
       pending: 'Pending Approval',
       denied: 'Denied',
-      approved: 'Approved'
+      approved: 'Approved',
+      archived: 'Archived',
     },
     deny_window: {
       label: 'Write a reason…',
@@ -207,7 +213,8 @@ export default {
     labels: {
       pending: 'There are currently no pending add-ons!',
       denied: 'There are currently no denied add-ons!',
-      load_approved: 'Load approved Add-ons'
+      archived: 'There are currently no archived add-ons!',
+      load_approved: 'Load approved add-ons'
     },
     addon: {
       titles: {
@@ -223,7 +230,7 @@ export default {
         approved_by: 'Approved by',
         denied_by: 'Denied by',
         reason: 'Reason',
-        old_addon: 'Old Add-on, no data present for it.'
+        old_addon: 'Old add-on, no data present for it.'
       }
     },
     translations: {
@@ -232,8 +239,8 @@ export default {
   },
   addons: {
     titles: {
-      submit: 'Submit a new Add-on',
-      edit: 'Edit addon',
+      submit: 'Submit a new add-on',
+      edit: 'Edit add-on',
       submissions: 'Submissions',
       details: 'Details'
     },
@@ -245,11 +252,12 @@ export default {
       }
     },
     general: {
-      loading_addon: 'Loading addon',
+      loading_addon: 'Loading add-on',
+      rules: 'Make sure to read the add-on rules before submitting',
       title: 'General',
       name: {
         label: 'Add-on name',
-        hint: 'A short name is preferred.',
+        hint: 'A shorter name is preferred.',
         rules: {
           name_required: 'A name is required.',
           name_too_big: 'Add-on name must be less than %s characters.',
@@ -266,16 +274,29 @@ export default {
           description_too_small: 'Description must be at least %s characters long.'
         }
       },
+      embed_description: {
+        label: 'Embed description',
+        hint: 'Description seen when sharing the add-on on social medias',
+        rules: {
+          too_big: 'Embed description must be less than %s characters.',
+        },
+      },
+      reason: {
+        title: 'Update reason',
+        text: 'Please tell us what you updated to ease add-on review',
+        required: 'Update reason is required',
+        bounds: 'Update reason muse be between %s and %s'
+      },
       authors: {
         label: 'Select authors for the add-on',
-        hint: "Any author can modify the Add-on once it is submitted! | If you can't find anybody in the list, contact an Administrator/Developer"
+        hint: "Any author can modify the add-on once it is submitted! | If you can't find anybody in the list, contact a Manager or Developer"
       }
     },
     images: {
       title: 'Screenshots',
       header: {
         labels: {
-          drop: 'Click to select header image',
+          drop: 'Drag and drop header image or click to upload',
           normal: 'Header image',
           replace: 'Replace header image'
         },
@@ -287,7 +308,7 @@ export default {
       },
       carousel: {
         labels: {
-          drop: 'Click to select additionnal images',
+          drop: 'Drag or click to select additional images',
           normal: 'Additional image(s)',
           replace: 'Replace additional image(s)'
         },
@@ -427,7 +448,7 @@ export default {
       },
       type: {
         label: 'File type',
-        hint: 'Describes the type of file giveb',
+        hint: 'Describes the type of file given',
         rules: {
           name_required: 'A value is required.',
           name_too_big: 'File type must be less than %s characters.',
@@ -470,6 +491,7 @@ export default {
       },
       tabs: {
         date: 'Date',
+        pack: 'Pack',
         authors: 'Author(s)',
         id: 'ID',
         name: 'Name',
@@ -540,7 +562,9 @@ export default {
     reconnecting: 'Reconnecting...',
     refreshing_discord_token: 'Refreshing Discord token...',
     dummy_step: 'Downloading RAM...',
-    updating_profile_informations: 'Updating profile informations...'
+    updating_profile_informations: 'Updating profile information...',
+    failed_to_reconnect: 'Failed to reconnect',
+    loggging_out: 'Logging out...',
   },
   datepicker: {
     year: 'Year',

@@ -2,13 +2,15 @@
 const UserList = () => import('./userlist.js')
 const ImagePreviewer = () => import('./image-previewer.js')
 const FullscreenPreview = () => import('./fullscreen-preview.js')
+const DropZone = () => import('../components/drop-zone.js')
 
 export default {
   name: 'addon-form',
   components: {
     UserList,
     ImagePreviewer,
-    FullscreenPreview
+    FullscreenPreview,
+    DropZone,
   },
   props: {
     addonNew: {
@@ -36,6 +38,11 @@ export default {
       type: Array,
       default: undefined
     },
+    disabledHeaderInput: {
+      required: false,
+      type: Boolean,
+      default: () => false
+    }
   },
   template: `
   <v-container>
@@ -53,10 +60,14 @@ export default {
         indeterminate
       ></v-progress-circular>
     </div>
-    <v-list v-else :class="['main-container', 'my-2', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
-      <v-form lazy-validation v-model="validForm" ref="form" style="padding: 0 6px">
-
-        <div class="container">
+    <v-list v-else :class="['main-container', 'my-2 pa-4', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
+      <v-form lazy-validation v-model="validForm" ref="form">
+          <v-alert type="warning" class="pb-4">
+          <a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
+             style="color: inherit; text-decoration: underline;" target="_blank"
+          >{{ $root.lang('addons.general.rules') }}</a> <a
+            href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"><v-icon small>mdi-open-in-new</v-icon></a>
+          </v-alert>
           <div class="row">
             <!-- LEFT PART : INPUT -->
             <div class="col pb-0">
@@ -72,66 +83,60 @@ export default {
                 :hint="$root.lang().addons.general.name.hint"
               />
 
-              <div class="pt-5">
-                <v-file-input
-                  dense
-                  show-size
-                  small-chips
-                  :counter="addonNew ? 1 : undefined"
-                  prepend-icon="mdi-image"
-                  v-model="submittedForm.headerFile"
-                  accept="image/jpg, image/jpeg, image/png, image/gif"
-                  :label="$root.lang().addons.images.header.labels.drop"
-                  :rules="headerRules"
-                  ref="headerInput"
-                  v-on:change="headerChange"
-                  :on-error="o => $root.showSnackBar(o.message, o.colour)"
-                />
-              </div>
+              <div class="text-h5 mb-3" v-if="!$vuetify.breakpoint.smAndDown">{{ $root.lang().addons.images.title }}</div>
             </div>
             <!-- RIGHT PART: HEADER IMAGE PREVIEW -->
-            <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center" v-if="hasHeader">
+            <div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
               <div class="col">
-                <div style="position: relative">
+                <div style="position: relative" v-if="hasHeader" class="mt-3">
                   <v-img
                     @click.stop="(e) => $refs.headerPreview.open()"
                     style="border-radius: 10px"
                     :aspect-ratio="16/9"
                     :src="header"
                   />
-                  <v-card v-if="!addonNew" class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
+                  <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 0; top: 0;">
                     <v-icon small class="ma-1" @click.stop="(e) => $refs.headerPreview.open()">
                       mdi-fullscreen
-                    </v-icon><v-icon small class="ma-1" @click="$emit('header', undefined, true)">
+                    </v-icon><v-icon small class="ma-1" @click="() => { $emit('header', undefined, true); submittedForm.headerFile = undefined; }">
                       mdi-delete
                     </v-icon>
                   </v-card>
                 </div>
+                <v-responsive :aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16/9" min-height="100px" class="mt-3" v-else>
+                  <DropZone
+                    :disabled="disabledHeaderInput"
+                    v-model="submittedForm.headerFile"
+                    accept="image/jpg, image/jpeg, image/png, image/gif"
+                    v-on:change="headerChange"
+                    style="height: 100%"
+                  >
+                    <template v-slot:label>
+                      <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.header.labels.drop }}</span>
+                    </template>
+                  </DropZone>
+                </v-responsive>
               </div>
             </div>
           </div>
 
-          <div class="text-h5 mb-3">{{ $root.lang().addons.images.title }}</div>
+          <div class="text-h5 mb-3" v-if="$vuetify.breakpoint.smAndDown">{{ $root.lang().addons.images.title }}</div>
 
           <!-- upload field for images -->
-          <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
-
-          <div class="pt-5">
-            <v-file-input
-              dense
-              show-size
+          <div class="py-5">
+            <DropZone
               multiple
-              small-chips
-              prepend-icon="mdi-image"
               v-model="submittedForm.carouselFiles"
               accept="image/jpg, image/jpeg, image/png, image/gif"
-              :label="$root.lang().addons.images.carousel.labels.drop"
-              :rules="carouselRules"
-              :on-error="o => $root.showSnackBar(o.message, o.colour)"
               v-on:change="carouselChange"
-              ref="carouselInput"
-            />
+              style="height: 70px"
+            >
+              <template v-slot:label>
+                <span><v-icon small>mdi-image</v-icon> {{ $root.lang().addons.images.carousel.labels.drop }}</span>
+              </template>
+            </DropZone>
           </div>
+          <ImagePreviewer :sources="carouselSources" :ids="screenIds" @item-delete="onDeleteCarousel" />
 
         <div class="text-h5">{{ $root.lang().addons.titles.details }}</div>
 
@@ -145,6 +150,16 @@ export default {
           :hint="$root.lang().addons.general.description.hint"
         />
 
+        <!-- Embed description -->
+        <v-text-field
+          clearable
+          v-model="submittedForm.embed_description"
+          :label="$root.lang().addons.general.embed_description.label"
+          :hint="$root.lang().addons.general.embed_description.hint"
+          :counter="form.embed_description.counter.max"
+          persistent-hint
+        />
+
         <!-- Addon description preview -->
         <v-container
           id="addon-description-preview"
@@ -155,7 +170,7 @@ export default {
         />
 
         <!-- Addon authors selection -->
-        <user-list 
+        <user-list
           v-model="submittedForm.authors"
           :label="$root.lang().addons.general.authors.label"
           :hint="$root.lang().addons.general.authors.hint"
@@ -227,7 +242,7 @@ export default {
               ></v-text-field>
             </v-col>
             <v-col cols="9">
-              <v-row 
+              <v-row
                 v-for="(link, indexLinks) in obj.links"
                 :key="indexLinks"
                 :style="{
@@ -267,13 +282,13 @@ export default {
           <v-btn block @click="downloadAdd()">
             {{ $root.lang().global.btn.add_download }} <v-icon color="white lighten-1">mdi-plus</v-icon>
           </v-btn>
-        </div>       
+        </div>
 
         <div class="text-center">
           <v-btn v-if="$root.isAdmin" :disabled="!validForm" @click="() => onSubmit(true)" color="primary">
             {{ $root.lang('global.btn.submit_and_approve') }}
           </v-btn>
-          <v-btn :disabled="!validForm" @click="onSubmit" color="primary">
+          <v-btn :disabled="!validForm" @click="() => onSubmit(false)" color="primary">
             {{ $root.lang().global.btn.submit }}
           </v-btn>
         </div>
@@ -291,7 +306,7 @@ export default {
               header => (header && header.size < this.form.files.header.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)
             ],
             counter: {
-              max: 500000
+              max: 3000000
             }
           },
           carousel: {
@@ -299,7 +314,7 @@ export default {
               (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)).filter(r => typeof r === "string")[0] || true }
             ],
             counter: {
-              max: 500000
+              max: 3000000
             }
           },
           value: ''
@@ -313,6 +328,14 @@ export default {
           counter: {
             min: 32,
             max: 4096
+          }
+        },
+        embed_description: {
+          rules: [
+            desc => (desc && desc.length > this.form.embed_description.counter.max) || this.$root.lang().addons.general.embed_description.rules.too_big.replace('%s', this.form.embed_description.counter.max),
+          ],
+          counter: {
+            max: 160
           }
         },
         name: {
@@ -383,14 +406,11 @@ export default {
     header: function () {
       return this.addonNew ?
         (this.headerValidating == false && this.headerValid && this.submittedForm.headerFile ?
-          URL.createObjectURL(this.submittedForm.headerFile) : undefined) : 
+          URL.createObjectURL(this.submittedForm.headerFile) : undefined) :
         (this.headerSource ? this.headerSource : undefined)
     },
     carouselSources: function () {
-      return this.addonNew ? 
-        (this.carouselValidating === false && this.carouselValid && this.submittedForm.carouselFiles.length ?
-          this.submittedForm.carouselFiles.map(file => URL.createObjectURL(file)) : []) :
-        (this.screenSources ? this.screenSources : [])
+      return this.screenSources ? this.screenSources : []
     },
     headerValidSentence: function () {
       if (this.headerValidating) {
@@ -449,16 +469,13 @@ export default {
         .then(() => {
           this.carouselValid = true
           this.$emit('screenshot', files)
-          if(!this.addonNew) {
-            this.submittedForm.carouselFiles = []
-            this.$refs.carouselInput.value = []
-          }
-          this.$refs.carouselInput.blur()
+          this.submittedForm.carouselFiles = []
         })
         .catch((error) => {
           console.error(error)
           this.carouselValid = false
           this.carouselError = error.message
+          this.$root.showSnackBar(error, 'error')
         })
         .finally(() => {
           this.carouselValidating = false
@@ -482,15 +499,13 @@ export default {
           this.$emit('header', file)
           if(!this.addonNew) {
             this.submittedForm.headerFile = undefined
-            this.$refs.headerInput.value = null
-            this.$refs.headerInput.blur()
           }
         })
         .catch((error) => {
           this.headerValid = false
           this.headerError = error.message
           console.error(error)
-          
+
           // input is changed so we delete parent component value
           if(this.addonNew) this.$emit('header', undefined, true)
           // if not addon new will delete file

@@ -154,7 +154,7 @@ export default {
         this.getFiles()
       })
       .catch(err => {
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       })
     },
     confirmRemove: function(item) {
@@ -168,7 +168,7 @@ export default {
       // delete
       const prom = axios.delete('/files/' + data.join(','), { params: this.$root.addToken({}) })
       .catch(err => {
-        this.$root.showSnackBar(`${err.message}: ${err.response.data.error}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       })
       let res = prom
 
@@ -178,7 +178,7 @@ export default {
         this.getFiles()
       })
       .catch(err => {
-        this.$root.showSnackBar(`${err.message}`, 'error')
+        this.$root.showSnackBar(err, 'error')
       })
 
       return res

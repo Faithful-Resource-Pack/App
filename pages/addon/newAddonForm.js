@@ -13,6 +13,9 @@ export default {
 
       addon-new
       
+      :screen-sources="screenSources"
+      :screen-ids="screenshotIds"
+
       v-on:submit="handleSubmit"
       v-on:header="handleHeader"
       v-on:screenshot="handleScreenshot"
@@ -22,7 +25,14 @@ export default {
   data: function() {
     return {
       header: undefined,
-      screenshots: []
+      screenshots: [],
+      screenshotIds: [],
+      screenshotId: 0
+    }
+  },
+  computed: {
+    screenSources: function () {
+      return this.screenshots.map((file) => URL.createObjectURL(file));
     }
   },
   methods: {
@@ -57,7 +67,7 @@ export default {
             const form = new FormData()
             form.set("file", screen, screen.name)
   
-            successful = await axios.post(this.$root.apiURL + '/addons/' + this.id + '/screenshots', form, this.$root.apiOptions)
+            successful = await axios.post(this.$root.apiURL + '/addons/' + id + '/screenshots', form, this.$root.apiOptions)
               .then(() => true)
               .catch((error) => {
                 err = error
@@ -84,16 +94,41 @@ export default {
         // if we have id then we at least successfully created the file
         if(id)
           axios.delete(this.$root.apiURL + '/addons/' + id, this.$root.apiOptions)
+          .catch(err => {
+            this.$root.showSnackBar(err, 'error')
+          })
       })
     },
     handleHeader: function(file, remove=false) {
       this.header = remove ? undefined : file
     },
-    handleScreenshot: function(screenshots, index, remove=false) {
+    handleScreenshot: function (screenshots, index, remove = false, id = undefined) {
       if(remove) {
-        this.screenshots.slice(index, 1)
+        if (id !== undefined) {
+          index = this.screenshotIds.indexOf(id)
+        }
+
+        if (index < 0) return;
+
+        this.screenshots.splice(index, 1)
+        this.screenshotIds.splice(index, 1)
+        //? force variable update as slice method does only internal stuff
+        Vue.set(this, 'screenshots', this.screenshots)
+        Vue.set(this, 'screenshotIds', this.screenshotIds)
+
+        //? that will force computed screenSources to be recomputed
       } else {
-        this.screenshots = screenshots
+        const files = Array.isArray(screenshots)
+          ? screenshots : [screenshots]
+        const number = files.length
+
+        // First add screenshots
+        this.screenshots = [...this.screenshots, ...files]
+        // Then add the same amount of ids
+        this.screenshotIds = [...this.screenshotIds,
+        ...Array.from({ length: number }).map((_, i) => this.screenshotId + i)]
+
+        this.screenshotId += number; // increase top id
       }
     }
   }

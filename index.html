@@ -2,8 +2,8 @@
 <html lang="EN">
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.9.95/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.6.4/dist/vuetify.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.6.14/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
   <meta name="theme-color" content="#272727">
   <link rel="icon" type="image/png" sizes="32x32"   href="https://faithfulpack.net/image/pwa/favicon-32x32.png">
@@ -23,7 +23,10 @@
       <v-spacer></v-spacer>
 
       <span class="monochrome-logo mr-2 d-flex noselect">
-        <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png" alt="logo" />
+        <a href="https://faithfulpack.net">
+          <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png?w=60" width="30"
+            alt="logo" />
+        </a>
       </span>
     </v-app-bar>
 
@@ -51,13 +54,12 @@
           <div class="px-2 py-5" v-else>
             <v-btn
               block
-              href="/api/discord/login" 
+              class="blurple"
+              href="/api/discord/login"
               :style="{
-                'background': 'hsl(235,85.6%,64.7%) !important',
                 'color': '#FFF'
               }"
             >
-              <v-icon left>mdi-discord</v-icon>
               {{ $root.lang().global.login }}
             </v-btn>
           </div>
@@ -129,7 +131,7 @@
           v-if="isUserLogged || (tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0"
         />
       </template>
-      
+
       <v-list dense nav>
         <v-list-item>
           <v-list-item-title class="uppercased-unsized">{{ $root.lang().global.tabs.review.subtabs.translations }}</v-list-item-title>
@@ -149,7 +151,7 @@
 
     <v-bottom-navigation id="bottom" style="box-shadow: none" height="auto" class="mb-2">
       <span>
-        &copy; Faithful Team {{ year }}
+        &copy; {{ year }} Faithful Resource Pack
       </span>
     </v-bottom-navigation>
 
@@ -166,11 +168,16 @@
     </v-snackbar>
   </v-app>
 
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@0.26.1/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/twin-bcrypt@2.1.1/twin-bcrypt.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.6.4/dist/vuetify.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.6.14/dist/vuetify.min.js"></script>
+
+  <!-- Pinia -->
+  <script src="https://cdn.jsdelivr.net/npm/@vue/composition-api@1.7.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue-demi@0.11.4/lib/index.iife.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pinia@2.0.33/dist/pinia.iife.min.js"></script>
 
   <!-- Dashboard -->
   <script>
@@ -192,7 +199,7 @@
   <script src="https://rawgit.com/juijs/vue-graph/master/dist/vue-graph.js"></script>
 
 
-  <!-- 
+  <!--
   marked should probably be updated to the newest version sometime (4.0.x)
   but would need another package for sanitization, because they removed the functionality in version 0.7.0
   DO NOT IGNORE THIS WARNING ROLF!!!!!!!!!! @TheRolfFR @TheRolfFR
@@ -207,9 +214,15 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue-tippy/dist/vue-tippy.min.js"></script>
 
+<!-- stores -->
+<script src="./stores/discordAuthStore.js"></script>
+<script src="./stores/discordUserStore.js"></script>
+<script src="./stores/appUserStore.js"></script>
+
+<!-- main script -->
   <script src="./validator.js"></script>
   <script src="./webapp.js" type="module"></script>
-  
+
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-prism-editor@1.3.0/dist/prismeditor.min.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism-tomorrow.min.css" />
 </body>

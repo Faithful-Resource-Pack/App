@@ -30,16 +30,16 @@
   -moz-osx-font-something: grayscale;
 }
 
-input[type=number] { 
+input[type=number] {
   -moz-appearance: textfield;
   -webkit-appearance: textfield;
   appearance: textfield;
-  margin: 0; 
+  margin: 0;
 }
 input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button { 
-      -webkit-appearance: none; 
-      margin: 0; 
+input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
 }
 
 /* ===== Scrollbar CSS ===== */
@@ -140,7 +140,7 @@ a {
 }
 
 #app #banner-card {
-  background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/f32.png);
+  background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/forest.png?w=320);
   background-position: center;
   background-size: cover;
 }
@@ -286,6 +286,29 @@ img.texture-img {
   display: flex;
   flex-direction: column;
   justify-content: left;
+  position: relative;
+}
+
+.texture-info-container .texture-id {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-weight: bold;
+  padding: 0 6px;
+
+  font-size: 14px;
+  height: 22px;
+  line-height: 22px;
+  border-radius: 11px;
+  margin-left: -3px;
+  margin-top: -11px;
+}
+.texture-info-container h1 {
+  padding-top: 8px;
+  text-align: center;
+}
+.texture-info-container h1 {
+  word-break: break-all;
 }
 
 .texture-tags-container {
@@ -299,15 +322,35 @@ img.texture-img {
   list-style: none;
 }
 
-.encased {
-  padding: 0.2rem 0.4rem;
-  margin-bottom: 5px;
-  margin-right: 5px;
-  border-radius: 3px;
+.encased, .texture-info-container .texture-id {
   background-color: #272727;
 
-  -webkit-box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
-  box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.7);
+  -webkit-box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
+  box-shadow: 2px 2px 8px 2px rgba(0, 0, 0, 0.4);
+}
+
+.tippy-popper, .tippy-popper * {
+  overflow: visible !important;
+}
+
+.encased {
+  padding: 0.2rem 0.4rem;
+  margin-bottom: 3px;
+  margin-right: 3px;
+  border-radius: 3px;
+}
+.texture-info-container h1.encased {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+.texture-info-container ul.encased {
+  border-bottom-right-radius: 6px;
+}
+.texture-tags-container .encased:first-child {
+  border-bottom-left-radius: 6px;
+}
+.texture-tags-container .encased:last-child {
+  border-bottom-right-radius: 6px;
 }
 
 .v-chip {
@@ -325,9 +368,19 @@ h2.faithful-font {
   font-weight: 600;
 }
 
+.blurple {
+  background-color: #5865F2 !important;
+}
+.blurple > *:first-child::before {
+  content: url(/resources/icons/discord_white.svg);
+  width: 1em;
+  height: 1em;
+  margin-right: 8px;
+  margin-left: -4px;
+}
+
 #login-button {
   height: auto;
-  background: hsl(235,85.6%,64.7%) !important;
   color: white;
   white-space: normal;
 }
@@ -441,6 +494,11 @@ blockquote {
   text-align: center;
 }
 
+#addon-id {
+  font-weight: lighter;
+  opacity: 0.7;
+}
+
 .markdown > h1 {
   font-size: 1.3em;
   padding-bottom: 8px;
@@ -536,6 +594,57 @@ code {
 }
 .upload-file-input .v-card.dragover .upload-label {
   color: white;
+}
+
+.drop-zone {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+  padding: 0 10px;
+}
+.drop-zone, .drop-zone * {
+  cursor: pointer;
+}
+
+.drop-zone .dropzone-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  border: 1px dashed currentColor;
+  z-index: 5;
+  border-radius: 10px;
+}
+
+.drop-zone.disabled {
+  pointer-events: none;
+}
+
+.drop-zone.disabled .dropzone-border, .drop-zone.disabled .label {
+  opacity: 0.5;
+}
+.drop-zone .dropzone-border, .drop-zone .label {
+  opacity: 0.7;
+  transition: opacity 250ms ease;
+}
+.drop-zone.enabled:hover .dropzone-border, .drop-zone.enabled:hover .label  {
+  opacity: 1;
+}
+.drop-zone .hidden-input {
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+}
+.drop-zone .label  {
+  font-size: 16px;
+  display: block;
 }
 
 .v-image__image--preload {
@@ -721,6 +830,12 @@ code {
 .v-dialog > .v-card > .v-card__actions {
   padding-left: 24px;
   padding-right: 24px;
+}
+
+.texture-preview, .texture-preview > a {
+  height: 64px !important;
+  width: 64px !important;
+  min-width: 64px !important;
 }
 
 .v-list-item__action.merged {
@@ -928,7 +1043,7 @@ body .texture-avatar {
 }
 
 .addon-expansion-panel .addon-tags {
-  opacity: 0.7; 
+  opacity: 0.7;
 }
 
 #app .addon-expansion-panel .v-expansion-panel-header .v-expansion-panel-header__icon .v-icon {
@@ -948,7 +1063,7 @@ body .texture-avatar {
   align-items: stretch;
 }
 
-#dashboard-page p {
+#dashboard-page p, #dashboard-page .p {
   background-color: rgba(0,0,0,0.08);
 }
 
@@ -959,8 +1074,29 @@ body .texture-avatar {
   opacity: 0.6;
 }
 
-.theme--dark #dashboard-page p {
+.theme--dark #dashboard-page p, .theme--dark #dashboard-page .p {
   background: rgba(0,0,0,0.2);
+}
+
+.roles-graph #roles-graph-cell {
+  position: relative;
+}
+
+.roles-graph #graph-loader {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+}
+
+.roles-graph #graph-loader > *, .roles-graph #graph-loader > *::after {
+  height: 100%;
+  bottom: 0;
+}
+
+.roles-graph .v-skeleton-loader__text {
+  margin-bottom: 0;
 }
 
 .roles-graph svg {
@@ -973,12 +1109,125 @@ body .texture-avatar {
   width: 100%;
 }
 
+#addon-card .loader > * {
+  width: 100%;
+  min-height: 17px;
+  margin-bottom: 0;
+}
+
+#addon-card .loader .v-skeleton-loader__heading {
+  border-radius: 8px;
+}
+
+#addon-card .paragraph-loader {
+  min-height: 48px;
+}
+
 .heatmap-wrapper {
   min-height: 100px;
   overflow: auto;
 }
 .heatmap-wrapper svg {
   min-height: 100px;
+}
+
+/* NEW REVIEW LAYOUT */
+#review-content {
+    margin: -4px;
+}
+
+#review-content.desktop {
+    height: 73vh;
+}
+
+#review-content > * {
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+#review-content > * > * {
+    height: 100%;
+    overflow-y: auto;
+}
+
+#review-content #preview-here {
+    height: 100%;
+}
+
+#review-content #review-list {
+    width: 40%;
+}
+
+#review-content #review-previewer {
+    width: 60%;
+}
+
+#review-preview {
+    height: 100%;
+}
+
+#review-list > .v-card, #review-preview > *, #empty > * {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+#review-preview > div:first-child {
+    flex-grow: 1;
+}
+
+#review-preview .markdown, #review-expanders .markdown {
+    border-radius: 5px !important;
+}
+
+#review-preview .markdown > p:last-child, #review-expanders .markdown > p:last-child {
+    margin-bottom: 0;
+}
+
+#review-preview #review-actions p {
+  margin-bottom: 0;
+}
+
+.image-fullscreen-thumb {
+    cursor: pointer;
+}
+
+.theme--light #review-list .v-card,
+.theme--light #review-preview > *,
+.theme--light #review-expanders .v-expansion-panel-content {
+    background: #f0f0f0;
+}
+
+.theme--light #review-preview #edit-btn::before, .theme--light #review-preview #edit-btn.v-btn.v-btn--icon {
+    background: transparent;
+}
+
+.theme--light #review-addons .selected {
+    color: white;
+}
+
+.theme--light #review-addons .selected .text--secondary, .theme--light #review-addons .selected .v-list-item__subtitle {
+    color: rgba(255, 255, 255,.6) !important;
+}
+
+#empty > * > * {
+    height: auto;
+}
+
+#empty pre {
+    background: transparent;
+    font-size: 10pt;
+    font-family: Monospace;
+    white-space: pre;
+}
+
+#review-expanders {
+    padding: 0;
+}
+
+#review-expanders .v-expansion-panel-content__wrap {
+    padding: 16px;
 }
 
 #contribution-form-list {

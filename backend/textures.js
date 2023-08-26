@@ -103,27 +103,6 @@ module.exports = {
 
     return textures.search(searchOptions)
   },
-  change: function (body) {
-    const elID = body.id
-    const obj = {}
-    const fArr = ['name', 'type', 'id']
-
-    fArr.forEach(fieldKept => {
-      if (fieldKept in body) obj[fieldKept] = body[fieldKept]
-    })
-
-    /** @type {import('../helpers/firestorm').EditObject[]} */
-    const edits = Object.keys(obj).map(field => {
-      return {
-        id: elID,
-        field: field,
-        operation: 'set',
-        value: obj[field]
-      }
-    })
-
-    return textures.editFieldBulk(edits)
-  },
   textureEditions: function () {
     return uses.select({
       fields: ['editions']

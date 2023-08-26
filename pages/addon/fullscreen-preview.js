@@ -22,7 +22,6 @@ export default {
     },
     src: {
       required: true,
-      type: String
     }
   },
   data: function () {
