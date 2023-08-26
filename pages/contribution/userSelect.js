@@ -9,18 +9,30 @@ export default {
         },
         value: {
             required: true
+        },
+        dense: {
+            type: Boolean,
+            required: false,
+            default: () => false
+        },
+        limit: {
+            type: Number,
+            required: false,
+            default: () => 0
         }
     },
     template: `
 <v-autocomplete
+    v-bind="$attrs"
     v-model="content"
     :items="contributorList"
     :loading="contributors.length == 0 && !isSearching"
     :search-input.sync="search"
     item-text="username"
     item-value="id"
-    :label="$root.lang().database.labels.one_contributor"
+    :placeholder="$root.lang().database.labels.one_contributor"
     multiple
+    :dense="dense"
     chips
     >
     <!-- SELECTED THINGY -->
@@ -32,6 +44,7 @@ export default {
         :disabled="data.disabled"
         close
         @click:close="remove(data.item.id)"
+        v-if="!limit || data.index < limit"
         >
         <v-avatar
             :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
@@ -49,6 +62,7 @@ export default {
         </v-avatar>
         {{ data.item.username || data.item.id }}
         </v-chip>
+        <span v-else-if="!limit || data.index == limit" v-text="'+ ' + String(content.length - limit)"/>
     </template>
     <!-- LIST ITEM PART -->
     <template v-slot:item="data">
@@ -85,6 +99,14 @@ export default {
         }
     },
     watch: {
+        value: {
+            handler(n, o) {
+                if (JSON.stringify(n) !== JSON.stringify(o))
+                    this.content = n
+            },
+            immediate: true,
+            deep: true
+        },
         content: {
             handler(n) {
                 this.$emit('input', n)

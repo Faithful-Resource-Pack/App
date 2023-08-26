@@ -126,6 +126,8 @@ export default {
     },
     subtitles: {
       add_manually: 'Add manually',
+      add_new_contribution: 'Add a new contribution',
+      clone_contribution: 'Clone the contribution',
       resolution: 'Resolution',
       pack: 'Resource Packs',
       contributor: 'User',
@@ -539,5 +541,10 @@ export default {
     refreshing_discord_token: 'Refreshing Discord token...',
     dummy_step: 'Downloading RAM...',
     updating_profile_informations: 'Updating profile informations...'
+  },
+  datepicker: {
+    year: 'Year',
+    month: 'Month',
+    day: 'Day'
   }
 }

@@ -16,7 +16,7 @@ export default {
       required: false,
       type: Function,
       default: function() {}
-    },
+    },  
     onSubmit: {
       required: false,
       type: Function,
@@ -30,62 +30,83 @@ export default {
   },
   template: `
     <v-dialog
-      v-model="opened"
+      v-model="modalOpened"
       width="800"
     >      
       <v-card>
         <v-card-title class="headline" v-text="$root.lang().database.titles.contributions"></v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col class="flex-grow-0 flex-shrink-1" v-if="selectedFormIndex !== undefined">
-              <v-date-picker
-                v-model="forms[selectedFormIndex].date"
-                :locale="$root.langBCP47"
-                :max="(new Date()).toISOString().substr(0, 10)"
-                flat
-                scrollable
-                show-adjacent-months
-              ></v-date-picker>
-            </v-col>
-            <v-col :class="['flex-grow-1 flex-shrink-0', {'px-0': multiple }]">
-              <template v-if="multiple">
-                <div>
-                  <v-expansion-panels
-                    v-model="panel"
-                    class="mb-2"
-                    :disabled="forms.length < 2"
-                  >
-                    <v-expansion-panel
-                      v-for="(form,form_index) in forms"
-                      :key="form.formId"
+        <v-card-text class="pb-0">
+          <template v-if="multiple">
+            <v-row dense>
+              <v-col
+                class="flex-grow-0 flex-shrink-1"
+                :cols="$vuetify.breakpoint.mdAndUp ? false : 12"
+              >
+                <contribution-form
+                  :value="activeForm"
+                  @input="onFormInput"
+                  :disabled="activeForm === undefined"
+                  :contributors="contributors"
+                  :multiple="multiple"
+                />
+              </v-col>
+              <v-col
+                :class="[$vuetify.breakpoint.mdAndUp ? 'flex-grow-0 flex-shrink-1 px-4' : 'flex-grow-1 flex-shrink-0 py-4']"
+              ><v-divider :vertical="$vuetify.breakpoint.mdAndUp" /></v-col>
+              <v-col
+                class="flex-grow-1 flex-shrink-0 d-flex flex-column"
+                :cols="$vuetify.breakpoint.mdAndUp ? false : 12"
+              >
+                <v-list id="contribution-form-list" dense flat style="min-height: 300px"
+                  class="pt-0 mb-4 flex-grow-1 flex-shrink-0"><div>
+                  <template v-for="(form, form_index) in formRecordsList">
+                    <v-list-item
+                      :key="'item-' + form.formId"
+                      @click.stop.prevent="() => changeOpenedForm(form.formId)"
                     >
-                      <v-expansion-panel-header
-                        style="min-height: 24px"
-                        disable-icon-rotate
-                      >
-                        {{ panelLabels[form_index] }}
-                      
-                        <template v-slot:actions>
-                          <v-icon color="error" @click="() => removeForm(form_index)">
-                            mdi-delete
-                          </v-icon>
-                        </template>
-                      </v-expansion-panel-header>
-                      <v-expansion-panel-content>
-                        <contribution-form v-model="form" :contributors="contributors"></contribution-form>
-                      </v-expansion-panel-content>
-                    </v-expansion-panel>
-                  </v-expansion-panels>
-                  <v-btn block @click="addNewForm">{{ $root.lang('global.btn.add') }}</v-btn>
-                </div>
-              </template>
-              <template v-else>
-                <contribution-form v-model="forms[0]" :contributors="contributors"></contribution-form>
-              </template>
-            </v-col>
-          </v-row>
+                      <v-list-item-avatar rounded color="primary" height="32" width="32" min-height="32" min-width="32">
+                        <span class="white--text" v-text="'#' + form.texture" />
+                      </v-list-item-avatar>
+
+                      <v-list-item-content :class="[openedFormId === form.formId ? 'primary--text' : '']">
+                        <v-list-item-title v-text="panelLabels[form.formId]"></v-list-item-title>
+                        <v-list-item-subtitle class="text-truncate" v-text="contributorsFromIds(form.authors)" />
+                      </v-list-item-content>
+
+                      <v-list-item-action v-if="form_index > 0">
+                        <v-icon @click.stop.prevent="() => removeForm(form.formId)" :color="openedFormId === form.formId ? 'primary' : ''">
+                          mdi-delete
+                        </v-icon>
+                      </v-list-item-action>
+                    </v-list-item>
+
+                    <v-divider
+                      :key="'divider-' + form.formId"
+                      v-if="form_index < formRecordsLength - 1"
+                    ></v-divider>
+                  </template>
+                </div></v-list>
+                <v-btn
+                  class="flex-grow-0 flex-shrink-1"
+                  elevation="0" block @click.stop.prevent="addNewForm"
+                >
+                  {{ $root.lang('database.subtitles.' +
+                    (openedFormId ? 'clone_contribution' : 'add_new_contribution'))
+                  }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </template>
+          <template v-else>
+            <contribution-form
+              v-model="activeForm"
+              :disabled="activeForm === undefined"
+              :contributors="contributors"
+              :multiple="multiple"
+            />
+          </template>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pt-4">
           <v-spacer></v-spacer>
           <v-btn
             color="red darken-1"
@@ -105,106 +126,170 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  computed: {
-    panelLabels: function() {
-      return this.multiple ? this.forms.map(f => `#${
-        f.texture
-      } | ${
-        f.pack
-      } | ${
-        moment(new Date(f.date)).format('ll')
-      }`) : ['']
-    },
-    selectedFormIndex: function() {
-      return this.multiple ? this.panel : 0
+  data() {
+    return {
+      modalOpened: false,
+      closeOnSubmit: true,
+      formRecords: {},
+      packsList: [],
+      lastFormId: 0,
+      openedFormId: undefined,
     }
   },
-  data () {
-    return {
-      opened: false,
-      closeOnSubmit: true,
-      forms: [{}],
-      packs: undefined,
-      lastId: 0,
-      panel: 0,
-    }
+  computed: {
+    activeForm: function () {
+      if (this.openedFormId === undefined) return undefined
+
+      const form_obj = this.formRecords[this.openedFormId]
+      if (form_obj === undefined) return undefined
+
+      const res = JSON.parse(JSON.stringify(form_obj))
+      return res
+    },
+    formRecordsList: function () { return Object.values(this.formRecords) },
+    formRecordsLength: function () { return this.formRecordsList.length },
+    panelLabels: function () {
+      return Object.entries(this.formRecords)
+        .map(([form_id, form]) => [
+          form_id, `${form.pack} | ${moment(new Date(form.date)).format('ll')}`
+        ])
+        .reduce((acc, [form_id, form_label]) => ({ ...acc, [form_id]: form_label }), {})
+    },
   },
   methods: {
     addNewForm: function() {
       // create new form
-      let form = this.defaultValue(this.packs)
+      let form
 
       // match last opened form
-      if(this.panel !== undefined) {
+      if (this.openedFormId !== undefined) {
         // make a copy
-        form = JSON.parse(JSON.stringify(this.forms[this.panel]))
+        const new_form_id = this.getNewFormId()
+        form = JSON.parse(JSON.stringify(this.formRecords[this.openedFormId]))
+        form.formId = new_form_id
+      } else {
+        form = this.defaultValue(this.packsList)
       }
 
       // add form
-      this.forms.push(form)
+      let new_form_id = form.formId
+      Vue.set(this.formRecords, new_form_id, form)
 
-      // open last expansion panel
-      this.panel = this.forms.length - 1
+      // make the opened form our created form
+      this.openedFormId = new_form_id
     },
-    open: function(inputData = undefined, packs, closeOnSubmit = true) {
-      this.packs = packs
-      this.opened = true
-      if (inputData !== undefined) {
-        // set forms as array
-        this.forms = [Object.assign({}, this.defaultValue(packs), inputData)]
+    open: function (input_data_obj = undefined, input_packs_list, close_on_submit = true) {
+      this.packsList = input_packs_list
+      this.modalOpened = true
+      this.openedFormId = undefined
 
-        // override default date with given date
-        const da = new Date(this.forms[0].date)
-        this.forms[0].date = (new Date(da - (da).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
+      let created_form_obj
+      if (input_data_obj !== undefined) {
+        created_form_obj = Object.assign({}, this.defaultValue(input_packs_list), input_data_obj)
       } else {
         // get one empty form
-        this.forms = [this.defaultValue(packs)]
-
-        // open first panel
-        this.panel = 0
+        created_form_obj = this.defaultValue(input_packs_list)
       }
-      this.closeOnSubmit = !!closeOnSubmit
+
+      Vue.set(this, 'formRecords', {
+        [created_form_obj.formId]: created_form_obj
+      })
+      this.openedFormId = created_form_obj.formId
+      this.closeOnSubmit = !!close_on_submit
+    },
+    contributorsFromIds: function (author_ids) {
+      if (!author_ids || author_ids.length === 0) {
+        return ''
+      }
+
+      const contributor_names = this.contributors
+        .filter(c => author_ids.indexOf(c.id) !== -1)
+        .map(c => c.username)
+
+      const total = contributor_names.length
+      const anonymous_total = contributor_names.filter(username => !username).length
+      const known_names = contributor_names.filter(username => username)
+
+      if (anonymous_total > 0) {
+        const anonymous_str = '' + anonymous_total + ' ' + this.$root.lang('database.labels.anonymous')
+        known_names.splice(0, 0, anonymous_str)
+      }
+
+      const known_str = known_names.join(' | ')
+      const total_str = `[${total}]: `
+      return total_str + known_str
+    },
+    changeOpenedForm: function (form_id) {
+      if (this.openedFormId === form_id)
+        this.openedFormId = undefined
+      else
+        this.openedFormId = form_id
     },
     close: function() {
-      this.opened = false
+      this.modalOpened = false
     },
     closeAndCancel: function() {
       this.close()
       this.onCancel()
     },
     closeOrAndSubmit: function() {
-      this.opened = !this.closeOnSubmit
+      this.modalOpened = !this.closeOnSubmit
 
-      const data = this.forms.map(f => {
+      const result_data_list = Object.values(this.formRecords).map(f => {
         delete f.formId
         return f
       })
 
-      const res = Object.assign({}, this.multiple ? data : data[0])
-      res.date = (new Date(res.date)).getTime()
+      const res = JSON.parse(JSON.stringify(this.multiple ? result_data_list : result_data_list[0]))
       this.onSubmit(res)
     },
-    defaultValue: function (packs) {
-      this.lastId++;
-
+    defaultValue: function (packs_list) {
       return {
-        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        packs: packs,
-        pack: packs ? packs[0] : null,
+        date: new Date(new Date().setHours(0, 0, 0, 0)),
+        packs: packs_list,
+        pack: packs_list ? packs_list[0] : null,
         texture: 0,
         authors: [],
-        formId: this.lastId
+        formId: this.getNewFormId()
       }
     },
-    removeForm: function(form_index) {
-      // set next panel opened
-      this.panel = (form_index+1) % this.forms.length
+    getNewFormId: function () {
+      this.lastFormId++;
+      return String(this.lastFormId);
+    },
+    onFormInput: function (form) {
+      // stop undefined object
+      if (typeof form !== 'object') return
+      // stop non-form objects
+      if (!('formId' in form)) return
 
-      this.forms.splice(form_index, 1)
-      this.$forceUpdate()
+      form = JSON.parse(JSON.stringify(form))
+
+      // stop unexisting forms
+      const form_id = form.formId
+      if (!this.formRecords[form_id]) return
+
+      // now affect
+      Vue.set(this.formRecords, form_id, form)
+    },
+    removeForm: function (form_id) {
+      // do not continue if not found
+      if (!this.formRecords[form_id]) return
+
+      const form_ids_list = Object.keys(this.formRecords)
+
+      // do not delete if only one
+      if (form_ids_list.length === 1) return
+
+      // decide who will be the next form
+      const form_index = form_ids_list.indexOf(form_id)
+      const next_form_index = (form_index + 1) % form_ids_list.length
+      const next_form_id = form_ids_list[next_form_index]
+      this.openedFormId = next_form_id
+
+      const new_form_records = Object.assign({}, this.formRecords) // clean
+      delete new_form_records[form_id] // delete
+      Vue.set(this, 'formRecords', new_form_records) // affect
     }
-  },
-  created: function() {
-    this.form = this.defaultValue()
   },
 }

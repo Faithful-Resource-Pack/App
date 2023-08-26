@@ -128,8 +128,10 @@ export default {
     },
     subtitles: {
       add_manually: 'Ajouter manuellement',
+      add_new_contribution: 'Ajouter une nouvelle contribution',
+      clone_contribution: 'Cloner la contribution',
       resolution: 'Résolution',
-      pack: 'Packs de Ressources',
+      pack: 'Pack de Ressources',
       contributor: 'Utilisateurs',
       select_contributor_type: 'Sélectionnez le role de l\'utilisateur',
       search: 'Rechercher',
@@ -511,5 +513,10 @@ export default {
     refreshing_discord_token: 'Mise à jour du token Discord...',
     dummy_step: 'Téléchargement de RAM...',
     updating_profile_informations: 'Mise à jour des informations du profil...'
+  },
+  datepicker: {
+    year: 'Année',
+    month: 'Mois',
+    day: 'Jour'
   }
 }

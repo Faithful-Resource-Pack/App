@@ -980,3 +980,45 @@ body .texture-avatar {
 .heatmap-wrapper svg {
   min-height: 100px;
 }
+
+#contribution-form-list {
+  position: relative;
+}
+
+#contribution-form-list > * {
+  overflow-y: scroll;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.v-autocomplete:not(.v-input--is-focused).v-select--chips input {
+  max-height: none !important;
+}
+
+
+/* ===================== *\
+     Quick date picker
+\* ===================== */
+
+.qd-month {
+	text-transform: none !important;
+}
+
+.qd-days {
+	display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr  1fr 1fr 1fr 1fr;
+  grid-gap: 4px;
+}
+
+.qd-days > * {
+	aspect-ratio: 1;
+	max-height: 32px;
+}
+.qd-day {
+	min-width: auto !important;
+	width: 100% !important;
+	height: 100% !important;
+}
