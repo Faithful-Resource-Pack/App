@@ -9,44 +9,56 @@ export default {
   template: `
   <v-container>
     <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit' :multiple="multiple"></contribution-modal>
-    <div class="text-h4 py-4">
-      {{ $root.lang().database.titles.contributions }}
-    </div>
-    <v-row>
-      <v-col>
-        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
-        <v-btn
-          v-for="(packs_obj) in form.packs"
-          :key="packs_obj.key"
-          class="my-2 mr-1"
-        ><v-checkbox
+
+
+    <v-row no-gutters class="py-0 mb-0" align="center">
+      <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+        <div class="text-h4 font-weight-medium">
+          {{ $root.lang().database.titles.contributions }}
+        </div>
+      </v-col>
+      <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+        <v-btn block color="primary" @click="() => openAdd()"
+          v-text="$root.lang('database.subtitles.add_manually')" />
+      </v-col>
+    </v-row>
+
+    <!-- Pack selection -->
+    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.resolution }}</h2>
+    <div class="d-flex flex-wrap ma-n1">
+      <v-card
+        v-for="(packs_obj) in form.packs"
+        :key="packs_obj.key"
+        class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
+      >
+        <v-checkbox
           v-model="packs_obj.selected"
           :label="packs_obj.value"
           :id="packs_obj.key"
+          hide-details class="ma-0 pt-0"
           @change="(val) => onPackChange(val, packs_obj.key)"
         ></v-checkbox>
-        </v-btn>
-      </v-col>
-      <v-col>
-        <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
-        <v-btn class="mt-4 mb-2" block @click="() => openAdd()">{{ $root.lang().database.subtitles.add_manually }}</v-btn>
-      </v-col>
-    </v-row>
-    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
-    <div class="row">
-      <div class="col-sm-6 col-12">
-        <div class="my-sm-2 text-h6">{{ $root.lang().database.subtitles.contributor }}</div>
+      </v-card>
+    </div>
+
+    <!-- Contribution search -->
+    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.search }}</h2>
+    <v-row align="stretch" class="my-0">
+      <v-col cols="12" sm="6" class="pt-0 py-sm-0">
         <v-autocomplete
           v-model="contributors_selected"
           :items="contributors"
           :loading="contributors.length == 0"
           item-text="username"
           item-value="id"
-          :label="$root.lang().database.labels.one_contributor"
+          outlined
+          :label="$root.lang('database.subtitles.contributor')"
+          persistent-placeholder
+          :placeholder="$root.lang().database.labels.one_contributor"
           multiple
           hide-details
-          class="mb-0"
-          chips
+          class="my-0 pt-0"
+          small-chips clearable
         >
           <!-- SELECTED THINGY -->
           <template v-slot:selection="data">
@@ -98,20 +110,25 @@ export default {
             </template>
           </template>
         </v-autocomplete>
-      </div>
-      <div class="col-sm-6 col-12">
-        <div class="my-sm-2 text-h6">{{ $root.lang().database.titles.textures }}</div>
+      </v-col>
+      <v-col cols="12" sm="6" class="pb-0 py-sm-0">
         <v-text-field
-          style="margin-top: 10px"
+          persistent-placeholder
+          :label="$root.lang('database.titles.textures')"
+          outlined
+          style="height: 100%"
           type="search"
           v-model="textureSearch"
-          class="pt-5 mb-0"
-          :label="$root.lang().database.labels.search_texture"
+          class="pt-0 my-0"
+          height="100%"
+          :placeholder="$root.lang().database.labels.search_texture"
           @keydown.enter="startSearch()"
           hide-details
         />
-      </div>
-    </div>
+      </v-col>
+    </v-row>
+
+    <!-- Search button -->
     <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
     <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
