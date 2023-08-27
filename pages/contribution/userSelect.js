@@ -33,6 +33,7 @@ export default {
     :placeholder="$root.lang().database.labels.one_contributor"
     multiple
     :dense="dense"
+    :error-messages="content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')]: []"
     chips
     >
     <!-- SELECTED THINGY -->

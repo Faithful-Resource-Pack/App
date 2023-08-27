@@ -28,7 +28,7 @@ export default {
         }
     },
     template: `
-<v-form :disabled="disabled">
+<v-form :disabled="disabled" lazy-validation ref="contributionForm">
     <v-row :no-gutters="multiple">
         <v-col cols="12" :sm="multiple ? false : 6">
             <quick-date-picker
@@ -51,7 +51,7 @@ export default {
             v-model="content.pack"></v-select>
             <div class="font-weight-medium text--secondary my-2">{{ $root.lang('database.labels.texture_id') }}</div>
             <multi-range-input
-                v-if="multiple"
+                v-if="multiple && Array.isArray(content.texture)"
                 v-model="content.texture"
                 :disabled="disabled"
                 :multiple="multiple"

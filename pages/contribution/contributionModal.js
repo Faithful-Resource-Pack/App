@@ -57,6 +57,7 @@ export default {
                 class="flex-grow-1 flex-shrink-0 d-flex flex-column"
                 :cols="$vuetify.breakpoint.mdAndUp ? false : 12"
               >
+                <div class="font-weight-medium text--secondary mb-2">{{ $root.lang('database.titles.contributions') }}</div>
                 <v-list id="contribution-form-list" dense flat style="min-height: 300px"
                   class="pt-0 mb-4 flex-grow-1 flex-shrink-0"><div>
                   <template v-for="(form, form_index) in formRecordsList">
@@ -71,8 +72,8 @@ export default {
                           <span v-if="form.authors.length" v-text="contributorsFromIds(form.authors)" />
                           <i v-else>{{ $root.lang('database.subtitles.no_contributor_yet') }}</i>
                         </v-list-item-subtitle>
-                        <v-list-item-subtitle>
-                          <v-chip class="mr-1" x-small v-for="(range, range_i) in form.texture"
+                        <v-list-item-subtitle v-if="form.texture && form.texture.length">
+                          <v-chip class="mr-1 px-2" x-small v-for="(range, range_i) in form.texture"
                             :key="'item-' + form.formId + '-chip-' + String(range).replace(',','-') + '+' + range_i"
                             v-text="'#' + (Array.isArray(range) ? range.join(' → #') : String(range))" />
                         </v-list-item-subtitle>
@@ -237,23 +238,28 @@ export default {
       this.close()
       this.onCancel()
     },
-    closeOrAndSubmit: function() {
-      this.modalOpened = !this.closeOnSubmit
-
+    closeOrAndSubmit: async function () {
       const result_data_list = Object.values(this.formRecords).map(f => {
         delete f.formId
         return f
       })
 
-      const res = JSON.parse(JSON.stringify(this.multiple ? result_data_list : result_data_list[0]))
-      this.onSubmit(res)
+      const data_purified = JSON.parse(JSON.stringify(
+        this.multiple ? result_data_list : result_data_list[0]
+      ))
+
+      const went_well = await this.onSubmit(data_purified)
+
+      if (!went_well) return // do not close some data may be incorrect or one contribution failed to be sent
+
+      if (this.closeOnSubmit) this.modalOpened = false
     },
     defaultValue: function (packs_list) {
       return {
         date: new Date(new Date().setHours(0, 0, 0, 0)),
         packs: packs_list,
         pack: packs_list ? packs_list[0] : null,
-        texture: this.multiple ? [0] : 0,
+        texture: this.multiple ? [[0]] : 0,
         authors: [],
         formId: this.getNewFormId()
       }

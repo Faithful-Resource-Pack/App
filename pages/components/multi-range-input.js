@@ -43,24 +43,7 @@ export default {
       return this.transformToStyled(this.valid_ranges)
     },
     generated_values: function () {
-      let res = []
-      let ranges = this.styled_ranges
-      ranges.forEach(range => {
-        if (range.length === 1) res.push(range[0])
-        else {
-          const min = Math.min(range[1], range[0])
-          res = [
-            ...res,
-            ...Array.from(
-              new Array(Math.abs(range[1] - range[0]) + 1).keys()
-            ).map(n => n + min)
-          ]
-        }
-      })
-
-      const no_duplicates = res.filter((e, i, a) => a.indexOf(e) === i)
-      no_duplicates.sort((a, b) => (a === b) ? 0 : ((a < b) ? -1 : 1))
-      return no_duplicates
+      return this.transformToGeneratedRange(this.styled_ranges)
     }
   },
   methods: {
@@ -120,10 +103,32 @@ export default {
     },
     transformToStyled: function (ranges) {
       return ranges.map(r => r.split(/\s*-\s*/).map(v => Number.parseInt(v)))
+    },
+    transformToGeneratedRange: function (ranges) {
+      let res = []
+      ranges.forEach(range => {
+        if (range.length === 1) res.push(range[0])
+        else {
+          const min = Math.min(range[1], range[0])
+          res = [
+            ...res,
+            ...Array.from(
+              new Array(Math.abs(range[1] - range[0]) + 1).keys()
+            ).map(n => n + min)
+          ]
+        }
+      })
+
+      const no_duplicates = res.filter((e, i, a) => a.indexOf(e) === i)
+      no_duplicates.sort((a, b) => (a === b) ? 0 : ((a < b) ? -1 : 1))
+      return no_duplicates
     }
   },
   mounted: function () {
     this.$refs.form.validate()
+  },
+  created: function () {
+    window.generateRange = this.transformToGeneratedRange
   },
   watch: {
     value: {
@@ -131,16 +136,17 @@ export default {
         if (n === undefined || JSON.stringify(n) === JSON.stringify(o))
           return
 
-        if (this.multiple)
-          this.ranges = this.transformToRaw(n)
-        else
-          this.ranges = [String(n)]
+        const transformed_value = this.multiple ? this.transformToRaw(n) : [String(n)]
+
+        if (JSON.stringify(this.ranges) === JSON.stringify(transformed_value)) return
+
+        this.ranges = transformed_value
       },
       immediate: true,
       deep: true
     },
     styled_ranges: {
-      handler(n) {
+      handler(n, o) {
         const sent = this.multiple ? n : n.flat()[0]
         this.$emit('input', sent)
       },

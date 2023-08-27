@@ -84,7 +84,10 @@ export default {
             <template v-else>
               <v-list-item-content>
                 <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
-                <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-if="data.item.contributions"
+                  v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"
+                />
               </v-list-item-content>
               <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
                 <template v-if="data.item.uuid">
@@ -306,7 +309,7 @@ export default {
     openAdd: function () {
       this.newSubmit = true
       Vue.nextTick(() => {
-        this.$refs.mod.open(undefined, this.packsToChoose, false)
+        this.$refs.mod.open(undefined, this.packsToChoose, true)
       })
     },
     startSearch: function () {
@@ -352,26 +355,82 @@ export default {
       this.newSubmit = false
       this.$refs.mod.open(contrib, this.packsToChoose, false)
     },
+    /**
+     * @typedef MultipleContribution
+     * @type {object}
+     * @property {string[]} authors Author id array
+     * @property {string[]?} packs Resource pack name array
+     * @property {string} pack Contribution resource pack
+     * @property {string} date Contribution date
+     * @property {Array<number|[number, number]>} texture Texture range array
+     */
+    /**
+     * @param {Array<MultipleContribution>} entries Input entrues
+     * @returns {Promise<void>}
+     */
     onNewSubmit: async function(entries) {
-      for(let i = 0; i < entries.length; ++i) {
-        const data = entries[i];
-        await axios
-        .post(
-          `${this.$root.apiURL}/contributions`, 
-          {
-            date: data.date,
-            resolution: parseInt(data.pack.match(/\d+/)[0], 10),
-            pack: data.pack,
-            authors: data.authors,
-            texture: String(data.texture)
-          },
-          this.$root.apiOptions
-        )
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-        })
-        .catch(err => { this.$root.showSnackBar(err, 'error') })
+      if (!Array.isArray(entries)) return
+
+      // prepare final data
+      let final_contributions = []
+      for (let entry of entries) {
+        const generated_range = window.generateRange(entry.texture)
+
+        if (generated_range.length === 0) {
+          this.$root.jsonSnackBar(entry).showSnackBar(
+            this.$root.lang('database.labels.id_field_errors.one_required'),
+            'error'
+          )
+          console.error(entry)
+          return false
+        }
+
+        if (entry.authors.length === 0) {
+          this.$root.jsonSnackBar(entry).showSnackBar(
+            this.$root.lang('database.subtitles.no_contributor_yet'),
+            'error'
+          )
+          console.error(entry)
+          return false
+        }
+
+        for (let texture_id of generated_range) {
+          const new_contribution = {
+            date: new Date(entry.date).getTime(),
+            resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
+            pack: entry.pack,
+            authors: entry.authors,
+            texture: String(texture_id)
+          }
+          final_contributions.push(new_contribution)
+        }
       }
+
+      let i = 0;
+      let went_well = true;
+      while (went_well && i < final_contributions.length) {
+        went_well = await axios.post(
+          `${this.$root.apiURL}/contributions`,
+          final_contributions[i], this.$root.apiOptions
+        )
+          .then((_created_contribution) => {
+            return true
+          })
+          .catch(err => {
+            this.$root.showSnackBar(err, 'error');
+            console.error(final_contributions[i]);
+            return false
+          })
+
+        i++;
+      }
+
+      if (went_well) {
+        this.$root.showSnackBar(this.$root.lang('global.ends_success'), 'success')
+        this.getAuthors()
+      }
+
+      return went_well
     },
     onPackChange: function(selected, key) {
       if(key === this.all_packs) {

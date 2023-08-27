@@ -183,7 +183,11 @@ export default {
       no_path_found: 'No paths found for this use.',
       no_use_found: 'No uses found for this texture.',
       actual_mc_version: 'Current MC Version',
-      new_mc_version: 'New MC Version'
+      new_mc_version: 'New MC Version',
+      id_field_errors: {
+        one_required: 'At least one texture ID or ID range required',
+        incorrect_value: 'Incorrect texture %value% ID or ID range'
+      }
     },
     hints: {
       texture_id: 'Changing the Texture ID can break everything!',
