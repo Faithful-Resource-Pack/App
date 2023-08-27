@@ -29,7 +29,7 @@ export default {
       </v-col>
       <v-col>
         <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
-        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose, false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
+        <v-btn class="mt-4 mb-2" block @click="() => openAdd()">{{ $root.lang().database.subtitles.add_manually }}</v-btn>
       </v-col>
     </v-row>
     <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
@@ -301,6 +301,12 @@ export default {
         key: name,
         value: value,
         selected: boolean
+      })
+    },
+    openAdd: function () {
+      this.newSubmit = true
+      Vue.nextTick(() => {
+        this.$refs.mod.open(undefined, this.packsToChoose, false)
       })
     },
     startSearch: function () {

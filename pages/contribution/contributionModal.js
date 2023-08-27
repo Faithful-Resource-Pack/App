@@ -62,15 +62,20 @@ export default {
                   <template v-for="(form, form_index) in formRecordsList">
                     <v-list-item
                       :key="'item-' + form.formId"
+                      class="pl-0"
                       @click.stop.prevent="() => changeOpenedForm(form.formId)"
                     >
-                      <v-list-item-avatar rounded color="primary" height="32" width="32" min-height="32" min-width="32">
-                        <span class="white--text" v-text="'#' + form.texture" />
-                      </v-list-item-avatar>
-
                       <v-list-item-content :class="[openedFormId === form.formId ? 'primary--text' : '']">
                         <v-list-item-title v-text="panelLabels[form.formId]"></v-list-item-title>
-                        <v-list-item-subtitle class="text-truncate" v-text="contributorsFromIds(form.authors)" />
+                        <v-list-item-subtitle class="text-truncate">
+                          <span v-if="form.authors.length" v-text="contributorsFromIds(form.authors)" />
+                          <i v-else>{{ $root.lang('database.subtitles.no_contributor_yet') }}</i>
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle>
+                          <v-chip class="mr-1" x-small v-for="(range, range_i) in form.texture"
+                            :key="'item-' + form.formId + '-chip-' + String(range).replace(',','-') + '+' + range_i"
+                            v-text="'#' + (Array.isArray(range) ? range.join(' → #') : String(range))" />
+                        </v-list-item-subtitle>
                       </v-list-item-content>
 
                       <v-list-item-action v-if="form_index > 0">
@@ -248,7 +253,7 @@ export default {
         date: new Date(new Date().setHours(0, 0, 0, 0)),
         packs: packs_list,
         pack: packs_list ? packs_list[0] : null,
-        texture: 0,
+        texture: this.multiple ? [0] : 0,
         authors: [],
         formId: this.getNewFormId()
       }

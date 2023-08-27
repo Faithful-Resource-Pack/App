@@ -1,11 +1,13 @@
 const userSelect = () => import("./userSelect.js")
 const quickDatePicker = () => import("../components/quick-date-picker.js")
+const multiRangeInput = () => import("../components/multi-range-input.js")
 
 export default {
     name: 'contribution-form',
     components: {
         'user-select': userSelect,
-        'quick-date-picker': quickDatePicker
+        'quick-date-picker': quickDatePicker,
+        'multi-range-input': multiRangeInput
     },
     props: {
         contributors: {
@@ -48,7 +50,14 @@ export default {
             :items="content.packs"
             v-model="content.pack"></v-select>
             <div class="font-weight-medium text--secondary my-2">{{ $root.lang('database.labels.texture_id') }}</div>
-            <div class="d-flex align-center mb-2">
+            <multi-range-input
+                v-if="multiple"
+                v-model="content.texture"
+                :disabled="disabled"
+                :multiple="multiple"
+                :labels="$root.lang('database.labels.id_field_errors', true)"
+            />
+            <div class="d-flex align-center mb-2" v-else>
                 <v-text-field
                     required
                     dense

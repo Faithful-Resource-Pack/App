@@ -129,6 +129,7 @@ export default {
       add_manually: 'Add manually',
       add_new_contribution: 'Add a new contribution',
       clone_contribution: 'Clone the contribution',
+      no_contributor_yet: 'No contributor yet',
       resolution: 'Resolution',
       pack: 'Resource Packs',
       contributor: 'User',

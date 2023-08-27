@@ -539,7 +539,7 @@ axios.get('./resources/settings.json')
             }, 15000);
           }
         },
-        lang: function (path) {
+        lang: function (path, raw = false) {
           let response = this.langs[this.selectedLang]
 
           // fallback to default when loading new language
@@ -556,8 +556,12 @@ axios.get('./resources/settings.json')
 
           // warns user if string not found
           if(response === undefined) {
-            console.warn('Cannot find string for "' + path + '"')
+            console.warn(`Cannot find ${raw ? 'data' : 'string'} for "` + path + '"')
           }
+
+          // if raw we can use the object directly after
+          if (raw)
+            return response
 
           // Shall send string to be chained with other string operations
           return String(response) // enforce string to ensure string methods used after
