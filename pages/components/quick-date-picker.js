@@ -48,7 +48,7 @@ export default {
   ></v-text-field>
 	<div class="font-weight-medium text--secondary my-2" v-text="labels.month" />
 	<v-row class="qd-months" dense>
-		<v-col cols="2" v-for='i in 12'>
+		<v-col cols="2" v-for='i in 12' :key="'qd-month-col' + i">
 			<v-btn :key="'qd-month-' + i" class="qd-month pa-0" block :color="i-1 == month ? 'primary' : ''"
         :disabled="disabled" elevation="0" small @click="() => newMonth(i)" >
         {{ upper_months[i-1] }}

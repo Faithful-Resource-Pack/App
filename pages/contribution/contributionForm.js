@@ -34,7 +34,7 @@ export default {
                 flat
                 :disabled="disabled"
                 v-model="content.date"
-                :months="moment.monthsShort()"
+                :months="months"
                 :labels="$root.lang().datepicker"
                 style="margin-left: auto; margin-right: auto"
             />
@@ -65,14 +65,15 @@ export default {
                 </v-btn>
             </div>
             <div class="font-weight-medium text--secondary mb-2">{{ $root.lang().database.titles.contributors }}</div>
-            <user-select dense :contributors="contributors" v-model="content.authors" class="my-0" limit="3"></user-select>
+            <user-select dense :contributors="contributors" v-model="content.authors" class="my-0" :limit="3"></user-select>
         </v-col>
     </v-row>
 </v-form>
 `,
     data() {
         return {
-          content: this.value
+            content: this.value,
+            months: moment.monthsShort()
         }
     },
     watch: {
