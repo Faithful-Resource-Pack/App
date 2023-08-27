@@ -262,7 +262,8 @@ axios.get('./resources/settings.json')
             message: '',
             submessage: '',
             color: '#222',
-            timeout: 4000
+            timeout: 4000,
+            json: undefined
           },
           drawer: localStorage.getItem(MENU_KEY) ? localStorage.getItem(MENU_KEY) === 'true' : MENU_DEFAULT,
           theme: undefined,
@@ -539,7 +540,7 @@ axios.get('./resources/settings.json')
             }, 15000);
           }
         },
-        lang: function (path) {
+        lang: function (path, raw = false) {
           let response = this.langs[this.selectedLang]
 
           // fallback to default when loading new language
@@ -556,13 +557,30 @@ axios.get('./resources/settings.json')
 
           // warns user if string not found
           if(response === undefined) {
-            console.warn('Cannot find string for "' + path + '"')
+            console.warn(`Cannot find ${raw ? 'data' : 'string'} for "` + path + '"')
           }
+
+          // if raw we can use the object directly after
+          if (raw)
+            return response
 
           // Shall send string to be chained with other string operations
           return String(response) // enforce string to ensure string methods used after
         },
-        showSnackBar: function (message, color = '#222', timeout = 4000) {
+        jsonSnackBar: function (json = undefined) {
+          const that = this
+          return {
+            showSnackBar: function () {
+              let all_args = [...arguments]
+              if (all_args.length < 2) all_args.push('#222')
+              if (all_args.length < 3) all_args.push(4000)
+              all_args.push(json)
+
+              return that.showSnackBar(...all_args)
+            }
+          }
+        },
+        showSnackBar: function (message, color = '#222', timeout = 4000, json = undefined) {
           this.snackbar.submessage = ''
           if(typeof message === 'string') {
             let newline = message.indexOf('\n')
@@ -583,6 +601,7 @@ axios.get('./resources/settings.json')
             }
           }
 
+          this.snackbar.json = json
           this.snackbar.color = color
           this.snackbar.timeout = timeout
           this.snackbar.show = true
@@ -662,6 +681,8 @@ axios.get('./resources/settings.json')
             }, (new Date(this.discordAuth.expires_at).getTime()) - (new Date().getTime()))
           }
         })
+
+        window.eventBus = new Vue()
       },
       mounted: function () {
         // watch color schemes for light and dark

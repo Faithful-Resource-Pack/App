@@ -81,6 +81,7 @@ app.get(webappURL, async (req, res) => {
   // change Vue to dev version for devtools
   if(DEV) {
     file = file.replace('/vue.min.js', '/vue.js')
+    file = file.replace('vuetify.min.js', 'vuetify.js')
     file = file.replace('/pinia.iife.min.js', '/pinia.iife.js')
   }
 

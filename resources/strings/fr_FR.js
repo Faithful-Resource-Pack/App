@@ -129,8 +129,11 @@ export default {
     },
     subtitles: {
       add_manually: 'Ajouter manuellement',
+      add_new_contribution: 'Ajouter une nouvelle contribution',
+      clone_contribution: 'Cloner la contribution',
+      no_contributor_yet: 'Pas encore de contributeurs',
       resolution: 'Résolution',
-      pack: 'Packs de Ressources',
+      pack: 'Pack de Ressources',
       contributor: 'Utilisateurs',
       select_contributor_type: 'Sélectionnez le role de l\'utilisateur',
       search: 'Rechercher',
@@ -182,7 +185,11 @@ export default {
       no_path_found: 'Aucun chemin trouvé pour cette utilisation',
       no_use_found: 'Aucune utilisation trouvée pour cette texture.',
       actual_mc_version: 'Version MC actuelle',
-      new_mc_version: 'Nouvelle version MC'
+      new_mc_version: 'Nouvelle version MC',
+      id_field_errors: {
+        one_required: 'Au moins un ID ou une plage d\'IDs de textures requis',
+        incorrect_value: 'ID ou plage d\'IDs "%value%" incorrecte'
+      }
     },
     hints: {
       texture_id: 'Changer l\'ID de la texture peut tout casser',
@@ -519,5 +526,10 @@ export default {
     updating_profile_informations: 'Mise à jour des informations du profil...',
     failed_to_reconnect: 'Impossible de se reconnecter',
     loggging_out: 'Déconnexion...',
+  },
+  datepicker: {
+    year: 'Année',
+    month: 'Mois',
+    day: 'Jour'
   }
 }

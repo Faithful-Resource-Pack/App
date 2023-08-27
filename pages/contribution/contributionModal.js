@@ -1,9 +1,12 @@
 /* global axios */
 
-const SEARCH_DELAY = 300
+const contributionForm = () => import("./contributionForm.js")
 
 export default {
   name: 'contribution-modal',
+  components: {
+    'contribution-form': contributionForm
+  },
   props: {
     contributors: {
       required: true,
@@ -13,115 +16,103 @@ export default {
       required: false,
       type: Function,
       default: function() {}
-    },
+    },  
     onSubmit: {
       required: false,
       type: Function,
       default: function() {}
-    }
+    },
+    multiple: {
+      required: false,
+      type: Boolean,
+      default: false
+    },
   },
   template: `
     <v-dialog
-      v-model="opened"
+      v-model="modalOpened"
       width="800"
     >      
       <v-card>
         <v-card-title class="headline" v-text="$root.lang().database.titles.contributions"></v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col class="flex-grow-0 flex-shrink-1">
-              <v-date-picker
-                v-model="form.date"
-                :locale="$root.langBCP47"
-                :max="(new Date()).toISOString().substr(0, 10)"
-                flat
-                scrollable
-                show-adjacent-months
-              ></v-date-picker>
-            </v-col>
-            <v-col class="flex-grow-1 flex-shrink-0">
-              <h3>{{ $root.lang().database.subtitles.pack }}</h3>
-              <v-select
-                required
-                :items="form.packs"
-                v-model="form.pack"></v-select>
-              <h3>{{ $root.lang().database.labels.texture_id }}</h3>
-              <div class="d-flex align-center">
-                <v-text-field
-                  required
-                  type="number"
-                  class="mr-2"
-                  min="0"
-                  v-model="form.texture" />
-                <v-btn icon v-on:click="() => { form.texture = String(Number.parseInt(form.texture, 10) + 1) }">
-                  <v-icon>mdi-chevron-up</v-icon>
-                </v-btn>
-                <v-btn icon v-on:click="() => { form.texture = String(Math.max(Number.parseInt(form.texture - 1, 10), 0)) }">
-                  <v-icon>mdi-chevron-down</v-icon>
-                </v-btn>
-              </div>
-              <h3>{{ $root.lang().database.titles.contributors }}</h3>
-              <v-autocomplete
-                v-model="form.authors"
-                :items="contributorList"
-                :loading="contributors.length == 0 && !isSearching"
-                :search-input.sync="search"
-                item-text="username"
-                item-value="id"
-                :label="$root.lang().database.labels.one_contributor"
-                multiple
-                chips
+        <v-card-text class="pb-0">
+          <template v-if="multiple">
+            <v-row dense>
+              <v-col
+                class="flex-grow-0 flex-shrink-1"
+                :cols="$vuetify.breakpoint.mdAndUp ? false : 12"
               >
-                <!-- SELECTED THINGY -->
-                <template v-slot:selection="data">
-                  <v-chip
-                    :key="data.item.id"
-                    v-bind="data.attrs"
-                    :input-value="data.selected"
-                    :disabled="data.disabled"
-                    close
-                    @click:close="remove(data.item.id)"
-                  >
-                    <v-avatar
-                      :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
-                      left
+                <contribution-form
+                  :value="activeForm"
+                  @input="onFormInput"
+                  :disabled="activeForm === undefined"
+                  :contributors="contributors"
+                  :multiple="multiple"
+                />
+              </v-col>
+              <v-col
+                :class="[$vuetify.breakpoint.mdAndUp ? 'flex-grow-0 flex-shrink-1 px-4' : 'flex-grow-1 flex-shrink-0 py-4']"
+              ><v-divider :vertical="$vuetify.breakpoint.mdAndUp" /></v-col>
+              <v-col
+                class="flex-grow-1 flex-shrink-0 d-flex flex-column"
+                :cols="$vuetify.breakpoint.mdAndUp ? false : 12"
+              >
+                <div class="font-weight-medium text--secondary mb-2">{{ $root.lang('database.titles.contributions') }}</div>
+                <v-list id="contribution-form-list" dense flat style="min-height: 300px"
+                  class="pt-0 mb-4 flex-grow-1 flex-shrink-0"><div>
+                  <template v-for="(form, form_index) in formRecordsList">
+                    <v-list-item
+                      :key="'item-' + form.formId"
+                      class="pl-0"
+                      @click.stop.prevent="() => changeOpenedForm(form.formId)"
                     >
-                      <template v-if="data.item.uuid != undefined">
-                        <v-img eager
-                          :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
-                          :alt="(data.item.username || ('' + data.item.id)).slice(0, 1)"
-                        />
-                      </template>
-                      <template v-else>
-                        {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
-                      </template>
-                    </v-avatar>
-                    {{ data.item.username || data.item.id }}
-                  </v-chip>
-                </template>
+                      <v-list-item-content :class="[openedFormId === form.formId ? 'primary--text' : '']">
+                        <v-list-item-title v-text="panelLabels[form.formId]"></v-list-item-title>
+                        <v-list-item-subtitle class="text-truncate">
+                          <span v-if="form.authors.length" v-text="contributorsFromIds(form.authors)" />
+                          <i v-else>{{ $root.lang('database.subtitles.no_contributor_yet') }}</i>
+                        </v-list-item-subtitle>
+                        <v-list-item-subtitle v-if="form.texture && form.texture.length">
+                          <v-chip class="mr-1 px-2" x-small v-for="(range, range_i) in form.texture"
+                            :key="'item-' + form.formId + '-chip-' + String(range).replace(',','-') + '+' + range_i"
+                            v-text="'#' + (Array.isArray(range) ? range.join(' → #') : String(range))" />
+                        </v-list-item-subtitle>
+                      </v-list-item-content>
 
-                <!-- LIST ITEM PART -->
-                <template v-slot:item="data">
-                  <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
-                    <v-list-item-content v-text="data.item"></v-list-item-content>
+                      <v-list-item-action v-if="form_index > 0">
+                        <v-icon @click.stop.prevent="() => removeForm(form.formId)" :color="openedFormId === form.formId ? 'primary' : ''">
+                          mdi-delete
+                        </v-icon>
+                      </v-list-item-action>
+                    </v-list-item>
+
+                    <v-divider
+                      :key="'divider-' + form.formId"
+                      v-if="form_index < formRecordsLength - 1"
+                    ></v-divider>
                   </template>
-                  <template v-else>
-                    <v-list-item-content>
-                      <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
-                    </v-list-item-content>
-                    <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
-                      <template v-if="data.item.uuid">
-                        <v-img eager :src="'https://visage.surgeplay.com/head/48/' + data.item.uuid" />
-                      </template>
-                      <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
-                    </v-list-item-avatar>
-                  </template>
-                </template>
-              </v-autocomplete>
-            </v-col>
-          </v-row>
+                </div></v-list>
+                <v-btn
+                  class="flex-grow-0 flex-shrink-1"
+                  elevation="0" block @click.stop.prevent="addNewForm"
+                >
+                  {{ $root.lang('database.subtitles.' +
+                    (openedFormId ? 'clone_contribution' : 'add_new_contribution'))
+                  }}
+                </v-btn>
+              </v-col>
+            </v-row>
+          </template>
+          <template v-else>
+            <contribution-form
+              v-model="activeForm"
+              :disabled="activeForm === undefined"
+              :contributors="contributors"
+              :multiple="multiple"
+            />
+          </template>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="pt-4">
           <v-spacer></v-spacer>
           <v-btn
             color="red darken-1"
@@ -141,117 +132,175 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  data () {
+  data() {
     return {
-      opened: false,
+      modalOpened: false,
       closeOnSubmit: true,
-      isSearching: false,
-      form: {},
-      search: null,
-      loadedContributors: {},
-      searchTimeout: undefined,
-      previousSearches: []
+      formRecords: {},
+      packsList: [],
+      lastFormId: 0,
+      openedFormId: undefined,
     }
   },
   computed: {
-    contributorList: function() {
-      return [ ...this.contributors, ...Object.values(this.loadedContributors)]
-    }
+    activeForm: function () {
+      if (this.openedFormId === undefined) return undefined
+
+      const form_obj = this.formRecords[this.openedFormId]
+      if (form_obj === undefined) return undefined
+
+      const res = JSON.parse(JSON.stringify(form_obj))
+      return res
+    },
+    formRecordsList: function () { return Object.values(this.formRecords) },
+    formRecordsLength: function () { return this.formRecordsList.length },
+    panelLabels: function () {
+      return Object.entries(this.formRecords)
+        .map(([form_id, form]) => [
+          form_id, `${form.pack} | ${moment(new Date(form.date)).format('ll')}`
+        ])
+        .reduce((acc, [form_id, form_label]) => ({ ...acc, [form_id]: form_label }), {})
+    },
   },
   methods: {
-    open: function(inputData = undefined, packs, closeOnSubmit = true) {
-      this.opened = true
-      if (inputData !== undefined) {
-        this.form = Object.assign({}, this.defaultValue(packs), inputData)
-        const da = new Date(this.form.date)
-        this.form.date = (new Date(da - (da).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
+    addNewForm: function() {
+      // create new form
+      let form
+
+      // match last opened form
+      if (this.openedFormId !== undefined) {
+        // make a copy
+        const new_form_id = this.getNewFormId()
+        form = JSON.parse(JSON.stringify(this.formRecords[this.openedFormId]))
+        form.formId = new_form_id
       } else {
-        this.form = this.defaultValue(packs)
+        form = this.defaultValue(this.packsList)
       }
-      this.closeOnSubmit = !!closeOnSubmit
+
+      // add form
+      let new_form_id = form.formId
+      Vue.set(this.formRecords, new_form_id, form)
+
+      // make the opened form our created form
+      this.openedFormId = new_form_id
+    },
+    open: function (input_data_obj = undefined, input_packs_list, close_on_submit = true) {
+      this.packsList = input_packs_list
+      this.modalOpened = true
+      this.openedFormId = undefined
+
+      let created_form_obj
+      if (input_data_obj !== undefined) {
+        created_form_obj = Object.assign({}, this.defaultValue(input_packs_list), input_data_obj)
+      } else {
+        // get one empty form
+        created_form_obj = this.defaultValue(input_packs_list)
+      }
+
+      Vue.set(this, 'formRecords', {
+        [created_form_obj.formId]: created_form_obj
+      })
+      this.openedFormId = created_form_obj.formId
+      this.closeOnSubmit = !!close_on_submit
+    },
+    contributorsFromIds: function (author_ids) {
+      if (!author_ids || author_ids.length === 0) {
+        return ''
+      }
+
+      const contributor_names = this.contributors
+        .filter(c => author_ids.indexOf(c.id) !== -1)
+        .map(c => c.username)
+
+      const total = contributor_names.length
+      const anonymous_total = contributor_names.filter(username => !username).length
+      const known_names = contributor_names.filter(username => username)
+
+      if (anonymous_total > 0) {
+        const anonymous_str = '' + anonymous_total + ' ' + this.$root.lang('database.labels.anonymous')
+        known_names.splice(0, 0, anonymous_str)
+      }
+
+      const known_str = known_names.join(' | ')
+      const total_str = `[${total}]: `
+      return total_str + known_str
+    },
+    changeOpenedForm: function (form_id) {
+      if (this.openedFormId === form_id)
+        this.openedFormId = undefined
+      else
+        this.openedFormId = form_id
     },
     close: function() {
-      this.opened = false
+      this.modalOpened = false
     },
     closeAndCancel: function() {
       this.close()
       this.onCancel()
     },
-    closeOrAndSubmit: function() {
-      this.opened = !this.closeOnSubmit
+    closeOrAndSubmit: async function () {
+      const result_data_list = Object.values(this.formRecords).map(f => {
+        delete f.formId
+        return f
+      })
 
-      const res = Object.assign({}, this.form)
-      res.date = (new Date(res.date)).getTime()
-      this.onSubmit(res)
+      const data_purified = JSON.parse(JSON.stringify(
+        this.multiple ? result_data_list : result_data_list[0]
+      ))
+
+      const went_well = await this.onSubmit(data_purified)
+
+      if (!went_well) return // do not close some data may be incorrect or one contribution failed to be sent
+
+      if (this.closeOnSubmit) this.modalOpened = false
     },
-    defaultValue: function (packs) {
+    defaultValue: function (packs_list) {
       return {
-        date: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        packs: packs,
-        pack: packs ? packs[0] : null,
-        texture: 0,
-        authors: []
+        date: new Date(new Date().setHours(0, 0, 0, 0)),
+        packs: packs_list,
+        pack: packs_list ? packs_list[0] : null,
+        texture: this.multiple ? [[0]] : 0,
+        authors: [],
+        formId: this.getNewFormId()
       }
     },
-    remove (id) {
-      const index = this.form.authors.indexOf(id)
-      if (index >= 0) this.form.authors.splice(index, 1)
+    getNewFormId: function () {
+      this.lastFormId++;
+      return String(this.lastFormId);
     },
-    startSearch(val) {
-      val = val.trim()
+    onFormInput: function (form) {
+      // stop undefined object
+      if (typeof form !== 'object') return
+      // stop non-form objects
+      if (!('formId' in form)) return
 
-      // limit search on client and server side
-      if(val.length < 3) return
+      form = JSON.parse(JSON.stringify(form))
 
-      // make search only if not searched before
-      let alreadySearched = false
-      let i = 0
-      while(i < this.previousSearches.length && !alreadySearched) {
-        alreadySearched = this.previousSearches[i].includes(val)
-        ++i
-      } 
-      if(alreadySearched) return
+      // stop unexisting forms
+      const form_id = form.formId
+      if (!this.formRecords[form_id]) return
 
-      this.previousSearches.push(val)
-      this.isSearching = true
+      // now affect
+      Vue.set(this.formRecords, form_id, form)
+    },
+    removeForm: function (form_id) {
+      // do not continue if not found
+      if (!this.formRecords[form_id]) return
 
-      axios.get(`/contributions/users/${val}`)
-        .then(res => {
-          const results = res.data
-          console.log(results)
-          results.forEach(result => {
-            // in case some clever guy forgot its username or uuid or anything
-            Vue.set(this.loadedContributors, result.id, Object.merge({
-              username: '',
-              uuid: '',
-              type: [],
-              media: []
-            }, result))
-          })
-        })
-        .catch(err => {
-          console.error(err)
-        })
-        .finally(() => {
-          this.isSearching = false
-        })
+      const form_ids_list = Object.keys(this.formRecords)
+
+      // do not delete if only one
+      if (form_ids_list.length === 1) return
+
+      // decide who will be the next form
+      const form_index = form_ids_list.indexOf(form_id)
+      const next_form_index = (form_index + 1) % form_ids_list.length
+      const next_form_id = form_ids_list[next_form_index]
+      this.openedFormId = next_form_id
+
+      const new_form_records = Object.assign({}, this.formRecords) // clean
+      delete new_form_records[form_id] // delete
+      Vue.set(this, 'formRecords', new_form_records) // affect
     }
   },
-  created: function() {
-    this.form = this.defaultValue()
-  },
-  watch: {
-    search(val) {
-      if(!val) return
-
-      if(this.searchTimeout) {
-        clearTimeout(this.searchTimeout)
-      }
-
-      this.searchTimeout = setTimeout(() => {
-        this.searchTimeout = undefined
-        this.startSearch(val)
-      }, SEARCH_DELAY)
-    }
-  }
 }

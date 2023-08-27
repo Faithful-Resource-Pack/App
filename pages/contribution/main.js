@@ -8,45 +8,57 @@ export default {
   name: 'contribution-page',
   template: `
   <v-container>
-    <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit'></contribution-modal>
-    <div class="text-h4 py-4">
-      {{ $root.lang().database.titles.contributions }}
-    </div>
-    <v-row>
-      <v-col>
-        <div class="my-2 text-h5">{{ $root.lang().database.subtitles.resolution }}</div>
-        <v-btn
-          v-for="(packs_obj) in form.packs"
-          :key="packs_obj.key"
-          class="my-2 mr-1"
-        ><v-checkbox
+    <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit' :multiple="multiple"></contribution-modal>
+
+
+    <v-row no-gutters class="py-0 mb-0" align="center">
+      <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+        <div class="text-h4 font-weight-medium">
+          {{ $root.lang().database.titles.contributions }}
+        </div>
+      </v-col>
+      <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+        <v-btn block color="primary" @click="() => openAdd()"
+          v-text="$root.lang('database.subtitles.add_manually')" />
+      </v-col>
+    </v-row>
+
+    <!-- Pack selection -->
+    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.resolution }}</h2>
+    <div class="d-flex flex-wrap ma-n1">
+      <v-card
+        v-for="(packs_obj) in form.packs"
+        :key="packs_obj.key"
+        class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
+      >
+        <v-checkbox
           v-model="packs_obj.selected"
           :label="packs_obj.value"
           :id="packs_obj.key"
+          hide-details class="ma-0 pt-0"
           @change="(val) => onPackChange(val, packs_obj.key)"
         ></v-checkbox>
-        </v-btn>
-      </v-col>
-      <v-col>
-        <div class="my-2 text-h5">{{ $root.lang().global.btn.add }}</div>
-        <v-btn class="mt-4 mb-2" block @click='newSubmit=true; $refs.mod.open(undefined, packsToChoose, false)'>{{ $root.lang().database.subtitles.add_manually }}</v-btn>
-      </v-col>
-    </v-row>
-    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
-    <div class="row">
-      <div class="col-sm-6 col-12">
-        <div class="my-sm-2 text-h6">{{ $root.lang().database.subtitles.contributor }}</div>
+      </v-card>
+    </div>
+
+    <!-- Contribution search -->
+    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.search }}</h2>
+    <v-row align="stretch" class="my-0">
+      <v-col cols="12" sm="6" class="pt-0 py-sm-0">
         <v-autocomplete
           v-model="contributors_selected"
           :items="contributors"
           :loading="contributors.length == 0"
           item-text="username"
           item-value="id"
-          :label="$root.lang().database.labels.one_contributor"
+          outlined
+          :label="$root.lang('database.subtitles.contributor')"
+          persistent-placeholder
+          :placeholder="$root.lang().database.labels.one_contributor"
           multiple
           hide-details
-          class="mb-0"
-          chips
+          class="my-0 pt-0"
+          small-chips clearable
         >
           <!-- SELECTED THINGY -->
           <template v-slot:selection="data">
@@ -84,7 +96,10 @@ export default {
             <template v-else>
               <v-list-item-content>
                 <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
-                <v-list-item-subtitle v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"></v-list-item-subtitle>
+                <v-list-item-subtitle
+                  v-if="data.item.contributions"
+                  v-html="data.item.contributions + ' contribution' + (data.item.contributions > 1 ? 's' : '')"
+                />
               </v-list-item-content>
               <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
                 <template v-if="data.item.uuid">
@@ -95,20 +110,25 @@ export default {
             </template>
           </template>
         </v-autocomplete>
-      </div>
-      <div class="col-sm-6 col-12">
-        <div class="my-sm-2 text-h6">{{ $root.lang().database.titles.textures }}</div>
+      </v-col>
+      <v-col cols="12" sm="6" class="pb-0 py-sm-0">
         <v-text-field
-          style="margin-top: 10px"
+          persistent-placeholder
+          :label="$root.lang('database.titles.textures')"
+          outlined
+          style="height: 100%"
           type="search"
           v-model="textureSearch"
-          class="pt-5 mb-0"
-          :label="$root.lang().database.labels.search_texture"
+          class="pt-0 my-0"
+          height="100%"
+          :placeholder="$root.lang().database.labels.search_texture"
           @keydown.enter="startSearch()"
           hide-details
         />
-      </div>
-    </div>
+      </v-col>
+    </v-row>
+
+    <!-- Search button -->
     <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
     <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
@@ -179,7 +199,7 @@ export default {
       },
       textureSearch: '',
       displayedResults: INCREMENT,
-      newSubmit: false
+      newSubmit: false,
     }
   },
   computed: {
@@ -213,6 +233,9 @@ export default {
       }
 
       return columns
+    },
+    multiple: function() {
+      return this.newSubmit
     },
     packsSelected: function() {
       return this.form.packs
@@ -300,6 +323,12 @@ export default {
         selected: boolean
       })
     },
+    openAdd: function () {
+      this.newSubmit = true
+      Vue.nextTick(() => {
+        this.$refs.mod.open(undefined, this.packsToChoose, true)
+      })
+    },
     startSearch: function () {
       this.search.searching = true
       axios.get(`${this.$root.apiURL}/contributions/search
@@ -343,23 +372,82 @@ export default {
       this.newSubmit = false
       this.$refs.mod.open(contrib, this.packsToChoose, false)
     },
-    onNewSubmit: function(data) {
-      axios
-        .post(
-          `${this.$root.apiURL}/contributions`, 
-          {
-            date: data.date,
-            resolution: parseInt(data.pack.match(/\d+/)[0], 10),
-            pack: data.pack,
-            authors: data.authors,
-            texture: String(data.texture)
-          },
-          this.$root.apiOptions
+    /**
+     * @typedef MultipleContribution
+     * @type {object}
+     * @property {string[]} authors Author id array
+     * @property {string[]?} packs Resource pack name array
+     * @property {string} pack Contribution resource pack
+     * @property {string} date Contribution date
+     * @property {Array<number|[number, number]>} texture Texture range array
+     */
+    /**
+     * @param {Array<MultipleContribution>} entries Input entrues
+     * @returns {Promise<void>}
+     */
+    onNewSubmit: async function(entries) {
+      if (!Array.isArray(entries)) return
+
+      // prepare final data
+      let final_contributions = []
+      for (let entry of entries) {
+        const generated_range = window.generateRange(entry.texture)
+
+        if (generated_range.length === 0) {
+          this.$root.jsonSnackBar(entry).showSnackBar(
+            this.$root.lang('database.labels.id_field_errors.one_required'),
+            'error'
+          )
+          console.error(entry)
+          return false
+        }
+
+        if (entry.authors.length === 0) {
+          this.$root.jsonSnackBar(entry).showSnackBar(
+            this.$root.lang('database.subtitles.no_contributor_yet'),
+            'error'
+          )
+          console.error(entry)
+          return false
+        }
+
+        for (let texture_id of generated_range) {
+          const new_contribution = {
+            date: new Date(entry.date).getTime(),
+            resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
+            pack: entry.pack,
+            authors: entry.authors,
+            texture: String(texture_id)
+          }
+          final_contributions.push(new_contribution)
+        }
+      }
+
+      let i = 0;
+      let went_well = true;
+      while (went_well && i < final_contributions.length) {
+        went_well = await axios.post(
+          `${this.$root.apiURL}/contributions`,
+          final_contributions[i], this.$root.apiOptions
         )
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-        })
-        .catch(err => { this.$root.showSnackBar(err, 'error') })
+          .then((_created_contribution) => {
+            return true
+          })
+          .catch(err => {
+            this.$root.showSnackBar(err, 'error');
+            console.error(final_contributions[i]);
+            return false
+          })
+
+        i++;
+      }
+
+      if (went_well) {
+        this.$root.showSnackBar(this.$root.lang('global.ends_success'), 'success')
+        this.getAuthors()
+      }
+
+      return went_well
     },
     onPackChange: function(selected, key) {
       if(key === this.all_packs) {
@@ -431,6 +519,9 @@ export default {
   created: function () {
     this.contributors_selected = this.queryToIds
     this.addRes(this.all_packs, this.all_packs_display, true)
+    window.eventBus.$on('newContributor', l => {
+      this.contributors = l
+    })
   },
   mounted: function () {
     this.getRes()

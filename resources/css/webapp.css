@@ -227,21 +227,12 @@ div.tooltip.vue-tooltip-theme {
 }
 
 .v-select__selections > input {
-  padding-left: 8px;
+  padding-left: 8px 0;
 }
 
 .v-text-field__slot input,
 .v-text-field__slot textarea {
   padding: 8px 0 8px 8px;
-}
-
-.v-text-field__slot label,
-.v-select__slot label {
-  padding-left: 8px;
-}
-
-.v-label--active {
-  top: 2px !important;
 }
 
 .texture-img {
@@ -1228,4 +1219,46 @@ body .texture-avatar {
 
 #review-expanders .v-expansion-panel-content__wrap {
     padding: 16px;
+}
+
+#contribution-form-list {
+  position: relative;
+}
+
+#contribution-form-list > * {
+  overflow-y: scroll;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.v-autocomplete:not(.v-input--is-focused).v-select--chips input {
+  max-height: none !important;
+}
+
+
+/* ===================== *\
+     Quick date picker
+\* ===================== */
+
+.qd-month {
+	text-transform: none !important;
+}
+
+.qd-days {
+	display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr  1fr 1fr 1fr 1fr;
+  grid-gap: 4px;
+}
+
+.qd-days > * {
+	aspect-ratio: 1;
+	max-height: 32px;
+}
+.qd-day {
+	min-width: auto !important;
+	width: 100% !important;
+	height: 100% !important;
 }
