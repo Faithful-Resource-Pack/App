@@ -165,6 +165,7 @@
     >
       <div>{{ snackbar.message }}</div>
       <div>{{ snackbar.submessage }}</div>
+      <pre v-if="snackbar.json" class="mt-2">{{JSON.stringify(snackbar.json, null, 2)}}</pre>
     </v-snackbar>
   </v-app>
 
