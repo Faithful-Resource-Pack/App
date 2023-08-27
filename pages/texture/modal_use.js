@@ -17,13 +17,12 @@ export default {
   >
     <path-modal :color="color" :subPathDialog="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>
     <remove-confirm type="path" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
-    
+
     <v-card>
       <v-card-title class="headline" v-text="subDialogTitle"></v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="formValid">
           <v-text-field :color="color"v-model="subFormData.textureUseName" :label="$root.lang().database.labels.use_name"></v-text-field>
-          <v-text-field :color="color"v-model="subFormData.assets" :label="$root.lang('database.labels.assets')"></v-text-field>
           <v-text-field :color="color" required persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
           <v-text-field :color="color" v-if="add == false" persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
           <v-select required :color="color" :item-color="color" required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
@@ -37,8 +36,8 @@ export default {
             >
               <v-list-item-content>
                 <v-list-item-title
-                  :title="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
-                  v-text="(subFormData.assets ? ('assets/' + subFormData.assets + '/') : '') + path.path"
+                  :title="path.path"
+                  v-text="path.path"
                 />
                 <v-list-item-subtitle :title="(path.versions||[]).join(', ')" v-text="(path.versions||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
@@ -122,7 +121,6 @@ export default {
       formValid: false,
       subFormData: {
         editions: [],
-        assets: '',
         id: '',
         textureID: '',
         textureUseName: '',
@@ -184,8 +182,7 @@ export default {
       const data = {
         name: formData.textureUseName || '',
         texture: formData.textureID,
-        edition: formData.editions[0],
-        assets: formData.assets || '',
+        edition: formData.editions[0]
       };
 
       let method = 'put';
@@ -241,7 +238,6 @@ export default {
           this.subFormData.editions = [this.data.edition]
           this.subFormData.id = this.data.id
           this.subFormData.textureUseName = this.data.name
-          this.subFormData.assets = this.data.assets
           this.subFormData.textureID = this.data.texture
           this.getPaths(this.data.id)
         } else {
