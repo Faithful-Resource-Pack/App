@@ -26,7 +26,7 @@ export default {
     v-bind="$attrs"
     v-model="content"
     :items="contributorList"
-    :loading="contributors.length == 0 && !isSearching"
+    :loading="contributors.length == 0 || isSearching"
     :search-input.sync="search"
     item-text="username"
     item-value="id"
@@ -80,6 +80,11 @@ export default {
             <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
         </v-list-item-avatar>
         </template>
+    </template>
+    <template v-slot:no-data>
+        <v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
+            {{ $root.lang('database.subtitles.search') }} <v-icon right dark>mdi-magnify</v-icon>
+        </v-btn>
     </template>
     </v-autocomplete>
 `,
@@ -155,10 +160,12 @@ export default {
           this.previousSearches.push(val)
           this.isSearching = true
     
-          axios.get(`/contributions/users/${val}`)
+          axios.get( // we can assume contribution editors are admin
+            `${this.$root.apiURL}/users/role/all/${val}`,
+            this.$root.apiOptions
+          )
             .then(res => {
               const results = res.data
-              console.log(results)
               results.forEach(result => {
                 // in case some clever guy forgot its username or uuid or anything
                 Vue.set(this.loadedContributors, result.id, Object.merge({
@@ -170,8 +177,7 @@ export default {
               })
             })
             .catch(err => {
-                // TODO: create endpoint in API to search for users
-            //   this.$root.showSnackBar(err, 'error')
+                this.$root.showSnackBar(err, 'error')
                 console.error(err)
             })
             .finally(() => {
