@@ -125,6 +125,12 @@ export default {
             this.startSearch(val)
             }, SEARCH_DELAY)
         },
+        loadedContributors: {
+            handler: function(n) {
+                window.eventBus.$emit('newContributor', this.contributorList)
+            },
+            deep: true
+        },
     },
     methods: {
         remove (id) {

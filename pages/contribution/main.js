@@ -443,6 +443,9 @@ export default {
   created: function () {
     this.contributors_selected = this.queryToIds
     this.addRes(this.all_packs, this.all_packs_display, true)
+    window.eventBus.$on('newContributor', l => {
+      this.contributors = l
+    })
   },
   mounted: function () {
     this.getRes()

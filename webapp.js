@@ -681,6 +681,8 @@ axios.get('./resources/settings.json')
             }, (new Date(this.discordAuth.expires_at).getTime()) - (new Date().getTime()))
           }
         })
+
+        window.eventBus = new Vue()
       },
       mounted: function () {
         // watch color schemes for light and dark
