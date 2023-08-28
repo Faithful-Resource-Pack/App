@@ -259,7 +259,7 @@ export default {
         date: new Date(new Date().setHours(0, 0, 0, 0)),
         packs: packs_list,
         pack: packs_list ? packs_list[0] : null,
-        texture: this.multiple ? [[0]] : 0,
+        texture: this.multiple ? [] : 0,
         authors: [],
         formId: this.getNewFormId()
       }
