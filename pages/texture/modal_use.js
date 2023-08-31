@@ -100,7 +100,7 @@ export default {
     editions: {
       type: Array,
       required: false,
-      default: function () { return ['java', 'bedrock', 'dungeons'] }
+      default: function () { return ['java', 'bedrock'] }
     },
     textureID: {
       type: String,

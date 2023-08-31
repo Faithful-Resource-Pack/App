@@ -64,7 +64,7 @@ export default {
       type: Array,
       required: false,
       default: function () {
-        return [...settings.versions.java, ...settings.versions.bedrock, ...settings.versions.dungeons]
+        return [...settings.versions.java, ...settings.versions.bedrock]
       }
     },
     useID: {
