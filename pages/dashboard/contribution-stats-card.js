@@ -24,7 +24,7 @@ export default {
     <v-row dense v-if="data" class="col-12 pa-0">
       <v-col cols="12" class="d-flex align-stretch">
         <v-row dense class="d-flex">
-          <v-col cols="12" sm="6" v-for="total in totals" :key="total.name" class="d-flex align-stretch">
+          <v-col cols="12" :sm="(i == totals.length-1 && total.name.includes('last_day')) ? 12 : 6" v-for="(total,i) in totals" :key="total.name" class="d-flex align-stretch">
             <p class="mb-0 rounded-lg pa-2">
               <span class="v-card__title pa-0 d-inline text--primary">{{ total.value }}</span>{{ ' ' + $root.lang('dashboard.totals.' + total.name) }}
             </p>

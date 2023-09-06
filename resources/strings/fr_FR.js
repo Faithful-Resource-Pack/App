@@ -503,6 +503,7 @@ export default {
     totals: {
       authors: 'auteurs',
       contributions: 'contributions',
+      last_day: 'contributions dans les 48 dernières heures',
       last_week: 'contributions cette semaine',
       last_month: 'contributions ce mois'
     },
