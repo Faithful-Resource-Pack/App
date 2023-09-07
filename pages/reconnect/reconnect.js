@@ -52,7 +52,7 @@ export default {
       })
       .then(async (json) => {
         console.log(json)
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
 
         await this.$root.tokenCallback(json, auth)
 
@@ -84,8 +84,8 @@ export default {
         console.error(err)
         this.$root.showSnackBar(err, 'error')
 
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
-        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_informations'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
+        this.reconnect_steps.push(this.$root.lang('reconnect.updating_profile_information'))
 
         this.$root.logout()
       })

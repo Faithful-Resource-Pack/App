@@ -567,9 +567,8 @@ export default {
     reconnecting: 'Reconnecting...',
     refreshing_discord_token: 'Refreshing Discord token...',
     dummy_step: 'Downloading RAM...',
-    updating_profile_informations: 'Updating profile information...',
+    updating_profile_information: 'Updating profile information...',
     failed_to_reconnect: 'Failed to reconnect',
-    loggging_out: 'Logging out...',
   },
   datepicker: {
     year: 'Year',
