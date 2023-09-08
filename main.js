@@ -9,35 +9,29 @@ const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fet
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const DEV = (process.env.DEV || 'false') === 'true'
-const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2/'
+const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2'
 const app = express()
 app.disable('x-powered-by');
 const webappURL = '/'
 
 const contributorsBackend = require('./backend/contributor')
-const contributionsBackend = require('./backend/contributions')
-const contributionsStatsBackend = require('./backend/contributions-stats')
 const texturesBackend = require('./backend/textures')
 const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
-const addonsBackend = require('./backend/addons')
-const allCollection = require('./helpers/firestorm/all')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const contributionController = require('./backend/contribution/contribution.controller.js');
 const filesController = require('./backend/files/files.controller');
+const { default: axios } = require('axios');
 
-// fetch settings from the database
+// fetch settings from the API
 const SETTINGS_PATH = path.join(path.join(process.cwd(), 'resources/'), 'settings.json')
 
-//TODO: Find the ETIMEDOUT origin, may be linked to my connection quality
 if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
   const fetchSettings = () => {
-    const read_settings = allCollection.settings.read_raw()
-  
-    read_settings.catch(() => {})
-  
-    read_settings.then(result => {
+    axios.get(`${API_URL}/settings/raw`)
+    .then(res => res.data)
+    .then(result => {
       result = JSON.stringify(result)
       return fs.promises.writeFile(SETTINGS_PATH, result, {
         flag: 'w',
@@ -45,7 +39,7 @@ if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
       })
     })
   }
-  
+
   fetchSettings()
   setInterval(() => {
     fetchSettings()
