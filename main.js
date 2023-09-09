@@ -30,14 +30,13 @@ const SETTINGS_PATH = path.join(path.join(process.cwd(), 'resources/'), 'setting
 if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
   const fetchSettings = () => {
     axios.get(`${API_URL}/settings/raw`)
-    .then(res => res.data)
-    .then(result => {
-      result = JSON.stringify(result)
-      return fs.promises.writeFile(SETTINGS_PATH, result, {
-        flag: 'w',
-        encoding: 'utf-8'
+      .then(res => {
+        const result = JSON.stringify(res.data)
+        return fs.promises.writeFile(SETTINGS_PATH, result, {
+          flag: 'w',
+          encoding: 'utf-8'
+        })
       })
-    })
   }
 
   fetchSettings()

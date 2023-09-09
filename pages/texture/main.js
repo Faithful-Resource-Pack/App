@@ -23,7 +23,7 @@ export default {
     <add-multiple-texture :textColor="textColorOnPage" :color="pageColor" v-model="addMultiple" :disableDialog="() => { addMultiple = false }" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     <add-minecraft-version :color="pageColor" :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>
     <remove-confirm type="texture" :confirm="remove.confirm" :data="remove.data" :disableDialog="() => { remove.confirm = false; }" :on-submit="removeTexture"></remove-confirm>
-    
+
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.textures }}
     </div>
@@ -113,13 +113,13 @@ export default {
           </v-list-item>
         </v-col></v-row>
 
-        <v-btn 
+        <v-btn
           :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
           :disabled="displayedResults >= Object.keys(textures).length"
           :color="pageColor"
           :class="textColorOnPage"
           block
-          @click="showMore()" 
+          @click="showMore()"
           :v-if="displayedResults < Object.keys(textures).length"
           elevation="2"
         >{{ $root.lang().global.btn.load_more }}</v-btn>
@@ -254,7 +254,7 @@ export default {
       this.remove.confirm = true
     },
     getTypes: function () {
-      axios.get('/textures/types')
+      axios.get(`${this.$root.apiURL}/textures/tags`)
         .then((res) => {
           this.types = res.data
         })
@@ -268,7 +268,7 @@ export default {
         })
     },
     getEditions: function () {
-      axios.get('/textures/editions')
+      axios.get(`${this.$root.apiURL}/textures/editions`)
         .then((res) => {
           this.editions = res.data
         })
@@ -277,7 +277,7 @@ export default {
         })
     },
     getVersions: function () {
-      axios.get('/textures/versions')
+      axios.get(`${this.$root.apiURL}/textures/versions`)
         .then((res) => {
           this.versions = res.data
         })
