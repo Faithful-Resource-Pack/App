@@ -22,9 +22,9 @@ export default {
     </div>
     <div v-else class="my-2 text-h5">
       <v-row>
-        <v-col 
-          :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)" 
-          v-for="addon in addons" 
+        <v-col
+          :cols="$vuetify.breakpoint.mdAndUp ? 4 : ($vuetify.breakpoint.smAndUp ? 6 : 12)"
+          v-for="addon in addons"
         >
           <v-card style="background-color: rgba(255,255,255,.05)">
             <v-img
@@ -87,14 +87,14 @@ export default {
               </v-btn>
             </v-card-actions>
           </v-card>
-              
+
         </v-col>
       </v-row>
     </div>
 
-    <addon-remove-confirm 
-      :confirm="remove.confirm" 
-      :disableDialog="function() { remove.confirm = false; update() }" 
+    <addon-remove-confirm
+      :confirm="remove.confirm"
+      :disableDialog="function() { remove.confirm = false; update() }"
       :data="remove.data">
     </addon-remove-confirm>
   </v-container>
@@ -125,7 +125,7 @@ export default {
     },
     getAddons: function (authorID) {
         axios
-        .get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
+        .get(`${this.$root.apiURL}/users/${authorID}/addons/raw`, this.$root.apiOptions)
         .then(res => {
           this.addons = res.data
           this.loading = false
