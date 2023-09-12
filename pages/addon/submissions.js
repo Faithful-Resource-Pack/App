@@ -125,7 +125,7 @@ export default {
     },
     getAddons: function (authorID) {
         axios
-        .get(`${this.$root.apiURL}/users/${authorID}/addons/raw`, this.$root.apiOptions)
+        .get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
         .then(res => {
           this.addons = res.data
           this.loading = false
