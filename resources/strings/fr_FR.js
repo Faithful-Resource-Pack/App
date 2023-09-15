@@ -159,6 +159,7 @@ export default {
       add_texture: 'Ajouter des textures',
       add_mc_version: 'Ajouter une nouvelle version Minecraft',
       ask_deletion: 'Voulez-vous supprimer %s (%d)?',
+      close_on_submit: 'Fermer à l\'envoi',
       contributors_results: 'Résultats des utilisateurs',
       contributor_type: 'Roles de l\'utilisateur',
       discord_id: 'ID Discord',

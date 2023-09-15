@@ -27,10 +27,6 @@ export default {
       type: Boolean,
       required: true
     },
-    disableDialog: {
-      type: Function,
-      required: true
-    },
     types: {
       type: Array,
       required: false,
@@ -59,7 +55,7 @@ export default {
   },
   template: `
   <v-dialog
-      v-model="value"
+      v-model="modalOpened"
       content-class="colored"
       max-width="860"
     >      
@@ -123,10 +119,16 @@ export default {
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <div class="pb-1 pr-4"><v-checkbox
+            :color="color"
+            v-model="closeOnSubmit"
+            hide-details
+            :label="$root.lang('database.labels.close_on_submit')"
+          ></v-checkbox></div>
           <v-btn
             color="red darken-1"
             text
-            @click="disableDialog"
+            @click="onCancel"
           >
             {{ $root.lang().global.btn.cancel }}
           </v-btn>
@@ -143,7 +145,9 @@ export default {
   `,
   data () {
     return {
+      modalOpened: false,
       panel: undefined,
+      closeOnSubmit: false,
       formData: {
         importjson: '[]'
       },
@@ -200,6 +204,9 @@ export default {
 
       return result
     },
+    onCancel: function() {
+      this.modalOpened = false
+    },
     onEditionChange: function(value, use) {
       if(value !== "bedrock") return;
       
@@ -248,6 +255,8 @@ export default {
       })
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().database.labels.add_textures_success, 'success')
+          if(this.closeOnSubmit)
+            this.modalOpened = false
         })
         .catch(err => {
           console.error(err)
@@ -256,15 +265,27 @@ export default {
     }
   },
   watch: {
-    value: function (newValue, oldValue) {
+    closeOnSubmit: {
+      handler: function (newValue, oldValue) {
+        if(oldValue === undefined && newValue === false) {
+          this.closeOnSubmit = localStorage.getItem('MTMA_MODAL') || newValue
+        } else if(newValue !== oldValue) {
+          localStorage.setItem('MTMA_MODAL', newValue)
+        }
+      },
+      immediate: true
+    },
+    value: function(newValue, oldValue) {
       if (oldValue !== newValue && newValue === true) {
         Vue.nextTick(() => {
           this.textures = [emptyTexture()]
           this.$refs.form.reset()
         })
       }
-      if(newValue !== undefined && !newValue)
-        this.$emit('input', false)
+      this.modalOpened = newValue
+    },
+    modalOpened: function(newValue) {
+      this.$emit('input', newValue)
     }
   }
 }
