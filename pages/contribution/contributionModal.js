@@ -105,7 +105,8 @@ export default {
           </template>
           <template v-else>
             <contribution-form
-              v-model="activeForm"
+              :value="activeForm"
+              @input="onFormInput"
               :disabled="activeForm === undefined"
               :contributors="contributors"
               :multiple="multiple"
