@@ -10,34 +10,6 @@ module.exports = {
   textures: function () {
     return textures.read_raw().catch(err => console.trace(err))
   },
-  getEverythingAbout: function (id) {
-    const output = {
-      texture: {},
-      uses: [],
-      paths: {},
-      contributions: []
-    }
-    return textures.get(id)
-      .then(texture => {
-        output.texture = texture
-        return texture.uses()
-          .then(uses => {
-            output.uses = uses
-
-            return Promise.all(uses.map(use => use.paths()))
-          })
-          .then(paths => {
-            output.paths = paths
-          })
-      })
-      .then(() => {
-        return contributionsBack.contributionsFromID(id)
-      })
-      .then(contributions => {
-        output.contributions = contributions
-        return output
-      })
-  },
   textureTypes: function () {
     return textures.read_raw()
       .then((textures) => {
@@ -239,44 +211,4 @@ module.exports = {
         return paths.editFieldBulk(pathEditBulk)
       })
   },
-  /**
-   * Delete textures and uses and paths
-   * @param {String|String[]} ids textures ids to delete
-   */
-  removeTextures(ids) {
-    if (!ids) Promise.reject(new Error('Invalid ids for removeTextures backend, expected String or String[]'))
-    if (typeof ids === 'string') ids = [ids]
-
-    // type validation for String array
-    single(ids, {
-      type: 'array'
-    })
-    ids.forEach(id => {
-      single(id, {
-        type: 'string'
-      }, ids)
-    })
-
-    // in order to delete everything, we need to get all the paths, all the uses, and the texture
-    let _textures
-    let _uses
-    return textures.searchKeys(ids)
-      .then(result => {
-        _textures = result
-        return PromiseEvery(_textures.map(t => t.uses()))
-      })
-      .then(pe => {
-        _uses = pe.results.filter(r => r !== undefined).reduce((acc, cur) => acc = [...acc, ...cur], [])
-        return PromiseEvery(_uses.map(u => u.paths()))
-      })
-      .then(pe => {
-        _paths = pe.results.filter(r => r !== undefined).reduce((acc, cur) => acc = [...acc, ...cur], [])
-
-        const promises = []
-        promises.push(textures.removeBulk(_textures.map(t => t[ID_FIELD])))
-        promises.push(uses.removeBulk(_uses.map(u => u[ID_FIELD])))
-        promises.push(paths.removeBulk(_paths.map(p => p[ID_FIELD])))
-        return Promise.all(promises)
-      })
-  }
 }

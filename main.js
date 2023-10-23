@@ -18,7 +18,6 @@ const texturesBackend = require('./backend/textures')
 const pathsBackend = require('./backend/paths')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
-const contributionController = require('./backend/contribution/contribution.controller.js');
 const { default: axios } = require('axios');
 
 // fetch settings from the API
@@ -211,8 +210,6 @@ const getSuccess = function (res) {
     res.end()
   }
 }
-
-contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
 
 /**
  * ==========================================
