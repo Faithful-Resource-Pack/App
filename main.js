@@ -15,7 +15,6 @@ app.disable('x-powered-by');
 const webappURL = '/'
 
 const texturesBackend = require('./backend/textures')
-const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
@@ -228,9 +227,7 @@ filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess
  */
 app.post('/textures/add', (req, res) => {
   verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.addTextures(req.body.data)
-    })
+    .then(() => texturesBackend.addTextures(req.body.data))
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
@@ -264,73 +261,3 @@ app.post('/paths/version-update/', (req, res) => {
     .then(postSuccess(res))
     .catch(errorHandler(res))
 })
-
-/**
- * ==========================================
- *                  GALLERY
- * ==========================================
- */
-
-const gallerySearchHandler = (req, res) => {
-  let type, edition, version, tag, search
-
-  if (!['textures', 'paths', 'uses'].includes(req.params.type.toLowerCase())) return
-  else type = req.params.type.toLowerCase()
-
-  if (!settings.editions.map(el => el.toLowerCase()).includes(req.params.edition.toLowerCase())) return
-  else edition = req.params.edition.toLowerCase()
-
-  if (req.params.version === 'latest') req.params.version = settings.versions[edition][0]
-
-  if (!settings.versions[edition].includes(req.params.version.toLowerCase())) return
-  else version = req.params.version.toLowerCase()
-
-  tag = req.params.tag || 'all'
-  search = req.params.search ? req.params.search + (req.params[0] || '') : undefined
-
-  pathsBackend.usesIDsFromVersion(version)
-    .then(usesIDs => {
-      if (usesIDs.length > 0) return usesBackend.texturesIDsFromEdition(edition, usesIDs)
-      return usesIDs
-    })
-    .then(texturesIDs => {
-      if (texturesIDs.length > 0) return texturesBackend.texturesIDsFromTags(tag, texturesIDs)
-      return texturesIDs
-    })
-    .then(texturesIDs => {
-      if (texturesIDs.length > 0 && search) return texturesBackend.texturesIDsFromSearch(texturesIDs, search)
-      return texturesIDs
-    })
-    .then(texturesID => {
-      if (texturesID.length == 0) return undefined
-
-      switch (type) {
-        case 'textures':
-          return texturesBackend.searchKeys(texturesID)
-        case 'paths':
-          return pathsBackend.searchTextureID(texturesID)
-        case 'uses':
-          return usesBackend.searchTextureID([{
-            field: "textureID",
-            criteria: "in",
-            value: texturesID
-          }])
-      }
-    })
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-
-  app.get('/api', (_req, res) => {
-    const url = API_URL
-    if(!url) {
-      res.status(500).send('NO API URL DEFINED')
-      throw new Error('NO API URL DEFINED')
-    }
-
-    res.status(200).send(url)
-  })
-}
-
-app.get('/gallery/:type/:edition/:version/:tag/', gallerySearchHandler)
-
-app.get('/gallery/:type/:edition/:version/:tag/:search*', gallerySearchHandler)

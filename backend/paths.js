@@ -11,14 +11,14 @@ module.exports = {
       criteria: 'in',
       value: ids
     }])
-      .then(uses => {
-        uses = uses.map(use => use.id)
-        return paths.search([{
-          field: "useID",
-          criteria: 'in',
-          value: uses
-        }])
-      })
+    .then(uses => {
+      uses = uses.map(use => use.id)
+      return paths.search([{
+        field: "useID",
+        criteria: 'in',
+        value: uses
+      }])
+    })
   },
   usesIDsFromVersion: function (version) {
     return paths.search([{
