@@ -62,7 +62,7 @@ export default {
     </div>
     <v-list v-else :class="['main-container', 'my-2 pa-4', {'mx-n3': !$vuetify.breakpoint.mdAndUp }]" :rounded="$vuetify.breakpoint.mdAndUp" two-line>
       <v-form lazy-validation v-model="validForm" ref="form">
-          <v-alert type="warning" class="pb-4">
+          <v-alert type="warning" class="pb-4" color="orange darken-3">
           <a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
              style="color: inherit; text-decoration: underline;" target="_blank"
           >{{ $root.lang('addons.general.rules') }}</a> <a
