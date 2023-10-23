@@ -19,10 +19,10 @@ export default {
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          
+
           <template v-if="Object.keys(textureObj).length > 0">
             <v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
-          
+
             <v-spacer></v-spacer>
 
             <v-btn icon @click="() => $parent.copyShareLink(textureID)">
@@ -133,7 +133,7 @@ export default {
       required: true
     },
     textureID: {
-      type: String,
+      type: Number,
       required: true
     },
     textureObj: {
@@ -187,8 +187,8 @@ export default {
       this.opened = false
     },
     discordIDtoName(d) {
-      return this.contributors[d] 
-        ? this.contributors[d].username 
+      return this.contributors[d]
+        ? this.contributors[d].username
           ? this.contributors[d].username
           : this.$root.lang().gallery.error_message.user_anonymous
         : this.$root.lang().gallery.error_message.user_not_found

@@ -1,7 +1,7 @@
 /* global axios, Vue, settings */
 
 const textureModal = () => import('./modal.js')
-const GalleryTooltip = () => import('./gallery_tooltip.js')
+const textureTooltip = () => import('./gallery_tooltip.js')
 
 const Chain = function(val) {
   return {
@@ -21,7 +21,7 @@ export default {
   name: "texture-page",
   components: {
     textureModal,
-    GalleryTooltip,
+    textureTooltip,
   },
   template: `
   <v-container :style="stretched ? 'max-width: 100% !important' : ''">
@@ -69,16 +69,15 @@ export default {
       </v-col>
     </v-row>
 
-    <v-row  class="my-2">
+    <v-row class="my-2">
       <v-col cols="12" sm="6">
         <v-slider
           :label="$root.lang('gallery.max_items_per_row')"
           v-model="columns"
           step="1"
-          thumb-label  
+          thumb-label
           ticks="always"
           tick-size="4"
-          ticks
           hide-details
           min="1"
           max="16"
@@ -150,7 +149,7 @@ export default {
                 :src="texture.url"
                 :style="styles.cell"
                 lazy-src="https://database.faithfulpack.net/images/bot/loading.gif" />
-              
+
               <div class="not-done" style="display: none;">
                 <span></span><div>
                   <h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
@@ -168,10 +167,10 @@ export default {
               </v-btn>
             </template>
 
-            <GalleryTooltip
-              :mojang="current.resolution === '16x'" 
+            <texture-tooltip
+              :mojang="current.resolution === '16x'"
               :texture="texture"
-              :contributions="loadedContributions" 
+              :contributions="loadedContributions"
               :resolution="current.resolution"
               :discordIDtoName="discordIDtoName"
             />
@@ -227,7 +226,7 @@ export default {
       // result
       displayedTextures: [],
       // loaded contributions
-      loadedContributions: [],
+      loadedContributions: {},
       // loaded contributors
       loadedContributors: [],
       // modal opened ID

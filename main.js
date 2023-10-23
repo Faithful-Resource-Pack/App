@@ -90,8 +90,8 @@ app.get(webappURL, async (req, res) => {
 
 app.listen(port, () => {
   console.log(`API url at ${API_URL}`);
-  console.log(`listening at http://localhost:${port}`)
-  console.log(`Webapp at http://localhost:${port}${webappURL}`)
+  console.log(`Listening at http://localhost:${port}`)
+  console.log(`Web App at http://localhost:${port}${webappURL}`)
 
   if (DEV && process.send) {
       process.send('online')
@@ -245,30 +245,6 @@ app.post('/textures/versions/add', (req, res) => {
 })
 
 // GET
-app.get('/textures/all/?', function (req, res) {
-  texturesBackend.textures()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/textures/types', function (req, res) {
-  texturesBackend.textureTypes()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/textures/editions', function (req, res) {
-  texturesBackend.textureEditions()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.get('/textures/versions', function (req, res) {
-  texturesBackend.textureVersions()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
 app.get('/textures/:type/:name?/?', function (req, res) {
   let name, type
 
@@ -276,15 +252,6 @@ app.get('/textures/:type/:name?/?', function (req, res) {
   if ('name' in req.params && req.params.name) name = req.params.name // check if field and value not undefined
 
   texturesBackend.search(name, type)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/textures/remove', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.removeTextures(req.body.id)
-    })
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
@@ -298,28 +265,11 @@ app.post('/paths/version-update/', (req, res) => {
     .catch(errorHandler(res))
 })
 
-app.get('/paths/all/', function (req, res) {
-  pathsBackend.path()
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
 /**
  * ==========================================
  *                  GALLERY
  * ==========================================
  */
-
-app.get('/gallery/dialog/:textureID', (req, res) => {
-  let textureID
-
-  if (Number.isNaN(req.params.textureID)) return
-  else textureID = req.params.textureID
-
-  texturesBackend.getEverythingAbout(textureID)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
 
 const gallerySearchHandler = (req, res) => {
   let type, edition, version, tag, search
@@ -370,15 +320,15 @@ const gallerySearchHandler = (req, res) => {
     .then(getSuccess(res))
     .catch(errorHandler(res))
 
-app.get('/api', (_req, res) => {
-  const url = API_URL
-  if(!url) {
-    res.status(500).send('NO API URL DEFINED')
-    throw new Error('NO API URL DEFINED')
-  }
+  app.get('/api', (_req, res) => {
+    const url = API_URL
+    if(!url) {
+      res.status(500).send('NO API URL DEFINED')
+      throw new Error('NO API URL DEFINED')
+    }
 
-  res.status(200).send(url)
-})
+    res.status(200).send(url)
+  })
 }
 
 app.get('/gallery/:type/:edition/:version/:tag/', gallerySearchHandler)

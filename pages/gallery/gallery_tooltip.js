@@ -20,7 +20,7 @@ export default {
       required: true
     },
     contributions: {
-      type: Array,
+      type: Object,
       required: true
     },
     resolution: {

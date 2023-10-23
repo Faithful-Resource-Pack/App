@@ -1,4 +1,4 @@
-# How to translate the webapp:
+# How to translate the web app:
 
 First of all, copy the `en_US.js` file en rename it accordingly to your country spoken language.
 Then you can start translating the file. Once you have translated the file, add the newly added language to the `webapp.js` file :
