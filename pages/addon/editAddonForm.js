@@ -10,7 +10,7 @@ export default {
     <h4 class="text-h4 py-4">{{ $root.lang().addons.titles.edit }} <span id="addon-id">#{{this.id}}</span></h4>
     <addon-form
       class="pa-0"
-      
+
       :addon-new="false"
 
       :loading="loading"
@@ -26,7 +26,7 @@ export default {
       v-on:header="handleHeader"
       v-on:screenshot="handleScreenshot"
      />
-    <v-dialog 
+    <v-dialog
       v-model="reasonDialog"
       persistent
       max-width="600px"
@@ -75,10 +75,14 @@ export default {
       reasonData: undefined,
       reasonRules: [
         () => !!(this.reason && this.reason.trim()) || this.$root.lang('addons.general.reason.required'),
-        () => (this.reason.trim().length < this.reasonCounter.min || this.reason.trim().length > this.reasonCounter.max) ? this.$root.lang('addons.general.reason.bounds').replace('%s', this.reasonCounter.min).replace('%s', this.reasonCounter.max) : true,
+        () => (this.reason.trim().length < this.reasonCounter.min || this.reason.trim().length > this.reasonCounter.max)
+          ? this.$root.lang('addons.general.reason.bounds')
+            .replace('%s', this.reasonCounter.min)
+            .replace('%s', this.reasonCounter.max)
+          : true,
       ],
       reasonCounter: {
-        min: 10,
+        min: 5,
         max: 150
       },
       reason: '',
@@ -141,7 +145,7 @@ export default {
           this.$root.showSnackBar('Approved', 'success')
         })
       }
-      
+
       prom.catch(err => {
         this.$root.showSnackBar(err, 'error')
       })
@@ -177,13 +181,13 @@ export default {
         ...this.$root.apiOptions,
       })
       .then((res) => {
-        const url = res.data + '?t=' + new Date().getTime(); 
-        this.headerSource = url; 
+        const url = res.data + '?t=' + new Date().getTime();
+        this.headerSource = url;
       })
       .catch(() => {
         this.headerSource = undefined;
       })
-    },  
+    },
     handleScreenshot: async function(screenshots, index, remove=false, id) {
       if(Array.isArray(screenshots) && screenshots.length === 0) return
 
@@ -214,7 +218,7 @@ export default {
 
           i++
         }
-        
+
         promise = successful ? Promise.resolve() : Promise.reject(err)
       }
 
@@ -239,7 +243,7 @@ export default {
     }
   },
   created: function() {
-    this.getHeader()  
+    this.getHeader()
     this.getScreens()
     Promise.all([
       axios.get(this.$root.apiURL + '/addons/' + this.$route.params.id, this.$root.apiOptions),
@@ -248,7 +252,7 @@ export default {
     .then(res => {
       let addon_loaded = {
         ...res[0].data,
-        downloads: res[1].data 
+        downloads: res[1].data
       }
       delete addon_loaded.last_updated
       delete addon_loaded.slug

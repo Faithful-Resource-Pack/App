@@ -281,16 +281,16 @@ export default {
       },
       embed_description: {
         label: 'Embed description',
-        hint: 'Description seen when sharing the add-on on social medias',
+        hint: 'Description seen when sharing the add-on on social media',
         rules: {
           too_big: 'Embed description must be less than %s characters.',
         },
       },
       reason: {
-        title: 'Update reason',
-        text: 'Please tell us what you updated to ease add-on review',
-        required: 'Update reason is required',
-        bounds: 'Update reason muse be between %s and %s'
+        title: 'Update Reason',
+        text: 'Please tell us what you updated to make reviewing your add-on easier!',
+        required: 'An update reason is required',
+        bounds: 'Update reason must be between %s and %s characters long'
       },
       authors: {
         label: 'Select authors for the add-on',
