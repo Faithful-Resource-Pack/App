@@ -19,7 +19,6 @@ const pathsBackend = require('./backend/paths')
 const settings = require('./resources/settings.json')
 const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const contributionController = require('./backend/contribution/contribution.controller.js');
-const filesController = require('./backend/files/files.controller');
 const { default: axios } = require('axios');
 
 // fetch settings from the API
@@ -214,7 +213,6 @@ const getSuccess = function (res) {
 }
 
 contributionController.configure(verifyAuth, app, postSuccess, errorHandler)
-filesController.configure(verifyAuth, app, postSuccess, errorHandler, getSuccess)
 
 /**
  * ==========================================
