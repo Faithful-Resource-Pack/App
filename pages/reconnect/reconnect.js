@@ -57,9 +57,9 @@ export default {
         await this.$root.tokenCallback(json, auth)
 
         return fetch('https://discord.com/api/users/@me', {
-            headers: {
-              authorization: `Bearer ${json.access_token}`
-            }
+          headers: {
+            authorization: `Bearer ${json.access_token}`
+          }
         })
       })
       .then(response => {
@@ -72,7 +72,9 @@ export default {
         auth.id = json.id
         auth.avatar = json.avatar !== null ? `https://cdn.discordapp.com/avatars/${json.id}/${json.avatar}?size=1024` : null
         auth.banner = json.banner != null ? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024` : 'https://database.faithfulpack.net/images/branding/backgrounds/forest.png'
-        auth.username = `${json.username}${json.discriminator != 0 ? "#" + json.discriminator : ""}`
+        auth.username = json.discriminator != 0
+          ? json.username + "#" + json.discriminator
+          : json.global_name
 
         await this.$root.tokenCallback(auth, auth)
       })

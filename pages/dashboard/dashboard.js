@@ -39,7 +39,7 @@ export default {
       <contribution-card :admin="admin" :colors="colors" :statsListener="(t) => { $refs.cs.onTotals(t) }" />
     </v-col>
   </v-row>
-</div>  
+</div>
 `,
   computed: {
     admin: function() {

@@ -24,7 +24,7 @@ export default {
     <v-skeleton-loader v-if="loading || !renderComponent" id="graph-loader" type="image" />
     <graph-treemap
       v-if="renderComponent"
-      
+
       :theme="theme"
       :width="width"
       :height="height"
@@ -147,10 +147,8 @@ export default {
       this.forceRerender()
     },
     loading: function(n) {
-      console.log(JSON.stringify(this.series))
-      if(n === false) {
+      if(n === false)
         this.renderComponent = true
-      }
     }
   }
 }
