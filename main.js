@@ -14,7 +14,6 @@ const app = express()
 app.disable('x-powered-by');
 const webappURL = '/'
 
-const contributorsBackend = require('./backend/contributor')
 const texturesBackend = require('./backend/textures')
 const usesBackend = require('./backend/uses')
 const pathsBackend = require('./backend/paths')
@@ -147,7 +146,11 @@ const verifyAuth = (token, roles = []) => {
     .then(json => {
       const userID = json.id
 
-      return contributorsBackend.getUser(userID, token)
+      return axios.get(`${API_URL}/users/${userID}`, {
+        headers: {
+          discord: token
+        }
+      }).then(r => r.data)
     })
     .then(user => {
       if (roles.length == 0) return Promise.resolve(user[ID_FIELD])
