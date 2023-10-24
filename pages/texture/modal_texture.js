@@ -17,7 +17,7 @@ export default {
     >
       <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
       <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
-      
+
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
@@ -158,7 +158,7 @@ export default {
         // this modal is NEVER used to add textures but anyway
         const data = JSON.parse(JSON.stringify(this.formData))
         data.token = this.$root.user.access_token
-        promise = axios.post(`/textures/add`, data)
+        promise = axios.post('/textures/add', data)
       } else {
         const data = {
           name: this.formData.name,

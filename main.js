@@ -195,19 +195,6 @@ const postSuccess = function (res) {
 }
 
 /**
- * Success handling for GET request
- * @param {Response<any, Record<string, any>, number>} res
- * @return {Function}
- */
-const getSuccess = function (res) {
-  return (val) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(val)
-    res.end()
-  }
-}
-
-/**
  * ==========================================
  *                 TEXTURES
  * ==========================================
@@ -229,18 +216,6 @@ app.post('/textures/versions/add', (req, res) => {
       return texturesBackend.addNewMinecraftVersion(req.body.data)
     })
     .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/textures/:type/:name?/?', function (req, res) {
-  let name, type
-
-  if ('type' in req.params && req.params.type && req.params.type !== 'all') type = req.params.type
-  if ('name' in req.params && req.params.name) name = req.params.name // check if field and value not undefined
-
-  texturesBackend.search(name, type)
-    .then(getSuccess(res))
     .catch(errorHandler(res))
 })
 

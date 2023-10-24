@@ -29,50 +29,6 @@ module.exports = {
   searchKeys(ids) {
     return textures.searchKeys(ids)
   },
-  texturesIDsFromSearch(ids, name) {
-    return textures.searchKeys(ids)
-      .then(res => {
-        // part of name matches or exact ID match
-        return res.filter(el => el.name.includes(name) || el[ID_FIELD] === name).map(el => el.id)
-      })
-  },
-  texturesIDsFromTags(tag, ids) {
-    return textures.searchKeys(ids)
-      .then(res => {
-        if (tag.toLowerCase() === 'all') return res.map(e => e.id)
-
-        const ids = []
-        res.forEach(t => {
-          if (t.type.includes(tag)) ids.push(t.id)
-        })
-
-        return ids
-      })
-  },
-  search: function (textureName, textureType) {
-    if (!textureName && !textureType) return Promise.reject(new Error('Search function parameters undefined'))
-
-    /** @type {import('../helpers/firestorm').SearchOption[]} */
-    const searchOptions = []
-
-    if (textureName !== undefined) {
-      searchOptions.push({
-        field: 'name',
-        criteria: 'includes',
-        value: textureName
-      })
-    }
-
-    if (textureType !== undefined) {
-      searchOptions.push({
-        field: 'type',
-        criteria: 'array-contains',
-        value: textureType
-      })
-    }
-
-    return textures.search(searchOptions)
-  },
   textureEditions: function () {
     return uses.select({
       fields: ['editions']
