@@ -2,9 +2,7 @@ const textures = require('../helpers/firestorm/texture.js')
 const uses = require('../helpers/firestorm/texture_use.js')
 const paths = require('../helpers/firestorm/texture_paths.js')
 const { single, textureSchema, validator } = require('../validator.js')
-const PromiseEvery = require('../helpers/promiseEvery.js')
 const { ID_FIELD } = require('../helpers/firestorm')
-const contributionsBack = require('./contributions.js')
 
 module.exports = {
   textures: function () {
