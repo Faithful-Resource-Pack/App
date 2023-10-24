@@ -1,7 +1,7 @@
 {
-  "name": "app",
+  "name": "faithful-web-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "The official Web Application for the Faithful website.",
   "main": "main.js",
   "scripts": {
     "dev": "nodemon main.js --watch .env --watch main.js --watch backend/",

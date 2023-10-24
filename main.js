@@ -17,7 +17,6 @@ const webappURL = '/'
 const texturesBackend = require('./backend/textures')
 const pathsBackend = require('./backend/paths')
 const settings = require('./resources/settings.json')
-const { ID_FIELD } = require('./helpers/firestorm/index.js')
 const { default: axios } = require('axios');
 
 // fetch settings from the API
@@ -150,13 +149,10 @@ const verifyAuth = (token, roles = []) => {
       }).then(r => r.data)
     })
     .then(user => {
-      if (roles.length == 0) return Promise.resolve(user[ID_FIELD])
+      if (roles.length == 0) return Promise.resolve(user.id)
 
-      let i = 0
-      while (roles.length >= i) {
-        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user[ID_FIELD])
-        i++
-      }
+      for (let i = 0; roles.length >= i; ++i)
+        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user.id)
 
       const err = new Error('You don\'t have the permission to do that!')
       err.code = 403
