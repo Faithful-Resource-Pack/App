@@ -20,7 +20,7 @@ const settings = require('./resources/settings.json')
 const { default: axios } = require('axios');
 
 // fetch settings from the API
-const SETTINGS_PATH = path.join(path.join(process.cwd(), 'resources/'), 'settings.json')
+const SETTINGS_PATH = path.join(process.cwd(), 'resources/', 'settings.json')
 
 if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
   const fetchSettings = () => {
