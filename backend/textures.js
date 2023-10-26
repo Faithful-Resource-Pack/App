@@ -29,6 +29,30 @@ module.exports = {
   searchKeys(ids) {
     return textures.searchKeys(ids)
   },
+  search: function (textureName, textureType) {
+    if (!textureName && !textureType) return Promise.reject(new Error('Search function parameters undefined'))
+
+    /** @type {import('../helpers/firestorm').SearchOption[]} */
+    const searchOptions = []
+
+    if (textureName !== undefined) {
+      searchOptions.push({
+        field: 'name',
+        criteria: 'includes',
+        value: textureName
+      })
+    }
+
+    if (textureType !== undefined) {
+      searchOptions.push({
+        field: 'type',
+        criteria: 'array-contains',
+        value: textureType
+      })
+    }
+
+    return textures.search(searchOptions)
+  },
   textureEditions: function () {
     return uses.select({
       fields: ['editions']

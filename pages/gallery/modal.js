@@ -112,12 +112,6 @@ export default {
                       </div>
                     </template>
                   </div>
-                  <div v-if="item === items[2]">
-                    {{ $root.lang().global.nyi }}
-                  </div>
-                  <div v-if="item === items[3]">
-                    {{ $root.lang().global.nyi }}
-                  </div>
                 </v-tab-item>
               </v-tabs-items>
             </div>
@@ -156,8 +150,6 @@ export default {
       items: [
         this.$root.lang().gallery.modal.items.information,
         this.$root.lang().gallery.modal.items.authors,
-        this.$root.lang().gallery.modal.items.animated,
-        this.$root.lang().gallery.modal.items.model
       ],
       infos: ["texture", "uses", "paths"],
       authors: settings.resolutions,
