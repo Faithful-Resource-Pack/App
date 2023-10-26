@@ -1,7 +1,7 @@
 /* global axios, Vue, Prism */
 
 const emptyPath = function () {
-  return ['', []]
+  return ['', [], false]
 }
 
 const emptyUse = function () {
@@ -103,6 +103,7 @@ export default {
                               <v-row dense>
                                 <v-col><v-text-field :color="color" class="mb-0" v-model="path[0]" :placeholder="$root.lang().database.labels.path" hide-details dense clearable /></v-col>
                                 <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions_sorted" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
+                                <v-col class="flex-grow-0 flex-shrink-0"><v-checkbox :color="color" v-model="path[2]" hide-details label="MCMETA"></v-checkbox></v-col>
                                 <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">mdi-close</v-icon></v-col>
                               </v-row>
                             </v-container>
@@ -228,19 +229,9 @@ export default {
       }
       return result
     },
-    verify: function (value) {
-      const schema = textureSchema(this.types, this.editions, this.versions)
-
-      single(value, schema)
-
-      return value
-    },
-    verifyJSON: function () {
-      return this.verify(JSON.parse(this.formData.importjson))
-    },
     parseJSON: function () {
       try {
-        const data = this.verifyJSON()
+        const data = JSON.parse(this.formData.importjson)
         this.textures = data
       } catch (err) {
         console.error(err)
@@ -249,10 +240,20 @@ export default {
     },
     send: function () {
       const data = JSON.parse(JSON.stringify(this.textures))
-      axios.post('/textures/add', {
-        token: this.$root.user.access_token,
-        data: data
-      })
+      const api_data = data.map(e => ({
+        name: e.name,
+        tags: e.type,
+        uses: e.uses.map(u => ({
+          name: u.name,
+          edition: u.editions[0],
+          paths: u.paths.map(p => ({
+            name: String(p[0]),
+            versions: p[1],
+            mcmeta: p[2] || false,
+          })),
+        })),
+      }))
+      axios.post(`${this.$root.apiURL}/textures/multiple`, api_data, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().database.labels.add_textures_success, 'success')
           if(this.closeOnSubmit)

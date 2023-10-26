@@ -77,60 +77,6 @@ module.exports = {
       }, [])
     })
   },
-  addTextures: function (value) {
-    let textureIDs = []
-    const useIDs = []
-    const useValues = []
-
-    return Promise.all([this.textureTypes(), this.textureEditions(), this.textureVersions()])
-      .then(results => {
-        const [types, editions, versions] = results
-        const schema = textureSchema(types, editions, versions)
-
-        single(value, schema)
-      })
-      .then(() => {
-        return textures.addBulk(value.map(e => {
-          return {
-            name: e.name,
-            type: e.type
-          }
-        }))
-      })
-      .then((texID) => {
-        textureIDs = texID
-        value.forEach((texture, ti) => {
-          texture.uses.forEach((use, ui) => {
-            useIDs.push(textureIDs[ti] + String.fromCharCode('a'.charCodeAt(0) + ui))
-
-            useValues.push({
-              textureID: parseInt(textureIDs[ti]),
-              textureUseName: use.name,
-              editions: use.editions
-            })
-          })
-        })
-        return uses.setBulk(useIDs, useValues)
-      })
-      .then(() => {
-        let useIndex = 0
-        const pathsToAdd = []
-        value.forEach((texture) => {
-          texture.uses.forEach((use) => {
-            use.paths.forEach((path, _pi) => {
-              pathsToAdd.push({
-                useID: useIDs[useIndex],
-                path: path[0],
-                versions: path[1]
-              })
-            })
-            useIndex++
-          })
-        })
-
-        return paths.addBulk(pathsToAdd)
-      })
-  },
   addNewMinecraftVersion: function (data) {
     return this.textureEditions()
       .then(editions => {

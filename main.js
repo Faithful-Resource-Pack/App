@@ -213,16 +213,6 @@ const getSuccess = function (res) {
  * ==========================================
  */
 
-/**
- * Perms: admins + dev
- */
-app.post('/textures/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => texturesBackend.addTextures(req.body.data))
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
 app.post('/textures/versions/add', (req, res) => {
   verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
     .then(() => {
