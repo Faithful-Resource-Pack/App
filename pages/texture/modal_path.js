@@ -4,7 +4,7 @@ export default {
   name: 'path-modal',
   template: `
   <v-dialog
-    v-model="subPathDialog"
+    v-model="amOpened"
     content-class="colored"
     max-width="600"
   >
@@ -28,7 +28,7 @@ export default {
         <v-btn
           color="red darken-1"
           text
-          @click="disableSubPathDialog"
+          @click="onCancel"
         >
           {{ $root.lang().global.btn.cancel }}
         </v-btn>
@@ -43,7 +43,7 @@ export default {
     </v-card>
   </v-dialog>`,
   props: {
-    subPathDialog: {
+    value: {
       type: Boolean,
       required: true
     },
@@ -79,6 +79,7 @@ export default {
   },
   data() {
     return {
+      amOpened: false,
       // those var names does not make any sens anymore lmao
       subPathFormData: {
         id: '',
@@ -98,6 +99,10 @@ export default {
     }
   },
   methods: {
+    onCancel: function() {
+      this.amOpened = false
+      this.disableSubPathDialog()
+    },
     MinecraftSorter: function (a, b) {
       const aSplit = a.split('.').map(s => parseInt(s))
       const bSplit = b.split('.').map(s => parseInt(s))
@@ -149,7 +154,10 @@ export default {
     }
   },
   watch: {
-    subPathDialog: function () {
+    value: function(newValue) {
+      this.amOpened = newValue
+    },
+    amOpened: function (newValue) {
       Vue.nextTick(() => {
         if (!this.add) {
           this.subPathFormData.versions = this.pathData.versions.sort(this.MinecraftSorter)
@@ -159,6 +167,7 @@ export default {
           this.subPathFormData.mcmeta = this.pathData.mcmeta
         } else this.$refs.form.reset()
       })
+      this.$emit('input', newValue);
     }
   }
 }

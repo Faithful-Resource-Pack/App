@@ -850,6 +850,10 @@ code {
   border-bottom-right-radius: 50%;
 }
 
+.theme--dark .v-list-item__action.merged .v-btn {
+  background: #272727;
+}
+
 .v-dialog {
   margin: 10px;
 }

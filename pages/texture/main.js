@@ -18,7 +18,7 @@ export default {
   template: `
   <v-container id="texturePage">
     <div class="styles" v-html="pageStyles"></div>
-    <texture-modal :color="pageColor" :textColor="textColorOnPage" :dialog="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
+    <texture-modal :color="pageColor" :textColor="textColorOnPage" v-model="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
     <version-modal :color="pageColor" :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog"></version-modal>
     <add-multiple-texture :textColor="textColorOnPage" :color="pageColor" v-model="addMultiple" :types="types" :editions="editions" :versions="versions"></add-multiple-texture>
     <add-minecraft-version :color="pageColor" :dialog="newVersionModal" :disableDialog="() => { newVersionModal = false }" :editions="editions" :versions="versions"></add-minecraft-version>

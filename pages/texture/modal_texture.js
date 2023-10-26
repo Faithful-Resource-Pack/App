@@ -11,7 +11,7 @@ export default {
   },
   template: `
   <v-dialog
-      v-model="dialog"
+      v-model="modalOpened"
       content-class="colored"
       max-width="600"
     >
@@ -65,7 +65,7 @@ export default {
           <v-btn
             color="red darken-1"
             text
-            @click="disableDialog"
+            @click="onCancel"
           >
             {{ $root.lang().global.btn.cancel }}
           </v-btn>
@@ -81,7 +81,7 @@ export default {
     </v-dialog>
   `,
   props: {
-    dialog: {
+    value: {
       type: Boolean,
       required: true
     },
@@ -116,6 +116,7 @@ export default {
   },
   data () {
     return {
+      modalOpened: false,
       formData: {
         name: '',
         type: [],
@@ -194,10 +195,17 @@ export default {
     askRemoveUse: function (data) {
       this.remove.data = data
       this.remove.confirm = true
+    },
+    onCancel: function () {
+      this.modalOpened = false
+      this.disableDialog()
     }
   },
   watch: {
-    dialog: function (newValue, oldValue) {
+    value: function(newValue) {
+      this.modalOpened = newValue
+    },
+    modalOpened: function (newValue, oldValue) {
       if (newValue === true) {
         Vue.nextTick(() => {
           if (this.add) this.$refs.form.reset()
@@ -213,6 +221,7 @@ export default {
         // Fixes bug where click outside changes dialog to false but not dialogOpen to false
         this.disableDialog()
       }
+      this.$emit('input', newValue);
     }
   }
 }
