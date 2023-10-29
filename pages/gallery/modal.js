@@ -318,10 +318,10 @@ export default {
       const result = [];
 
       if(this.textureObj) {
-        for(let i = 0; i < this.textureObj.urls.length; ++i) {
+        Object.entries(this.textureObj.urls).forEach((urlArr, i) => {
           if(i % 2 === 0) result.push([])
-          result[result.length -1].push(this.textureObj.urls[i]);
-        }
+          result[result.length - 1].push(urlArr);
+        })
       }
 
       return result
