@@ -76,7 +76,9 @@ export default {
       const data = JSON.parse(JSON.stringify(this.form))
       data.token = this.$root.user.access_token
 
-      axios.post('/paths/version-update/', data)
+      const old_version = this.form.actual
+      const new_version = this.form.new
+      axios.put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
           this.disableMCDialog(true)

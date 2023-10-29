@@ -233,12 +233,3 @@ app.get('/textures/:type/:name?/?', function (req, res) {
     .then(getSuccess(res))
     .catch(errorHandler(res))
 })
-
-app.post('/paths/version-update/', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.update(req.body.actual, req.body.new)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
