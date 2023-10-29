@@ -74,10 +74,7 @@ export default {
   },
   methods: {
     send: function () {
-      axios.post('/textures/versions/add', {
-        token: this.$root.user.access_token,
-        data: this.form
-      })
+      axios.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, 'success')
         })

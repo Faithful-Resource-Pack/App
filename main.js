@@ -182,19 +182,6 @@ const errorHandler = function (res) {
 }
 
 /**
- * Success handling for POST request
- * @param {import('express').Response<any, Record<string, any>, number>} res
- * @return {Function}
- */
-const postSuccess = function (res) {
-  return (result) => {
-    res.status(200)
-    if(result) res.send(result)
-    res.end()
-  }
-}
-
-/**
  * Success handling for GET request
  * @param {Response<any, Record<string, any>, number>} res
  * @return {Function}
@@ -212,15 +199,6 @@ const getSuccess = function (res) {
  *                 TEXTURES
  * ==========================================
  */
-
-app.post('/textures/versions/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.addNewMinecraftVersion(req.body.data)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
 
 // GET
 app.get('/textures/:type/:name?/?', function (req, res) {
