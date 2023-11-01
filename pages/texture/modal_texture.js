@@ -24,7 +24,7 @@ export default {
           <v-form ref="form">
             <v-text-field :disabled="!add" :color="color" persistent-hint :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
+            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
             <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
             <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
@@ -119,7 +119,7 @@ export default {
       modalOpened: false,
       formData: {
         name: '',
-        type: [],
+        tags: [],
         id: '',
         uses: {}
       },
@@ -163,7 +163,7 @@ export default {
       } else {
         const data = {
           name: this.formData.name,
-          tags: this.formData.type
+          tags: this.formData.tags
         }
         promise = axios.put(`${this.$root.apiURL}/textures/${this.formData.id}`, data, this.$root.apiOptions)
       }
@@ -212,7 +212,7 @@ export default {
 
           if (!this.add) {
             this.formData.name = this.data.name
-            this.formData.type = this.data.type
+            this.formData.tags = this.data.tags
             this.formData.id = this.data.id
             this.getUses(this.data.id)
           }

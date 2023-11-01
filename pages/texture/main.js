@@ -32,7 +32,7 @@ export default {
       <v-btn
         v-for="t in texturesTypes"
         :key="t"
-        :class="['my-2 mr-1', activeType(t)]"
+        :class="['my-1 mr-2', activeType(t)]"
         :to="textureURL(t)"
         :exact="t == 'All'"
       >{{ t }}</v-btn>
@@ -48,7 +48,7 @@ export default {
       filled
       v-model="selectTextureType"
     ></v-select>
-    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
+    <div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
     <div class="my-2">
       <v-text-field
         v-model="search"
@@ -81,25 +81,27 @@ export default {
         </v-col>
       </v-row>
 
-      <div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
-      <v-list v-if="Object.keys(textures).length" two-line class="main-container">
-        <v-row><v-col :cols="12/listColumns" xs="1"
+      <div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
+      <div v-if="Object.keys(textures).length" class="main-container pb-4 rounded">
+        <v-row class="mb-1 mt-0"><v-col :cols="12/listColumns" xs="1" class="py-0"
             v-for="(textures_arr, index) in splittedResults"
             :key="index"
           >
+          <v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent;">
           <v-list-item
             v-for="texture in textures_arr"
+            class="my-4"
             :key="texture.id"
           >
             <v-list-item-avatar
               tile
-              class="texture-avatar"
+              class="texture-avatar my-0"
               v-text="texture.id"
             ></v-list-item-avatar>
 
-            <v-list-item-content>
+            <v-list-item-content class="py-0">
               <v-list-item-title v-text="texture.name"></v-list-item-title>
-              <v-list-item-subtitle v-text="(texture.type||[]).join(', ')"></v-list-item-subtitle>
+              <v-list-item-subtitle v-text="(texture.tags||[]).join(', ')"></v-list-item-subtitle>
             </v-list-item-content>
 
             <v-list-item-action class="merged">
@@ -111,6 +113,7 @@ export default {
               </v-btn>
             </v-list-item-action>
           </v-list-item>
+          </v-list>
         </v-col></v-row>
 
         <v-btn
@@ -124,7 +127,7 @@ export default {
           elevation="2"
         >{{ $root.lang().global.btn.load_more }}</v-btn>
 
-      </v-list>
+      </div>
       <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
     </div>
   </v-container>`,
@@ -284,7 +287,10 @@ export default {
         })
     },
     getTextures: function () {
-      axios.get(this.$route.path)
+      let url = new URL(`${this.$root.apiURL}/textures/search`)
+      if( v.$route.params.type && v.$route.params.type != "all" ) url.searchParams.set('tag', v.$route.params.type)
+      if( v.$route.params.name ) url.searchParams.set('name', v.$route.params.name)
+      axios.get(url.toString())
         .then((res) => {
           this.textures = res.data
         })

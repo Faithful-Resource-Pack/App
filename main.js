@@ -120,47 +120,6 @@ app.use(express.static('.', {
 app.use('/api/discord', require('./api/discord'))
 
 /**
- * @param {String} token  Discord access token
- * @param {String[]} roles Authorized roles to get access, only 1 of them is necessary
- * @returns {Promise<void>} Resolves if authored correctly
- */
-const verifyAuth = (token, roles = []) => {
-  if (!token) {
-    const err = new Error('No Discord Access Token given')
-    err.code = 499
-    return Promise.reject(err)
-  }
-
-  if (roles.length) roles.push(settings.roles.dev.name) // add dev perms for testing purpose
-
-  return fetch('https://discord.com/api/users/@me', {
-    headers: {
-      authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => response.json())
-    .then(json => {
-      const userID = json.id
-
-      return axios.get(`${API_URL}/users/${userID}`, {
-        headers: {
-          discord: token
-        }
-      }).then(r => r.data)
-    })
-    .then(user => {
-      if (roles.length == 0) return Promise.resolve(user.id)
-
-      for (let i = 0; roles.length >= i; ++i)
-        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user.id)
-
-      const err = new Error('You don\'t have the permission to do that!')
-      err.code = 403
-      return Promise.reject(err)
-    })
-}
-
-/**
  * Error handling generic for all request
  * @param {Response<any, Record<string, any>, number>} res
  * @return {Function}
@@ -180,34 +139,3 @@ const errorHandler = function (res) {
     res.end()
   }
 }
-
-/**
- * Success handling for GET request
- * @param {Response<any, Record<string, any>, number>} res
- * @return {Function}
- */
-const getSuccess = function (res) {
-  return (val) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(val)
-    res.end()
-  }
-}
-
-/**
- * ==========================================
- *                 TEXTURES
- * ==========================================
- */
-
-// GET
-app.get('/textures/:type/:name?/?', function (req, res) {
-  let name, type
-
-  if ('type' in req.params && req.params.type && req.params.type !== 'all') type = req.params.type
-  if ('name' in req.params && req.params.name) name = req.params.name // check if field and value not undefined
-
-  texturesBackend.search(name, type)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
