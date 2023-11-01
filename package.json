@@ -4,7 +4,7 @@
   "description": "The official Web Application for the Faithful website.",
   "main": "main.js",
   "scripts": {
-    "dev": "nodemon main.js --watch .env --watch main.js --watch backend/",
+    "dev": "nodemon main.js --watch .env --watch main.js",
     "start": "pm2 start \"node main.js\" --name \"APP\"",
     "watch": "browser-refresh main.js",
     "test:app": "env-cmd -f ./tests/.env.test node main.js",

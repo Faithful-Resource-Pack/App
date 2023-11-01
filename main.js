@@ -5,7 +5,6 @@ require('dotenv').config()
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const DEV = (process.env.DEV || 'false') === 'true'
@@ -13,34 +12,6 @@ const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2'
 const app = express()
 app.disable('x-powered-by');
 const webappURL = '/'
-
-const texturesBackend = require('./backend/textures')
-const pathsBackend = require('./backend/paths')
-const settings = require('./resources/settings.json')
-const { default: axios } = require('axios');
-
-// fetch settings from the API
-const SETTINGS_PATH = path.join(process.cwd(), 'resources/', 'settings.json')
-
-if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
-  const fetchSettings = () => {
-    axios.get(`${API_URL}/settings/raw`)
-      .then(res => {
-        const result = JSON.stringify(res.data)
-        return fs.promises.writeFile(SETTINGS_PATH, result, {
-          flag: 'w',
-          encoding: 'utf-8'
-        })
-      })
-  }
-
-  fetchSettings()
-  setInterval(() => {
-    fetchSettings()
-  }, 5000)
-} else {
-  console.info('no refresh');
-}
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason);
@@ -67,7 +38,7 @@ app.get(webappURL, async (req, res) => {
     + `  </script>\n</head>`)
 
   // change Vue to dev version for devtools
-  if(DEV) {
+  if (DEV) {
     file = file.replace('/vue.min.js', '/vue.js')
     file = file.replace('vuetify.min.js', 'vuetify.js')
     file = file.replace('/pinia.iife.min.js', '/pinia.iife.js')
