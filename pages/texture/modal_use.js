@@ -15,7 +15,7 @@ export default {
     content-class="colored"
     max-width="800"
   >
-    <path-modal :color="color" :subPathDialog="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>
+    <path-modal :color="color" v-model="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>
     <remove-confirm type="path" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
 
     <v-card>

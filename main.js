@@ -5,7 +5,6 @@ require('dotenv').config()
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const fetch = (...args) => import('node-fetch').then(({ default: fetch }) => fetch(...args));
 const port = process.env.PORT
 const VERBOSE = (process.env.VERBOSE || 'false') === 'true'
 const DEV = (process.env.DEV || 'false') === 'true'
@@ -13,34 +12,6 @@ const API_URL = process.env.API_URL || 'https://api.faithfulpack.net/v2'
 const app = express()
 app.disable('x-powered-by');
 const webappURL = '/'
-
-const texturesBackend = require('./backend/textures')
-const pathsBackend = require('./backend/paths')
-const settings = require('./resources/settings.json')
-const { default: axios } = require('axios');
-
-// fetch settings from the API
-const SETTINGS_PATH = path.join(process.cwd(), 'resources/', 'settings.json')
-
-if(!process.env.NO_REFRESH || process.env.NO_REFRESH !== 'true') {
-  const fetchSettings = () => {
-    axios.get(`${API_URL}/settings/raw`)
-      .then(res => {
-        const result = JSON.stringify(res.data)
-        return fs.promises.writeFile(SETTINGS_PATH, result, {
-          flag: 'w',
-          encoding: 'utf-8'
-        })
-      })
-  }
-
-  fetchSettings()
-  setInterval(() => {
-    fetchSettings()
-  }, 5000)
-} else {
-  console.info('no refresh');
-}
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error(reason);
@@ -67,7 +38,7 @@ app.get(webappURL, async (req, res) => {
     + `  </script>\n</head>`)
 
   // change Vue to dev version for devtools
-  if(DEV) {
+  if (DEV) {
     file = file.replace('/vue.min.js', '/vue.js')
     file = file.replace('vuetify.min.js', 'vuetify.js')
     file = file.replace('/pinia.iife.min.js', '/pinia.iife.js')
@@ -120,47 +91,6 @@ app.use(express.static('.', {
 app.use('/api/discord', require('./api/discord'))
 
 /**
- * @param {String} token  Discord access token
- * @param {String[]} roles Authorized roles to get access, only 1 of them is necessary
- * @returns {Promise<void>} Resolves if authored correctly
- */
-const verifyAuth = (token, roles = []) => {
-  if (!token) {
-    const err = new Error('No Discord Access Token given')
-    err.code = 499
-    return Promise.reject(err)
-  }
-
-  if (roles.length) roles.push(settings.roles.dev.name) // add dev perms for testing purpose
-
-  return fetch('https://discord.com/api/users/@me', {
-    headers: {
-      authorization: `Bearer ${token}`
-    }
-  })
-    .then(response => response.json())
-    .then(json => {
-      const userID = json.id
-
-      return axios.get(`${API_URL}/users/${userID}`, {
-        headers: {
-          discord: token
-        }
-      }).then(r => r.data)
-    })
-    .then(user => {
-      if (roles.length == 0) return Promise.resolve(user.id)
-
-      for (let i = 0; roles.length >= i; ++i)
-        if ((user.roles || user.type).includes(roles[i])) return Promise.resolve(user.id)
-
-      const err = new Error('You don\'t have the permission to do that!')
-      err.code = 403
-      return Promise.reject(err)
-    })
-}
-
-/**
  * Error handling generic for all request
  * @param {Response<any, Record<string, any>, number>} res
  * @return {Function}
@@ -180,75 +110,3 @@ const errorHandler = function (res) {
     res.end()
   }
 }
-
-/**
- * Success handling for POST request
- * @param {import('express').Response<any, Record<string, any>, number>} res
- * @return {Function}
- */
-const postSuccess = function (res) {
-  return (result) => {
-    res.status(200)
-    if(result) res.send(result)
-    res.end()
-  }
-}
-
-/**
- * Success handling for GET request
- * @param {Response<any, Record<string, any>, number>} res
- * @return {Function}
- */
-const getSuccess = function (res) {
-  return (val) => {
-    res.setHeader('Content-Type', 'application/json')
-    res.send(val)
-    res.end()
-  }
-}
-
-/**
- * ==========================================
- *                 TEXTURES
- * ==========================================
- */
-
-/**
- * Perms: admins + dev
- */
-app.post('/textures/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => texturesBackend.addTextures(req.body.data))
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/textures/versions/add', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return texturesBackend.addNewMinecraftVersion(req.body.data)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})
-
-// GET
-app.get('/textures/:type/:name?/?', function (req, res) {
-  let name, type
-
-  if ('type' in req.params && req.params.type && req.params.type !== 'all') type = req.params.type
-  if ('name' in req.params && req.params.name) name = req.params.name // check if field and value not undefined
-
-  texturesBackend.search(name, type)
-    .then(getSuccess(res))
-    .catch(errorHandler(res))
-})
-
-app.post('/paths/version-update/', (req, res) => {
-  verifyAuth(req.body.token, [ settings.roles.admin.name, settings.roles.dev.name])
-    .then(() => {
-      return pathsBackend.update(req.body.actual, req.body.new)
-    })
-    .then(postSuccess(res))
-    .catch(errorHandler(res))
-})

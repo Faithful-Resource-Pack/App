@@ -11,7 +11,7 @@ export default {
   },
   template: `
   <v-dialog
-      v-model="dialog"
+      v-model="modalOpened"
       content-class="colored"
       max-width="600"
     >
@@ -24,7 +24,7 @@ export default {
           <v-form ref="form">
             <v-text-field :disabled="!add" :color="color" persistent-hint :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.type" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
+            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
 
             <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
             <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">
@@ -65,7 +65,7 @@ export default {
           <v-btn
             color="red darken-1"
             text
-            @click="disableDialog"
+            @click="onCancel"
           >
             {{ $root.lang().global.btn.cancel }}
           </v-btn>
@@ -81,7 +81,7 @@ export default {
     </v-dialog>
   `,
   props: {
-    dialog: {
+    value: {
       type: Boolean,
       required: true
     },
@@ -116,9 +116,10 @@ export default {
   },
   data () {
     return {
+      modalOpened: false,
       formData: {
         name: '',
-        type: [],
+        tags: [],
         id: '',
         uses: {}
       },
@@ -162,7 +163,7 @@ export default {
       } else {
         const data = {
           name: this.formData.name,
-          tags: this.formData.type
+          tags: this.formData.tags
         }
         promise = axios.put(`${this.$root.apiURL}/textures/${this.formData.id}`, data, this.$root.apiOptions)
       }
@@ -194,17 +195,24 @@ export default {
     askRemoveUse: function (data) {
       this.remove.data = data
       this.remove.confirm = true
+    },
+    onCancel: function () {
+      this.modalOpened = false
+      this.disableDialog()
     }
   },
   watch: {
-    dialog: function (newValue, oldValue) {
+    value: function(newValue) {
+      this.modalOpened = newValue
+    },
+    modalOpened: function (newValue, oldValue) {
       if (newValue === true) {
         Vue.nextTick(() => {
           if (this.add) this.$refs.form.reset()
 
           if (!this.add) {
             this.formData.name = this.data.name
-            this.formData.type = this.data.type
+            this.formData.tags = this.data.tags
             this.formData.id = this.data.id
             this.getUses(this.data.id)
           }
@@ -213,6 +221,7 @@ export default {
         // Fixes bug where click outside changes dialog to false but not dialogOpen to false
         this.disableDialog()
       }
+      this.$emit('input', newValue);
     }
   }
 }

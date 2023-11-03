@@ -125,7 +125,7 @@ const ALL_ROUTES = [
 
 const router = new VueRouter({ routes: ALL_ROUTES })
 
-// `to` field in subtab will be the firsth route path
+// `to` field in subtab will be the first route path
 const ALL_TABS = [
   {
     label: 'user',
@@ -213,10 +213,8 @@ ALL_TABS.filter(t => t.roles === undefined)
 
 Vue.config.devtools = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
 
-// convert-import
-
 window.v = undefined
-axios.get('./resources/settings.json')
+axios.get(`${window.apiURL}/settings/raw`)
   .then(res => {
     window.settings = res.data
   }).then(() => {
