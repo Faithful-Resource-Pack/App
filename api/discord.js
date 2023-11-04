@@ -68,7 +68,7 @@ router.get("/callback", (req, res) => {
 	params.append("redirect_uri", REDIRECT_URI);
 	params.append("scope", "identify");
 
-	fetch("https://discordapp.com/api/oauth2/token", {
+	fetch("https://discord.com/api/oauth2/token", {
 		method: "POST",
 		body: params,
 	})

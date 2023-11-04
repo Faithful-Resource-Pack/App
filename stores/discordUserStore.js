@@ -13,7 +13,7 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 				discordUserURL: newdiscordUserURL || this.discordUserURL,
 			});
 		},
-		getInfos: function (accessToken) {
+		getInfo: function (accessToken) {
 			return fetch(this.discordUserURL, {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -43,7 +43,7 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 					return;
 				}
 
-				return this.getInfos(auth.access_token)
+				return this.getInfo(auth.access_token)
 					.then((json) => {
 						this.$patch({
 							discordId: json.id,
