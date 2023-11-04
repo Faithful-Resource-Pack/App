@@ -1,59 +1,65 @@
 /* global axios, Vue, Prism */
 
 const emptyPath = function () {
-  return ['', [], false]
-}
+	return ["", [], false];
+};
 
 const emptyUse = function () {
-  return {
-    name: '',
-    editions: [],
-    paths: [emptyPath()]
-  }
-}
+	return {
+		name: "",
+		editions: [],
+		paths: [emptyPath()],
+	};
+};
 
 const emptyTexture = function () {
-  return {
-    name: '',
-    type: [],
-    uses: [emptyUse()]
-  }
-}
+	return {
+		name: "",
+		type: [],
+		uses: [emptyUse()],
+	};
+};
 
 export default {
-  name: 'add-multiple-texture-modal',
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
-    types: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    versions: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    editions: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    color: {
-      type: String,
-      required: false,
-      default: 'primary'
-    },
-    textColor: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  },
-  template: `
+	name: "add-multiple-texture-modal",
+	props: {
+		value: {
+			type: Boolean,
+			required: true,
+		},
+		types: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		versions: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		editions: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+		textColor: {
+			type: String,
+			required: false,
+			default: "",
+		},
+	},
+	template: `
   <v-dialog
       v-model="modalOpened"
       content-class="colored"
@@ -144,149 +150,152 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  data () {
-    return {
-      modalOpened: false,
-      panel: undefined,
-      closeOnSubmit: false,
-      formData: {
-        importjson: '[]'
-      },
-      textures: [emptyTexture()]
-    }
-  },
-  computed: {
-    versions_sorted: function() {
-      return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b))
-    }
-  },
-  methods: {
-    highlighter (code) {
-      // js highlight example
-      return Prism.highlight(code, Prism.languages.js, 'json')
-    },
-    addNewTexture: function () {
-      this.textures.push(emptyTexture())
-    },
-    addNewUse: function (textureIndex) {
-      this.textures[textureIndex].uses.push(emptyUse())
-    },
-    addNewPath: function (textureIndex, useIndex) {
-      this.textures[textureIndex].uses[useIndex].paths.push(emptyPath())
-    },
-    deleteTexture: function (textureIndex) {
-      this.textures.splice(textureIndex, 1)
-    },
-    deleteUse: function (textureIndex, useIndex) {
-      this.textures[textureIndex].uses.splice(useIndex, 1)
-    },
-    deletePath: function (textureIndex, useIndex, pathIndex) {
-      this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1)
-    },
-    MinecraftSorter: function (a, b) {
-      const aSplit = a.split('.').map(s => parseInt(s))
-      const bSplit = b.split('.').map(s => parseInt(s))
+	data() {
+		return {
+			modalOpened: false,
+			panel: undefined,
+			closeOnSubmit: false,
+			formData: {
+				importjson: "[]",
+			},
+			textures: [emptyTexture()],
+		};
+	},
+	computed: {
+		versions_sorted: function () {
+			return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b));
+		},
+	},
+	methods: {
+		highlighter(code) {
+			// js highlight example
+			return Prism.highlight(code, Prism.languages.js, "json");
+		},
+		addNewTexture: function () {
+			this.textures.push(emptyTexture());
+		},
+		addNewUse: function (textureIndex) {
+			this.textures[textureIndex].uses.push(emptyUse());
+		},
+		addNewPath: function (textureIndex, useIndex) {
+			this.textures[textureIndex].uses[useIndex].paths.push(emptyPath());
+		},
+		deleteTexture: function (textureIndex) {
+			this.textures.splice(textureIndex, 1);
+		},
+		deleteUse: function (textureIndex, useIndex) {
+			this.textures[textureIndex].uses.splice(useIndex, 1);
+		},
+		deletePath: function (textureIndex, useIndex, pathIndex) {
+			this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1);
+		},
+		MinecraftSorter: function (a, b) {
+			const aSplit = a.split(".").map((s) => parseInt(s));
+			const bSplit = b.split(".").map((s) => parseInt(s));
 
-      if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
-        return String(a).localeCompare(String(b)) // compare as strings
-      }
+			if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
+				return String(a).localeCompare(String(b)); // compare as strings
+			}
 
-      const upper = Math.min(aSplit.length, bSplit.length)
-      let i = 0
-      let result = 0
-      while (i < upper && result == 0) {
-        result = (aSplit[i] == bSplit[i]) ? 0 : (aSplit[i] < bSplit[i] ? -1 : 1) // each number
-        ++i
-      }
+			const upper = Math.min(aSplit.length, bSplit.length);
+			let i = 0;
+			let result = 0;
+			while (i < upper && result == 0) {
+				result = aSplit[i] == bSplit[i] ? 0 : aSplit[i] < bSplit[i] ? -1 : 1; // each number
+				++i;
+			}
 
-      if (result != 0) return result
+			if (result != 0) return result;
 
-      result = (aSplit.length == bSplit.length) ? 0 : (aSplit.length < bSplit.length ? -1 : 1) // longer length wins
+			result = aSplit.length == bSplit.length ? 0 : aSplit.length < bSplit.length ? -1 : 1; // longer length wins
 
-      return result
-    },
-    onCancel: function() {
-      this.modalOpened = false
-    },
-    onEditionChange: function(value, use) {
-      if(value !== "bedrock") return;
-      
-      if(!use.paths) use.paths = [emptyPath()]
-      use.paths.forEach(path => {
-        // if version is empty
-        if(path[1].length == 0) {
-          path[1].push("bedrock-latest")
-        }
-      })
-    },
-    versionsLeft: function (textureIndex, useIndex) {
-      const otherUseIndex = 1 - useIndex
-      let result = this.editions
+			return result;
+		},
+		onCancel: function () {
+			this.modalOpened = false;
+		},
+		onEditionChange: function (value, use) {
+			if (value !== "bedrock") return;
 
-      const otherEditions = this.textures[textureIndex].uses[otherUseIndex].editions
-      if (otherEditions.length > 0 && this.editions.include(otherEditions[0])) {
-        result = this.editions.splice(this.editions.indexOf(otherEditions[0]), 1)
-      }
-      return result
-    },
-    parseJSON: function () {
-      try {
-        const data = JSON.parse(this.formData.importjson)
-        this.textures = data
-      } catch (err) {
-        console.error(err)
-        this.$root.showSnackBar(err, 'error')
-      }
-    },
-    send: function () {
-      const data = JSON.parse(JSON.stringify(this.textures))
-      const api_data = data.map(e => ({
-        name: e.name,
-        tags: e.type,
-        uses: e.uses.map(u => ({
-          name: u.name,
-          edition: u.editions[0],
-          paths: u.paths.map(p => ({
-            name: String(p[0]),
-            versions: p[1],
-            mcmeta: p[2] || false,
-          })),
-        })),
-      }))
-      axios.post(`${this.$root.apiURL}/textures/multiple`, api_data, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().database.labels.add_textures_success, 'success')
-          if(this.closeOnSubmit)
-            this.modalOpened = false
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-        })
-    }
-  },
-  watch: {
-    closeOnSubmit: {
-      handler: function (newValue, oldValue) {
-        if(oldValue === undefined && newValue === false) {
-          this.closeOnSubmit = localStorage.getItem('MTMA_MODAL') || newValue
-        } else if(newValue !== oldValue) {
-          localStorage.setItem('MTMA_MODAL', newValue)
-        }
-      },
-      immediate: true
-    },
-    value: function(newValue, oldValue) {
-      if (oldValue !== newValue && newValue === true) {
-        Vue.nextTick(() => {
-          this.textures = [emptyTexture()]
-          this.$refs.form.reset()
-        })
-      }
-      this.modalOpened = newValue
-    },
-    modalOpened: function(newValue) {
-      this.$emit('input', newValue)
-    }
-  }
-}
+			if (!use.paths) use.paths = [emptyPath()];
+			use.paths.forEach((path) => {
+				// if version is empty
+				if (path[1].length == 0) {
+					path[1].push("bedrock-latest");
+				}
+			});
+		},
+		versionsLeft: function (textureIndex, useIndex) {
+			const otherUseIndex = 1 - useIndex;
+			let result = this.editions;
+
+			const otherEditions = this.textures[textureIndex].uses[otherUseIndex].editions;
+			if (otherEditions.length > 0 && this.editions.include(otherEditions[0])) {
+				result = this.editions.splice(this.editions.indexOf(otherEditions[0]), 1);
+			}
+			return result;
+		},
+		parseJSON: function () {
+			try {
+				const data = JSON.parse(this.formData.importjson);
+				this.textures = data;
+			} catch (err) {
+				console.error(err);
+				this.$root.showSnackBar(err, "error");
+			}
+		},
+		send: function () {
+			const data = JSON.parse(JSON.stringify(this.textures));
+			const api_data = data.map((e) => ({
+				name: e.name,
+				tags: e.type,
+				uses: e.uses.map((u) => ({
+					name: u.name,
+					edition: u.editions[0],
+					paths: u.paths.map((p) => ({
+						name: String(p[0]),
+						versions: p[1],
+						mcmeta: p[2] || false,
+					})),
+				})),
+			}));
+			axios
+				.post(`${this.$root.apiURL}/textures/multiple`, api_data, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(
+						this.$root.lang().database.labels.add_textures_success,
+						"success",
+					);
+					if (this.closeOnSubmit) this.modalOpened = false;
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+	},
+	watch: {
+		closeOnSubmit: {
+			handler: function (newValue, oldValue) {
+				if (oldValue === undefined && newValue === false) {
+					this.closeOnSubmit = localStorage.getItem("MTMA_MODAL") || newValue;
+				} else if (newValue !== oldValue) {
+					localStorage.setItem("MTMA_MODAL", newValue);
+				}
+			},
+			immediate: true,
+		},
+		value: function (newValue, oldValue) {
+			if (oldValue !== newValue && newValue === true) {
+				Vue.nextTick(() => {
+					this.textures = [emptyTexture()];
+					this.$refs.form.reset();
+				});
+			}
+			this.modalOpened = newValue;
+		},
+		modalOpened: function (newValue) {
+			this.$emit("input", newValue);
+		},
+	},
+};

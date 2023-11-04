@@ -1,15 +1,15 @@
 /* global axios, Vue */
 
-const pathModal = () => import('./modal_path.js')
-const removeConfirm = () => import('./remove-confirm.js')
+const pathModal = () => import("./modal_path.js");
+const removeConfirm = () => import("./remove-confirm.js");
 
 export default {
-  name: 'use-modal',
-  components: {
-    pathModal,
-    removeConfirm
-  },
-  template: `
+	name: "use-modal",
+	components: {
+		pathModal,
+		removeConfirm,
+	},
+	template: `
   <v-dialog
     v-model="subDialog"
     content-class="colored"
@@ -79,176 +79,181 @@ export default {
       </v-card-actions>
     </v-card>
   </v-dialog>`,
-  props: {
-    subDialog: {
-      type: Boolean,
-      required: true
-    },
-    disableSubDialog: {
-      type: Function,
-      required: true
-    },
-    add: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    data: {
-      type: Object,
-      required: true
-    },
-    editions: {
-      type: Array,
-      required: false,
-      default: function () { return ['java', 'bedrock'] }
-    },
-    textureID: {
-      type: String,
-      required: true
-    },
-    usesLength: {
-      type: Number,
-      required: true
-    },
-    color: {
-      type: String,
-      required: false,
-      default: 'primary'
-    }
-  },
-  data() {
-    return {
-      formValid: false,
-      subFormData: {
-        editions: [],
-        id: '',
-        textureID: '',
-        textureUseName: '',
-        paths: {}
-      },
-      subPathDialogOpen: false,
-      subPathDialogData: {},
-      remove: {
-        confirm: false,
-        data: {}
-      },
-      suffix: settings.uses.suffix
-    }
-  },
-  computed: {
-    subDialogTitle: function () {
-      return this.add ? this.$root.lang().database.titles.add_use : this.$root.lang().database.titles.change_use
-    },
-  },
-  methods: {
-    openSubPathDialog: function (data = {}) {
-      this.subPathDialogOpen = true
-      this.subPathDialogData = data
-    },
-    disableSubPathDialog: function () {
-      this.subPathDialogOpen = false
-      this.getPaths(this.subFormData.id)
-      this.$forceUpdate()
-    },
-    closeAndUpdate: function () {
-      this.remove.confirm = false
-      this.getPaths(this.subFormData.id)
-      this.$forceUpdate()
-    },
-    MinecraftSorter: function (a, b) {
-      const aSplit = a.split('.').map(s => parseInt(s))
-      const bSplit = b.split('.').map(s => parseInt(s))
+	props: {
+		subDialog: {
+			type: Boolean,
+			required: true,
+		},
+		disableSubDialog: {
+			type: Function,
+			required: true,
+		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		editions: {
+			type: Array,
+			required: false,
+			default: function () {
+				return ["java", "bedrock"];
+			},
+		},
+		textureID: {
+			type: String,
+			required: true,
+		},
+		usesLength: {
+			type: Number,
+			required: true,
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+	},
+	data() {
+		return {
+			formValid: false,
+			subFormData: {
+				editions: [],
+				id: "",
+				textureID: "",
+				textureUseName: "",
+				paths: {},
+			},
+			subPathDialogOpen: false,
+			subPathDialogData: {},
+			remove: {
+				confirm: false,
+				data: {},
+			},
+			suffix: settings.uses.suffix,
+		};
+	},
+	computed: {
+		subDialogTitle: function () {
+			return this.add
+				? this.$root.lang().database.titles.add_use
+				: this.$root.lang().database.titles.change_use;
+		},
+	},
+	methods: {
+		openSubPathDialog: function (data = {}) {
+			this.subPathDialogOpen = true;
+			this.subPathDialogData = data;
+		},
+		disableSubPathDialog: function () {
+			this.subPathDialogOpen = false;
+			this.getPaths(this.subFormData.id);
+			this.$forceUpdate();
+		},
+		closeAndUpdate: function () {
+			this.remove.confirm = false;
+			this.getPaths(this.subFormData.id);
+			this.$forceUpdate();
+		},
+		MinecraftSorter: function (a, b) {
+			const aSplit = a.split(".").map((s) => parseInt(s));
+			const bSplit = b.split(".").map((s) => parseInt(s));
 
-      if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
-        return String(a).localeCompare(String(b)) // compare as strings
-      }
+			if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
+				return String(a).localeCompare(String(b)); // compare as strings
+			}
 
-      const upper = Math.min(aSplit.length, bSplit.length)
-      let i = 0
-      let result = 0
-      while (i < upper && result == 0) {
-        result = (aSplit[i] == bSplit[i]) ? 0 : (aSplit[i] < bSplit[i] ? -1 : 1) // each number
-        ++i
-      }
+			const upper = Math.min(aSplit.length, bSplit.length);
+			let i = 0;
+			let result = 0;
+			while (i < upper && result == 0) {
+				result = aSplit[i] == bSplit[i] ? 0 : aSplit[i] < bSplit[i] ? -1 : 1; // each number
+				++i;
+			}
 
-      if (result != 0) return result
+			if (result != 0) return result;
 
-      result = (aSplit.length == bSplit.length) ? 0 : (aSplit.length < bSplit.length ? -1 : 1) // longer length wins
+			result = aSplit.length == bSplit.length ? 0 : aSplit.length < bSplit.length ? -1 : 1; // longer length wins
 
-      return result
-    },
-    send: function () {
-      const formData = this.subFormData;
-      const data = {
-        name: formData.textureUseName || '',
-        texture: formData.textureID,
-        edition: formData.editions[0]
-      };
+			return result;
+		},
+		send: function () {
+			const formData = this.subFormData;
+			const data = {
+				name: formData.textureUseName || "",
+				texture: formData.textureID,
+				edition: formData.editions[0],
+			};
 
-      let method = 'put';
-      let useId = '';
-      if (this.add) {
-        data.id = formData.id;
-        data.texture = Number.parseInt(this.$props.textureID, 10);
-        method = 'post';
-      } else {
-        useId = formData.id;
-      }
+			let method = "put";
+			let useId = "";
+			if (this.add) {
+				data.id = formData.id;
+				data.texture = Number.parseInt(this.$props.textureID, 10);
+				method = "post";
+			} else {
+				useId = formData.id;
+			}
 
-      axios[method](`${this.$root.apiURL}/uses/${useId}`, data, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableSubDialog(true)
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-        })
-    },
-    getPaths: function (useId) {
-      axios.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
-        .then((res) => {
-          const temp = res.data
-          this.subFormData.paths = {}
+			axios[method](`${this.$root.apiURL}/uses/${useId}`, data, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableSubDialog(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+		getPaths: function (useId) {
+			axios
+				.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
+				.then((res) => {
+					const temp = res.data;
+					this.subFormData.paths = {};
 
-          for (let i = 0; i < temp.length; i++) {
-            temp[i].versions.sort(this.MinecraftSorter)
-            this.subFormData.paths[temp[i].id] = {
-              ...temp[i],
-              useId: temp[i].useId || temp[i].use,
-              useID: temp[i].useId || temp[i].use,
-              use: temp[i].use || temp[i].useId,
-              path: temp[i].path || temp[i].name
-            }
-          }
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    askRemovePath: function (data) {
-      this.remove.data = data
-      this.remove.confirm = true
-    }
-  },
-  watch: {
-    subDialog: function (n, o) {
-      Vue.nextTick(() => {
-        if (!this.add) {
-          this.subFormData.editions = [this.data.edition]
-          this.subFormData.id = this.data.id
-          this.subFormData.textureUseName = this.data.name
-          this.subFormData.textureID = this.data.texture
-          this.getPaths(this.data.id)
-        } else {
-          this.$refs.form.reset()
-          this.subFormData.paths = {}
-        }
-      })
+					for (let i = 0; i < temp.length; i++) {
+						temp[i].versions.sort(this.MinecraftSorter);
+						this.subFormData.paths[temp[i].id] = {
+							...temp[i],
+							useId: temp[i].useId || temp[i].use,
+							useID: temp[i].useId || temp[i].use,
+							use: temp[i].use || temp[i].useId,
+							path: temp[i].path || temp[i].name,
+						};
+					}
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		askRemovePath: function (data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+	},
+	watch: {
+		subDialog: function (n, o) {
+			Vue.nextTick(() => {
+				if (!this.add) {
+					this.subFormData.editions = [this.data.edition];
+					this.subFormData.id = this.data.id;
+					this.subFormData.textureUseName = this.data.name;
+					this.subFormData.textureID = this.data.texture;
+					this.getPaths(this.data.id);
+				} else {
+					this.$refs.form.reset();
+					this.subFormData.paths = {};
+				}
+			});
 
-      if(!n) {
-        this.disableSubDialog()
-      }
-    }
-  }
-}
+			if (!n) {
+				this.disableSubDialog();
+			}
+		},
+	},
+};

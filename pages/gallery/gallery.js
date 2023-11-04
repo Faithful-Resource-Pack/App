@@ -1,29 +1,29 @@
 /* global axios, Vue, settings */
 
-const textureModal = () => import('./modal.js')
-const textureTooltip = () => import('./gallery_tooltip.js')
+const textureModal = () => import("./modal.js");
+const textureTooltip = () => import("./gallery_tooltip.js");
 
-const Chain = function(val) {
-  return {
-    value: val,
-    chain: function(predicate) {
-      if(this.value !== undefined) return Chain(predicate(this.value))
-      return this
-    }
-  }
-}
+const Chain = function (val) {
+	return {
+		value: val,
+		chain: function (predicate) {
+			if (this.value !== undefined) return Chain(predicate(this.value));
+			return this;
+		},
+	};
+};
 
 const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
 
 export default {
-  name: "texture-page",
-  components: {
-    textureModal,
-    textureTooltip,
-  },
-  template: `
+	name: "texture-page",
+	components: {
+		textureModal,
+		textureTooltip,
+	},
+	template: `
   <v-container :style="stretched ? 'max-width: 100% !important' : ''">
     <div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
@@ -195,346 +195,337 @@ export default {
     </v-btn>
   </v-container>
   `,
-  data() {
-    return {
-      // whether the page shouldn't be stretched to the full width
-      stretched:
-        localStorage.getItem(STRETCHED_KEY, "true") === "true" ? true : false,
-      // number of columns you want to display
-      columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
-      // whether search is loading
-      loading: false,
-      // string error extracted
-      error: undefined,
-      // search values available
-      options: {
-        resolutions: ["16x", ...settings.resolutions],
-        tags: [this.$root.lang().gallery.all],
-        versions: settings.versions.java.map((e) => e.toLowerCase()),
-        editions: settings.editions.map((e) => e.toLowerCase()),
-      },
-      // search values
-      current: {
-        resolution: settings.resolutions[0],
-        tag: "all",
-        version: settings.versions.java[0],
-        edition: settings.editions[0],
-        search: null,
-      },
-      // number of displayed results
-      displayedResults: 1,
-      // result
-      displayedTextures: [],
-      // loaded contributions
-      loadedContributions: {},
-      // loaded contributors
-      loadedContributors: [],
-      // modal opened ID
-      modalTextureID: null,
-      // modal texture opened
-      modalTextureObj: {},
-      // whether modal is opened
-      modalOpen: false,
-      // styles
-      styles: {
-        // gallery cell styles
-        cell: {
-          "aspect-ratio": "1",
-        },
-        // grid styles
-        grid: undefined,
-        // placeholder font size styles
-        not_done: {
-          texture_id: "font-size: 2em;",
-          texture_name: "font-size: 1.17em;",
-          message: "font-size: 16px",
-        },
-      },
-    };
-  },
-  computed: {
-    displayedTexturesObject: function () {
-      return this.displayedTextures.reduce((acc, cur) => {
-        acc[cur.textureID] = cur;
-        return acc;
-      }, {});
-    },
-    tagItems: function() {
-      return this.options.tags.map((e,i) => {
-        return {
-          label: e,
-          value: i === 0 ? 'all' : e
-        }
-      })
-    }
-  },
-  watch: {
-    "$route.params": {
-      handler(params, old_params) {
-        // if hash changed but not params
-        if (JSON.stringify(params) === JSON.stringify(old_params)) return;
+	data() {
+		return {
+			// whether the page shouldn't be stretched to the full width
+			stretched: localStorage.getItem(STRETCHED_KEY, "true") === "true" ? true : false,
+			// number of columns you want to display
+			columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
+			// whether search is loading
+			loading: false,
+			// string error extracted
+			error: undefined,
+			// search values available
+			options: {
+				resolutions: ["16x", ...settings.resolutions],
+				tags: [this.$root.lang().gallery.all],
+				versions: settings.versions.java.map((e) => e.toLowerCase()),
+				editions: settings.editions.map((e) => e.toLowerCase()),
+			},
+			// search values
+			current: {
+				resolution: settings.resolutions[0],
+				tag: "all",
+				version: settings.versions.java[0],
+				edition: settings.editions[0],
+				search: null,
+			},
+			// number of displayed results
+			displayedResults: 1,
+			// result
+			displayedTextures: [],
+			// loaded contributions
+			loadedContributions: {},
+			// loaded contributors
+			loadedContributors: [],
+			// modal opened ID
+			modalTextureID: null,
+			// modal texture opened
+			modalTextureObj: {},
+			// whether modal is opened
+			modalOpen: false,
+			// styles
+			styles: {
+				// gallery cell styles
+				cell: {
+					"aspect-ratio": "1",
+				},
+				// grid styles
+				grid: undefined,
+				// placeholder font size styles
+				not_done: {
+					texture_id: "font-size: 2em;",
+					texture_name: "font-size: 1.17em;",
+					message: "font-size: 16px",
+				},
+			},
+		};
+	},
+	computed: {
+		displayedTexturesObject: function () {
+			return this.displayedTextures.reduce((acc, cur) => {
+				acc[cur.textureID] = cur;
+				return acc;
+			}, {});
+		},
+		tagItems: function () {
+			return this.options.tags.map((e, i) => {
+				return {
+					label: e,
+					value: i === 0 ? "all" : e,
+				};
+			});
+		},
+	},
+	watch: {
+		"$route.params": {
+			handler(params, old_params) {
+				// if hash changed but not params
+				if (JSON.stringify(params) === JSON.stringify(old_params)) return;
 
-        this.current.resolution = params.resolution;
-        this.current.edition = params.edition;
-        this.current.version = params.version;
-        this.current.tag = params.tag;
-        this.current.search = params.search;
+				this.current.resolution = params.resolution;
+				this.current.edition = params.edition;
+				this.current.version = params.version;
+				this.current.tag = params.tag;
+				this.current.search = params.search;
 
-        this.updateSearch();
-      },
-      deep: true,
-      immediate: true,
-    },
-    columns(n) {
-      localStorage.setItem(COLUMN_KEY, String(n));
-      this.computeGrid();
-    },
-    stretched(n) {
-      localStorage.setItem(STRETCHED_KEY, n);
-      this.computeGrid();
-    },
-  },
-  methods: {
-    shareID() {
-      let index = location.hash.indexOf("?show=");
-      return index !== -1
-        ? Number.parseInt(location.hash.substring(index + 6), 10)
-        : undefined;
-    },
-    changeShareURL(id, dry_run = false) {
-      let index = location.hash.indexOf("?show=");
+				this.updateSearch();
+			},
+			deep: true,
+			immediate: true,
+		},
+		columns(n) {
+			localStorage.setItem(COLUMN_KEY, String(n));
+			this.computeGrid();
+		},
+		stretched(n) {
+			localStorage.setItem(STRETCHED_KEY, n);
+			this.computeGrid();
+		},
+	},
+	methods: {
+		shareID() {
+			let index = location.hash.indexOf("?show=");
+			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
+		},
+		changeShareURL(id, dry_run = false) {
+			let index = location.hash.indexOf("?show=");
 
-      let new_hash = location.hash;
-      // we remove it
-      if (index !== -1) {
-        new_hash = new_hash.substring(0, index);
-      }
+			let new_hash = location.hash;
+			// we remove it
+			if (index !== -1) {
+				new_hash = new_hash.substring(0, index);
+			}
 
-      if (id !== undefined) {
-        new_hash += "?show=" + id.toString();
-      }
+			if (id !== undefined) {
+				new_hash += "?show=" + id.toString();
+			}
 
-      if (!dry_run) {
-        location.hash = new_hash;
-      }
+			if (!dry_run) {
+				location.hash = new_hash;
+			}
 
-      return location.href.replace(location.hash, "") + new_hash;
-    },
-    copyShareLink(id) {
-      let url = this.changeShareURL(id, true);
-      navigator.clipboard.writeText(url);
-      this.$root.showSnackBar(
-        this.$root.lang("gallery.share_link_copied_to_clipboard"),
-        "success"
-      );
-    },
-    checkShare(n) {
-      if (n === undefined) return;
+			return location.href.replace(location.hash, "") + new_hash;
+		},
+		copyShareLink(id) {
+			let url = this.changeShareURL(id, true);
+			navigator.clipboard.writeText(url);
+			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
+		},
+		checkShare(n) {
+			if (n === undefined) return;
 
-      this.openModal(n);
-    },
-    openModal(id) {
-      this.modalTextureID = id;
-      this.modalTextureObj = {}; // changes text back to loading text if reopening modal
-      this.modalOpen = true;
+			this.openModal(n);
+		},
+		openModal(id) {
+			this.modalTextureID = id;
+			this.modalTextureObj = {}; // changes text back to loading text if reopening modal
+			this.modalOpen = true;
 
-      axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
-        this.modalTextureObj = res.data;
-      });
-    },
-    discordIDtoName(d) {
-      return (
-        new Chain(this.loadedContributors[d]).chain(
-          (c) =>
-            c.username || this.$root.lang().gallery.error_message.user_anonymous
-        ).value || this.$root.lang().gallery.error_message.user_not_found
-      );
-    },
-    timestampToDate(t) {
-      const a = new Date(t);
-      return moment(a).format("ll");
-    },
-    startSearch() {
-      this.updateRoute(null, null, true);
-    },
-    clearSearch() {
-      this.updateRoute(null, "search", true);
-    },
-    updateRoute(data, type, force = false) {
-      if (this.current[type] === data && !force) return; // avoid redundant redirection
+			axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
+				this.modalTextureObj = res.data;
+			});
+		},
+		discordIDtoName(d) {
+			return (
+				new Chain(this.loadedContributors[d]).chain(
+					(c) => c.username || this.$root.lang().gallery.error_message.user_anonymous,
+				).value || this.$root.lang().gallery.error_message.user_not_found
+			);
+		},
+		timestampToDate(t) {
+			const a = new Date(t);
+			return moment(a).format("ll");
+		},
+		startSearch() {
+			this.updateRoute(null, null, true);
+		},
+		clearSearch() {
+			this.updateRoute(null, "search", true);
+		},
+		updateRoute(data, type, force = false) {
+			if (this.current[type] === data && !force) return; // avoid redundant redirection
 
-      this.current[type] = data;
+			this.current[type] = data;
 
-      // user safe interaction
-      // check if resolution exist
-      if (
-        !settings.resolutions.includes(this.current.resolution) &&
-        this.current.resolution !== "16x"
-      )
-        this.current.resolution = settings.resolution[0];
+			// user safe interaction
+			// check if resolution exist
+			if (
+				!settings.resolutions.includes(this.current.resolution) &&
+				this.current.resolution !== "16x"
+			)
+				this.current.resolution = settings.resolution[0];
 
-      // check if edition exist
-      if (!settings.editions.includes(this.current.edition))
-        if (
-          !settings.versions[this.current.edition.toLowerCase()].includes(
-            this.current.version
-          )
-        ) {
-          this.current.version = settings.versions[this.current.edition][0];
-          this.options.versions = settings.versions[this.current.edition];
-        }
+			// check if edition exist
+			if (!settings.editions.includes(this.current.edition))
+				if (!settings.versions[this.current.edition.toLowerCase()].includes(this.current.version)) {
+					this.current.version = settings.versions[this.current.edition][0];
+					this.options.versions = settings.versions[this.current.edition];
+				}
 
-      let route = `/gallery/${this.current.edition}/${this.current.resolution}/${this.current.version}/${this.current.tag}`;
-      route += !this.current.search ? "" : `/${this.current.search}`;
+			let route = `/gallery/${this.current.edition}/${this.current.resolution}/${this.current.version}/${this.current.tag}`;
+			route += !this.current.search ? "" : `/${this.current.search}`;
 
-      if (this.$route.path === route) return; // new search is the same as before
-      return this.$router.push(route);
-    },
-    updateSearch: function () {
-      if (this.loading) return;
-      this.loading = true;
-      this.displayedTextures = [];
+			if (this.$route.path === route) return; // new search is the same as before
+			return this.$router.push(route);
+		},
+		updateSearch: function () {
+			if (this.loading) return;
+			this.loading = true;
+			this.displayedTextures = [];
 
-      const version =
-        this.current.version === "latest"
-          ? this.options.versions[0]
-          : this.current.version;
+			const version =
+				this.current.version === "latest" ? this.options.versions[0] : this.current.version;
 
-      // /gallery/{res}/{edition}/{mc_version}/{tag}
-      axios
-        .get(
-          `${this.$root.apiURL}/gallery/${this.current.resolution}/${
-            this.current.edition
-          }/${version}/${this.current.tag}${
-            this.current.search ? `?search=${this.current.search}` : ""
-          }`
-        )
-        .then((res) => {
-          this.displayedTextures = res.data;
-        })
-        .catch((e) => {
-          console.error(e);
-          this.error = `${e.statusCode}: ${Chain(e).chain(e => e.response).chain(r => r.message).value}`;
-        })
-        .finally(() => {
-          this.loading = false;
-        });
-    },
-    scroll() {
-      window.onscroll = () => {
-        let scrolledTo = document.querySelector(".bottomElement");
+			// /gallery/{res}/{edition}/{mc_version}/{tag}
+			axios
+				.get(
+					`${this.$root.apiURL}/gallery/${this.current.resolution}/${
+						this.current.edition
+					}/${version}/${this.current.tag}${
+						this.current.search ? `?search=${this.current.search}` : ""
+					}`,
+				)
+				.then((res) => {
+					this.displayedTextures = res.data;
+				})
+				.catch((e) => {
+					console.error(e);
+					this.error = `${e.statusCode}: ${
+						Chain(e)
+							.chain((e) => e.response)
+							.chain((r) => r.message).value
+					}`;
+				})
+				.finally(() => {
+					this.loading = false;
+				});
+		},
+		scroll() {
+			window.onscroll = () => {
+				let scrolledTo = document.querySelector(".bottomElement");
 
-        if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
-          this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
-          this.$forceUpdate();
-        }
-      };
-    },
-    isScrolledIntoView(el, margin = 0) {
-      let rect = el.getBoundingClientRect();
-      let elemTop = rect.top;
-      let elemBottom = rect.bottom;
+				if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
+					this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
+					this.$forceUpdate();
+				}
+			};
+		},
+		isScrolledIntoView(el, margin = 0) {
+			let rect = el.getBoundingClientRect();
+			let elemTop = rect.top;
+			let elemBottom = rect.bottom;
 
-      let isVisible = elemTop < window.innerHeight + margin && elemBottom >= 0;
-      return isVisible;
-    },
-    toTop() {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    },
-    computeGrid() {
-      let breakpoints = this.$root.$vuetify.breakpoint;
-      let gap;
-      let number;
+			let isVisible = elemTop < window.innerHeight + margin && elemBottom >= 0;
+			return isVisible;
+		},
+		toTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		},
+		computeGrid() {
+			let breakpoints = this.$root.$vuetify.breakpoint;
+			let gap;
+			let number;
 
-      let base_columns = this.columns;
+			let base_columns = this.columns;
 
-      if (breakpoints.smAndDown) {
-        base_columns = breakpoints.smOnly ? 2 : 1;
-      }
+			if (breakpoints.smAndDown) {
+				base_columns = breakpoints.smOnly ? 2 : 1;
+			}
 
-      // constants
-      const MIN_WIDTH = 110;
-      const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
+			// constants
+			const MIN_WIDTH = 110;
+			const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
 
-      // real content width
-      const width = this.$el.clientWidth - MARGIN * 2;
+			// real content width
+			const width = this.$el.clientWidth - MARGIN * 2;
 
-      if (base_columns != 1) {
-        // * We want to solve n * MIN_WIDTH + (n - 1) * A = width
-        // * where A = 200 / (1.5 * n)
-        // * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
-        // * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
-        // * multiply by n
-        // * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-        // * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
-        // * solve that and keep positive value
-        let a = MIN_WIDTH;
-        let b = 200 / 1.5 - width;
-        let c = -200 / 1.5;
-        let delta = b * b - 4 * a * c;
-        let n = (-b + Math.sqrt(delta)) / (2 * a);
-        gap = 200 / (n * 1.5);
-        number = Math.min(base_columns, Math.floor(n));
-      } else {
-        gap = 8;
-        number = 1;
-      }
+			if (base_columns != 1) {
+				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
+				// * where A = 200 / (1.5 * n)
+				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
+				// * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
+				// * multiply by n
+				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
+				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
+				// * solve that and keep positive value
+				let a = MIN_WIDTH;
+				let b = 200 / 1.5 - width;
+				let c = -200 / 1.5;
+				let delta = b * b - 4 * a * c;
+				let n = (-b + Math.sqrt(delta)) / (2 * a);
+				gap = 200 / (n * 1.5);
+				number = Math.min(base_columns, Math.floor(n));
+			} else {
+				gap = 8;
+				number = 1;
+			}
 
-      const font_size = width / number / 20;
+			const font_size = width / number / 20;
 
-      this.styles.not_done = {
-        texture_id: { "font-size": `${font_size * 4}px` },
-        texture_name: { "font-size": `${font_size * 2}px` },
-        message: { "font-size": `${font_size * 1.2}px` },
-      };
+			this.styles.not_done = {
+				texture_id: { "font-size": `${font_size * 4}px` },
+				texture_name: { "font-size": `${font_size * 2}px` },
+				message: { "font-size": `${font_size * 1.2}px` },
+			};
 
-      this.styles.grid = {
-        gap: `${gap}px`,
-        "grid-template-columns": `repeat(${number}, 1fr)`,
-      };
-    },
-  },
-  created() {
-    window.addEventListener("hashchange", () => {
-      this.checkShare(this.shareID());
-    });
-    this.checkShare(this.shareID());
+			this.styles.grid = {
+				gap: `${gap}px`,
+				"grid-template-columns": `repeat(${number}, 1fr)`,
+			};
+		},
+	},
+	created() {
+		window.addEventListener("hashchange", () => {
+			this.checkShare(this.shareID());
+		});
+		this.checkShare(this.shareID());
 
-    axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
-      this.options.tags = [...this.options.tags, ...res.data];
-    });
-    axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
-      this.loadedContributors = res.data.reduce((acc, cur) => {
-        acc[cur.id] = cur;
-        return acc;
-      }, {});
-    });
-    axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
-      this.loadedContributions = res.data
-        .filter((contribution) => contribution.pack && contribution.texture)
-        .reduce((acc, cur) => {
-          if (!acc[cur.pack]) acc[cur.pack] = {};
-          if (!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
+		axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
+			this.options.tags = [...this.options.tags, ...res.data];
+		});
+		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
+			this.loadedContributors = res.data.reduce((acc, cur) => {
+				acc[cur.id] = cur;
+				return acc;
+			}, {});
+		});
+		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
+			this.loadedContributions = res.data
+				.filter((contribution) => contribution.pack && contribution.texture)
+				.reduce((acc, cur) => {
+					if (!acc[cur.pack]) acc[cur.pack] = {};
+					if (!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
 
-          acc[cur.pack][cur.texture].push({
-            contributors: cur.authors,
-            date: cur.date,
-          });
+					acc[cur.pack][cur.texture].push({
+						contributors: cur.authors,
+						date: cur.date,
+					});
 
-          return acc;
-        }, {});
-    });
+					return acc;
+				}, {});
+		});
 
-    this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
-  },
-  mounted() {
-    this.scroll();
-    window.addEventListener("resize", () => {
-      this.computeGrid();
-    });
-    this.computeGrid();
-  },
+		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
+	},
+	mounted() {
+		this.scroll();
+		window.addEventListener("resize", () => {
+			this.computeGrid();
+		});
+		this.computeGrid();
+	},
 };

@@ -1,6 +1,6 @@
 export default {
-  name: 'fullscreen-preview',
-  template: `
+	name: "fullscreen-preview",
+	template: `
   <v-dialog
     v-model="fullscreen"
   >
@@ -14,27 +14,27 @@ export default {
     </v-card>
   </v-dialog>
   `,
-  props: {
-    aspectRatio: {
-      required: false,
-      type: Number,
-      default: () => 16/9
-    },
-    src: {
-      required: true,
-    }
-  },
-  data: function () {
-    return {
-      fullscreen: false
-    }
-  },
-  methods: {
-    close: function() {
-      this.fullscreen = false
-    },
-    open: function() {
-      this.fullscreen = true
-    }
-  }
-}
+	props: {
+		aspectRatio: {
+			required: false,
+			type: Number,
+			default: () => 16 / 9,
+		},
+		src: {
+			required: true,
+		},
+	},
+	data: function () {
+		return {
+			fullscreen: false,
+		};
+	},
+	methods: {
+		close: function () {
+			this.fullscreen = false;
+		},
+		open: function () {
+			this.fullscreen = true;
+		},
+	},
+};

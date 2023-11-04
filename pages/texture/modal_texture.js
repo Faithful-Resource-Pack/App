@@ -1,15 +1,15 @@
 /* global axios, Vue */
 
-const useModal = () => import('./modal_use.js')
-const removeConfirm = () => import('./remove-confirm.js')
+const useModal = () => import("./modal_use.js");
+const removeConfirm = () => import("./remove-confirm.js");
 
 export default {
-  name: 'texture-modal',
-  components: {
-    useModal,
-    removeConfirm
-  },
-  template: `
+	name: "texture-modal",
+	components: {
+		useModal,
+		removeConfirm,
+	},
+	template: `
   <v-dialog
       v-model="modalOpened"
       content-class="colored"
@@ -80,148 +80,157 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  props: {
-    value: {
-      type: Boolean,
-      required: true
-    },
-    disableDialog: {
-      type: Function,
-      required: true
-    },
-    add: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    data: {
-      type: Object,
-      required: true
-    },
-    types: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    color: {
-      type: String,
-      required: false,
-      default: 'primary'
-    },
-    textColor: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  },
-  data () {
-    return {
-      modalOpened: false,
-      formData: {
-        name: '',
-        tags: [],
-        id: '',
-        uses: {}
-      },
-      subDialogOpen: false,
-      subDialogData: {},
-      remove: {
-        confirm: false,
-        data: {}
-      }
-    }
-  },
-  computed: {
-    dialogTitle: function () {
-      return this.add ? this.$root.lang().database.titles.add_texture : this.$root.lang().database.titles.change_texture
-    }
-  },
-  methods: {
-    openSubDialog: function (data = {}) {
-      this.subDialogOpen = true
-      this.subDialogData = data
-    },
-    disableSubDialog: function () {
-      this.subDialogOpen = false
-      this.getUses(this.formData.id)
-      this.$forceUpdate()
-    },
-    closeAndUpdate: function () {
-      this.remove.confirm = false
-      this.getUses(this.formData.id)
-      this.$forceUpdate()
-    },
-    send: function () {
-      if (!this.$root.isUserLogged) return
+	props: {
+		value: {
+			type: Boolean,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		types: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+		textColor: {
+			type: String,
+			required: false,
+			default: "",
+		},
+	},
+	data() {
+		return {
+			modalOpened: false,
+			formData: {
+				name: "",
+				tags: [],
+				id: "",
+				uses: {},
+			},
+			subDialogOpen: false,
+			subDialogData: {},
+			remove: {
+				confirm: false,
+				data: {},
+			},
+		};
+	},
+	computed: {
+		dialogTitle: function () {
+			return this.add
+				? this.$root.lang().database.titles.add_texture
+				: this.$root.lang().database.titles.change_texture;
+		},
+	},
+	methods: {
+		openSubDialog: function (data = {}) {
+			this.subDialogOpen = true;
+			this.subDialogData = data;
+		},
+		disableSubDialog: function () {
+			this.subDialogOpen = false;
+			this.getUses(this.formData.id);
+			this.$forceUpdate();
+		},
+		closeAndUpdate: function () {
+			this.remove.confirm = false;
+			this.getUses(this.formData.id);
+			this.$forceUpdate();
+		},
+		send: function () {
+			if (!this.$root.isUserLogged) return;
 
-      let promise = Promise.resolve();
-      if(this.add) {
-        // this modal is NEVER used to add textures but anyway
-        const data = JSON.parse(JSON.stringify(this.formData))
-        data.token = this.$root.user.access_token
-        promise = axios.post('/textures/add', data)
-      } else {
-        const data = {
-          name: this.formData.name,
-          tags: this.formData.tags
-        }
-        promise = axios.put(`${this.$root.apiURL}/textures/${this.formData.id}`, data, this.$root.apiOptions)
-      }
+			let promise = Promise.resolve();
+			if (this.add) {
+				// this modal is NEVER used to add textures but anyway
+				const data = JSON.parse(JSON.stringify(this.formData));
+				data.token = this.$root.user.access_token;
+				promise = axios.post("/textures/add", data);
+			} else {
+				const data = {
+					name: this.formData.name,
+					tags: this.formData.tags,
+				};
+				promise = axios.put(
+					`${this.$root.apiURL}/textures/${this.formData.id}`,
+					data,
+					this.$root.apiOptions,
+				);
+			}
 
-      promise
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableDialog(true)
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-        })
-    },
-    getUses: function (textureID) {
-      axios.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
-        .then((res) => {
-          const temp = res.data
-          this.formData.uses = {}
+			promise
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+		getUses: function (textureID) {
+			axios
+				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
+				.then((res) => {
+					const temp = res.data;
+					this.formData.uses = {};
 
-          for (let i = 0; i < temp.length; i++) {
-            this.formData.uses[temp[i].id] = temp[i]
-          }
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    askRemoveUse: function (data) {
-      this.remove.data = data
-      this.remove.confirm = true
-    },
-    onCancel: function () {
-      this.modalOpened = false
-      this.disableDialog()
-    }
-  },
-  watch: {
-    value: function(newValue) {
-      this.modalOpened = newValue
-    },
-    modalOpened: function (newValue, oldValue) {
-      if (newValue === true) {
-        Vue.nextTick(() => {
-          if (this.add) this.$refs.form.reset()
+					for (let i = 0; i < temp.length; i++) {
+						this.formData.uses[temp[i].id] = temp[i];
+					}
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		askRemoveUse: function (data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		onCancel: function () {
+			this.modalOpened = false;
+			this.disableDialog();
+		},
+	},
+	watch: {
+		value: function (newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened: function (newValue, oldValue) {
+			if (newValue === true) {
+				Vue.nextTick(() => {
+					if (this.add) this.$refs.form.reset();
 
-          if (!this.add) {
-            this.formData.name = this.data.name
-            this.formData.tags = this.data.tags
-            this.formData.id = this.data.id
-            this.getUses(this.data.id)
-          }
-        })
-      } else {
-        // Fixes bug where click outside changes dialog to false but not dialogOpen to false
-        this.disableDialog()
-      }
-      this.$emit('input', newValue);
-    }
-  }
-}
+					if (!this.add) {
+						this.formData.name = this.data.name;
+						this.formData.tags = this.data.tags;
+						this.formData.id = this.data.id;
+						this.getUses(this.data.id);
+					}
+				});
+			} else {
+				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
+				this.disableDialog();
+			}
+			this.$emit("input", newValue);
+		},
+	},
+};

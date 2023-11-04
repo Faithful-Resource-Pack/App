@@ -1,24 +1,24 @@
 export default {
-    name: 'review-list',
-    props: {
-        value: {
-            type: String,
-            required: true
-        },
-        items: {
-            type: Array, // [{ primary: String, secondary: String, key: Number }]
-            required: true
-        },
-        empty: {
-            type: String,
-            required: true
-        },
-        activeColor: {
-            type: String,
-            required: true
-        }
-    },
-    template: `
+	name: "review-list",
+	props: {
+		value: {
+			type: String,
+			required: true,
+		},
+		items: {
+			type: Array, // [{ primary: String, secondary: String, key: Number }]
+			required: true,
+		},
+		empty: {
+			type: String,
+			required: true,
+		},
+		activeColor: {
+			type: String,
+			required: true,
+		},
+	},
+	template: `
 <v-card
     flat
     class="overflow-y-auto rounded-lg"
@@ -39,14 +39,14 @@ export default {
         {{ empty }}
     </div>
 </v-card>`,
-    methods: {
-        onClick: function(key) {
-            this.$emit('input', key)
-        }
-    },
-    computed: {
-        classes: function() {
-            return this.items.map(v => v.key === this.value ? this.activeColor + ' selected' : '')
-        }
-    }
-}
+	methods: {
+		onClick: function (key) {
+			this.$emit("input", key);
+		},
+	},
+	computed: {
+		classes: function () {
+			return this.items.map((v) => (v.key === this.value ? this.activeColor + " selected" : ""));
+		},
+	},
+};

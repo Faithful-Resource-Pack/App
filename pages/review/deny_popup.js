@@ -1,6 +1,6 @@
 export default {
-  name: 'deny-popup',
-  template: `
+	name: "deny-popup",
+	template: `
   <v-dialog
     v-model="reasonPopup"
     max-width="600"
@@ -40,20 +40,20 @@ export default {
 
   </v-dialog>
   `,
-  props: {
-    reasonPopup: {
-      type: Boolean,
-      required: true
-    },
-    closePopup: {
-      type: Function,
-      required: true
-    }
-  },
-  data() {
-    return {
-      denyReason: '',
-      reasonRules: [u => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule]
-    }
-  }
-}
+	props: {
+		reasonPopup: {
+			type: Boolean,
+			required: true,
+		},
+		closePopup: {
+			type: Function,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			denyReason: "",
+			reasonRules: [(u) => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule],
+		};
+	},
+};

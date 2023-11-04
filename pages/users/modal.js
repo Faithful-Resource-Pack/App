@@ -1,8 +1,8 @@
 /* global axios, Vue */
 
 export default {
-  name: 'user-modal',
-  template: `
+	name: "user-modal",
+	template: `
   <v-dialog
       v-model="dialog"
       content-class="colored"
@@ -46,93 +46,97 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  props: {
-    dialog: {
-      type: Boolean,
-      required: true
-    },
-    disableDialog: {
-      type: Function,
-      required: true
-    },
-    add: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    data: {
-      type: Object,
-      required: true
-    },
-    roles: {
-      type: Array,
-      required: true
-    },
-    color: {
-      type: String,
-      required: false,
-      default: 'primary'
-    }
-  },
-  data() {
-    return {
-      formData: {
-        username: '',
-        roles: [],
-        uuid: '',
-        anonymous: false,
-        id: ''
-      },
-      default: {
-        username: '',
-        roles: [],
-        uuid: '',
-        anonymous: false
-      }
-    }
-  },
-  computed: {
-    dialogTitle: function () {
-      return this.add ? this.$root.lang().database.titles.add_contributor : this.$root.lang().database.titles.change_contributor
-    }
-  },
-  methods: {
-    send: function () {
-      const data = this.formData;
-      const id = data.id;
+	props: {
+		dialog: {
+			type: Boolean,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		roles: {
+			type: Array,
+			required: true,
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+	},
+	data() {
+		return {
+			formData: {
+				username: "",
+				roles: [],
+				uuid: "",
+				anonymous: false,
+				id: "",
+			},
+			default: {
+				username: "",
+				roles: [],
+				uuid: "",
+				anonymous: false,
+			},
+		};
+	},
+	computed: {
+		dialogTitle: function () {
+			return this.add
+				? this.$root.lang().database.titles.add_contributor
+				: this.$root.lang().database.titles.change_contributor;
+		},
+	},
+	methods: {
+		send: function () {
+			const data = this.formData;
+			const id = data.id;
 
-      delete data.id;    // excess property and therefore is not allowed
-      delete data.media; // excess property and therefore is not allowed
-      delete data.warns; // excess property and therefore is not allowed _yeet_
+			delete data.id; // excess property and therefore is not allowed
+			delete data.media; // excess property and therefore is not allowed
+			delete data.warns; // excess property and therefore is not allowed _yeet_
 
-      Object.keys(data).forEach(k => data[k] = (data[k] === null) ? this.default[k] : data[k]);
+			Object.keys(data).forEach((k) => (data[k] = data[k] === null ? this.default[k] : data[k]));
 
-      axios.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableDialog(true)
-        })
-        .catch(error => {
-          console.error(error)
-          this.$root.showSnackBar(err, 'error')
-        })
-    }
-  },
-  watch: {
-    dialog: function () {
-      Vue.nextTick(() => {
-        if (!this.add) Object.keys(this.data).forEach(key => {
-          this.formData[key] = this.data[key]
-        })
-
-        else this.formData = {
-          username: '',
-          roles: [],
-          uuid: '',
-          anonymous: false,
-          id: ''
-        }
-      })
-    }
-  }
-}
+			axios
+				.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+	},
+	watch: {
+		dialog: function () {
+			Vue.nextTick(() => {
+				if (!this.add)
+					Object.keys(this.data).forEach((key) => {
+						this.formData[key] = this.data[key];
+					});
+				else
+					this.formData = {
+						username: "",
+						roles: [],
+						uuid: "",
+						anonymous: false,
+						id: "",
+					};
+			});
+		},
+	},
+};

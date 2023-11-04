@@ -1,16 +1,16 @@
-const DashBoardCard = () => import('./dashcard.js')
+const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-  name: 'profile-card',
-  components: {
-    'dashboard-card': DashBoardCard
-  },
-  props: {
-    show: {
-      required: true
-    },
-  },
-  template: `
+	name: "profile-card",
+	components: {
+		"dashboard-card": DashBoardCard,
+	},
+	props: {
+		show: {
+			required: true,
+		},
+	},
+	template: `
 <dashboard-card
   :title="$root.lang('global.tabs.user.subtabs.profile') || ''"
   go_to="/profile"
@@ -49,9 +49,9 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-  computed:  {
-    user: function() {
-      return this.$root.user
-    }
-  },
-}
+	computed: {
+		user: function () {
+			return this.$root.user;
+		},
+	},
+};

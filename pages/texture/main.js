@@ -1,21 +1,21 @@
 /* global axios, Vue */
 
-const TextureModal = () => import('./modal_texture.js')
-const MCVersionModal = () => import('./modal_mc_version.js')
-const TextureModalMultipleAdd = () => import('./modal_texture_multiple_add.js')
-const ModalVersionAdd = () => import('./modal_version_add.js')
-const RemoveConfirm = () => import('./remove-confirm.js')
+const TextureModal = () => import("./modal_texture.js");
+const MCVersionModal = () => import("./modal_mc_version.js");
+const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.js");
+const ModalVersionAdd = () => import("./modal_version_add.js");
+const RemoveConfirm = () => import("./remove-confirm.js");
 
 export default {
-  name: 'texture-page',
-  components: {
-    'texture-modal': TextureModal,
-    'version-modal': MCVersionModal,
-    'add-multiple-texture': TextureModalMultipleAdd,
-    'add-minecraft-version': ModalVersionAdd,
-    'remove-confirm': RemoveConfirm,
-  },
-  template: `
+	name: "texture-page",
+	components: {
+		"texture-modal": TextureModal,
+		"version-modal": MCVersionModal,
+		"add-multiple-texture": TextureModalMultipleAdd,
+		"add-minecraft-version": ModalVersionAdd,
+		"remove-confirm": RemoveConfirm,
+	},
+	template: `
   <v-container id="texturePage">
     <div class="styles" v-html="pageStyles"></div>
     <texture-modal :color="pageColor" :textColor="textColorOnPage" v-model="dialogOpen" :disableDialog="disableDialog" :add="Object.keys(dialogData).length == 0" :data="dialogData" :types="types"></texture-modal>
@@ -131,206 +131,219 @@ export default {
       <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
     </div>
   </v-container>`,
-  data () {
-    const INCREMENT = 250
+	data() {
+		const INCREMENT = 250;
 
-    return {
-      pageColor: 'blue darken-1',
-      pageStyles: '',
-      textColorOnPage: 'white--text',
-      newVersionModal: false,
-      addMultiple: false,
-      recompute: false,
-      types: [],
-      editions: [],
-      versions: [],
-      textures: {},
-      search: '',
-      dialogOpen: false,
-      MCDialogOpen: false,
-      dialogData: {},
-      remove: {
-        confirm: false,
-        data: {}
-      },
-      displayedResults: INCREMENT,
-      selectTextureType: "all"
-    }
-  },
-  computed: {
-    texturesTypes: function () {
-      return ['all', ...this.types]
-    },
-    type: function () {
-      if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type)) return this.$route.params.type
-      return undefined
-    },
-    name: function () {
-      if (this.type !== undefined) return this.$route.params.name
-      return this.$route.params.type
-    },
-    listColumns: function () {
-      let columns = 1
+		return {
+			pageColor: "blue darken-1",
+			pageStyles: "",
+			textColorOnPage: "white--text",
+			newVersionModal: false,
+			addMultiple: false,
+			recompute: false,
+			types: [],
+			editions: [],
+			versions: [],
+			textures: {},
+			search: "",
+			dialogOpen: false,
+			MCDialogOpen: false,
+			dialogData: {},
+			remove: {
+				confirm: false,
+				data: {},
+			},
+			displayedResults: INCREMENT,
+			selectTextureType: "all",
+		};
+	},
+	computed: {
+		texturesTypes: function () {
+			return ["all", ...this.types];
+		},
+		type: function () {
+			if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type))
+				return this.$route.params.type;
+			return undefined;
+		},
+		name: function () {
+			if (this.type !== undefined) return this.$route.params.name;
+			return this.$route.params.type;
+		},
+		listColumns: function () {
+			let columns = 1;
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
-        columns = 2
-        if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
-          columns = 3
-        }
-      }
+			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
+				columns = 2;
+				if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
+					columns = 3;
+				}
+			}
 
-      if (Object.keys(this.textures).length === 1) columns = 1
+			if (Object.keys(this.textures).length === 1) columns = 1;
 
-      return columns
-    },
-    splittedResults: function () {
-      const res = []
+			return columns;
+		},
+		splittedResults: function () {
+			const res = [];
 
-      const keys = Object.keys(this.textures)
-      const len = keys.length
+			const keys = Object.keys(this.textures);
+			const len = keys.length;
 
-      for (let col = 0; col < this.listColumns; ++col) {
-        res.push([])
-      }
+			for (let col = 0; col < this.listColumns; ++col) {
+				res.push([]);
+			}
 
-      let arrayIndex = 0
+			let arrayIndex = 0;
 
-      for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-        res[arrayIndex].push(this.textures[keys[i]])
-        arrayIndex = (arrayIndex + 1) % this.listColumns
-      }
+			for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+				res[arrayIndex].push(this.textures[keys[i]]);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			}
 
-      return res
-    }
-  },
-  methods: {
-    activeType(t) {
-      let res = {}
-      if((t === 'All' && !this.type && !!this.name) || (t && this.type && t.toLowerCase() === this.type.toLowerCase())) {
-        res['v-btn--active ' + this.pageColor + ' ' + this.textColorOnPage] = true
-      }
-      return res
-    },
-    textureURL (t, name = undefined) {
-      return (this.name || name) ? `/textures/${t}/${name !== undefined ? name : this.name}` : `/textures/${t}`
-    },
-    startSearch: function () {
-      let newPath = this.textureURL(this.type, this.search)
+			return res;
+		},
+	},
+	methods: {
+		activeType(t) {
+			let res = {};
+			if (
+				(t === "All" && !this.type && !!this.name) ||
+				(t && this.type && t.toLowerCase() === this.type.toLowerCase())
+			) {
+				res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
+			}
+			return res;
+		},
+		textureURL(t, name = undefined) {
+			return this.name || name
+				? `/textures/${t}/${name !== undefined ? name : this.name}`
+				: `/textures/${t}`;
+		},
+		startSearch: function () {
+			let newPath = this.textureURL(this.type, this.search);
 
-      // DO NOT CHANGE ROUTE IF SAME PATH
-      if (newPath !== this.$route.path) {
-        this.$router.push(newPath)
-      } else {
-        // else get textures manually
-        this.getTextures()
-      }
-    },
-    clearSearch: function () {
-      this.search = ''
-      this.startSearch()
-    },
-    openDialog: function (data = {}) {
-      this.dialogOpen = true
-      this.dialogData = data
-    },
-    disableDialog: function (refresh = false) {
-      if (refresh) {
-        this.getTypes()
-        this.getEditions()
-        this.getTextures()
-        this.getVersions()
-      }
-    },
-    openModifyMCDialog: function () {
-      this.MCDialogOpen = true
-    },
-    disableMCDialog: function () {
-      this.MCDialogOpen = false
-    },
-    openNewMCDialog: function () {
-      this.addMultiple = true
-    },
-    askRemove: function (data) {
-      this.remove.data = data
-      this.remove.confirm = true
-    },
-    getTypes: function () {
-      axios.get(`${this.$root.apiURL}/textures/tags`)
-        .then((res) => {
-          this.types = res.data
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-        .finally(() => {
-          Vue.nextTick(() => {
-            this.search = this.name
-          })
-        })
-    },
-    getEditions: function () {
-      axios.get(`${this.$root.apiURL}/textures/editions`)
-        .then((res) => {
-          this.editions = res.data
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    getVersions: function () {
-      axios.get(`${this.$root.apiURL}/textures/versions`)
-        .then((res) => {
-          this.versions = res.data
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    getTextures: function () {
-      let url = new URL(`${this.$root.apiURL}/textures/search`)
-      if( this.$route.params.type && this.$route.params.type != "all" ) url.searchParams.set('tag', this.$route.params.type)
-      if( this.$route.params.name ) url.searchParams.set('name', this.$route.params.name.replace(/ /g, "_"))
-      axios.get(url.toString())
-        .then((res) => {
-          this.textures = res.data
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    update: function (textures=true) {
-      this.getTypes()
-      if(textures) this.getTextures()
-      this.getEditions()
-      this.getVersions()
-    },
-    showMore: function () {
-      this.displayedResults += 100
-      this.update()
-    },
-    removeTexture: function(data) {
-      const textureId = data.id
-      return axios.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
-        .then(() => {
-          this.startSearch()
-        })
-    }
-  },
-  watch: {
-    $route () {
-      this.getTextures()
-    },
-    type(n) {
-      this.selectTextureType = n
-    },
-    selectTextureType(n) {
-      if(n) {
-        this.$router.push(this.textureURL(n)).catch(() => {})
-      }
-    }
-  },
-  mounted: function () {
-    this.update(false)
-    window.updatePageStyles(this)
-  }
-}
+			// DO NOT CHANGE ROUTE IF SAME PATH
+			if (newPath !== this.$route.path) {
+				this.$router.push(newPath);
+			} else {
+				// else get textures manually
+				this.getTextures();
+			}
+		},
+		clearSearch: function () {
+			this.search = "";
+			this.startSearch();
+		},
+		openDialog: function (data = {}) {
+			this.dialogOpen = true;
+			this.dialogData = data;
+		},
+		disableDialog: function (refresh = false) {
+			if (refresh) {
+				this.getTypes();
+				this.getEditions();
+				this.getTextures();
+				this.getVersions();
+			}
+		},
+		openModifyMCDialog: function () {
+			this.MCDialogOpen = true;
+		},
+		disableMCDialog: function () {
+			this.MCDialogOpen = false;
+		},
+		openNewMCDialog: function () {
+			this.addMultiple = true;
+		},
+		askRemove: function (data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		getTypes: function () {
+			axios
+				.get(`${this.$root.apiURL}/textures/tags`)
+				.then((res) => {
+					this.types = res.data;
+				})
+				.catch(function (err) {
+					console.error(err);
+				})
+				.finally(() => {
+					Vue.nextTick(() => {
+						this.search = this.name;
+					});
+				});
+		},
+		getEditions: function () {
+			axios
+				.get(`${this.$root.apiURL}/textures/editions`)
+				.then((res) => {
+					this.editions = res.data;
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		getVersions: function () {
+			axios
+				.get(`${this.$root.apiURL}/textures/versions`)
+				.then((res) => {
+					this.versions = res.data;
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		getTextures: function () {
+			let url = new URL(`${this.$root.apiURL}/textures/search`);
+			if (this.$route.params.type && this.$route.params.type != "all")
+				url.searchParams.set("tag", this.$route.params.type);
+			if (this.$route.params.name)
+				url.searchParams.set("name", this.$route.params.name.replace(/ /g, "_"));
+			axios
+				.get(url.toString())
+				.then((res) => {
+					this.textures = res.data;
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		update: function (textures = true) {
+			this.getTypes();
+			if (textures) this.getTextures();
+			this.getEditions();
+			this.getVersions();
+		},
+		showMore: function () {
+			this.displayedResults += 100;
+			this.update();
+		},
+		removeTexture: function (data) {
+			const textureId = data.id;
+			return axios
+				.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
+				.then(() => {
+					this.startSearch();
+				});
+		},
+	},
+	watch: {
+		$route() {
+			this.getTextures();
+		},
+		type(n) {
+			this.selectTextureType = n;
+		},
+		selectTextureType(n) {
+			if (n) {
+				this.$router.push(this.textureURL(n)).catch(() => {});
+			}
+		},
+	},
+	mounted: function () {
+		this.update(false);
+		window.updatePageStyles(this);
+	},
+};

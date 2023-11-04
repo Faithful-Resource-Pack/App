@@ -1,18 +1,18 @@
-const DashBoardCard = () => import('./dashcard.js')
+const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-  name: 'addon-card',
-  components: {
-    'dashboard-card': DashBoardCard
-  },
-  props: {
-    admin: {
-      required: true,
-      type: Boolean,
-      default: false
-    }
-  },
-  template: `
+	name: "addon-card",
+	components: {
+		"dashboard-card": DashBoardCard,
+	},
+	props: {
+		admin: {
+			required: true,
+			type: Boolean,
+			default: false,
+		},
+	},
+	template: `
 <dashboard-card
   id="addon-card"
   :title="$root.lang('global.tabs.addons.title') || ''"
@@ -80,56 +80,57 @@ export default {
   </v-card-actions>
 </dashboard-card>
   `,
-  data: function() {
-    return {
-      data: undefined,
-      status_color: {
-        approved: 'success--text',
-        pending: 'warning--text',
-        denied: 'error--text',
-        archived: 'grey--text'
-      },
-      loading: true,
-      loading_for: 1,
-      request_admin: false,
-    }
-  },
-  computed:  {
-    adminResults: function() {
-      return this.data && Object.keys(this.data).length > 2
-    },
-    statuses: function() {
-      return Object.keys(this.status_color)
-    },
-    roles: function() {
-      return this.$root.user.roles.length
-    },
-    url: function() {
-      return '/addons/stats' + (this.admin ? '-admin' : '')
-    }
-  },
-  methods: {
-    get: function() {
-      this.loading = true
-      axios.get(this.$root.apiURL + this.url, this.$root.apiOptions)
-        .then(res => {
-          this.data = res.data
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    }
-  },
-  created: function() {
-    this.get()
-  },
-  watch: {
-    roles: function(n, o) {
-      if(n != o && this.admin) {
-        this.loading = true
-        this.loading_for = 4
-        this.get()
-      }
-    } 
-  }
-}
+	data: function () {
+		return {
+			data: undefined,
+			status_color: {
+				approved: "success--text",
+				pending: "warning--text",
+				denied: "error--text",
+				archived: "grey--text",
+			},
+			loading: true,
+			loading_for: 1,
+			request_admin: false,
+		};
+	},
+	computed: {
+		adminResults: function () {
+			return this.data && Object.keys(this.data).length > 2;
+		},
+		statuses: function () {
+			return Object.keys(this.status_color);
+		},
+		roles: function () {
+			return this.$root.user.roles.length;
+		},
+		url: function () {
+			return "/addons/stats" + (this.admin ? "-admin" : "");
+		},
+	},
+	methods: {
+		get: function () {
+			this.loading = true;
+			axios
+				.get(this.$root.apiURL + this.url, this.$root.apiOptions)
+				.then((res) => {
+					this.data = res.data;
+				})
+				.finally(() => {
+					this.loading = false;
+				});
+		},
+	},
+	created: function () {
+		this.get();
+	},
+	watch: {
+		roles: function (n, o) {
+			if (n != o && this.admin) {
+				this.loading = true;
+				this.loading_for = 4;
+				this.get();
+			}
+		},
+	},
+};

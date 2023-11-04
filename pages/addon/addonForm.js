@@ -1,50 +1,50 @@
 /* global Vue, axios, marked */
-const UserList = () => import('./userlist.js')
-const ImagePreviewer = () => import('./image-previewer.js')
-const FullscreenPreview = () => import('./fullscreen-preview.js')
-const DropZone = () => import('../components/drop-zone.js')
+const UserList = () => import("./userlist.js");
+const ImagePreviewer = () => import("./image-previewer.js");
+const FullscreenPreview = () => import("./fullscreen-preview.js");
+const DropZone = () => import("../components/drop-zone.js");
 
 export default {
-  name: 'addon-form',
-  components: {
-    UserList,
-    ImagePreviewer,
-    FullscreenPreview,
-    DropZone,
-  },
-  props: {
-    addonNew: {
-      type: Boolean,
-      required: true
-    },
-    loading: {
-      type: Boolean,
-      required: false,
-      default: () => false
-    },
-    addonData: {
-      required: false,
-      default: () => undefined
-    },
-    headerSource: {
-      required: false,
-      default: () => undefined
-    },
-    screenSources: {
-      required: false
-    },
-    screenIds: {
-      required: false,
-      type: Array,
-      default: undefined
-    },
-    disabledHeaderInput: {
-      required: false,
-      type: Boolean,
-      default: () => false
-    }
-  },
-  template: `
+	name: "addon-form",
+	components: {
+		UserList,
+		ImagePreviewer,
+		FullscreenPreview,
+		DropZone,
+	},
+	props: {
+		addonNew: {
+			type: Boolean,
+			required: true,
+		},
+		loading: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
+		addonData: {
+			required: false,
+			default: () => undefined,
+		},
+		headerSource: {
+			required: false,
+			default: () => undefined,
+		},
+		screenSources: {
+			required: false,
+		},
+		screenIds: {
+			required: false,
+			type: Array,
+			default: undefined,
+		},
+		disabledHeaderInput: {
+			required: false,
+			type: Boolean,
+			default: () => false,
+		},
+	},
+	template: `
   <v-container>
     <fullscreen-preview
       ref="headerPreview"
@@ -296,314 +296,382 @@ export default {
     </v-list>
   </v-container>
   `,
-  data() {
-    return {
-      form: {
-        files: {
-          header: {
-            rules: [
-              header => !!header || this.$root.lang().addons.images.header.rules.image_required,
-              header => (header && header.size < this.form.files.header.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)
-            ],
-            counter: {
-              max: 3000000
-            }
-          },
-          carousel: {
-            rules: [
-              (files) => { return files.map(file => (file.size < this.form.files.carousel.counter.max) || this.$root.lang().addons.images.header.rules.image_size.replace('%s', this.form.files.header.counter.max / 1000)).filter(r => typeof r === "string")[0] || true }
-            ],
-            counter: {
-              max: 3000000
-            }
-          },
-          value: ''
-        },
-        description: {
-          rules: [
-            desc => !!desc || this.$root.lang().addons.general.description.rules.description_required,
-            desc => (desc && desc.length <= this.form.description.counter.max) || this.$root.lang().addons.general.description.rules.description_too_big.replace('%s', this.form.description.counter.max),
-            desc => (desc && desc.length >= this.form.description.counter.min) || this.$root.lang().addons.general.description.rules.description_too_small.replace('%s', this.form.description.counter.min),
-          ],
-          counter: {
-            min: 32,
-            max: 4096
-          }
-        },
-        embed_description: {
-          rules: [
-            desc => (desc && desc.length > this.form.embed_description.counter.max) || this.$root.lang().addons.general.embed_description.rules.too_big.replace('%s', this.form.embed_description.counter.max),
-          ],
-          counter: {
-            max: 160
-          }
-        },
-        name: {
-          rules: [
-            name => !!name || this.$root.lang().addons.general.name.rules.name_required,
-            name => (name && name.length <= this.form.name.counter.max) || this.$root.lang().addons.general.name.rules.name_too_big.replace('%s', this.form.name.counter.max),
-            name => (name && name.length >= this.form.name.counter.min) || this.$root.lang().addons.general.name.rules.name_too_small.replace('%s', this.form.name.counter.min),
-          ],
-          counter: {
-            min: 5,
-            max: 30
-          },
-        },
-        slug: {
-          rules: [
-            input => !!input || this.$root.lang().addons.general.slug.rules.required,
-            input => (input && input.length <= this.form.slug.counter.max) || this.$root.lang().addons.general.slug.rules.too_big.replace('%s', this.form.slug.counter.max),
-            input => (input && input.length >= this.form.slug.counter.min) || this.$root.lang().addons.general.slug.rules.too_small.replace('%s', this.form.slug.counter.min),
-            input => /^[a-zA-Z0-9\-]+$/.test(input) || this.$root.lang().addons.general.slug.rules.incorrect_format
-          ],
-          counter: {
-            min: 5,
-            max: 30
-          },
-        }
-      },
-      submittedForm: {
-        name: '',
-        headerFile: undefined,
-        carouselFiles: [],
-        description: '',
-        downloads: [{
-          key: '',
-          links: ['']
-        }],
-        authors: [],
-        selectedEditions: ['Java'],
-        selectedRes: ['32x'],
-        options: {
-          tags:[],
-          comments: true,
-          optifine: false
-        }
-      },
-      headerValid: false,
-      headerValidating: false,
-      headerError: "",
-      carouselValid: true,
-      carouselValidating: false,
-      carouselError: "",
-      carouselDoNotVerify: false,
-      downloadTitleRules: [
-        u => !!u || this.$root.lang().addons.downloads.name.rules.name_required,
-        u => u !== ' ' || this.$root.lang().addons.downloads.name.rules.name_cannot_be_empty
-      ],
-      downloadLinkRules: [
-        u => this.validURL(u) || this.$root.lang().addons.downloads.link.rule
-      ],
-      validForm: false,
-      editions: ['Java', 'Bedrock'],
-      res: ['32x', '64x']
-    }
-  },
-  computed: {
-    hasHeader: function () {
-      return !!(this.header || this.headerURL)
-    },
-    header: function () {
-      return this.addonNew ?
-        (this.headerValidating == false && this.headerValid && this.submittedForm.headerFile ?
-          URL.createObjectURL(this.submittedForm.headerFile) : undefined) :
-        (this.headerSource ? this.headerSource : undefined)
-    },
-    carouselSources: function () {
-      return this.screenSources ? this.screenSources : []
-    },
-    headerValidSentence: function () {
-      if (this.headerValidating) {
-        return "Header being verified..."
-      } else if (this.headerValid) {
-        return true
-      }
+	data() {
+		return {
+			form: {
+				files: {
+					header: {
+						rules: [
+							(header) => !!header || this.$root.lang().addons.images.header.rules.image_required,
+							(header) =>
+								(header && header.size < this.form.files.header.counter.max) ||
+								this.$root
+									.lang()
+									.addons.images.header.rules.image_size.replace(
+										"%s",
+										this.form.files.header.counter.max / 1000,
+									),
+						],
+						counter: {
+							max: 3000000,
+						},
+					},
+					carousel: {
+						rules: [
+							(files) => {
+								return (
+									files
+										.map(
+											(file) =>
+												file.size < this.form.files.carousel.counter.max ||
+												this.$root
+													.lang()
+													.addons.images.header.rules.image_size.replace(
+														"%s",
+														this.form.files.header.counter.max / 1000,
+													),
+										)
+										.filter((r) => typeof r === "string")[0] || true
+								);
+							},
+						],
+						counter: {
+							max: 3000000,
+						},
+					},
+					value: "",
+				},
+				description: {
+					rules: [
+						(desc) =>
+							!!desc || this.$root.lang().addons.general.description.rules.description_required,
+						(desc) =>
+							(desc && desc.length <= this.form.description.counter.max) ||
+							this.$root
+								.lang()
+								.addons.general.description.rules.description_too_big.replace(
+									"%s",
+									this.form.description.counter.max,
+								),
+						(desc) =>
+							(desc && desc.length >= this.form.description.counter.min) ||
+							this.$root
+								.lang()
+								.addons.general.description.rules.description_too_small.replace(
+									"%s",
+									this.form.description.counter.min,
+								),
+					],
+					counter: {
+						min: 32,
+						max: 4096,
+					},
+				},
+				embed_description: {
+					rules: [
+						(desc) =>
+							(desc && desc.length > this.form.embed_description.counter.max) ||
+							this.$root
+								.lang()
+								.addons.general.embed_description.rules.too_big.replace(
+									"%s",
+									this.form.embed_description.counter.max,
+								),
+					],
+					counter: {
+						max: 160,
+					},
+				},
+				name: {
+					rules: [
+						(name) => !!name || this.$root.lang().addons.general.name.rules.name_required,
+						(name) =>
+							(name && name.length <= this.form.name.counter.max) ||
+							this.$root
+								.lang()
+								.addons.general.name.rules.name_too_big.replace("%s", this.form.name.counter.max),
+						(name) =>
+							(name && name.length >= this.form.name.counter.min) ||
+							this.$root
+								.lang()
+								.addons.general.name.rules.name_too_small.replace("%s", this.form.name.counter.min),
+					],
+					counter: {
+						min: 5,
+						max: 30,
+					},
+				},
+				slug: {
+					rules: [
+						(input) => !!input || this.$root.lang().addons.general.slug.rules.required,
+						(input) =>
+							(input && input.length <= this.form.slug.counter.max) ||
+							this.$root
+								.lang()
+								.addons.general.slug.rules.too_big.replace("%s", this.form.slug.counter.max),
+						(input) =>
+							(input && input.length >= this.form.slug.counter.min) ||
+							this.$root
+								.lang()
+								.addons.general.slug.rules.too_small.replace("%s", this.form.slug.counter.min),
+						(input) =>
+							/^[a-zA-Z0-9\-]+$/.test(input) ||
+							this.$root.lang().addons.general.slug.rules.incorrect_format,
+					],
+					counter: {
+						min: 5,
+						max: 30,
+					},
+				},
+			},
+			submittedForm: {
+				name: "",
+				headerFile: undefined,
+				carouselFiles: [],
+				description: "",
+				downloads: [
+					{
+						key: "",
+						links: [""],
+					},
+				],
+				authors: [],
+				selectedEditions: ["Java"],
+				selectedRes: ["32x"],
+				options: {
+					tags: [],
+					comments: true,
+					optifine: false,
+				},
+			},
+			headerValid: false,
+			headerValidating: false,
+			headerError: "",
+			carouselValid: true,
+			carouselValidating: false,
+			carouselError: "",
+			carouselDoNotVerify: false,
+			downloadTitleRules: [
+				(u) => !!u || this.$root.lang().addons.downloads.name.rules.name_required,
+				(u) => u !== " " || this.$root.lang().addons.downloads.name.rules.name_cannot_be_empty,
+			],
+			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().addons.downloads.link.rule],
+			validForm: false,
+			editions: ["Java", "Bedrock"],
+			res: ["32x", "64x"],
+		};
+	},
+	computed: {
+		hasHeader: function () {
+			return !!(this.header || this.headerURL);
+		},
+		header: function () {
+			return this.addonNew
+				? this.headerValidating == false && this.headerValid && this.submittedForm.headerFile
+					? URL.createObjectURL(this.submittedForm.headerFile)
+					: undefined
+				: this.headerSource
+				? this.headerSource
+				: undefined;
+		},
+		carouselSources: function () {
+			return this.screenSources ? this.screenSources : [];
+		},
+		headerValidSentence: function () {
+			if (this.headerValidating) {
+				return "Header being verified...";
+			} else if (this.headerValid) {
+				return true;
+			}
 
-      return this.headerError
-    },
-    headerRules: function () {
-      if(!this.addonNew) return []
-      return [...this.form.files.header.rules, this.headerValidSentence]
-    },
-    headerFile: function () {
-      return this.submittedForm.headerFile
-    },
-    carouselFiles: function() {
-      return this.submittedForm.carouselFiles
-    },
-    carouselRules: function () {
-      return [...this.form.files.carousel.rules, this.carouselValidSentence]
-    },
-    carouselValidSentence: function () {
-      if (this.carouselValidating) {
-        return "Carousel being verified..."
-      } else if (this.carouselValid) {
-        return true
-      }
+			return this.headerError;
+		},
+		headerRules: function () {
+			if (!this.addonNew) return [];
+			return [...this.form.files.header.rules, this.headerValidSentence];
+		},
+		headerFile: function () {
+			return this.submittedForm.headerFile;
+		},
+		carouselFiles: function () {
+			return this.submittedForm.carouselFiles;
+		},
+		carouselRules: function () {
+			return [...this.form.files.carousel.rules, this.carouselValidSentence];
+		},
+		carouselValidSentence: function () {
+			if (this.carouselValidating) {
+				return "Carousel being verified...";
+			} else if (this.carouselValid) {
+				return true;
+			}
 
-      return this.carouselError
-    },
-    submittedData: function () {
-      let res = Object.merge({}, this.submittedForm)
+			return this.carouselError;
+		},
+		submittedData: function () {
+			let res = Object.merge({}, this.submittedForm);
 
-      res.options.tags = [...res.selectedEditions, ...res.selectedRes]
-      delete res.selectedEditions
-      delete res.selectedRes
+			res.options.tags = [...res.selectedEditions, ...res.selectedRes];
+			delete res.selectedEditions;
+			delete res.selectedRes;
 
-      // we treat files with different endpoint
-      delete res.headerFile
-      delete res.carouselFiles
+			// we treat files with different endpoint
+			delete res.headerFile;
+			delete res.carouselFiles;
 
-      return res
-    }
-  },
-  methods: {
-    carouselChange: function() {
-      if (this.carouselDoNotVerify) return
+			return res;
+		},
+	},
+	methods: {
+		carouselChange: function () {
+			if (this.carouselDoNotVerify) return;
 
-      const files = this.submittedForm.carouselFiles
-      if(!files || files.length == 0) return
+			const files = this.submittedForm.carouselFiles;
+			if (!files || files.length == 0) return;
 
-      this.carouselValidating = true
-      Promise.all(files.map(f => this.verifyImage(f, this.validateRatio)))
-        .then(() => {
-          this.carouselValid = true
-          this.$emit('screenshot', files)
-          this.submittedForm.carouselFiles = []
-        })
-        .catch((error) => {
-          console.error(error)
-          this.carouselValid = false
-          this.carouselError = error.message
-          this.$root.showSnackBar(error, 'error')
-        })
-        .finally(() => {
-          this.carouselValidating = false
-        })
-    },
-    headerChange: function(file) {
-      // delete not uploaded file
-      if(!file) {
-        if(this.addonNew) {
-          this.$emit('header', undefined, true)
-        }
-        return
-      }
+			this.carouselValidating = true;
+			Promise.all(files.map((f) => this.verifyImage(f, this.validateRatio)))
+				.then(() => {
+					this.carouselValid = true;
+					this.$emit("screenshot", files);
+					this.submittedForm.carouselFiles = [];
+				})
+				.catch((error) => {
+					console.error(error);
+					this.carouselValid = false;
+					this.carouselError = error.message;
+					this.$root.showSnackBar(error, "error");
+				})
+				.finally(() => {
+					this.carouselValidating = false;
+				});
+		},
+		headerChange: function (file) {
+			// delete not uploaded file
+			if (!file) {
+				if (this.addonNew) {
+					this.$emit("header", undefined, true);
+				}
+				return;
+			}
 
-      // activate validation loading
-      this.headerValidating = true
+			// activate validation loading
+			this.headerValidating = true;
 
-      this.verifyImage(file, this.validateRatio)
-        .then(() => {
-          this.headerValid = true
-          this.$emit('header', file)
-          if(!this.addonNew) {
-            this.submittedForm.headerFile = undefined
-          }
-        })
-        .catch((error) => {
-          this.headerValid = false
-          this.headerError = error.message
-          console.error(error)
+			this.verifyImage(file, this.validateRatio)
+				.then(() => {
+					this.headerValid = true;
+					this.$emit("header", file);
+					if (!this.addonNew) {
+						this.submittedForm.headerFile = undefined;
+					}
+				})
+				.catch((error) => {
+					this.headerValid = false;
+					this.headerError = error.message;
+					console.error(error);
 
-          // input is changed so we delete parent component value
-          if(this.addonNew) this.$emit('header', undefined, true)
-          // if not addon new will delete file
+					// input is changed so we delete parent component value
+					if (this.addonNew) this.$emit("header", undefined, true);
+					// if not addon new will delete file
 
-          this.$root.showSnackBar(error.message, 'error')
-        })
-        .finally(() => {
-          this.headerValidating = false
-        })
-    },
-    downloadAdd: function () {
-      this.submittedForm.downloads.push({ key: '', links: [''] })
-    },
-    downloadRemove: function (download_index) {
-      this.submittedForm.downloads.splice(download_index, 1)
-    },
-    linkAdd: function(download_index) {
-      this.submittedForm.downloads[download_index].links.push('')
-    },
-    linkRemove: function(download_index, link_index) {
-      this.submittedForm.downloads[download_index].links.splice(link_index, 1)
-    },
-    onDeleteCarousel: function (item, index, id) {
-      this.carouselDoNotVerify = true
-      this.submittedForm.carouselFiles.splice(index, 1)
-      this.$emit('screenshot', undefined, index, true, id)
-      Vue.nextTick(() => {
-        this.carouselDoNotVerify = false
-      })
-    },
-    onSubmit: function(approve = false) {
-      const valid = this.$refs.form.validate()
+					this.$root.showSnackBar(error.message, "error");
+				})
+				.finally(() => {
+					this.headerValidating = false;
+				});
+		},
+		downloadAdd: function () {
+			this.submittedForm.downloads.push({ key: "", links: [""] });
+		},
+		downloadRemove: function (download_index) {
+			this.submittedForm.downloads.splice(download_index, 1);
+		},
+		linkAdd: function (download_index) {
+			this.submittedForm.downloads[download_index].links.push("");
+		},
+		linkRemove: function (download_index, link_index) {
+			this.submittedForm.downloads[download_index].links.splice(link_index, 1);
+		},
+		onDeleteCarousel: function (item, index, id) {
+			this.carouselDoNotVerify = true;
+			this.submittedForm.carouselFiles.splice(index, 1);
+			this.$emit("screenshot", undefined, index, true, id);
+			Vue.nextTick(() => {
+				this.carouselDoNotVerify = false;
+			});
+		},
+		onSubmit: function (approve = false) {
+			const valid = this.$refs.form.validate();
 
-      if(!valid) return
+			if (!valid) return;
 
-      this.$emit('submit', this.submittedData, approve)
-    },
-    validateRatio: function (ctx) {
-      const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78
-      if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio)
-    },
-    validURL: function (str) {
-      const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-        '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
-      return !!pattern.test(str)
-    },
-    verifyImage: function (file, validateImage) {
-      if (validateImage === undefined) validateImage = this.validateRatio
+			this.$emit("submit", this.submittedData, approve);
+		},
+		validateRatio: function (ctx) {
+			const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78;
+			if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio);
+		},
+		validURL: function (str) {
+			const pattern = new RegExp(
+				"^(https?:\\/\\/)?" + // protocol
+					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+					"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+					"(\\#[-a-z\\d_]*)?$",
+				"i",
+			); // fragment locator
+			return !!pattern.test(str);
+		},
+		verifyImage: function (file, validateImage) {
+			if (validateImage === undefined) validateImage = this.validateRatio;
 
-      return new Promise((resolve, reject) => {
-        // start reader
-        const reader = new FileReader()
+			return new Promise((resolve, reject) => {
+				// start reader
+				const reader = new FileReader();
 
-        reader.onload = function (e) {
-          const image = new Image()
-          image.src = e.target.result
-          image.onload = function () {
-            try {
-              validateImage(this)
-              resolve()
-            } catch (error) {
-              reject(error)
-            }
-          }
-          image.onerror = function (error) {
-            reject(e)
-          }
-        }
-        reader.onerror = function (error) {
-          reject(e)
-        }
+				reader.onload = function (e) {
+					const image = new Image();
+					image.src = e.target.result;
+					image.onload = function () {
+						try {
+							validateImage(this);
+							resolve();
+						} catch (error) {
+							reject(error);
+						}
+					};
+					image.onerror = function (error) {
+						reject(e);
+					};
+				};
+				reader.onerror = function (error) {
+					reject(e);
+				};
 
-        // set file to be readt
-        reader.readAsDataURL(file)
-      })
-    }
-  },
-  watch: {
-    addonData: {
-      handler(data) {
-        if(!this.addonNew && data) {
-          data = JSON.parse(JSON.stringify(data))
-          data.headerFile = undefined
-          data.carouselFiles = []
-          data.selectedRes = data.options.tags.filter(e => this.res.includes(e))
-          data.selectedEditions = data.options.tags.filter(e => this.editions.includes(e))
-          this.submittedForm = data
-        }
-      },
-      immediate: true,
-      deep: true
-    }
-  },
-  beforeMount: function() {
-    this.submittedForm.authors = [this.$root.user.id]
-  }
-}
+				// set file to be readt
+				reader.readAsDataURL(file);
+			});
+		},
+	},
+	watch: {
+		addonData: {
+			handler(data) {
+				if (!this.addonNew && data) {
+					data = JSON.parse(JSON.stringify(data));
+					data.headerFile = undefined;
+					data.carouselFiles = [];
+					data.selectedRes = data.options.tags.filter((e) => this.res.includes(e));
+					data.selectedEditions = data.options.tags.filter((e) => this.editions.includes(e));
+					this.submittedForm = data;
+				}
+			},
+			immediate: true,
+			deep: true,
+		},
+	},
+	beforeMount: function () {
+		this.submittedForm.authors = [this.$root.user.id];
+	},
+};

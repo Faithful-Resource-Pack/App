@@ -1,26 +1,26 @@
-const DashBoardCard = () => import('./dashcard.js')
+const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-  name: 'contribution-card',
-  components: {
-    'dashboard-card': DashBoardCard,
-  },
-  props: {
-    admin: {
-      required: true,
-      type: Boolean,
-      default: false
-    },
-    colors: {
-      required: true,
-      type: Array
-    },
-    statsListener: {
-      required: true,
-      type: Function
-    }
-  },
-  template: `
+	name: "contribution-card",
+	components: {
+		"dashboard-card": DashBoardCard,
+	},
+	props: {
+		admin: {
+			required: true,
+			type: Boolean,
+			default: false,
+		},
+		colors: {
+			required: true,
+			type: Array,
+		},
+		statsListener: {
+			required: true,
+			type: Function,
+		},
+	},
+	template: `
 <dashboard-card
   :title="$root.lang('global.tabs.database.subtabs.contributions') || ''"
   go_to="/contributions"
@@ -54,53 +54,54 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-  data: function() {
-    return {
-      data: undefined,
-    }
-  },
-  computed:  {
-    url: function() {
-      return '/contributions/stats'
-    },
-    totals: function() {
-      if(!this.data) return [,,,]
-      return Object.keys(this.data).filter(e => e.includes('total')).map(e => {
-        return {
-          name: e.replace('total_', ''),
-          value: this.data[e],
-        }
-      })
-    },
-    today: function() {
-      return new Date()
-    },
-    locale: function() {
-      return {
-        months: moment.monthsShort().map(e => e[0].toUpperCase() + e.slice(1)),
-        days: moment.weekdaysShort().map(e => e[0].toUpperCase() + e.slice(1)),
-        ...this.$root.lang().dashboard.locale
-      }
-    },
-  },
-  methods: {
-    get: function() {
-      axios.get(this.$root.apiURL + this.url, this.$root.apiOptions)
-        .then(res => {
-          this.data = res.data
-        })
-    }
-  },
-  created: function() {
-    this.get()
-  },
-  watch: {
-    totals: function(n, o) {
-      if(!o) return; // o is undefined
-      if(!o.length) return; // o is empty
+	data: function () {
+		return {
+			data: undefined,
+		};
+	},
+	computed: {
+		url: function () {
+			return "/contributions/stats";
+		},
+		totals: function () {
+			if (!this.data) return [, , ,];
+			return Object.keys(this.data)
+				.filter((e) => e.includes("total"))
+				.map((e) => {
+					return {
+						name: e.replace("total_", ""),
+						value: this.data[e],
+					};
+				});
+		},
+		today: function () {
+			return new Date();
+		},
+		locale: function () {
+			return {
+				months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),
+				days: moment.weekdaysShort().map((e) => e[0].toUpperCase() + e.slice(1)),
+				...this.$root.lang().dashboard.locale,
+			};
+		},
+	},
+	methods: {
+		get: function () {
+			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
+				this.data = res.data;
+			});
+		},
+	},
+	created: function () {
+		this.get();
+	},
+	watch: {
+		totals: function (n, o) {
+			if (!o) return; // o is undefined
+			if (!o.length) return; // o is empty
 
-      // run
-      this.statsListener(n)
-    }
-  }
-}
+			// run
+			this.statsListener(n);
+		},
+	},
+};

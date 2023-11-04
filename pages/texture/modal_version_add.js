@@ -1,33 +1,37 @@
 /* global axios, Vue */
 
 export default {
-  name: 'use-modal',
-  props: {
-    dialog: {
-      type: Boolean,
-      required: true
-    },
-    editions: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    versions: {
-      type: Array,
-      required: false,
-      default: function () { return [] }
-    },
-    disableDialog: {
-      type: Function,
-      required: true
-    },
-    color: {
-      type: String,
-      required: false,
-      default: 'primary'
-    }
-  },
-  template: `
+	name: "use-modal",
+	props: {
+		dialog: {
+			type: Boolean,
+			required: true,
+		},
+		editions: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		versions: {
+			type: Array,
+			required: false,
+			default: function () {
+				return [];
+			},
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+	},
+	template: `
   <v-dialog
     v-model="dialog"
     content-class="colored"
@@ -63,34 +67,35 @@ export default {
       </v-card-actions>
     </v-card>
   </v-dialog>`,
-  data () {
-    return {
-      form: {
-        edition: '',
-        version: '',
-        newVersion: ''
-      }
-    }
-  },
-  methods: {
-    send: function () {
-      axios.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, 'success')
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-        })
-    }
-  },
-  watch: {
-    dialog: function (newValue, oldValue) {
-      if (oldValue !== newValue && newValue === true) {
-        Vue.nextTick(() => {
-          this.$refs.form.reset()
-        })
-      }
-    }
-  }
-}
+	data() {
+		return {
+			form: {
+				edition: "",
+				version: "",
+				newVersion: "",
+			},
+		};
+	},
+	methods: {
+		send: function () {
+			axios
+				.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, "success");
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+	},
+	watch: {
+		dialog: function (newValue, oldValue) {
+			if (oldValue !== newValue && newValue === true) {
+				Vue.nextTick(() => {
+					this.$refs.form.reset();
+				});
+			}
+		},
+	},
+};

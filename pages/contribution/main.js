@@ -1,12 +1,12 @@
 /* global axios */
-const contributionModal = () => import('./contributionModal.js')
+const contributionModal = () => import("./contributionModal.js");
 
 export default {
-  components: {
-    contributionModal
-  },
-  name: 'contribution-page',
-  template: `
+	components: {
+		contributionModal,
+	},
+	name: "contribution-page",
+	template: `
   <v-container>
     <contribution-modal ref="mod" :contributors='contributors' :onSubmit='onModalSubmit' :multiple="multiple"></contribution-modal>
 
@@ -181,360 +181,382 @@ export default {
     </v-list>
     <div v-else><br><p><i>{{ $root.lang().global.no_results }}</i></p></div>
   </v-container>`,
-  data () {
-    const INCREMENT = 250
+	data() {
+		const INCREMENT = 250;
 
-    return {
-      maxheight: 170,
-      form: {
-        packs: [] // [{key: 'all', selected: true }]
-      },
-      all_packs: 'all',
-      all_packs_display: 'All',
-      contributors: [],
-      contributors_selected: [],
-      search: {
-        searching: false,
-        search_results: []
-      },
-      textureSearch: '',
-      displayedResults: INCREMENT,
-      newSubmit: false,
-    }
-  },
-  computed: {
-    queryToIds: function() {
-      if(this.$route.query.ids) {
-        return this.$route.query.ids.split('-')
-      }
-      
-      // use the logged user as default selected contributor
-      return [this.$root.user.id]
-    },
-    idsToQuery: function() {
-      return {
-        ids: this.contributors_selected.join('-')
-      }
-    },
-    searchDisabled: function () {
-      const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false
-      const invalidTextSearch = this.textureSearch.length < 3 && Number.isNaN(Number.parseInt(this.textureSearch))
-      const result = this.search.searching || resSelected || (this.contributors_selected.length === 0 && invalidTextSearch)
-      return result
-    },
-    listColumns: function () {
-      let columns = 1
+		return {
+			maxheight: 170,
+			form: {
+				packs: [], // [{key: 'all', selected: true }]
+			},
+			all_packs: "all",
+			all_packs_display: "All",
+			contributors: [],
+			contributors_selected: [],
+			search: {
+				searching: false,
+				search_results: [],
+			},
+			textureSearch: "",
+			displayedResults: INCREMENT,
+			newSubmit: false,
+		};
+	},
+	computed: {
+		queryToIds: function () {
+			if (this.$route.query.ids) {
+				return this.$route.query.ids.split("-");
+			}
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
-        columns = 2
-        if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
-          columns = 3
-        }
-      }
+			// use the logged user as default selected contributor
+			return [this.$root.user.id];
+		},
+		idsToQuery: function () {
+			return {
+				ids: this.contributors_selected.join("-"),
+			};
+		},
+		searchDisabled: function () {
+			const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false;
+			const invalidTextSearch =
+				this.textureSearch.length < 3 && Number.isNaN(Number.parseInt(this.textureSearch));
+			const result =
+				this.search.searching ||
+				resSelected ||
+				(this.contributors_selected.length === 0 && invalidTextSearch);
+			return result;
+		},
+		listColumns: function () {
+			let columns = 1;
 
-      return columns
-    },
-    multiple: function() {
-      return this.newSubmit
-    },
-    packsSelected: function() {
-      return this.form.packs
-        .filter(entry => entry.selected)
-    },
-    packsToChoose: function() {
-      return this.form.packs
-        .filter(entry => entry.key !== this.all_packs)
-        .map(entry => entry.key)
-    },
-    splittedResults: function () {
-      const res = []
-      for (let col = 0; col < this.listColumns; ++col) {
-        res.push([])
-      }
+			if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
+				columns = 2;
+				if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
+					columns = 3;
+				}
+			}
 
-      let arrayIndex = 0
-      this.search.search_results.forEach(contrib => {
-        res[arrayIndex].push(contrib)
-        arrayIndex = (arrayIndex + 1) % this.listColumns
-      })
+			return columns;
+		},
+		multiple: function () {
+			return this.newSubmit;
+		},
+		packsSelected: function () {
+			return this.form.packs.filter((entry) => entry.selected);
+		},
+		packsToChoose: function () {
+			return this.form.packs
+				.filter((entry) => entry.key !== this.all_packs)
+				.map((entry) => entry.key);
+		},
+		splittedResults: function () {
+			const res = [];
+			for (let col = 0; col < this.listColumns; ++col) {
+				res.push([]);
+			}
 
-      return res
-    },
-    onModalSubmit: function() {
-      return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit
-    }
-  },
-  methods: {
-    momo: function(...args) {
-      return moment(...args)
-    },
-    packToCode: function(pack) {
-      if(pack === 'default') {
-        return '16x'
-      }
-      if(pack.includes('classic_faithful_32x')) {
-        if(pack.includes('progart'))
-          pack = pack.replace('progart', '__p_a')
-        else
-          pack += "__j_a_p_p_a"
+			let arrayIndex = 0;
+			this.search.search_results.forEach((contrib) => {
+				res[arrayIndex].push(contrib);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			});
 
-        console.log(pack)
-      }
-      return pack
-        .split('_').map(word => {
-          let number = Number.parseInt(word, 10);
-          
-          return Number.isNaN(number) ? (word[0] || ' ').toUpperCase() : number
-        }).join('')
-    },
-    showMore: function() {
-      this.displayedResults += 100;
-    },
-    getRes: function () {
-      axios.get(`${this.$root.apiURL}/contributions/packs`)
-        .then(res => {
-          res.data.forEach(r => {
-            this.addRes(r, r.replaceAll('_', ' '))
-          })
-        })
-    },
-    getAuthors: function () {
-      axios.get(`${this.$root.apiURL}/contributions/authors`)
-        .then(res => {
-          // assign the result, but sorted by username
-          this.contributors = res.data.sort((a, b) => {
-            if (!a.username && !b.username) return 0
-            if (a.username && !b.username) return 1;
-            if (!a.username && b.username) return -1;
+			return res;
+		},
+		onModalSubmit: function () {
+			return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit;
+		},
+	},
+	methods: {
+		momo: function (...args) {
+			return moment(...args);
+		},
+		packToCode: function (pack) {
+			if (pack === "default") {
+				return "16x";
+			}
+			if (pack.includes("classic_faithful_32x")) {
+				if (pack.includes("progart")) pack = pack.replace("progart", "__p_a");
+				else pack += "__j_a_p_p_a";
 
-            return a.username.toLowerCase() > b.username.toLowerCase() ? 1 : ((b.username.toLowerCase() > a.username.toLowerCase()) ? -1 : 0)
-          })
-        })
-        .catch(console.trace)
-    },
-    remove (id) {
-      const index = this.contributors_selected.indexOf(id)
-      if (index >= 0) this.contributors_selected.splice(index, 1)
-    },
-    addRes (name, value, boolean = false) {
-      this.form.packs.push({
-        key: name,
-        value: value,
-        selected: boolean
-      })
-    },
-    openAdd: function () {
-      this.newSubmit = true
-      Vue.nextTick(() => {
-        this.$refs.mod.open(undefined, this.packsToChoose, true)
-      })
-    },
-    startSearch: function () {
-      this.search.searching = true
-      axios.get(`${this.$root.apiURL}/contributions/search
-?packs=${this.packsSelected.map(r => r.key).join('-')}
-&users=${this.contributors_selected.join('-')}
-&search=${this.textureSearch}`)
-        .then(res => {
-          res.data.sort((a, b) => b.date - a.date)
-          this.search.search_results = res.data.map(c => {
-            return {...c, url: `${this.$root.apiURL}/textures/${c.texture}/url/${c.pack}/latest`}
-          })
-        })
+				console.log(pack);
+			}
+			return pack
+				.split("_")
+				.map((word) => {
+					let number = Number.parseInt(word, 10);
 
-        // fetch contribution textures names
-        .then(() => this.search.search_results.map(c => c.texture))
-        .then(all_ids => {
-          // split request in groups
-          return Promise.all(all_ids.reduce((acc, cur, index) => {
-            if(index % 30 === 0) { acc.push([])}
-            acc[acc.length-1].push(cur)
-            return acc;
-          }, []).map(ids => {
-            // optimize array search by deleting double
-            return axios.get(`${this.$root.apiURL}/textures/${ids.filter((v, i, a) => a.indexOf(v) === i).join(',')}`);
-          })
-          )
-        })
-        .then(results => {
-          const texturesFromIds = results.map(r => r.data).flat() // remerge results
-          
-          this.search.search_results.forEach((contrib) => {
-            const found_texture = texturesFromIds.find(t => t.id === contrib.texture);
-            contrib.name = found_texture ? found_texture.name : ''; // find texture with null string fallback (sometimes we get a 404)
-          })
-        })
-        
-        .finally(() => this.search.searching = false)
-        .catch(err => this.$root.showSnackBar(err, 'error'))
-    },
-    editContribution: function(contrib) {
-      this.newSubmit = false
-      this.$refs.mod.open(contrib, this.packsToChoose, false)
-    },
-    /**
-     * @typedef MultipleContribution
-     * @type {object}
-     * @property {string[]} authors Author id array
-     * @property {string[]?} packs Resource pack name array
-     * @property {string} pack Contribution resource pack
-     * @property {string} date Contribution date
-     * @property {Array<number|[number, number]>} texture Texture range array
-     */
-    /**
-     * @param {Array<MultipleContribution>} entries Input entrues
-     * @returns {Promise<void>}
-     */
-    onNewSubmit: async function(entries) {
-      if (!Array.isArray(entries)) return
+					return Number.isNaN(number) ? (word[0] || " ").toUpperCase() : number;
+				})
+				.join("");
+		},
+		showMore: function () {
+			this.displayedResults += 100;
+		},
+		getRes: function () {
+			axios.get(`${this.$root.apiURL}/contributions/packs`).then((res) => {
+				res.data.forEach((r) => {
+					this.addRes(r, r.replaceAll("_", " "));
+				});
+			});
+		},
+		getAuthors: function () {
+			axios
+				.get(`${this.$root.apiURL}/contributions/authors`)
+				.then((res) => {
+					// assign the result, but sorted by username
+					this.contributors = res.data.sort((a, b) => {
+						if (!a.username && !b.username) return 0;
+						if (a.username && !b.username) return 1;
+						if (!a.username && b.username) return -1;
 
-      // prepare final data
-      let final_contributions = []
-      for (let entry of entries) {
-        const generated_range = window.generateRange(entry.texture)
+						return a.username.toLowerCase() > b.username.toLowerCase()
+							? 1
+							: b.username.toLowerCase() > a.username.toLowerCase()
+							? -1
+							: 0;
+					});
+				})
+				.catch(console.trace);
+		},
+		remove(id) {
+			const index = this.contributors_selected.indexOf(id);
+			if (index >= 0) this.contributors_selected.splice(index, 1);
+		},
+		addRes(name, value, boolean = false) {
+			this.form.packs.push({
+				key: name,
+				value: value,
+				selected: boolean,
+			});
+		},
+		openAdd: function () {
+			this.newSubmit = true;
+			Vue.nextTick(() => {
+				this.$refs.mod.open(undefined, this.packsToChoose, true);
+			});
+		},
+		startSearch: function () {
+			this.search.searching = true;
+			axios
+				.get(
+					`${this.$root.apiURL}/contributions/search
+?packs=${this.packsSelected.map((r) => r.key).join("-")}
+&users=${this.contributors_selected.join("-")}
+&search=${this.textureSearch}`,
+				)
+				.then((res) => {
+					res.data.sort((a, b) => b.date - a.date);
+					this.search.search_results = res.data.map((c) => {
+						return { ...c, url: `${this.$root.apiURL}/textures/${c.texture}/url/${c.pack}/latest` };
+					});
+				})
 
-        if (generated_range.length === 0) {
-          this.$root.jsonSnackBar(entry).showSnackBar(
-            this.$root.lang('database.labels.id_field_errors.one_required'),
-            'error'
-          )
-          console.error(entry)
-          return false
-        }
+				// fetch contribution textures names
+				.then(() => this.search.search_results.map((c) => c.texture))
+				.then((all_ids) => {
+					// split request in groups
+					return Promise.all(
+						all_ids
+							.reduce((acc, cur, index) => {
+								if (index % 30 === 0) {
+									acc.push([]);
+								}
+								acc[acc.length - 1].push(cur);
+								return acc;
+							}, [])
+							.map((ids) => {
+								// optimize array search by deleting double
+								return axios.get(
+									`${this.$root.apiURL}/textures/${ids
+										.filter((v, i, a) => a.indexOf(v) === i)
+										.join(",")}`,
+								);
+							}),
+					);
+				})
+				.then((results) => {
+					const texturesFromIds = results.map((r) => r.data).flat(); // remerge results
 
-        if (entry.authors.length === 0) {
-          this.$root.jsonSnackBar(entry).showSnackBar(
-            this.$root.lang('database.subtitles.no_contributor_yet'),
-            'error'
-          )
-          console.error(entry)
-          return false
-        }
+					this.search.search_results.forEach((contrib) => {
+						const found_texture = texturesFromIds.find((t) => t.id === contrib.texture);
+						contrib.name = found_texture ? found_texture.name : ""; // find texture with null string fallback (sometimes we get a 404)
+					});
+				})
 
-        for (let texture_id of generated_range) {
-          const new_contribution = {
-            date: new Date(entry.date).getTime(),
-            resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
-            pack: entry.pack,
-            authors: entry.authors,
-            texture: String(texture_id)
-          }
-          final_contributions.push(new_contribution)
-        }
-      }
+				.finally(() => (this.search.searching = false))
+				.catch((err) => this.$root.showSnackBar(err, "error"));
+		},
+		editContribution: function (contrib) {
+			this.newSubmit = false;
+			this.$refs.mod.open(contrib, this.packsToChoose, false);
+		},
+		/**
+		 * @typedef MultipleContribution
+		 * @type {object}
+		 * @property {string[]} authors Author id array
+		 * @property {string[]?} packs Resource pack name array
+		 * @property {string} pack Contribution resource pack
+		 * @property {string} date Contribution date
+		 * @property {Array<number|[number, number]>} texture Texture range array
+		 */
+		/**
+		 * @param {Array<MultipleContribution>} entries Input entrues
+		 * @returns {Promise<void>}
+		 */
+		onNewSubmit: async function (entries) {
+			if (!Array.isArray(entries)) return;
 
-      let i = 0;
-      let went_well = true;
-      while (went_well && i < final_contributions.length) {
-        went_well = await axios.post(
-          `${this.$root.apiURL}/contributions`,
-          final_contributions[i], this.$root.apiOptions
-        )
-          .then((_created_contribution) => {
-            return true
-          })
-          .catch(err => {
-            this.$root.showSnackBar(err, 'error');
-            console.error(final_contributions[i]);
-            return false
-          })
+			// prepare final data
+			let final_contributions = [];
+			for (let entry of entries) {
+				const generated_range = window.generateRange(entry.texture);
 
-        i++;
-      }
+				if (generated_range.length === 0) {
+					this.$root
+						.jsonSnackBar(entry)
+						.showSnackBar(this.$root.lang("database.labels.id_field_errors.one_required"), "error");
+					console.error(entry);
+					return false;
+				}
 
-      if (went_well) {
-        this.$root.showSnackBar(this.$root.lang('global.ends_success'), 'success')
-        this.getAuthors()
-      }
+				if (entry.authors.length === 0) {
+					this.$root
+						.jsonSnackBar(entry)
+						.showSnackBar(this.$root.lang("database.subtitles.no_contributor_yet"), "error");
+					console.error(entry);
+					return false;
+				}
 
-      return went_well
-    },
-    onPackChange: function(selected, key) {
-      if(key === this.all_packs) {
-        if(selected) {
-          // just checked all, unckeck others
-          // better to make all of them not selected instead of replacing data
-          // more stable if more data in entries
-          this.form.packs.forEach(entry => {
-            if(entry.key === this.all_packs) return
+				for (let texture_id of generated_range) {
+					const new_contribution = {
+						date: new Date(entry.date).getTime(),
+						resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
+						pack: entry.pack,
+						authors: entry.authors,
+						texture: String(texture_id),
+					};
+					final_contributions.push(new_contribution);
+				}
+			}
 
-            entry.selected = false
-          })
-        } else {
-          this.onPackUnselected(key)
-        }
-      } else {
-        // other pack
-        if(selected) {
-          // uncheck all
-          const index_all = this.form.packs.findIndex(entry => entry.key === this.all_packs)
-          this.form.packs[index_all].selected = false
-        } else {
-          this.onPackUnselected(key)
-        }
-      }
-    },
-    onPackUnselected: function(key) {
-      // ensure at least one selected
-      if(this.packsSelected.length === 0) {
-        const index_entry = this.form.packs.findIndex(entry => entry.key === key)
+			let i = 0;
+			let went_well = true;
+			while (went_well && i < final_contributions.length) {
+				went_well = await axios
+					.post(`${this.$root.apiURL}/contributions`, final_contributions[i], this.$root.apiOptions)
+					.then((_created_contribution) => {
+						return true;
+					})
+					.catch((err) => {
+						this.$root.showSnackBar(err, "error");
+						console.error(final_contributions[i]);
+						return false;
+					});
 
-        // needs to be changed on next tick, cannot change same data on same cycle
-        this.$nextTick(() => {
-          Vue.set(this.form.packs[index_entry], 'selected', true)
-        })
-      } else {
-        // do nothing, at least one is selected
-      }
-    },
-    onChangeSubmit: function(data) {
-      axios
-        .put(
-          `${this.$root.apiURL}/contributions/${data.id}`, 
-          {
-            date: data.date,
-            resolution: data.resolution,
-            pack: data.pack,
-            authors: data.authors,
-            texture: String(data.texture)
-          },
-          this.$root.apiOptions
-        )
-        .then(() => {
-          this.$refs.mod.close()
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.startSearch()
-        })
-        .catch(err => { this.$root.showSnackBar(err, 'error') })
-    },
-    deleteContribution: function(id) {
-      axios.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.startSearch() // actualize shown data
-        })
-        .catch(err => { this.$root.showSnackBar(err, 'error') })
-    }
-  },
-  created: function () {
-    this.contributors_selected = this.queryToIds
-    this.addRes(this.all_packs, this.all_packs_display, true)
-    window.eventBus.$on('newContributor', l => {
-      this.contributors = l
-    })
-  },
-  mounted: function () {
-    this.getRes()
-    this.getAuthors()
-  },
-  watch: {
-    contributors: {
-      handler: function(contributors) {
-        // FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
-        const contributors_id = contributors.map(c => c.id)
-        this.contributors_selected = this.contributors_selected.filter(c => contributors_id.includes(c))
-      },
-      deep: true
-    }
-  }
-}
+				i++;
+			}
+
+			if (went_well) {
+				this.$root.showSnackBar(this.$root.lang("global.ends_success"), "success");
+				this.getAuthors();
+			}
+
+			return went_well;
+		},
+		onPackChange: function (selected, key) {
+			if (key === this.all_packs) {
+				if (selected) {
+					// just checked all, unckeck others
+					// better to make all of them not selected instead of replacing data
+					// more stable if more data in entries
+					this.form.packs.forEach((entry) => {
+						if (entry.key === this.all_packs) return;
+
+						entry.selected = false;
+					});
+				} else {
+					this.onPackUnselected(key);
+				}
+			} else {
+				// other pack
+				if (selected) {
+					// uncheck all
+					const index_all = this.form.packs.findIndex((entry) => entry.key === this.all_packs);
+					this.form.packs[index_all].selected = false;
+				} else {
+					this.onPackUnselected(key);
+				}
+			}
+		},
+		onPackUnselected: function (key) {
+			// ensure at least one selected
+			if (this.packsSelected.length === 0) {
+				const index_entry = this.form.packs.findIndex((entry) => entry.key === key);
+
+				// needs to be changed on next tick, cannot change same data on same cycle
+				this.$nextTick(() => {
+					Vue.set(this.form.packs[index_entry], "selected", true);
+				});
+			} else {
+				// do nothing, at least one is selected
+			}
+		},
+		onChangeSubmit: function (data) {
+			axios
+				.put(
+					`${this.$root.apiURL}/contributions/${data.id}`,
+					{
+						date: data.date,
+						resolution: data.resolution,
+						pack: data.pack,
+						authors: data.authors,
+						texture: String(data.texture),
+					},
+					this.$root.apiOptions,
+				)
+				.then(() => {
+					this.$refs.mod.close();
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.startSearch();
+				})
+				.catch((err) => {
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+		deleteContribution: function (id) {
+			axios
+				.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.startSearch(); // actualize shown data
+				})
+				.catch((err) => {
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+	},
+	created: function () {
+		this.contributors_selected = this.queryToIds;
+		this.addRes(this.all_packs, this.all_packs_display, true);
+		window.eventBus.$on("newContributor", (l) => {
+			this.contributors = l;
+		});
+	},
+	mounted: function () {
+		this.getRes();
+		this.getAuthors();
+	},
+	watch: {
+		contributors: {
+			handler: function (contributors) {
+				// FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
+				const contributors_id = contributors.map((c) => c.id);
+				this.contributors_selected = this.contributors_selected.filter((c) =>
+					contributors_id.includes(c),
+				);
+			},
+			deep: true,
+		},
+	},
+};

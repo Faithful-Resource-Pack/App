@@ -1,37 +1,29 @@
-const jsonEditor = () => import('./jsonEditor.js')
-const jsonAddEditor = () => import('./jsonAddEditor.js')
+const jsonEditor = () => import("./jsonEditor.js");
+const jsonAddEditor = () => import("./jsonAddEditor.js");
 
 var deepEqual = function (x, y) {
-  if (x === y) {
-    return true;
-  }
-  else if ((typeof x == "object" && x != null) && (typeof y == "object" && y != null)) {
-    if (Object.keys(x).length != Object.keys(y).length)
-      return false;
+	if (x === y) {
+		return true;
+	} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
+		if (Object.keys(x).length != Object.keys(y).length) return false;
 
-    for (var prop in x) {
-      if (y.hasOwnProperty(prop))
-      {  
-        if (! deepEqual(x[prop], y[prop]))
-          return false;
-      }
-      else
-        return false;
-    }
-    
-    return true;
-  }
-  else 
-    return false;
-}
+		for (var prop in x) {
+			if (y.hasOwnProperty(prop)) {
+				if (!deepEqual(x[prop], y[prop])) return false;
+			} else return false;
+		}
+
+		return true;
+	} else return false;
+};
 
 export default {
-  name: 'json-object-editor',
-  components: {
-    jsonEditor,
-    jsonAddEditor
-  },
-  template: `
+	name: "json-object-editor",
+	components: {
+		jsonEditor,
+		jsonAddEditor,
+	},
+	template: `
 <div :class="['json-object-editor', { 'json-editor-bordered': !root }]">
   <div class="json-editor-header" @click="toggled = !toggled">
     <span
@@ -55,76 +47,74 @@ export default {
     <json-add-editor @clicked="onClickChild" />
   </div>
 </div>`,
-  props: {
-    value: {
-      required: true
-    },
-    parent: {
-      required: false,
-      default: undefined
-    },
-    root: {
-      required: false,
-      type: Boolean,
-      default: false
-    }
-  },
-  data: function() {
-    return {
-      values: [],
-      toggled: true
-    }
-  },
-  methods: {
-    deleteItem: function(index) {
-      this.values.splice(index, 1)
-    },
-    extractKeysAndValues: function() {
-      this.values = this.value
-    },
-    onClickChild: function(obj) {
-      this.values.push(obj)
-    },
-    /**
-     * Constructs object with key and values
-     * @returns {Object} final object constructed
-     */
-    construct: function() {
-      if(!this.values.length) throw new Error('Not an array')
+	props: {
+		value: {
+			required: true,
+		},
+		parent: {
+			required: false,
+			default: undefined,
+		},
+		root: {
+			required: false,
+			type: Boolean,
+			default: false,
+		},
+	},
+	data: function () {
+		return {
+			values: [],
+			toggled: true,
+		};
+	},
+	methods: {
+		deleteItem: function (index) {
+			this.values.splice(index, 1);
+		},
+		extractKeysAndValues: function () {
+			this.values = this.value;
+		},
+		onClickChild: function (obj) {
+			this.values.push(obj);
+		},
+		/**
+		 * Constructs object with key and values
+		 * @returns {Object} final object constructed
+		 */
+		construct: function () {
+			if (!this.values.length) throw new Error("Not an array");
 
-      return this.values
-    }
-  },
-  watch: {
-    value: {
-      handler(n, o) {
-        if(o === undefined) return
-        if(deepEqual(n, o)) return
-        // console.log('object value', n, o, this.values, this.value);
+			return this.values;
+		},
+	},
+	watch: {
+		value: {
+			handler(n, o) {
+				if (o === undefined) return;
+				if (deepEqual(n, o)) return;
+				// console.log('object value', n, o, this.values, this.value);
 
-        if(Array.isArray(n)) {
-          this.extractKeysAndValues()
-        }
-      },
-      immediate: true,
-      deep: true
-    },
-    values: {
-      handler(n, o) {
-        if(o === undefined) return
-        if(deepEqual(n, o)) return
-        // console.log('values', n, o, this.values, this.value);
-  
-        this.$emit('input', this.construct())
-      },
-      deep: true
-    },
+				if (Array.isArray(n)) {
+					this.extractKeysAndValues();
+				}
+			},
+			immediate: true,
+			deep: true,
+		},
+		values: {
+			handler(n, o) {
+				if (o === undefined) return;
+				if (deepEqual(n, o)) return;
+				// console.log('values', n, o, this.values, this.value);
 
-  },
-  created: function() {
-  },
-  beforeMount : function() {
-    if(!Array.isArray(this.value)) throw new Error('Value not an object')
-    this.extractKeysAndValues()
-  },
-}
+				this.$emit("input", this.construct());
+			},
+			deep: true,
+		},
+	},
+	created: function () {},
+	beforeMount: function () {
+		if (!Array.isArray(this.value)) throw new Error("Value not an object");
+		this.extractKeysAndValues();
+	},
+};

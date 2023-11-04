@@ -1,16 +1,16 @@
-const DashBoardCard = () => import('./dashcard.js')
+const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-  name: 'compliance-card',
-  components: {
-    'dashboard-card': DashBoardCard
-  },
-  props: {
-    show: {
-      required: true
-    },
-  },
-  template: `
+	name: "compliance-card",
+	components: {
+		"dashboard-card": DashBoardCard,
+	},
+	props: {
+		show: {
+			required: true,
+		},
+	},
+	template: `
 <dashboard-card
   :title="''"
   id="compliance-card"
@@ -48,4 +48,4 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-}
+};

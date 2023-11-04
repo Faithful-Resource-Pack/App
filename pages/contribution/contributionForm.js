@@ -1,33 +1,33 @@
-const userSelect = () => import("./userSelect.js")
-const quickDatePicker = () => import("../components/quick-date-picker.js")
-const multiRangeInput = () => import("../components/multi-range-input.js")
+const userSelect = () => import("./userSelect.js");
+const quickDatePicker = () => import("../components/quick-date-picker.js");
+const multiRangeInput = () => import("../components/multi-range-input.js");
 
 export default {
-    name: 'contribution-form',
-    components: {
-        'user-select': userSelect,
-        'quick-date-picker': quickDatePicker,
-        'multi-range-input': multiRangeInput
-    },
-    props: {
-        contributors: {
-          required: true,
-          type: Array
-        },
-        value: {
-            required: true
-        },
-        disabled: {
-            type: Boolean,
-            required: false,
-            default: () => false
-        },
-        multiple: {
-            type: Boolean,
-            required: true
-        }
-    },
-    template: `
+	name: "contribution-form",
+	components: {
+		"user-select": userSelect,
+		"quick-date-picker": quickDatePicker,
+		"multi-range-input": multiRangeInput,
+	},
+	props: {
+		contributors: {
+			required: true,
+			type: Array,
+		},
+		value: {
+			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
+		multiple: {
+			type: Boolean,
+			required: true,
+		},
+	},
+	template: `
 <v-form :disabled="disabled" lazy-validation ref="contributionForm">
     <v-row :no-gutters="multiple">
         <v-col cols="12" :sm="multiple ? false : 6">
@@ -79,26 +79,25 @@ export default {
     </v-row>
 </v-form>
 `,
-    data() {
-        return {
-            content: this.value,
-            months: moment.monthsShort()
-        }
-    },
-    watch: {
-        value: {
-            handler(n, o) {
-                if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o))
-                    this.content = n
-            },
-            immediate: true,
-            deep: true
-        },
-        content: {
-            handler(n) {
-                this.$emit('input', n)
-            },
-            deep: true
-        }
-    }
-}
+	data() {
+		return {
+			content: this.value,
+			months: moment.monthsShort(),
+		};
+	},
+	watch: {
+		value: {
+			handler(n, o) {
+				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
+			},
+			immediate: true,
+			deep: true,
+		},
+		content: {
+			handler(n) {
+				this.$emit("input", n);
+			},
+			deep: true,
+		},
+	},
+};

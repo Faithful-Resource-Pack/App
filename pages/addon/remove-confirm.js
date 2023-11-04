@@ -1,8 +1,8 @@
 /* global axios */
 
 export default {
-  name: 'addon-remove-confirm',
-  template: `
+	name: "addon-remove-confirm",
+	template: `
   <v-dialog
       v-model="confirm"
       max-width="600"
@@ -34,39 +34,40 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  props: {
-    confirm: {
-      type: Boolean,
-      required: true
-    },
-    data: {
-      type: Object,
-      required: true
-    },
-    disableDialog: {
-      type: Function,
-      required: true
-    }
-  },
-  computed: {
-    title: function () {
-      return this.$props.data.name
-    }
-  },
-  methods: {
-    deleteAddon: function () {
-      const addon_id = JSON.parse(JSON.stringify(this.$props.data.id))
+	props: {
+		confirm: {
+			type: Boolean,
+			required: true,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+	},
+	computed: {
+		title: function () {
+			return this.$props.data.name;
+		},
+	},
+	methods: {
+		deleteAddon: function () {
+			const addon_id = JSON.parse(JSON.stringify(this.$props.data.id));
 
-      axios.delete(this.$root.apiURL + '/addons/' + addon_id, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableDialog(true)
-        })
-        .catch(error => {
-          console.error(error)
-          this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, 'error')
-          this.disableDialog(true)
-        })
-    }
-  }
-}
+			axios
+				.delete(this.$root.apiURL + "/addons/" + addon_id, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, "error");
+					this.disableDialog(true);
+				});
+		},
+	},
+};

@@ -1,8 +1,8 @@
 /* global axios, TwinBcrypt */
 
 export default {
-  name: 'remove-confirm',
-  template: `
+	name: "remove-confirm",
+	template: `
   <v-dialog
       v-model="confirm"
       content-class="colored"
@@ -64,88 +64,93 @@ export default {
       </v-card>
     </v-dialog>
   `,
-  props: {
-    confirm: {
-      type: Boolean,
-      required: true
-    },
-    data: {
-      type: Object,
-      required: true
-    },
-    disableDialog: {
-      type: Function,
-      required: true
-    },
-    type: {
-      type: String,
-      required: true
-    },
-    onSubmit: {
-      type: Function,
-      default: function () { return Promise.resolve() }
-    }
-  },
-  data() {
-    return {
-      formData: {},
-      deletePaths: true,
-      paths: {}
-    }
-  },
-  methods: {
-    getPaths: function (useID) {
-      axios.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
-        .then((res) => {
-          const temp = res.data
-          this.data.paths = {}
+	props: {
+		confirm: {
+			type: Boolean,
+			required: true,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		onSubmit: {
+			type: Function,
+			default: function () {
+				return Promise.resolve();
+			},
+		},
+	},
+	data() {
+		return {
+			formData: {},
+			deletePaths: true,
+			paths: {},
+		};
+	},
+	methods: {
+		getPaths: function (useID) {
+			axios
+				.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
+				.then((res) => {
+					const temp = res.data;
+					this.data.paths = {};
 
-          for (let i = 0; i < temp.length; i++) {
-            this.data.paths[temp[i].id] = temp[i]
-          }
+					for (let i = 0; i < temp.length; i++) {
+						this.data.paths[temp[i].id] = temp[i];
+					}
 
-          this.$forceUpdate()
-        })
-        .catch(function (err) {
-          console.error(err)
-        })
-    },
-    deleteData: function () {
-      if(this.type === 'use') {
-        const useId = this.data.id;
-        axios.delete(`${this.$root.apiURL}/uses/${useId}`, this.$root.apiOptions)
-        .then(() => {
-          this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-          this.disableDialog(true)
-        })
-        .catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-          this.disableDialog(true)
-        })
-        return;
-      } else if(this.type === 'path')
-      {
-        let pathId = this.data.id;
-        axios.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
-          .then(() => {
-            this.$root.showSnackBar(this.$root.lang().global.ends_success, 'success')
-            this.disableDialog(true)
-          })
-          .catch(err => {
-            console.error(err)
-            this.$root.showSnackBar(err, 'error')
-            this.disableDialog(true)
-          })
-      } else if(this.type === 'texture')
-      {
-        this.onSubmit(this.data).then(() => {
-          this.disableDialog(true)
-        }).catch(err => {
-          console.error(err)
-          this.$root.showSnackBar(err, 'error')
-        })
-      }
-    }
-  }
-}
+					this.$forceUpdate();
+				})
+				.catch(function (err) {
+					console.error(err);
+				});
+		},
+		deleteData: function () {
+			if (this.type === "use") {
+				const useId = this.data.id;
+				axios
+					.delete(`${this.$root.apiURL}/uses/${useId}`, this.$root.apiOptions)
+					.then(() => {
+						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+						this.disableDialog(true);
+					})
+					.catch((err) => {
+						console.error(err);
+						this.$root.showSnackBar(err, "error");
+						this.disableDialog(true);
+					});
+				return;
+			} else if (this.type === "path") {
+				let pathId = this.data.id;
+				axios
+					.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
+					.then(() => {
+						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+						this.disableDialog(true);
+					})
+					.catch((err) => {
+						console.error(err);
+						this.$root.showSnackBar(err, "error");
+						this.disableDialog(true);
+					});
+			} else if (this.type === "texture") {
+				this.onSubmit(this.data)
+					.then(() => {
+						this.disableDialog(true);
+					})
+					.catch((err) => {
+						console.error(err);
+						this.$root.showSnackBar(err, "error");
+					});
+			}
+		},
+	},
+};

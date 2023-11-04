@@ -1,56 +1,54 @@
-const appUserStore = Pinia.defineStore('appUser', {
+const appUserStore = Pinia.defineStore("appUser", {
 	state: () => ({
 		appUserId: undefined,
-		appUserRoles: undefined
+		appUserRoles: undefined,
 	}),
 
 	actions: {
-		getUser: function(rootApiURL, accessToken) {
-			return fetch(rootApiURL + '/users/profile', {
+		getUser: function (rootApiURL, accessToken) {
+			return fetch(rootApiURL + "/users/profile", {
 				method: "GET",
 				headers: {
-				  "discord": accessToken,
-				}
-			})
-            .then(async (response) => {
-				if(response.status === 200) {
-					return response.json()
+					discord: accessToken,
+				},
+			}).then(async (response) => {
+				if (response.status === 200) {
+					return response.json();
 				} else {
-					const json = await response.json()
-					return Promise.reject(json)
+					const json = await response.json();
+					return Promise.reject(json);
 				}
-			})
+			});
 		},
-		getOrCreateUser: function(rootApiURL, accessToken) {
-			return fetch(rootApiURL + '/users/newprofile', {
+		getOrCreateUser: function (rootApiURL, accessToken) {
+			return fetch(rootApiURL + "/users/newprofile", {
 				method: "POST",
 				headers: {
-				  "discord": accessToken,
-				}
-			})
-            .then(async (response) => {
-				if(response.status === 200) {
-					return response.json()
+					discord: accessToken,
+				},
+			}).then(async (response) => {
+				if (response.status === 200) {
+					return response.json();
 				} else {
-					const json = await response.json()
-					return Promise.reject(json)
+					const json = await response.json();
+					return Promise.reject(json);
 				}
-			})
+			});
 		},
 
-		watchDiscordAuth: function(store, rootApiURL, onError) {
+		watchDiscordAuth: function (store, rootApiURL, onError) {
 			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
 			store.$subscribe((mutation) => {
-				if(mutation.type === 'patch function') return
+				if (mutation.type === "patch function") return;
 
-				const auth = store.$state
+				const auth = store.$state;
 
-				if(auth.access_token === undefined) {
-					this.$reset()
+				if (auth.access_token === undefined) {
+					this.$reset();
 					this.$patch({
-						appUserId: this.$state.appUserId
-					})
-					return
+						appUserId: this.$state.appUserId,
+					});
+					return;
 				}
 
 				return this.getOrCreateUser(rootApiURL, auth.access_token)
@@ -58,14 +56,14 @@ const appUserStore = Pinia.defineStore('appUser', {
 						this.$patch({
 							appUserId: infos.id,
 							appUserRoles: infos.roles,
-						})
+						});
 						// console.log(this.$state)
-						return // void
+						return; // void
 					})
 					.catch((...args) => {
-						onError(...args)
-					})
-			})
-		}
-	}
-})
+						onError(...args);
+					});
+			});
+		},
+	},
+});

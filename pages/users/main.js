@@ -1,14 +1,14 @@
 /* global axios, Vue */
-const UserModal = () => import('./modal.js')
-const UserRemoveConfirm = () => import('./remove-confirm.js')
+const UserModal = () => import("./modal.js");
+const UserRemoveConfirm = () => import("./remove-confirm.js");
 
 export default {
-  name: 'contributor-page',
-  components: {
-    UserModal,
-    UserRemoveConfirm
-  },
-  template: `
+	name: "contributor-page",
+	components: {
+		UserModal,
+		UserRemoveConfirm,
+	},
+	template: `
     <v-container>
       <div class="styles" v-html="pageStyles"></div>
       <user-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
@@ -99,161 +99,165 @@ export default {
         </div>
       </div>
     </v-container>`,
-  data () {
-    return {
-      pageColor: 'indigo lighten-2',
-      textColorOnPage: 'white--text',
-      pageStyles: '',
-      recompute: false,
-      roles: [],
-      search: '',
-      searchPromise: undefined,
-      users: [],
-      loading: false,
-      dialogOpen: false,
-      dialogData: {},
-      dialogDataAdd: false,
-      remove: {
-        confirm: false,
-        data: {}
-      }
-    }
-  },
-  methods: {
-    activeRole(t) {
-      let result = {}
-      result['v-btn--active ' + this.pageColor + ' ' + this.textColorOnPage] = (
-        t === 'All' && !this.role && !!this.name
-      ) || (
-        t && this.role && t.toLowerCase() === this.role.toLowerCase()
-      )
+	data() {
+		return {
+			pageColor: "indigo lighten-2",
+			textColorOnPage: "white--text",
+			pageStyles: "",
+			recompute: false,
+			roles: [],
+			search: "",
+			searchPromise: undefined,
+			users: [],
+			loading: false,
+			dialogOpen: false,
+			dialogData: {},
+			dialogDataAdd: false,
+			remove: {
+				confirm: false,
+				data: {},
+			},
+		};
+	},
+	methods: {
+		activeRole(t) {
+			let result = {};
+			result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
+				(t === "All" && !this.role && !!this.name) ||
+				(t && this.role && t.toLowerCase() === this.role.toLowerCase());
 
-      return result
-    },
-    userURL (t) {
-      return '/users/' + t + '/' + (this.name || '')
-    },
-    startSearch: function () {
-      // ok so url is /whatever/ => /whatever/<search>
-      // ok so url is /whatever/<oldSearch> => /whatever/<search>
-      // ok so url is /whatever/<role> =>/whatever/<role>/<search>
-      // ok so url is /whatever/<role>/<name> => /whatever/<role>/<search>
-      let newPath
-      if (this.name) {
-        const splitted = this.$route.path.split('/')
-        splitted.pop()
-        newPath = splitted.join('/')
-      } else {
-        newPath = this.$route.path
-      }
+			return result;
+		},
+		userURL(t) {
+			return "/users/" + t + "/" + (this.name || "");
+		},
+		startSearch: function () {
+			// ok so url is /whatever/ => /whatever/<search>
+			// ok so url is /whatever/<oldSearch> => /whatever/<search>
+			// ok so url is /whatever/<role> =>/whatever/<role>/<search>
+			// ok so url is /whatever/<role>/<name> => /whatever/<role>/<search>
+			let newPath;
+			if (this.name) {
+				const splitted = this.$route.path.split("/");
+				splitted.pop();
+				newPath = splitted.join("/");
+			} else {
+				newPath = this.$route.path;
+			}
 
-      if (!newPath.endsWith('/')) { newPath += '/' }
+			if (!newPath.endsWith("/")) {
+				newPath += "/";
+			}
 
-      if(this.search)
-        newPath += this.search
+			if (this.search) newPath += this.search;
 
-      if (newPath !== this.$route.path) {
-        this.$router.push(newPath).catch(() => {})
-      }
-      this.getUsers()
-    },
-    getRoles: function () {
-      axios.get(`${this.$root.apiURL}/users/roles`)
-        .then((response) => {
-          this.roles = response.data
-        })
-        .catch(function (error) {
-          console.error(error)
-        })
-        .finally(() => {
-          Vue.nextTick(() => {
-            this.search = this.name
-          })
-        })
-    },
-    getUsers: function () {
-      this.loading = true
-      let url = `${this.$root.apiURL}${this.$route.path.split('/').map(str => str === 'users' ? 'users/role' : str).join('/')}`
-      axios.get(url, this.$root.apiOptions)
-        .then((res) => {
-          this.users = res.data
-        })
-        .catch(err => console.error(err))
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    update: function () {
-      this.getRoles()
-      this.getUsers()
-    },
-    clearSearch: function () {
-      this.search = ''
-      this.startSearch()
-    },
-    openDialog: function (data = undefined) {
-      this.dialogData = data;
-      this.dialogDataAdd = data === undefined ? true : false;
-      this.dialogOpen = true;
-    },
-    disableDialog: function (refresh = false) {
-      this.dialogOpen = false;
-      this.dialogData = {};
-      this.dialogDataAdd = false;
+			if (newPath !== this.$route.path) {
+				this.$router.push(newPath).catch(() => {});
+			}
+			this.getUsers();
+		},
+		getRoles: function () {
+			axios
+				.get(`${this.$root.apiURL}/users/roles`)
+				.then((response) => {
+					this.roles = response.data;
+				})
+				.catch(function (error) {
+					console.error(error);
+				})
+				.finally(() => {
+					Vue.nextTick(() => {
+						this.search = this.name;
+					});
+				});
+		},
+		getUsers: function () {
+			this.loading = true;
+			let url = `${this.$root.apiURL}${this.$route.path
+				.split("/")
+				.map((str) => (str === "users" ? "users/role" : str))
+				.join("/")}`;
+			axios
+				.get(url, this.$root.apiOptions)
+				.then((res) => {
+					this.users = res.data;
+				})
+				.catch((err) => console.error(err))
+				.finally(() => {
+					this.loading = false;
+				});
+		},
+		update: function () {
+			this.getRoles();
+			this.getUsers();
+		},
+		clearSearch: function () {
+			this.search = "";
+			this.startSearch();
+		},
+		openDialog: function (data = undefined) {
+			this.dialogData = data;
+			this.dialogDataAdd = data === undefined ? true : false;
+			this.dialogOpen = true;
+		},
+		disableDialog: function (refresh = false) {
+			this.dialogOpen = false;
+			this.dialogData = {};
+			this.dialogDataAdd = false;
 
-      if (refresh) this.update();
-    },
-    askRemove: function (data) {
-      this.remove.data = data
-      this.remove.confirm = true
-    }
-  },
-  computed: {
-    usersRoles: function () {
-      return ['all', ...this.roles]
-    },
-    role: function () {
-      if (this.$route.params.type && this.usersRoles.includes(this.$route.params.type)) {
-        return this.$route.params.type
-      }
-      return undefined
-    },
-    name: function () {
-      if (this.role !== undefined) {
-        return this.$route.params.name
-      }
+			if (refresh) this.update();
+		},
+		askRemove: function (data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+	},
+	computed: {
+		usersRoles: function () {
+			return ["all", ...this.roles];
+		},
+		role: function () {
+			if (this.$route.params.type && this.usersRoles.includes(this.$route.params.type)) {
+				return this.$route.params.type;
+			}
+			return undefined;
+		},
+		name: function () {
+			if (this.role !== undefined) {
+				return this.$route.params.name;
+			}
 
-      return this.$route.params.type
-    },
-    listColumns: function () {
-      let columns = 1
+			return this.$route.params.type;
+		},
+		listColumns: function () {
+			let columns = 1;
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.users.length >= 6) {
-        columns = 2
-        if (this.$vuetify.breakpoint.lgAndUp && this.users.length >= 21) {
-          columns = 3
-        }
-      }
+			if (this.$vuetify.breakpoint.mdAndUp && this.users.length >= 6) {
+				columns = 2;
+				if (this.$vuetify.breakpoint.lgAndUp && this.users.length >= 21) {
+					columns = 3;
+				}
+			}
 
-      return columns
-    },
-    splittedUsers: function () {
-      const res = []
-      for (let col = 0; col < this.listColumns; ++col) {
-        res.push([])
-      }
+			return columns;
+		},
+		splittedUsers: function () {
+			const res = [];
+			for (let col = 0; col < this.listColumns; ++col) {
+				res.push([]);
+			}
 
-      let arrayIndex = 0
-      this.users.forEach(contrib => {
-        res[arrayIndex].push(contrib)
-        arrayIndex = (arrayIndex + 1) % this.listColumns
-      })
+			let arrayIndex = 0;
+			this.users.forEach((contrib) => {
+				res[arrayIndex].push(contrib);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			});
 
-      return res
-    }
-  },
-  mounted: function () {
-    this.getRoles()
-    window.updatePageStyles(this)
-  }
-}
+			return res;
+		},
+	},
+	mounted: function () {
+		this.getRoles();
+		window.updatePageStyles(this);
+	},
+};
