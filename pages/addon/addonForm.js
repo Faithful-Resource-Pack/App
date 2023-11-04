@@ -650,7 +650,7 @@ export default {
 					reject(e);
 				};
 
-				// set file to be readt
+				// set file to be read
 				reader.readAsDataURL(file);
 			});
 		},

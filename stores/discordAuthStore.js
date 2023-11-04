@@ -64,7 +64,7 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 				});
 		},
 		logout: function () {
-			this.$reset(); // ! Very important to reset all stires
+			this.$reset(); // ! Very important to reset all stores
 			this.$patch({
 				access_token: this.$state.access_token,
 			});

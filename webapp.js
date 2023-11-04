@@ -482,7 +482,7 @@ axios
 				 * Check user perms & add (or not) tabs & routes following user perms
 				 * @returns all tabs to be added in the html
 				 */
-				validsTabs: function () {
+				availableTabs: function () {
 					const res = [];
 					const roles = this.userRoles;
 
@@ -524,7 +524,7 @@ axios
 				},
 				/**
 				 * Tell if the user is an admin
-				 * @returns true if user has damin role
+				 * @returns true if user has admin role
 				 */
 				isAdmin: function () {
 					// if not logged in

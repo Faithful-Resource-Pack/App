@@ -8,9 +8,9 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 	}),
 
 	actions: {
-		params: function (newdiscordUserURL) {
+		params: function (newDiscordUserURL) {
 			this.$patch({
-				discordUserURL: newdiscordUserURL || this.discordUserURL,
+				discordUserURL: newDiscordUserURL || this.discordUserURL,
 			});
 		},
 		getInfo: function (accessToken) {

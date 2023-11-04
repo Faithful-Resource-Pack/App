@@ -3,7 +3,7 @@ const ProfileCard = () => import("./profile-card.js");
 const UserCard = () => import("./user-card.js");
 const ContributionCard = () => import("./contribution-card.js");
 const ContributionStatsCard = () => import("./contribution-stats-card.js");
-const ComplianceCard = () => import("./compliance-card.js");
+const FaithfulCard = () => import("./faithful-card.js");
 
 export default {
 	name: "dashboardPage",
@@ -13,7 +13,7 @@ export default {
 		"user-card": UserCard,
 		"contribution-card": ContributionCard,
 		"contribution-stats-card": ContributionStatsCard,
-		"compliance-card": ComplianceCard,
+		"faithful-card": FaithfulCard,
 	},
 	template: `
 <div id="dashboard-page" class="pa-2 py-sm-4 px-sm-6">
@@ -24,7 +24,7 @@ export default {
   <v-row id="dashboard-row">
     <v-col cols="12" sm="3">
       <profile-card :show="$root.isUserLogged" />
-      <compliance-card :show="!$root.isUserLogged" />
+      <faithful-card :show="!$root.isUserLogged" />
     </v-col>
     <v-col cols="12" sm="9">
       <user-card :admin="admin" :colors="colors"/>

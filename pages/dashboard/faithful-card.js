@@ -1,7 +1,7 @@
 const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-	name: "compliance-card",
+	name: "faithful-card",
 	components: {
 		"dashboard-card": DashBoardCard,
 	},
@@ -13,7 +13,7 @@ export default {
 	template: `
 <dashboard-card
   :title="''"
-  id="compliance-card"
+  id="faithful-card"
   class="d-flex flex-column"
   :style="{ display: show ? 'inherit' : 'none !important' }"
 >
