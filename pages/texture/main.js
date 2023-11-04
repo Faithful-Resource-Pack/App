@@ -289,7 +289,7 @@ export default {
     getTextures: function () {
       let url = new URL(`${this.$root.apiURL}/textures/search`)
       if( this.$route.params.type && this.$route.params.type != "all" ) url.searchParams.set('tag', this.$route.params.type)
-      if( this.$route.params.name ) url.searchParams.set('name', this.$route.params.name)
+      if( this.$route.params.name ) url.searchParams.set('name', this.$route.params.name.replace(/ /g, "_"))
       axios.get(url.toString())
         .then((res) => {
           this.textures = res.data
