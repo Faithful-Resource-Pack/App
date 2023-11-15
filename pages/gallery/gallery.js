@@ -504,7 +504,7 @@ export default {
 			}, {});
 		});
 		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
-			this.loadedContributions = res.data
+			this.loadedContributions = Object.values(res.data)
 				.filter((contribution) => contribution.pack && contribution.texture)
 				.reduce((acc, cur) => {
 					if (!acc[cur.pack]) acc[cur.pack] = {};

@@ -43,6 +43,7 @@ export default {
 		getData: function () {
 			axios
 				.get(`${this.$root.apiURL}/contributions/raw`)
+				.then((res) => Object.values(res))
 				.then((res) => {
 					this.contributionsCount = res.data.length;
 
