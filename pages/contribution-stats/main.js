@@ -43,14 +43,13 @@ export default {
 		getData: function () {
 			axios
 				.get(`${this.$root.apiURL}/contributions/raw`)
-				.then((res) => Object.values(res))
-				.then((res) => {
-					this.contributionsCount = res.data.length;
+				.then((res) => Object.values(res.data))
+				.then((data) => {
+					this.contributionsCount = data.length;
 
-					const authors = res.data.map((el) => el.authors).flat();
-					const textures = res.data.map((el) => el.texture);
-					let packs = res.data.map((el) => el.pack);
-					packs.filter((el, index) => authors.indexOf(el) === index);
+					const authors = data.map((el) => el.authors).flat();
+					const textures = data.map((el) => el.texture);
+					const packs = data.map((el) => el.pack);
 
 					this.authorsCount = authors.filter((el, index) => authors.indexOf(el) === index).length;
 					this.texturesCount = textures.filter(
@@ -58,7 +57,7 @@ export default {
 					).length;
 
 					this.contrib = Object.values(
-						res.data.reduce((ac, val) => {
+						data.reduce((ac, val) => {
 							val.date = moment(new Date(val.date)).startOf("day").unix() * 1000;
 
 							if (!(val.date in ac)) {
@@ -95,7 +94,6 @@ export default {
 			const legendCellSize = 20;
 
 			let data = this.contrib;
-			console.log(this.contrib);
 
 			// get all resolutions in provided
 			const allPack = data.length === 0 ? [] : Object.keys(data[0].pack).reverse();
