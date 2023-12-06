@@ -134,7 +134,6 @@ export default {
 				confirm: false,
 				data: {},
 			},
-			suffix: settings.uses.suffix,
 		};
 	},
 	computed: {
