@@ -7,8 +7,8 @@ export default {
     <v-card>
       <v-img
         alt="fullscreen preview"
-        :src="src" 
-        :aspect-ratio="aspectRatio" 
+        :src="src"
+        :aspect-ratio="aspectRatio"
         v-on:click="close"
       />
     </v-card>

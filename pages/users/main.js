@@ -44,7 +44,7 @@ export default {
             @click:clear="clearSearch"
           ></v-text-field>
         </div>
-        
+
         <v-btn block :color="pageColor" :class="textColorOnPage" @click="startSearch()" class="mt-4">{{ $root.lang().database.subtitles.search }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
 
         <v-btn block @click="openDialog()" class="my-6">{{ $root.lang().database.labels.add_new_contributor }} <v-icon right dark>mdi-plus</v-icon></v-btn>

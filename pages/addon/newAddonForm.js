@@ -12,7 +12,7 @@ export default {
       class="pa-0"
 
       addon-new
-      
+
       :screen-sources="screenSources"
       :screen-ids="screenshotIds"
 

@@ -64,7 +64,7 @@ export default {
       v-model="modalOpened"
       content-class="colored"
       max-width="860"
-    >      
+    >
       <v-card>
         <v-card-title class="headline">{{ $root.lang().database.titles.add_textures }}</v-card-title>
         <v-card-text class="pb-0">

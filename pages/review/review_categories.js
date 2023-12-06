@@ -16,7 +16,7 @@ export default {
 	},
 	template: `
 <v-row justify="center" dense>
-    <v-col 
+    <v-col
         v-for="(cat, cat_i) in categories"
         :key="cat.value"
         cols="12"

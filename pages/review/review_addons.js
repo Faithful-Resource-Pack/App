@@ -94,14 +94,14 @@ export default {
             <div class="rounded-lg d-flex text-center align-center justify-center">
                 <div>
                     <pre v-if="$vuetify.breakpoint.mdAndUp">
-    d8888   .d8888b.      d8888  
-   d8P888  d88P  Y88b    d8P888  
-  d8P 888  888    888   d8P 888  
- d8P  888  888    888  d8P  888  
-d88   888  888    888 d88   888  
-8888888888 888    888 8888888888 
-      888  Y88b  d88P       888  
-      888   "Y8888P"        888  
+    d8888   .d8888b.      d8888
+   d8P888  d88P  Y88b    d8P888
+  d8P 888  888    888   d8P 888
+ d8P  888  888    888  d8P  888
+d88   888  888    888 d88   888
+8888888888 888    888 8888888888
+      888  Y88b  d88P       888
+      888   "Y8888P"        888
 </pre><p v-else class="text-h2 my-2">404</p><p class="my-2 px-2">{{ empty }}</p>
                 </div>
             </div>

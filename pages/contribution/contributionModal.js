@@ -32,7 +32,7 @@ export default {
     <v-dialog
       v-model="modalOpened"
       width="800"
-    >      
+    >
       <v-card>
         <v-card-title class="headline" v-text="$root.lang().database.titles.contributions"></v-card-title>
         <v-card-text class="pb-0">

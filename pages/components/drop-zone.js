@@ -45,7 +45,7 @@ export default {
       :accept="accept"
     />
 
-    <label 
+    <label
       for="fileInput" class="label"
     >
       <div v-if="isDragging">Release to drop files here.</div>

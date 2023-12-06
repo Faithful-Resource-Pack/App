@@ -25,7 +25,7 @@ export default {
           </v-list-item-content>
         </v-list-item>
 
-        <!-- 
+        <!--
         ================ GENERAL SETTINGS ================
         -->
         <v-list-item>
@@ -38,8 +38,8 @@ export default {
           }"
         >
           <v-col v-if="localUser.uuid && localUser.uuid.length == uuidMaxLength" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2" style="max-width: 250px;">
-            <img 
-              alt="avatar" 
+            <img
+              alt="avatar"
               :style="{
                 'display': 'block',
                 'margin-left': 'auto',
@@ -60,7 +60,7 @@ export default {
                     :counter="uuidMaxLength"
                     clearable
                     v-model="localUser.uuid"
-                    :label="$root.lang().profile.general.uuid.label" 
+                    :label="$root.lang().profile.general.uuid.label"
                     :hint="$root.lang().profile.general.uuid.hint"
                   ></v-text-field>
                 </v-col>
@@ -71,8 +71,8 @@ export default {
                     required
                     :rules="usernameRules"
                     :counter="usernameMaxLength"
-                    clearable 
-                    v-model="localUser.username" 
+                    clearable
+                    v-model="localUser.username"
                     :label="$root.lang().profile.general.username.label"
                     :hint="$root.lang().profile.general.username.hint"
                   ></v-text-field>
@@ -84,7 +84,7 @@ export default {
         </v-list-item>
 
         <br>
-        
+
         <!--
         ================ SOCIAL SETTINGS ================
         -->

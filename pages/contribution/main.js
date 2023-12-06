@@ -169,12 +169,12 @@ export default {
         </v-list-item>
       </v-col></v-row>
 
-      <v-btn 
+      <v-btn
         :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
         :disabled="displayedResults >= search.search_results.length"
         block
         color="primary"
-        @click="showMore()" 
+        @click="showMore()"
         :v-if="displayedResults < search.search_results.length"
         elevation="2"
       >{{ $root.lang().global.btn.load_more }}</v-btn>
@@ -278,8 +278,6 @@ export default {
 			if (pack.includes("classic_faithful_32x")) {
 				if (pack.includes("progart")) pack = pack.replace("progart", "__p_a");
 				else pack += "__j_a_p_p_a";
-
-				console.log(pack);
 			}
 			return pack
 				.split("_")

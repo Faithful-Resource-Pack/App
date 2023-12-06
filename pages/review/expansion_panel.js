@@ -48,11 +48,11 @@ export default {
         </template>
         <template v-else>
             <div style="position: relative">
-                <v-img 
+                <v-img
                     @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }"
-                    :src="addonInPanelHeaderURL" 
-                    :aspect-ratio="16/9" 
-                    style="border-radius: 5px;" 
+                    :src="addonInPanelHeaderURL"
+                    :aspect-ratio="16/9"
+                    style="border-radius: 5px;"
                     alt="Header not found!"
                     >
                     <template v-slot:placeholder>
@@ -77,7 +77,7 @@ export default {
                     </v-icon>
                 </v-card>
             </div>
-            
+
             <v-list-item-title v-text="$root.lang().review.addon.titles.authors" class="uppercased mt-2" />
             <div class="text--secondary mb-2">
                 {{ addonInPanel.authors.map(id => getUsername(id)).join(", ") }}
@@ -87,7 +87,7 @@ export default {
             <div class="text--secondary mb-2">
             <ul v-for="file in addonInPanel.files.filter(f => f.use === 'download')">
                 <li>
-                {{ file.name }} - 
+                {{ file.name }} -
                 <a :href="file.source" class="text--secondary">
                     {{ $root.lang().review.addon.labels.link }}
                     <v-icon small color="light-blue">mdi-open-in-new</v-icon>
@@ -95,7 +95,7 @@ export default {
                 </li>
             </ul>
             </div>
-                  
+
             <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
             <div>
                 <!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->

@@ -40,11 +40,11 @@ export default {
             </div>
             <v-row id="review-general">
                 <v-col cols="12" sm="7" style="position: relative;">
-                    <v-img 
+                    <v-img
                         @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }"
-                        :src="addonInPanelHeaderURL" 
-                        :aspect-ratio="16/9" 
-                        style="border-radius: 5px;" 
+                        :src="addonInPanelHeaderURL"
+                        :aspect-ratio="16/9"
+                        style="border-radius: 5px;"
                         alt="Header not found!"
                         class="image-fullscreen-thumb"
                         >
@@ -64,7 +64,7 @@ export default {
                             </v-row>
                         </template>
                     </v-img>
-                    
+
                     <v-card class="ma-2" rounded style="display: inline-block; position: absolute; right: 10px; top: 10px;">
                         <v-icon small class="ma-1" @click.stop="(e) => { $refs.preview.open(); imagePreview = addonInPanelHeaderURL }">
                             mdi-fullscreen
@@ -79,14 +79,14 @@ export default {
                     <v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased"/>
                     <div class="text--secondary" style="margin-bottom: 10px;">
                     <ul v-for="file in addonInPanel.files.filter(f => f.use === 'download')">
-                        <li>{{ file.name }} - 
+                        <li>{{ file.name }} -
                             <a :href="file.source" class="text--secondary">{{ $root.lang().review.addon.labels.link }}
                                 <v-icon small color="light-blue">mdi-open-in-new</v-icon>
                             </a>
                         </li>
                     </ul>
-                    </div> 
-                    
+                    </div>
+
                     <v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased"/>
                     <div>
                         <!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->

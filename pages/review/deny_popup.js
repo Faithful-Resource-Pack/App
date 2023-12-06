@@ -10,9 +10,9 @@ export default {
       <v-card-title class="headline" v-text="''" />
 
       <v-card-text>
-        <v-text-field 
-          required 
-          v-model="denyReason" 
+        <v-text-field
+          required
+          v-model="denyReason"
           :label="$root.lang().review.deny_window.label"
           :rules="reasonRules"
         ></v-text-field>
