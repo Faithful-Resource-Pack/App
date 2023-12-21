@@ -15,7 +15,7 @@ export default {
       content-class="colored"
       max-width="600"
     >
-      <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="Object.keys(subDialogData).length == 0" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
+      <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="subDialogAdd" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
       <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
 
       <v-card>
@@ -46,7 +46,7 @@ export default {
                 </v-list-item-content>
 
                 <v-list-item-action class="merged">
-                  <v-btn icon @click="openSubDialog(use)">
+                  <v-btn icon @click="openSubDialog(use, false)">
                     <v-icon color="lighten-1">mdi-pencil</v-icon>
                   </v-btn>
                   <v-btn icon @click="askRemoveUse(use)">
@@ -57,7 +57,7 @@ export default {
             </v-list>
             <div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-            <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog()">{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon></v-btn>
+            <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openSubDialog(null, true)">{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon></v-btn>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -127,6 +127,7 @@ export default {
 			},
 			subDialogOpen: false,
 			subDialogData: {},
+			subDialogAdd: false,
 			remove: {
 				confirm: false,
 				data: {},
@@ -141,9 +142,23 @@ export default {
 		},
 	},
 	methods: {
-		openSubDialog: function (data = {}) {
+		openSubDialog: function (data, add) {
 			this.subDialogOpen = true;
-			this.subDialogData = data;
+			this.subDialogAdd = add;
+
+
+			if (add) {
+				let texture_id = String(this.formData.id);
+				let use_ids = Object.keys(this.formData.uses);
+				let use_letters = use_ids.map(uid => uid.replace(texture_id, '')[0]);
+				let max_letter = use_letters.reduce((acc, cur) => acc < cur ? cur : acc, 'a');
+				let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
+				let next_id = texture_id + next_letter;
+				// Autofill use id
+				this.subDialogData = { id: next_id };
+			} else {
+				this.subDialogData = data;
+			}
 		},
 		disableSubDialog: function () {
 			this.subDialogOpen = false;
