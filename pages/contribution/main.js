@@ -209,7 +209,7 @@ export default {
 			}
 
 			// use the logged user as default selected contributor
-			return [this.$root.user.id];
+			return [];
 		},
 		idsToQuery: function () {
 			return {
