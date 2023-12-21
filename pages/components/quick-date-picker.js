@@ -135,7 +135,7 @@ export default {
 			deep: true,
 		},
 		date: function () {
-			this.$emit("input", this.date);
+			this.$emit("input", this.date.getTime());
 		},
 	},
 };
