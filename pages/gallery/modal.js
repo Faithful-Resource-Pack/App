@@ -37,10 +37,10 @@ export default {
         <template v-if="Object.keys(textureObj).length > 0">
           <div class="gallery-dialog-container d-sm-flex flex-column flex-sm-row pa-2 pa-sm-7">
             <div class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0">
-              <template v-for="(group,i) in grouped" key="i">
-                <div class="gallery-dialog-intern d-flex flex-row pb-2 pb-sm-0">
-                  <template v-for="(url,j) in group" key="i + '-' + j">
-                    <div class="gallery-dialog-texture-container px-1 pb-sm-2">
+              <template v-for="(group,i) in grouped">
+                <div class="gallery-dialog-intern d-flex flex-row pb-2 pb-sm-0" :key="'dialog-intern-'+i">
+                  <template v-for="(url,j) in group">
+                    <div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="i + '-' + j">
                       <div class="gallery-dialog-texture">
                         <img
                           class="gallery-texture-image"
@@ -127,7 +127,6 @@ export default {
 			required: true,
 		},
 		textureID: {
-			type: Number,
 			required: true,
 		},
 		textureObj: {

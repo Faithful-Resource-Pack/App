@@ -227,7 +227,7 @@ export default {
 			// loaded contributions
 			loadedContributions: {},
 			// loaded contributors
-			loadedContributors: [],
+			loadedContributors: {},
 			// modal opened ID
 			modalTextureID: null,
 			// modal texture opened
@@ -249,6 +249,8 @@ export default {
 					message: "font-size: 16px",
 				},
 			},
+			// go to the top arrow
+			scrollY: 0
 		};
 	},
 	computed: {
@@ -292,6 +294,10 @@ export default {
 			localStorage.setItem(STRETCHED_KEY, n);
 			this.computeGrid();
 		},
+		modalOpen(n) {
+			if(!n)
+				this.removeShareURL()
+		},
 	},
 	methods: {
 		shareID() {
@@ -316,6 +322,18 @@ export default {
 			}
 
 			return location.href.replace(location.hash, "") + new_hash;
+		},
+		removeShareURL() {
+			let index = location.hash.indexOf("?show=");
+
+			let new_hash = location.hash;
+			// we remove it
+			if (index !== -1) {
+				new_hash = new_hash.substring(0, index);
+			}
+
+			// we change it
+			location.hash = new_hash;
 		},
 		copyShareLink(id) {
 			let url = this.changeShareURL(id, true);
@@ -413,6 +431,7 @@ export default {
 		},
 		scroll() {
 			window.onscroll = () => {
+				this.scrollY = document.firstElementChild.scrollTop;
 				let scrolledTo = document.querySelector(".bottomElement");
 
 				if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
