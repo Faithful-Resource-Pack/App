@@ -163,7 +163,7 @@ export default {
 			contributor_type: "User roles",
 			discord_id: "Discord ID",
 			edit_mc_version: "Modify a Minecraft Version",
-			one_contributor: "Please choose at least one user",
+			one_contributor: "Select a user",
 			parse_json: "Parse JSON to data",
 			search_contributions: "Search contributions",
 			search_username: "Search username",
