@@ -246,7 +246,7 @@ export default {
 					this.getPaths(this.data.id);
 				} else {
 					this.$refs.form.reset();
-					if('id' in this.data) this.subFormData.id = this.data.id;
+					if ("id" in this.data) this.subFormData.id = this.data.id;
 					this.subFormData.paths = {};
 				}
 			});

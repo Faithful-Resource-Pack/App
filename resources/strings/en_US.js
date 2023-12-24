@@ -163,7 +163,7 @@ export default {
 			contributor_type: "User roles",
 			discord_id: "Discord ID",
 			edit_mc_version: "Modify a Minecraft Version",
-			one_contributor: "Select a user",
+			one_contributor: "Select user(s)",
 			parse_json: "Parse JSON to data",
 			search_contributions: "Search contributions",
 			search_username: "Search username",
@@ -195,14 +195,14 @@ export default {
 			use_id: "Changing the Use ID can break everything!",
 			path_id: "Changing the Path ID can break everything!",
 			warning_path:
-				"Use needs to be created before adding paths to it (currently not well supported and a bit buggy). Adding path before creating the use is planned.",
+				"A use needs to be created before adding paths to it (currently not well supported and a bit buggy). Creating a use and path at the same time is planned.",
 			path: "The path should start from the root directory (ex: assets/…)",
 			example_scenario:
 				"Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)",
 			example_scenario_warn: "Please don't forget to update all GitHub branch names as well!",
 		},
 		messages: {
-			deleting_use_will_delete_paths: "Deleting the use will also delete all the paths associated.",
+			deleting_use_will_delete_paths: "Deleting the use will also delete all its paths.",
 		},
 	},
 	review: {

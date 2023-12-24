@@ -250,7 +250,7 @@ export default {
 				},
 			},
 			// go to the top arrow
-			scrollY: 0
+			scrollY: 0,
 		};
 	},
 	computed: {
@@ -295,8 +295,7 @@ export default {
 			this.computeGrid();
 		},
 		modalOpen(n) {
-			if(!n)
-				this.removeShareURL()
+			if (!n) this.removeShareURL();
 		},
 	},
 	methods: {

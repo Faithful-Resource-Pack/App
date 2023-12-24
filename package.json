@@ -33,7 +33,7 @@
 		"node-domexception": "^2.0.1",
 		"node-fetch": "^3.3.2",
 		"node-localstorage": "^3.0.5",
-		"prettier": "^3.1.0",
+		"prettier": "^3.1.1",
 		"twin-bcrypt": "^2.1.1",
 		"url": "^0.11.3"
 	},
@@ -44,6 +44,6 @@
 		"env-cmd": "^10.1.0",
 		"mocha": "^10.2.0",
 		"nodemon": "^3.0.2",
-		"puppeteer": "^21.6.0"
+		"puppeteer": "^21.6.1"
 	}
 }

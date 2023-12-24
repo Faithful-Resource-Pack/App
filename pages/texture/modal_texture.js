@@ -146,12 +146,11 @@ export default {
 			this.subDialogOpen = true;
 			this.subDialogAdd = add;
 
-
 			if (add) {
 				let texture_id = String(this.formData.id);
 				let use_ids = Object.keys(this.formData.uses);
-				let use_letters = use_ids.map(uid => uid.replace(texture_id, '')[0]);
-				let max_letter = use_letters.reduce((acc, cur) => acc < cur ? cur : acc, 'a');
+				let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
+				let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
 				let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
 				let next_id = texture_id + next_letter;
 				// Autofill use id

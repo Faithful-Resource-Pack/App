@@ -471,8 +471,8 @@ export default {
 					? URL.createObjectURL(this.submittedForm.headerFile)
 					: undefined
 				: this.headerSource
-				? this.headerSource
-				: undefined;
+				  ? this.headerSource
+				  : undefined;
 		},
 		carouselSources: function () {
 			return this.screenSources ? this.screenSources : [];
