@@ -311,8 +311,8 @@ export default {
 						return a.username.toLowerCase() > b.username.toLowerCase()
 							? 1
 							: b.username.toLowerCase() > a.username.toLowerCase()
-							  ? -1
-							  : 0;
+								? -1
+								: 0;
 					});
 				})
 				.catch(console.trace);
