@@ -137,7 +137,7 @@ export default {
 			search: "Search",
 			texture_result: "Texture results",
 			import_json_data: "Import JSON data",
-			uses: "Usage(s)",
+			uses: "Use(s)",
 			paths: "Path(s)",
 		},
 		labels: {
