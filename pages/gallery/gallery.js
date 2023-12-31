@@ -30,10 +30,10 @@ export default {
     <v-row>
       <v-col cols="12" sm="6">
         <v-select
-          :items="options.resolutions"
-          :value="current.resolution"
-          :label="$root.lang('gallery.category.resolution')"
-          v-on:change="updateRoute($event, 'resolution')"
+          :items="options.packs"
+          :value="current.pack"
+          :label="$root.lang('gallery.category.pack')"
+          v-on:change="updateRoute($event, 'pack')"
         ></v-select>
       </v-col>
 
@@ -168,10 +168,10 @@ export default {
             </template>
 
             <texture-tooltip
-              :mojang="current.resolution === '16x'"
+              :mojang="isMojang(current.pack)"
               :texture="texture"
               :contributions="loadedContributions"
-              :resolution="current.resolution"
+              :pack="displayToPackID(current.pack)"
               :discordIDtoName="discordIDtoName"
             />
           </tippy>
@@ -207,15 +207,16 @@ export default {
 			error: undefined,
 			// search values available
 			options: {
-				resolutions: ["16x", ...settings.resolutions],
+				packs: Object.values(this.packIDmap()),
 				tags: [this.$root.lang().gallery.all],
 				versions: settings.versions.java.map((e) => e.toLowerCase()),
-				editions: settings.editions.map((e) => e.toLowerCase()),
+				editions: settings.editions,
 			},
 			// search values
 			current: {
-				resolution: settings.resolutions[0],
+				pack: "Faithful 32x",
 				tag: "all",
+				// latest is always at top
 				version: settings.versions.java[0],
 				edition: settings.editions[0],
 				search: null,
@@ -275,8 +276,12 @@ export default {
 				// if hash changed but not params
 				if (JSON.stringify(params) === JSON.stringify(old_params)) return;
 
-				this.current.resolution = params.resolution;
-				this.current.edition = params.edition;
+				// convert legacy urls to modern format
+				this.current.pack = ["16x", "32x", "64x"].includes(params.pack)
+					? this.packIDtoDisplay(this.resToPackID(params.pack))
+					: this.packIDtoDisplay(params.pack);
+
+				this.current.edition = this.toTitleCase(params.edition);
 				this.current.version = params.version;
 				this.current.tag = params.tag;
 				this.current.search = params.search;
@@ -299,6 +304,47 @@ export default {
 		},
 	},
 	methods: {
+		isMojang(displayName) {
+			const packID = this.displayToPackID(displayName);
+			return ["default", "progart"].includes(packID);
+		},
+		resToPackID(res) {
+			// for legacy url support
+			switch (res) {
+				case "16x":
+					return "default";
+				case "32x":
+					return "faithful_32x";
+				case "64x":
+					return "faithful_64x";
+			}
+		},
+		packIDmap() {
+			// TODO: move this to pack API when that's done
+			return {
+				default: "Default Jappa",
+				progart: "Default Programmer Art",
+				faithful_32x: "Faithful 32x",
+				faithful_64x: "Faithful 64x",
+				classic_faithful_32x: "Classic Faithful 32x",
+				classic_faithful_32x_progart: "Classic Faithful 32x Programmer Art",
+				classic_faithful_64x: "Classic Faithful 64x",
+			};
+		},
+		packIDtoDisplay(packID) {
+			return this.packIDmap()[packID];
+		},
+		displayToPackID(displayName) {
+			// convert to tuples, flip tuples backwards, and convert back to object
+			return Object.fromEntries(
+				Object.entries(this.packIDmap()).map(([id, displayName]) => [displayName, id]),
+			)[displayName];
+		},
+		/** @param {string} str */
+		toTitleCase(str) {
+			// used for "unconverting" URL editions into display editions
+			return str[0].toUpperCase() + str.slice(1);
+		},
 		shareID() {
 			let index = location.hash.indexOf("?show=");
 			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
@@ -376,27 +422,26 @@ export default {
 			this.current[type] = data;
 
 			// user safe interaction
-			// check if resolution exist
-			if (
-				!settings.resolutions.includes(this.current.resolution) &&
-				this.current.resolution !== "16x"
-			)
-				this.current.resolution = settings.resolution[0];
+			// check if pack exist
+			if (!Object.values(this.packIDmap()).includes(this.current.pack))
+				this.current.pack = "Faithful 32x";
 
-			// check if edition exist
-			if (!settings.editions.includes(this.current.edition))
-				if (!settings.versions[this.current.edition.toLowerCase()].includes(this.current.version)) {
-					this.current.version = settings.versions[this.current.edition][0];
-					this.options.versions = settings.versions[this.current.edition];
-				}
+			const edition = this.current.edition.toLowerCase();
 
-			let route = `/gallery/${this.current.edition}/${this.current.resolution}/${this.current.version}/${this.current.tag}`;
+			if (!settings.versions[edition].includes(this.current.version)) {
+				this.current.version = settings.versions[edition][0];
+				this.options.versions = settings.versions[edition];
+			}
+
+			let route = `/gallery/${edition}/${this.displayToPackID(this.current.pack)}/${
+				this.current.version
+			}/${this.current.tag}`;
 			route += !this.current.search ? "" : `/${this.current.search}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
 			return this.$router.push(route);
 		},
-		updateSearch: function () {
+		updateSearch() {
 			if (this.loading) return;
 			this.loading = true;
 			this.displayedTextures = [];
@@ -404,12 +449,12 @@ export default {
 			const version =
 				this.current.version === "latest" ? this.options.versions[0] : this.current.version;
 
-			// /gallery/{res}/{edition}/{mc_version}/{tag}
+			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
 				.get(
-					`${this.$root.apiURL}/gallery/${this.current.resolution}/${
-						this.current.edition
-					}/${version}/${this.current.tag}${
+					`${this.$root.apiURL}/gallery/${this.displayToPackID(
+						this.current.pack,
+					)}/${this.current.edition.toLowerCase()}/${version}/${this.current.tag}${
 						this.current.search ? `?search=${this.current.search}` : ""
 					}`,
 				)

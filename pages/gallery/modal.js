@@ -167,15 +167,17 @@ export default {
 		},
 	},
 	methods: {
-		packToName: function (pack) {
-			if (pack === "default") {
-				return "16x";
-			}
-			return pack
-				.replace("progart", "programmer_art")
-				.split("_")
-				.map((word) => this.ucfirst(word))
-				.join(" ");
+		packToName(pack) {
+			// TODO: move this to pack API when that's done
+			return {
+				default: "Default Jappa",
+				progart: "Default Programmer Art",
+				faithful_32x: "Faithful 32x",
+				faithful_64x: "Faithful 64x",
+				classic_faithful_32x: "Classic Faithful 32x",
+				classic_faithful_32x_progart: "Classic Faithful 32x Programmer Art",
+				classic_faithful_64x: "Classic Faithful 64x",
+			}[pack];
 		},
 		closeModal: function () {
 			this.onClose();

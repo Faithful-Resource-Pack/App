@@ -158,8 +158,8 @@ const ALL_TABS = [
 				label: "gallery",
 				unlogged: true,
 				routes: [
-					{ path: "/gallery", redirect: "/gallery/java/32x/latest/all/" },
-					{ path: "/gallery/:edition/:resolution/:version/:tag/:search*", component: GalleryPage },
+					{ path: "/gallery", redirect: "/gallery/java/faithful_32x/latest/all/" },
+					{ path: "/gallery/:edition/:pack/:version/:tag/:search*", component: GalleryPage },
 				],
 			},
 		],

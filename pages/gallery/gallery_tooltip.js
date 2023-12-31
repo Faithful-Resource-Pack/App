@@ -23,7 +23,7 @@ export default {
 			type: Object,
 			required: true,
 		},
-		resolution: {
+		pack: {
 			type: String,
 			required: true,
 		},
@@ -58,7 +58,7 @@ export default {
 	computed: {
 		last_contribution: function () {
 			let contribs = Chain(this.contributions)
-				.chain((contribs) => contribs[this.resolution === "32x" ? "faithful_32x" : "faithful_64x"])
+				.chain((contribs) => contribs[this.pack])
 				.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
 
 			// get best timestamp contrib
