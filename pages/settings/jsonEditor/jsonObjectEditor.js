@@ -72,7 +72,7 @@ export default {
 			default: false,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			keys: [],
 			values: [],
@@ -80,7 +80,7 @@ export default {
 		};
 	},
 	methods: {
-		resize: function (index) {
+		resize(index) {
 			const input = this.$refs["input" + index][0];
 			const text = this.$refs["hide" + index][0];
 
@@ -89,15 +89,15 @@ export default {
 				input.style.width = width + 10 + "px";
 			});
 		},
-		deleteItem: function (index) {
+		deleteItem(index) {
 			this.keys.splice(index, 1);
 			this.values.splice(index, 1);
 		},
-		extractKeysAndValues: function () {
+		extractKeysAndValues() {
 			this.keys = Object.keys(this.value);
 			this.values = Object.values(this.value);
 		},
-		onClickChild: function (obj) {
+		onClickChild(obj) {
 			this.keys.push("");
 			this.values.push(obj);
 		},
@@ -105,7 +105,7 @@ export default {
 		 * Constructs object with key and values
 		 * @returns {Object} final object constructed
 		 */
-		construct: function () {
+		construct() {
 			if (this.keys.length !== this.values.length)
 				throw new Error("Keys and values length different");
 			const result = {};
@@ -160,8 +160,8 @@ export default {
 			deep: true,
 		},
 	},
-	created: function () {},
-	beforeMount: function () {
+	created() {},
+	beforeMount() {
 		if (typeof this.value !== "object") throw new Error("Value not an object");
 		this.extractKeysAndValues();
 	},

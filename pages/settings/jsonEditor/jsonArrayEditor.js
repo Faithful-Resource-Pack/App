@@ -61,27 +61,27 @@ export default {
 			default: false,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			values: [],
 			toggled: true,
 		};
 	},
 	methods: {
-		deleteItem: function (index) {
+		deleteItem(index) {
 			this.values.splice(index, 1);
 		},
-		extractKeysAndValues: function () {
+		extractKeysAndValues() {
 			this.values = this.value;
 		},
-		onClickChild: function (obj) {
+		onClickChild(obj) {
 			this.values.push(obj);
 		},
 		/**
 		 * Constructs object with key and values
 		 * @returns {Object} final object constructed
 		 */
-		construct: function () {
+		construct() {
 			if (!this.values.length) throw new Error("Not an array");
 
 			return this.values;
@@ -112,8 +112,8 @@ export default {
 			deep: true,
 		},
 	},
-	created: function () {},
-	beforeMount: function () {
+	created() {},
+	beforeMount() {
 		if (!Array.isArray(this.value)) throw new Error("Value not an object");
 		this.extractKeysAndValues();
 	},

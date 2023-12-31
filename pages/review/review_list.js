@@ -40,12 +40,12 @@ export default {
     </div>
 </v-card>`,
 	methods: {
-		onClick: function (key) {
+		onClick(key) {
 			this.$emit("input", key);
 		},
 	},
 	computed: {
-		classes: function () {
+		classes() {
 			return this.items.map((v) => (v.key === this.value ? this.activeColor + " selected" : ""));
 		},
 	},

@@ -4,7 +4,7 @@ export default {
 		 * Loads all search params
 		 * @returns {URLSearchParams}
 		 */
-		search_load: function () {
+		search_load() {
 			const query_str = location.hash.split("?")[1] || "";
 			return new URLSearchParams(query_str);
 		},
@@ -13,7 +13,7 @@ export default {
 		 * @param {string} name Search param name
 		 * @returns {String|null} param value
 		 */
-		search_get: function (name) {
+		search_get(name) {
 			return this.load().get(name);
 		},
 		/**
@@ -21,7 +21,7 @@ export default {
 		 * @param {string} name Search param name
 		 * @param {any} value given value
 		 */
-		search_set: function (name, value) {
+		search_set(name, value) {
 			const str_val = String(value);
 
 			const loaded = this.search_load();
@@ -29,7 +29,7 @@ export default {
 
 			this._search_update(loaded);
 		},
-		search_delete: function (name) {
+		search_delete(name) {
 			const loaded = this.search_load();
 
 			loaded.delete(name);
@@ -40,7 +40,7 @@ export default {
 		 * update hash search
 		 * @param {URLSearchParams} search_params updated params
 		 */
-		_search_update: function (search_params) {
+		_search_update(search_params) {
 			let query_str = "?" + search_params.toString();
 
 			let hash = location.hash;

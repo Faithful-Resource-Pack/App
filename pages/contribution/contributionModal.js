@@ -15,12 +15,12 @@ export default {
 		onCancel: {
 			required: false,
 			type: Function,
-			default: function () {},
+			default() {},
 		},
 		onSubmit: {
 			required: false,
 			type: Function,
-			default: function () {},
+			default() {},
 		},
 		multiple: {
 			required: false,
@@ -144,7 +144,7 @@ export default {
 		};
 	},
 	computed: {
-		activeForm: function () {
+		activeForm() {
 			if (this.openedFormId === undefined) return undefined;
 
 			const form_obj = this.formRecords[this.openedFormId];
@@ -153,13 +153,13 @@ export default {
 			const res = JSON.parse(JSON.stringify(form_obj));
 			return res;
 		},
-		formRecordsList: function () {
+		formRecordsList() {
 			return Object.values(this.formRecords);
 		},
-		formRecordsLength: function () {
+		formRecordsLength() {
 			return this.formRecordsList.length;
 		},
-		panelLabels: function () {
+		panelLabels() {
 			return Object.entries(this.formRecords)
 				.map(([form_id, form]) => [
 					form_id,
@@ -169,7 +169,7 @@ export default {
 		},
 	},
 	methods: {
-		addNewForm: function () {
+		addNewForm() {
 			// create new form
 			let form;
 
@@ -190,7 +190,7 @@ export default {
 			// make the opened form our created form
 			this.openedFormId = new_form_id;
 		},
-		open: function (input_data_obj = undefined, input_packs_list, close_on_submit = true) {
+		open(input_data_obj = undefined, input_packs_list, close_on_submit = true) {
 			this.packsList = input_packs_list;
 			this.modalOpened = true;
 			this.openedFormId = undefined;
@@ -209,7 +209,7 @@ export default {
 			this.openedFormId = created_form_obj.formId;
 			this.closeOnSubmit = !!close_on_submit;
 		},
-		contributorsFromIds: function (author_ids) {
+		contributorsFromIds(author_ids) {
 			if (!author_ids || author_ids.length === 0) {
 				return "";
 			}
@@ -232,14 +232,14 @@ export default {
 			const total_str = `[${total}]: `;
 			return total_str + known_str;
 		},
-		changeOpenedForm: function (form_id) {
+		changeOpenedForm(form_id) {
 			if (this.openedFormId === form_id) this.openedFormId = undefined;
 			else this.openedFormId = form_id;
 		},
-		close: function () {
+		close() {
 			this.modalOpened = false;
 		},
-		closeAndCancel: function () {
+		closeAndCancel() {
 			this.close();
 			this.onCancel();
 		},
@@ -259,7 +259,7 @@ export default {
 
 			if (this.closeOnSubmit) this.modalOpened = false;
 		},
-		defaultValue: function (packs_list) {
+		defaultValue(packs_list) {
 			return {
 				date: new Date(new Date().setHours(0, 0, 0, 0)),
 				packs: packs_list,
@@ -269,11 +269,11 @@ export default {
 				formId: this.getNewFormId(),
 			};
 		},
-		getNewFormId: function () {
+		getNewFormId() {
 			this.lastFormId++;
 			return String(this.lastFormId);
 		},
-		onFormInput: function (form) {
+		onFormInput(form) {
 			// stop undefined object
 			if (typeof form !== "object") return;
 			// stop non-form objects
@@ -288,7 +288,7 @@ export default {
 			// now affect
 			Vue.set(this.formRecords, form_id, form);
 		},
-		removeForm: function (form_id) {
+		removeForm(form_id) {
 			// do not continue if not found
 			if (!this.formRecords[form_id]) return;
 

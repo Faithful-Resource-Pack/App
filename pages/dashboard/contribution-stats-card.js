@@ -48,13 +48,13 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-	data: function () {
+	data() {
 		return {
 			data: undefined,
 		};
 	},
 	computed: {
-		totals: function () {
+		totals() {
 			if (!this.data) return [];
 			return this.data;
 		},

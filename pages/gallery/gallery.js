@@ -6,7 +6,7 @@ const textureTooltip = () => import("./gallery_tooltip.js");
 const Chain = function (val) {
 	return {
 		value: val,
-		chain: function (predicate) {
+		chain(predicate) {
 			if (this.value !== undefined) return Chain(predicate(this.value));
 			return this;
 		},
@@ -255,13 +255,13 @@ export default {
 		};
 	},
 	computed: {
-		displayedTexturesObject: function () {
+		displayedTexturesObject() {
 			return this.displayedTextures.reduce((acc, cur) => {
 				acc[cur.textureID] = cur;
 				return acc;
 			}, {});
 		},
-		tagItems: function () {
+		tagItems() {
 			return this.options.tags.map((e, i) => {
 				return {
 					label: e,

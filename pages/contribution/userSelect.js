@@ -90,7 +90,7 @@ export default {
     </v-autocomplete>
 `,
 	computed: {
-		contributorList: function () {
+		contributorList() {
 			return [...this.contributors, ...Object.values(this.loadedContributors)];
 		},
 	},
@@ -131,7 +131,7 @@ export default {
 			}, SEARCH_DELAY);
 		},
 		loadedContributors: {
-			handler: function (n) {
+			handler(n) {
 				window.eventBus.$emit("newContributor", this.contributorList);
 			},
 			deep: true,

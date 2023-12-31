@@ -1,7 +1,7 @@
 const Chain = function (val) {
 	return {
 		value: val,
-		chain: function (predicate) {
+		chain(predicate) {
 			if (this.value !== undefined) return Chain(predicate(this.value));
 			return this;
 		},
@@ -56,7 +56,7 @@ export default {
     </div>
 </div></div>`,
 	computed: {
-		last_contribution: function () {
+		last_contribution() {
 			let contribs = Chain(this.contributions)
 				.chain((contribs) => contribs[this.pack])
 				.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
@@ -66,7 +66,7 @@ export default {
 				? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
 				: undefined;
 		},
-		last_contribution_names: function () {
+		last_contribution_names() {
 			if (this.last_contribution === undefined) return "";
 			return this.last_contribution.contributors
 				.map((d) => {
@@ -74,10 +74,10 @@ export default {
 				})
 				.join(", ");
 		},
-		icon: function () {
+		icon() {
 			return "icon-people" + (this.last_contribution.contributors.length === 1 ? "" : "s");
 		},
-		modded: function () {
+		modded() {
 			let something_with_path = this.texture.url;
 			return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].reduce(
 				(acc, cur) => acc || something_with_path.includes(cur),

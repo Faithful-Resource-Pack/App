@@ -12,7 +12,7 @@ const searchMixin = {
 		 * Loads all search params
 		 * @returns {URLSearchParams}
 		 */
-		search_load: function () {
+		search_load() {
 			const query_str = location.hash.split("?")[1] || "";
 			return new URLSearchParams(query_str);
 		},
@@ -21,7 +21,7 @@ const searchMixin = {
 		 * @param {string} name Search param name
 		 * @returns {String|null} param value
 		 */
-		search_get: function (name) {
+		search_get(name) {
 			return this.load().get(name);
 		},
 		/**
@@ -29,7 +29,7 @@ const searchMixin = {
 		 * @param {string} name Search param name
 		 * @param {any} value given value
 		 */
-		search_set: function (name, value) {
+		search_set(name, value) {
 			const str_val = String(value);
 
 			const loaded = this.search_load();
@@ -37,7 +37,7 @@ const searchMixin = {
 
 			this._search_update(loaded);
 		},
-		search_delete: function (name) {
+		search_delete(name) {
 			const loaded = this.search_load();
 
 			loaded.delete(name);
@@ -48,7 +48,7 @@ const searchMixin = {
 		 * update hash search
 		 * @param {URLSearchParams} search_params updated params
 		 */
-		_search_update: function (search_params) {
+		_search_update(search_params) {
 			let query_str = "?" + search_params.toString();
 
 			let hash = location.hash;
@@ -175,21 +175,21 @@ d88   888  888    888 d88   888
 		};
 	},
 	watch: {
-		status: function (n) {
+		status(n) {
 			// select first if not empty
 			this.search_set("status", n);
 			this.selectedAddonId = this.addons[n].length > 0 ? this.addons[n][0].id : undefined;
 		},
-		selectedAddonId: function (n) {
+		selectedAddonId(n) {
 			if (n !== undefined) this.search_set("id", n);
 			else this.search_delete("id");
 		},
 	},
 	computed: {
-		stats: function () {
+		stats() {
 			return Object.values(this.addons).map((v) => v.length);
 		},
-		categories: function () {
+		categories() {
 			return Object.keys(this.addons).map((s, i) => {
 				return {
 					label: this.$root.lang(`review.titles.${s}`),
@@ -199,7 +199,7 @@ d88   888  888    888 d88   888
 				};
 			});
 		},
-		items: function () {
+		items() {
 			return Object.entries(this.addons)
 				.map(([state, list]) => {
 					return {
@@ -218,15 +218,15 @@ d88   888  888    888 d88   888
 					return acc;
 				}, {});
 		},
-		selectedItems: function () {
+		selectedItems() {
 			return this.items[this.status];
 		},
-		empty: function () {
+		empty() {
 			return this.$root.lang(`review.labels.${this.status}`);
 		},
 	},
 	methods: {
-		reviewAddon: function (addon, status, reason = null) {
+		reviewAddon(addon, status, reason = null) {
 			const id = typeof addon === "object" ? addon.id : addon;
 			if (!this.$root.isUserLogged) return;
 
@@ -247,11 +247,11 @@ d88   888  888    888 d88   888
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		closeDenyPopup: function (send = false, reason) {
+		closeDenyPopup(send = false, reason) {
 			this.showDenyPopup = false;
 			if (send) this.reviewAddon(this.denyAddon, this.archive ? "archived" : "denied", reason);
 		},
-		openDenyPopup: function (addon, archive = undefined) {
+		openDenyPopup(addon, archive = undefined) {
 			this.archive = !!archive;
 			this.showDenyPopup = true;
 			this.denyAddon = addon;
@@ -270,7 +270,7 @@ d88   888  888    888 d88   888
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		getContributors: function () {
+		getContributors() {
 			axios
 				.get(`${this.$root.apiURL}/users/names`)
 				.then((res) => {
@@ -281,7 +281,7 @@ d88   888  888    888 d88   888
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		update: function () {
+		update() {
 			Promise.all([
 				this.getContributors(),
 				this.getAddonsByStatus("pending"),
@@ -297,7 +297,7 @@ d88   888  888    888 d88   888
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		search_update: function (updateId = false) {
+		search_update(updateId = false) {
 			const params = this.search_load();
 			this.status = params.get("status") || this.status;
 			this.$nextTick(() => {
@@ -305,7 +305,7 @@ d88   888  888    888 d88   888
 			});
 		},
 	},
-	created: function () {
+	created() {
 		this.search_update();
 		window.addEventListener(
 			"hashchange",

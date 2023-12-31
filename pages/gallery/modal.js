@@ -179,7 +179,7 @@ export default {
 				classic_faithful_64x: "Classic Faithful 64x",
 			}[pack];
 		},
-		closeModal: function () {
+		closeModal() {
 			this.onClose();
 			this.opened = false;
 		},
@@ -311,14 +311,14 @@ export default {
 		},
 	},
 	computed: {
-		infosText: function () {
+		infosText() {
 			return {
 				texture: this.ucfirst(this.$root.lang().gallery.modal.infos.texture),
 				uses: this.ucfirst(this.$root.lang().gallery.modal.infos.uses),
 				paths: this.ucfirst(this.$root.lang().gallery.modal.infos.paths),
 			};
 		},
-		grouped: function () {
+		grouped() {
 			const result = [];
 
 			if (this.textureObj) {

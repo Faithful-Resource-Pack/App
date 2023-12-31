@@ -36,13 +36,13 @@ export default {
 			default: undefined,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			newValue: "",
 		};
 	},
 	watch: {
-		newValue: function (n, o) {
+		newValue(n, o) {
 			if (n === o) return;
 
 			this.$emit("input", n);
@@ -59,7 +59,7 @@ export default {
 			deep: true,
 		},
 	},
-	beforeMount: function () {
+	beforeMount() {
 		this.newValue = this.value;
 	},
 };

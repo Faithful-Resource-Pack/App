@@ -71,31 +71,31 @@ export default {
 		};
 	},
 	computed: {
-		style: function () {
+		style() {
 			return this.block ? "width: 100%" : "width: 290px; max-width: 100%";
 		},
-		day: function () {
+		day() {
 			return this.date.getDate();
 		},
-		month: function () {
+		month() {
 			return this.date.getMonth();
 		},
-		year: function () {
+		year() {
 			return this.date.getFullYear();
 		},
-		date_str: function () {
+		date_str() {
 			return this.date.toDateString();
 		},
 		this_year: () => new Date().getFullYear(),
-		days_in_month: function () {
+		days_in_month() {
 			return this.daysInMonth(this.year, this.month + 1);
 		},
-		upper_months: function () {
+		upper_months() {
 			return this.months.map((name) => name[0].toUpperCase() + name.slice(1));
 		},
 	},
 	methods: {
-		checkAndMaxDate: function (year, month) {
+		checkAndMaxDate(year, month) {
 			const newDate = new Date(year, month - 1, this.day);
 			if (newDate.getDate() != this.day) {
 				const days_in_new_month = this.daysInMonth(year, month);
@@ -104,16 +104,16 @@ export default {
 				this.date = corrected_date;
 			}
 		},
-		newDay: function (i) {
+		newDay(i) {
 			this.date.setDate(i);
 			this.date = new Date(this.date);
 		},
-		newMonth: function (m) {
+		newMonth(m) {
 			this.checkAndMaxDate(this.year, m);
 			this.date.setMonth(m - 1);
 			this.date = new Date(this.date);
 		},
-		newYear: function (e) {
+		newYear(e) {
 			let parsed = Number.parseInt(e);
 			let new_year = this.year;
 			if (!Number.isNaN(parsed)) new_year = parsed;
@@ -122,7 +122,7 @@ export default {
 			this.date.setFullYear(new_year);
 			this.date = new Date(this.date);
 		},
-		daysInMonth: function (year, month_i) {
+		daysInMonth(year, month_i) {
 			return new Date(year, month_i, 0).getDate();
 		},
 	},
@@ -134,7 +134,7 @@ export default {
 			immediate: true,
 			deep: true,
 		},
-		date: function () {
+		date() {
 			this.$emit("input", this.date.getTime());
 		},
 	},

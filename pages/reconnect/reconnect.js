@@ -33,12 +33,12 @@ export default {
   </div>
 </v-container>
 `,
-	data: function () {
+	data() {
 		return {
 			reconnect_steps: [],
 		};
 	},
-	created: function () {
+	created() {
 		const authStr = window.localStorage.getItem("auth");
 		const auth = JSON.parse(authStr);
 		const data = { refresh_token: auth.refresh_token };

@@ -85,11 +85,11 @@ export default {
 		};
 	},
 	methods: {
-		remove: function (id) {
+		remove(id) {
 			const index = this.val.indexOf(id);
 			if (index >= 0) this.val.splice(index, 1);
 		},
-		getUsersIDs: function () {
+		getUsersIDs() {
 			axios
 				.get(`${this.$root.apiURL}/users/names`)
 				.then((res) => {

@@ -36,18 +36,18 @@ export default {
         </v-card>
     </v-col>
 </v-row>`,
-	data: function () {
+	data() {
 		return {
 			content: {},
 		};
 	},
 	methods: {
-		onClick: function (val) {
+		onClick(val) {
 			this.$emit("input", val);
 		},
 	},
 	computed: {
-		classes: function () {
+		classes() {
 			return this.categories.map((v) =>
 				v.value === this.value ? this.activeColor + " selected" : "",
 			);

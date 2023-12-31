@@ -114,16 +114,16 @@ export default {
 		};
 	},
 	methods: {
-		closeDialog: function () {
+		closeDialog() {
 			this.dialogOpen = false;
 			this.dialogAddon = {};
 			this.update();
 		},
-		deleteAddon: function (addon) {
+		deleteAddon(addon) {
 			this.remove.data = addon;
 			this.remove.confirm = true;
 		},
-		getAddons: function (authorID) {
+		getAddons(authorID) {
 			axios
 				.get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
 				.then((res) => {
@@ -135,7 +135,7 @@ export default {
 					console.error(err);
 				});
 		},
-		update: function () {
+		update() {
 			this.getAddons(this.$root.user.id);
 			this.$forceUpdate();
 		},

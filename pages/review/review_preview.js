@@ -162,12 +162,12 @@ export default {
 		};
 	},
 	computed: {
-		addonSources: function () {
+		addonSources() {
 			return (this.addonInPanel.files || [])
 				.filter((f) => f.use === "carousel" || f.use === "screenshot")
 				.map((f) => f.source);
 		},
-		status: function () {
+		status() {
 			return this.addonInPanel && this.addonInPanel.approval
 				? this.addonInPanel.approval.status
 				: undefined;
@@ -175,7 +175,7 @@ export default {
 	},
 	watch: {
 		addonId: {
-			handler: function (n) {
+			handler(n) {
 				if (n === undefined) return;
 				this.getAddon(n);
 			},
@@ -183,7 +183,7 @@ export default {
 		},
 	},
 	methods: {
-		getAddon: function (id) {
+		getAddon(id) {
 			this.addonInPanelLoading = true;
 
 			// allSettled if no header res
@@ -206,27 +206,27 @@ export default {
 				else this.addonInPanelHeaderURL = null;
 			});
 		},
-		openDialog: function () {
+		openDialog() {
 			this.dialogAddon = this.addonInPanel;
 			this.dialogOpen = true;
 		},
-		closeDialog: function () {
+		closeDialog() {
 			this.dialogOpen = false;
 			this.dialogAddon = {};
 			this.update();
 		},
-		getUsername: function (id) {
+		getUsername(id) {
 			if (id === null || id === undefined) return "Herobrine";
 			return this.contributors.filter((c) => c.id === id)[0].username || "Unknown User";
 		},
-		openDenyPopup: function (...args) {
+		openDenyPopup(...args) {
 			this.$root.$emit("openDenyPopup", args);
 		},
-		reviewAddon: function (...args) {
+		reviewAddon(...args) {
 			this.$root.$emit("reviewAddon", args);
 		},
 	},
-	created: function () {
+	created() {
 		axios
 			.get(`${this.$root.apiURL}/users/names`)
 			.then((res) => {

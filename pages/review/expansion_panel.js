@@ -206,14 +206,14 @@ export default {
 		};
 	},
 	computed: {
-		addonSources: function () {
+		addonSources() {
 			return (this.addonInPanel.files || [])
 				.filter((f) => f.use === "carousel" || f.use === "screenshot")
 				.map((f) => f.source);
 		},
 	},
 	methods: {
-		getAddon: function (id) {
+		getAddon(id) {
 			this.addonInPanelLoading = true;
 
 			this.$emit("input", id);
@@ -238,21 +238,21 @@ export default {
 				else this.addonInPanelHeaderURL = null;
 			});
 		},
-		openDialog: function () {
+		openDialog() {
 			this.dialogAddon = this.addonInPanel;
 			this.dialogOpen = true;
 		},
-		closeDialog: function () {
+		closeDialog() {
 			this.dialogOpen = false;
 			this.dialogAddon = {};
 			this.update();
 		},
-		getUsername: function (id) {
+		getUsername(id) {
 			if (id === null || id === undefined) return "Herobrine";
 			return this.contributors.filter((c) => c.id === id)[0].username || "Unknown User";
 		},
 	},
-	mounted: function () {
+	mounted() {
 		let found_addon = this.addons.find((a) => a.id === this.value);
 
 		if (found_addon) {

@@ -63,7 +63,7 @@ export default {
 		versions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [...settings.versions.java, ...settings.versions.bedrock];
 			},
 		},
@@ -91,21 +91,21 @@ export default {
 		};
 	},
 	computed: {
-		subPathDialogTitle: function () {
+		subPathDialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_path
 				: this.$root.lang().database.titles.change_path;
 		},
-		sortedVersions: function () {
+		sortedVersions() {
 			return this.versions.sort(this.MinecraftSorter);
 		},
 	},
 	methods: {
-		onCancel: function () {
+		onCancel() {
 			this.amOpened = false;
 			this.disableSubPathDialog();
 		},
-		MinecraftSorter: function (a, b) {
+		MinecraftSorter(a, b) {
 			const aSplit = a.split(".").map((s) => parseInt(s));
 			const bSplit = b.split(".").map((s) => parseInt(s));
 
@@ -127,7 +127,7 @@ export default {
 
 			return result;
 		},
-		send: function () {
+		send() {
 			const data = {
 				name: this.subPathFormData.path || "", // texture relative path
 				use: this.subPathFormData.useID || "", // Use ID
@@ -156,10 +156,10 @@ export default {
 		},
 	},
 	watch: {
-		value: function (newValue) {
+		value(newValue) {
 			this.amOpened = newValue;
 		},
-		amOpened: function (newValue) {
+		amOpened(newValue) {
 			Vue.nextTick(() => {
 				if (!this.add) {
 					this.subPathFormData.versions = this.pathData.versions.sort(this.MinecraftSorter);

@@ -462,10 +462,10 @@ export default {
 		};
 	},
 	computed: {
-		hasHeader: function () {
+		hasHeader() {
 			return !!(this.header || this.headerURL);
 		},
-		header: function () {
+		header() {
 			return this.addonNew
 				? this.headerValidating == false && this.headerValid && this.submittedForm.headerFile
 					? URL.createObjectURL(this.submittedForm.headerFile)
@@ -474,10 +474,10 @@ export default {
 					? this.headerSource
 					: undefined;
 		},
-		carouselSources: function () {
+		carouselSources() {
 			return this.screenSources ? this.screenSources : [];
 		},
-		headerValidSentence: function () {
+		headerValidSentence() {
 			if (this.headerValidating) {
 				return "Header being verified...";
 			} else if (this.headerValid) {
@@ -486,20 +486,20 @@ export default {
 
 			return this.headerError;
 		},
-		headerRules: function () {
+		headerRules() {
 			if (!this.addonNew) return [];
 			return [...this.form.files.header.rules, this.headerValidSentence];
 		},
-		headerFile: function () {
+		headerFile() {
 			return this.submittedForm.headerFile;
 		},
-		carouselFiles: function () {
+		carouselFiles() {
 			return this.submittedForm.carouselFiles;
 		},
-		carouselRules: function () {
+		carouselRules() {
 			return [...this.form.files.carousel.rules, this.carouselValidSentence];
 		},
-		carouselValidSentence: function () {
+		carouselValidSentence() {
 			if (this.carouselValidating) {
 				return "Carousel being verified...";
 			} else if (this.carouselValid) {
@@ -508,7 +508,7 @@ export default {
 
 			return this.carouselError;
 		},
-		submittedData: function () {
+		submittedData() {
 			let res = Object.merge({}, this.submittedForm);
 
 			res.options.tags = [...res.selectedEditions, ...res.selectedRes];
@@ -523,7 +523,7 @@ export default {
 		},
 	},
 	methods: {
-		carouselChange: function () {
+		carouselChange() {
 			if (this.carouselDoNotVerify) return;
 
 			const files = this.submittedForm.carouselFiles;
@@ -546,7 +546,7 @@ export default {
 					this.carouselValidating = false;
 				});
 		},
-		headerChange: function (file) {
+		headerChange(file) {
 			// delete not uploaded file
 			if (!file) {
 				if (this.addonNew) {
@@ -581,19 +581,19 @@ export default {
 					this.headerValidating = false;
 				});
 		},
-		downloadAdd: function () {
+		downloadAdd() {
 			this.submittedForm.downloads.push({ key: "", links: [""] });
 		},
-		downloadRemove: function (download_index) {
+		downloadRemove(download_index) {
 			this.submittedForm.downloads.splice(download_index, 1);
 		},
-		linkAdd: function (download_index) {
+		linkAdd(download_index) {
 			this.submittedForm.downloads[download_index].links.push("");
 		},
-		linkRemove: function (download_index, link_index) {
+		linkRemove(download_index, link_index) {
 			this.submittedForm.downloads[download_index].links.splice(link_index, 1);
 		},
-		onDeleteCarousel: function (item, index, id) {
+		onDeleteCarousel(item, index, id) {
 			this.carouselDoNotVerify = true;
 			this.submittedForm.carouselFiles.splice(index, 1);
 			this.$emit("screenshot", undefined, index, true, id);
@@ -601,18 +601,18 @@ export default {
 				this.carouselDoNotVerify = false;
 			});
 		},
-		onSubmit: function (approve = false) {
+		onSubmit(approve = false) {
 			const valid = this.$refs.form.validate();
 
 			if (!valid) return;
 
 			this.$emit("submit", this.submittedData, approve);
 		},
-		validateRatio: function (ctx) {
+		validateRatio(ctx) {
 			const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78;
 			if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio);
 		},
-		validURL: function (str) {
+		validURL(str) {
 			const pattern = new RegExp(
 				"^(https?:\\/\\/)?" + // protocol
 					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
@@ -624,7 +624,7 @@ export default {
 			); // fragment locator
 			return !!pattern.test(str);
 		},
-		verifyImage: function (file, validateImage) {
+		verifyImage(file, validateImage) {
 			if (validateImage === undefined) validateImage = this.validateRatio;
 
 			return new Promise((resolve, reject) => {
@@ -671,7 +671,7 @@ export default {
 			deep: true,
 		},
 	},
-	beforeMount: function () {
+	beforeMount() {
 		this.submittedForm.authors = [this.$root.user.id];
 	},
 };

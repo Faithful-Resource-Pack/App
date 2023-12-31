@@ -52,22 +52,22 @@ export default {
 			default: true,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			fullscreenIndex: undefined,
 		};
 	},
 	computed: {
-		fullscreenItem: function () {
+		fullscreenItem() {
 			if (this.fullscreenIndex === undefined) return undefined;
 			return this.sources[this.fullscreenIndex];
 		},
-		notEmpty: function () {
+		notEmpty() {
 			return this.sources && !!this.sources.length;
 		},
 	},
 	methods: {
-		onDelete: function (item, index, e) {
+		onDelete(item, index, e) {
 			if (e) e.target.blur();
 
 			if (this.ids !== undefined) {
@@ -76,7 +76,7 @@ export default {
 				this.$emit("item-delete", item, index, undefined);
 			}
 		},
-		onFullscreen: function (item, index, e) {
+		onFullscreen(item, index, e) {
 			if (e) e.target.blur();
 			this.fullscreenIndex = index;
 			this.$refs.preview.open();

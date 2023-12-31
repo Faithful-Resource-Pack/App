@@ -5,7 +5,7 @@ const appUserStore = Pinia.defineStore("appUser", {
 	}),
 
 	actions: {
-		getUser: function (rootApiURL, accessToken) {
+		getUser(rootApiURL, accessToken) {
 			return fetch(rootApiURL + "/users/profile", {
 				method: "GET",
 				headers: {
@@ -20,7 +20,7 @@ const appUserStore = Pinia.defineStore("appUser", {
 				}
 			});
 		},
-		getOrCreateUser: function (rootApiURL, accessToken) {
+		getOrCreateUser(rootApiURL, accessToken) {
 			return fetch(rootApiURL + "/users/newprofile", {
 				method: "POST",
 				headers: {
@@ -36,7 +36,7 @@ const appUserStore = Pinia.defineStore("appUser", {
 			});
 		},
 
-		watchDiscordAuth: function (store, rootApiURL, onError) {
+		watchDiscordAuth(store, rootApiURL, onError) {
 			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
 			store.$subscribe((mutation) => {
 				if (mutation.type === "patch function") return;

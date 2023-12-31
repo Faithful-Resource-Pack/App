@@ -24,16 +24,16 @@ export default {
 			required: true,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			fullscreen: false,
 		};
 	},
 	methods: {
-		close: function () {
+		close() {
 			this.fullscreen = false;
 		},
-		open: function () {
+		open() {
 			this.fullscreen = true;
 		},
 	},

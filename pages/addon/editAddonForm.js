@@ -68,7 +68,7 @@ export default {
      </v-dialog>
   </div>
   `,
-	data: function () {
+	data() {
 		return {
 			hidisabled: false,
 			reasonDialog: false,
@@ -99,10 +99,10 @@ export default {
 		};
 	},
 	computed: {
-		loading: function () {
+		loading() {
 			return this.addonData === undefined;
 		},
-		id: function () {
+		id() {
 			return this.$route.params.id;
 		},
 	},
@@ -118,7 +118,7 @@ export default {
 				this.reason = "";
 			}
 		},
-		handleSubmit: function (data, approve) {
+		handleSubmit(data, approve) {
 			if (!approve) {
 				this.reasonData = data;
 				this.reasonDialog = true;
@@ -126,7 +126,7 @@ export default {
 				this.confirmSubmit(data, approve);
 			}
 		},
-		confirmSubmit: function (data, approve) {
+		confirmSubmit(data, approve) {
 			if (approve) {
 				data.reason = "Admin edit";
 			} else {
@@ -160,7 +160,7 @@ export default {
 				this.$root.showSnackBar(err, "error");
 			});
 		},
-		handleHeader: function (file, remove = false) {
+		handleHeader(file, remove = false) {
 			this.hidisabled = true;
 
 			let promise;
@@ -195,7 +195,7 @@ export default {
 					this.hidisabled = false;
 				});
 		},
-		getHeader: function () {
+		getHeader() {
 			axios({
 				method: "GET",
 				url: this.$root.apiURL + "/addons/" + this.id + "/files/header",
@@ -267,7 +267,7 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		getScreens: function () {
+		getScreens() {
 			axios
 				.get(
 					this.$root.apiURL +
@@ -292,7 +292,7 @@ export default {
 				});
 		},
 	},
-	created: function () {
+	created() {
 		this.getHeader();
 		this.getScreens();
 		Promise.all([

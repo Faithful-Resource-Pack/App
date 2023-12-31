@@ -54,7 +54,7 @@ export default {
 			default: undefined,
 		},
 	},
-	data: function () {
+	data() {
 		return {
 			newValue: {},
 		};

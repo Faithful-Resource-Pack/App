@@ -100,7 +100,7 @@ export default {
 		editions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return ["java", "bedrock"];
 			},
 		},
@@ -137,28 +137,28 @@ export default {
 		};
 	},
 	computed: {
-		subDialogTitle: function () {
+		subDialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_use
 				: this.$root.lang().database.titles.change_use;
 		},
 	},
 	methods: {
-		openSubPathDialog: function (data = {}) {
+		openSubPathDialog(data = {}) {
 			this.subPathDialogOpen = true;
 			this.subPathDialogData = data;
 		},
-		disableSubPathDialog: function () {
+		disableSubPathDialog() {
 			this.subPathDialogOpen = false;
 			this.getPaths(this.subFormData.id);
 			this.$forceUpdate();
 		},
-		closeAndUpdate: function () {
+		closeAndUpdate() {
 			this.remove.confirm = false;
 			this.getPaths(this.subFormData.id);
 			this.$forceUpdate();
 		},
-		MinecraftSorter: function (a, b) {
+		MinecraftSorter(a, b) {
 			const aSplit = a.split(".").map((s) => parseInt(s));
 			const bSplit = b.split(".").map((s) => parseInt(s));
 
@@ -180,7 +180,7 @@ export default {
 
 			return result;
 		},
-		send: function () {
+		send() {
 			const formData = this.subFormData;
 			const data = {
 				name: formData.textureUseName || "",
@@ -208,7 +208,7 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		getPaths: function (useId) {
+		getPaths(useId) {
 			axios
 				.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
 				.then((res) => {
@@ -230,13 +230,13 @@ export default {
 					console.error(err);
 				});
 		},
-		askRemovePath: function (data) {
+		askRemovePath(data) {
 			this.remove.data = data;
 			this.remove.confirm = true;
 		},
 	},
 	watch: {
-		subDialog: function (n, o) {
+		subDialog(n, o) {
 			Vue.nextTick(() => {
 				if (!this.add) {
 					this.subFormData.editions = [this.data.edition];

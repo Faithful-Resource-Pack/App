@@ -54,15 +54,15 @@ export default {
 		};
 	},
 	computed: {
-		username: function () {
+		username() {
 			return this.$props.data.username;
 		},
-		id: function () {
+		id() {
 			return this.$props.data.id;
 		},
 	},
 	methods: {
-		deleteContributor: function () {
+		deleteContributor() {
 			axios
 				.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
 				.then(() => {

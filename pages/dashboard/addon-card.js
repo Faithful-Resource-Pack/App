@@ -80,7 +80,7 @@ export default {
   </v-card-actions>
 </dashboard-card>
   `,
-	data: function () {
+	data() {
 		return {
 			data: undefined,
 			status_color: {
@@ -95,21 +95,21 @@ export default {
 		};
 	},
 	computed: {
-		adminResults: function () {
+		adminResults() {
 			return this.data && Object.keys(this.data).length > 2;
 		},
-		statuses: function () {
+		statuses() {
 			return Object.keys(this.status_color);
 		},
-		roles: function () {
+		roles() {
 			return this.$root.user.roles.length;
 		},
-		url: function () {
+		url() {
 			return "/addons/stats" + (this.admin ? "-admin" : "");
 		},
 	},
 	methods: {
-		get: function () {
+		get() {
 			this.loading = true;
 			axios
 				.get(this.$root.apiURL + this.url, this.$root.apiOptions)
@@ -121,11 +121,11 @@ export default {
 				});
 		},
 	},
-	created: function () {
+	created() {
 		this.get();
 	},
 	watch: {
-		roles: function (n, o) {
+		roles(n, o) {
 			if (n != o && this.admin) {
 				this.loading = true;
 				this.loading_for = 4;

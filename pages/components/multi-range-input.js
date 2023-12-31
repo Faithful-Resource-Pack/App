@@ -36,18 +36,18 @@ export default {
 		};
 	},
 	computed: {
-		valid_ranges: function () {
+		valid_ranges() {
 			return this.ranges.filter((r) => this.checkRules([r]) === true);
 		},
-		styled_ranges: function () {
+		styled_ranges() {
 			return this.transformToStyled(this.valid_ranges);
 		},
-		generated_values: function () {
+		generated_values() {
 			return this.transformToGeneratedRange(this.styled_ranges);
 		},
 	},
 	methods: {
-		checkRules: function (ranges) {
+		checkRules(ranges) {
 			let result = true;
 
 			const rules = this.getRules();
@@ -61,7 +61,7 @@ export default {
 
 			return result;
 		},
-		getRules: function () {
+		getRules() {
 			return [
 				(list) => !!list.length || this.labels.one_required,
 				(list) => {
@@ -87,7 +87,7 @@ export default {
 				},
 			];
 		},
-		isNavCombo: function (keyboard_event) {
+		isNavCombo(keyboard_event) {
 			const { key } = keyboard_event;
 			const is_copy_paste =
 				(keyboard_event.ctrlKey &&
@@ -96,20 +96,20 @@ export default {
 			if (is_copy_paste) return true;
 			return key === "Backspace" || (key === "Delete" && key.includes("Arrow"));
 		},
-		onInput: function (keyboard_event) {
+		onInput(keyboard_event) {
 			const { key } = keyboard_event;
 			const not_a_num_key = Number.isNaN(Number.parseInt(key, 10));
 			if (key !== " " && key !== "-" && not_a_num_key && !this.isNavCombo(keyboard_event)) {
 				keyboard_event.preventDefault();
 			}
 		},
-		transformToRaw: function (ranges) {
+		transformToRaw(ranges) {
 			return ranges.map((r) => (Array.isArray(r) ? r.join(" - ") : String(r)));
 		},
-		transformToStyled: function (ranges) {
+		transformToStyled(ranges) {
 			return ranges.map((r) => r.split(/\s*-\s*/).map((v) => Number.parseInt(v)));
 		},
-		transformToGeneratedRange: function (ranges) {
+		transformToGeneratedRange(ranges) {
 			let res = [];
 			ranges.forEach((range) => {
 				if (range.length === 1) res.push(range[0]);
@@ -127,10 +127,10 @@ export default {
 			return no_duplicates;
 		},
 	},
-	mounted: function () {
+	mounted() {
 		this.$refs.form.validate();
 	},
-	created: function () {
+	created() {
 		window.generateRange = this.transformToGeneratedRange;
 	},
 	watch: {

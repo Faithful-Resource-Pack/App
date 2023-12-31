@@ -30,21 +30,21 @@ export default {
 		types: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
 		versions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
 		editions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
@@ -162,7 +162,7 @@ export default {
 		};
 	},
 	computed: {
-		versions_sorted: function () {
+		versions_sorted() {
 			return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b));
 		},
 	},
@@ -171,25 +171,25 @@ export default {
 			// js highlight example
 			return Prism.highlight(code, Prism.languages.js, "json");
 		},
-		addNewTexture: function () {
+		addNewTexture() {
 			this.textures.push(emptyTexture());
 		},
-		addNewUse: function (textureIndex) {
+		addNewUse(textureIndex) {
 			this.textures[textureIndex].uses.push(emptyUse());
 		},
-		addNewPath: function (textureIndex, useIndex) {
+		addNewPath(textureIndex, useIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.push(emptyPath());
 		},
-		deleteTexture: function (textureIndex) {
+		deleteTexture(textureIndex) {
 			this.textures.splice(textureIndex, 1);
 		},
-		deleteUse: function (textureIndex, useIndex) {
+		deleteUse(textureIndex, useIndex) {
 			this.textures[textureIndex].uses.splice(useIndex, 1);
 		},
-		deletePath: function (textureIndex, useIndex, pathIndex) {
+		deletePath(textureIndex, useIndex, pathIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1);
 		},
-		MinecraftSorter: function (a, b) {
+		MinecraftSorter(a, b) {
 			const aSplit = a.split(".").map((s) => parseInt(s));
 			const bSplit = b.split(".").map((s) => parseInt(s));
 
@@ -211,10 +211,10 @@ export default {
 
 			return result;
 		},
-		onCancel: function () {
+		onCancel() {
 			this.modalOpened = false;
 		},
-		onEditionChange: function (value, use) {
+		onEditionChange(value, use) {
 			if (value !== "bedrock") return;
 
 			if (!use.paths) use.paths = [emptyPath()];
@@ -225,7 +225,7 @@ export default {
 				}
 			});
 		},
-		versionsLeft: function (textureIndex, useIndex) {
+		versionsLeft(textureIndex, useIndex) {
 			const otherUseIndex = 1 - useIndex;
 			let result = this.editions;
 
@@ -235,7 +235,7 @@ export default {
 			}
 			return result;
 		},
-		parseJSON: function () {
+		parseJSON() {
 			try {
 				const data = JSON.parse(this.formData.importjson);
 				this.textures = data;
@@ -244,7 +244,7 @@ export default {
 				this.$root.showSnackBar(err, "error");
 			}
 		},
-		send: function () {
+		send() {
 			const data = JSON.parse(JSON.stringify(this.textures));
 			const api_data = data.map((e) => ({
 				name: e.name,
@@ -276,7 +276,7 @@ export default {
 	},
 	watch: {
 		closeOnSubmit: {
-			handler: function (newValue, oldValue) {
+			handler(newValue, oldValue) {
 				if (oldValue === undefined && newValue === false) {
 					this.closeOnSubmit = localStorage.getItem("MTMA_MODAL") || newValue;
 				} else if (newValue !== oldValue) {
@@ -285,7 +285,7 @@ export default {
 			},
 			immediate: true,
 		},
-		value: function (newValue, oldValue) {
+		value(newValue, oldValue) {
 			if (oldValue !== newValue && newValue === true) {
 				Vue.nextTick(() => {
 					this.textures = [emptyTexture()];
@@ -294,7 +294,7 @@ export default {
 			}
 			this.modalOpened = newValue;
 		},
-		modalOpened: function (newValue) {
+		modalOpened(newValue) {
 			this.$emit("input", newValue);
 		},
 	},

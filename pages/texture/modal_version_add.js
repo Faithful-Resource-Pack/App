@@ -10,14 +10,14 @@ export default {
 		editions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
 		versions: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
@@ -77,7 +77,7 @@ export default {
 		};
 	},
 	methods: {
-		send: function () {
+		send() {
 			axios
 				.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
 				.then(() => {
@@ -90,7 +90,7 @@ export default {
 		},
 	},
 	watch: {
-		dialog: function (newValue, oldValue) {
+		dialog(newValue, oldValue) {
 			if (oldValue !== newValue && newValue === true) {
 				Vue.nextTick(() => {
 					this.$refs.form.reset();

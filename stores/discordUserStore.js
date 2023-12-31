@@ -8,12 +8,12 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 	}),
 
 	actions: {
-		params: function (newDiscordUserURL) {
+		params(newDiscordUserURL) {
 			this.$patch({
 				discordUserURL: newDiscordUserURL || this.discordUserURL,
 			});
 		},
-		getInfo: function (accessToken) {
+		getInfo(accessToken) {
 			return fetch(this.discordUserURL, {
 				headers: {
 					authorization: `Bearer ${accessToken}`,
@@ -28,7 +28,7 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 			});
 		},
 
-		watchDiscordAuth: function (store, onError) {
+		watchDiscordAuth(store, onError) {
 			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
 			store.$subscribe((mutation) => {
 				if (mutation.type === "patch function") return;

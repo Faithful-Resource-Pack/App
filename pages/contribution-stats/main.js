@@ -40,7 +40,7 @@ export default {
 		};
 	},
 	methods: {
-		getData: function () {
+		getData() {
 			axios
 				.get(`${this.$root.apiURL}/contributions/raw`)
 				.then((res) => Object.values(res.data))
@@ -87,7 +87,7 @@ export default {
 				});
 		},
 
-		buildGraph: function () {
+		buildGraph() {
 			const width = 800;
 			const height = 500;
 			const spacing = 80;
@@ -278,7 +278,7 @@ export default {
 				.text((d) => d);
 		},
 
-		changeDates: function (data) {
+		changeDates(data) {
 			const dayArray = [];
 
 			const lastDay = moment("2021-03-30");
@@ -318,7 +318,7 @@ export default {
 			});
 		},
 	},
-	created: function () {
+	created() {
 		this.getData();
 	},
 };

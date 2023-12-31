@@ -5,7 +5,7 @@ export default {
     <td>Add: </td>
     <td v-for="type in Object.keys(types)" :key="type" @click="send(types[type])" v-text="type"></td>
 </tr></table>`,
-	data: function () {
+	data() {
 		return {
 			types: {
 				string: "",
@@ -18,7 +18,7 @@ export default {
 		};
 	},
 	methods: {
-		send: function (obj) {
+		send(obj) {
 			this.$emit("clicked", obj);
 		},
 	},

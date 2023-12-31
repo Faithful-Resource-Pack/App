@@ -6,7 +6,7 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 	}),
 
 	actions: {
-		verifySearchParams: function (search) {
+		verifySearchParams(search) {
 			const urlSearchParams = new URLSearchParams(search);
 			const auth = Object.fromEntries(urlSearchParams.entries());
 
@@ -20,7 +20,7 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 				},
 			];
 		},
-		verifyLocalStorage: function (storedAuth) {
+		verifyLocalStorage(storedAuth) {
 			if (storedAuth === null) return [false, undefined, undefined];
 
 			let auth = undefined;
@@ -39,10 +39,10 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 			// [present, outdated, auth]
 			return [true, false, auth];
 		},
-		expiryDurationToTime: function (duration) {
+		expiryDurationToTime(duration) {
 			return new Date(new Date().getTime() + duration * 1000 - 60000);
 		},
-		refreshLogin: function (auth = undefined) {
+		refreshLogin(auth = undefined) {
 			if (auth === undefined) auth = this.$state;
 
 			return fetch("/api/discord/refresh", {
@@ -63,14 +63,14 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 					};
 				});
 		},
-		logout: function () {
+		logout() {
 			this.$reset(); // ! Very important to reset all stores
 			this.$patch({
 				access_token: this.$state.access_token,
 			});
 		},
 
-		begin: function (search, storedAuth) {
+		begin(search, storedAuth) {
 			const res = this.verifySearchParams(search);
 			let has_auth_query_params = res[0];
 			let auth = res[1];

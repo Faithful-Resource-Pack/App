@@ -83,7 +83,7 @@ export default {
 		},
 		onSubmit: {
 			type: Function,
-			default: function () {
+			default() {
 				return Promise.resolve();
 			},
 		},
@@ -96,7 +96,7 @@ export default {
 		};
 	},
 	methods: {
-		getPaths: function (useID) {
+		getPaths(useID) {
 			axios
 				.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
 				.then((res) => {
@@ -113,7 +113,7 @@ export default {
 					console.error(err);
 				});
 		},
-		deleteData: function () {
+		deleteData() {
 			if (this.type === "use") {
 				const useId = this.data.id;
 				axios

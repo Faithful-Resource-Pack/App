@@ -92,14 +92,14 @@ export default {
 		};
 	},
 	computed: {
-		dialogTitle: function () {
+		dialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_contributor
 				: this.$root.lang().database.titles.change_contributor;
 		},
 	},
 	methods: {
-		send: function () {
+		send() {
 			const data = this.formData;
 			const id = data.id;
 
@@ -122,7 +122,7 @@ export default {
 		},
 	},
 	watch: {
-		dialog: function () {
+		dialog() {
 			Vue.nextTick(() => {
 				if (!this.add)
 					Object.keys(this.data).forEach((key) => {

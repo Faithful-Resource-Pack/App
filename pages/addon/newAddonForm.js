@@ -22,7 +22,7 @@ export default {
     />
   </div>
   `,
-	data: function () {
+	data() {
 		return {
 			header: undefined,
 			screenshots: [],
@@ -31,12 +31,12 @@ export default {
 		};
 	},
 	computed: {
-		screenSources: function () {
+		screenSources() {
 			return this.screenshots.map((file) => URL.createObjectURL(file));
 		},
 	},
 	methods: {
-		handleSubmit: function (data) {
+		handleSubmit(data) {
 			// 1. Upload
 			let id;
 			axios
@@ -112,10 +112,10 @@ export default {
 							});
 				});
 		},
-		handleHeader: function (file, remove = false) {
+		handleHeader(file, remove = false) {
 			this.header = remove ? undefined : file;
 		},
-		handleScreenshot: function (screenshots, index, remove = false, id = undefined) {
+		handleScreenshot(screenshots, index, remove = false, id = undefined) {
 			if (remove) {
 				if (id !== undefined) {
 					index = this.screenshotIds.indexOf(id);

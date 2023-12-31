@@ -49,12 +49,12 @@ export default {
 		},
 	},
 	computed: {
-		title: function () {
+		title() {
 			return this.$props.data.name;
 		},
 	},
 	methods: {
-		deleteAddon: function () {
+		deleteAddon() {
 			const addon_id = JSON.parse(JSON.stringify(this.$props.data.id));
 
 			axios

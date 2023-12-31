@@ -203,7 +203,7 @@ export default {
 		};
 	},
 	computed: {
-		queryToIds: function () {
+		queryToIds() {
 			if (this.$route.query.ids) {
 				return this.$route.query.ids.split("-");
 			}
@@ -211,12 +211,12 @@ export default {
 			// use the logged user as default selected contributor
 			return [];
 		},
-		idsToQuery: function () {
+		idsToQuery() {
 			return {
 				ids: this.contributors_selected.join("-"),
 			};
 		},
-		searchDisabled: function () {
+		searchDisabled() {
 			const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false;
 			const invalidTextSearch =
 				this.textureSearch.length < 3 && Number.isNaN(Number.parseInt(this.textureSearch));
@@ -226,7 +226,7 @@ export default {
 				(this.contributors_selected.length === 0 && invalidTextSearch);
 			return result;
 		},
-		listColumns: function () {
+		listColumns() {
 			let columns = 1;
 
 			if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
@@ -238,18 +238,18 @@ export default {
 
 			return columns;
 		},
-		multiple: function () {
+		multiple() {
 			return this.newSubmit;
 		},
-		packsSelected: function () {
+		packsSelected() {
 			return this.form.packs.filter((entry) => entry.selected);
 		},
-		packsToChoose: function () {
+		packsToChoose() {
 			return this.form.packs
 				.filter((entry) => entry.key !== this.all_packs)
 				.map((entry) => entry.key);
 		},
-		splittedResults: function () {
+		splittedResults() {
 			const res = [];
 			for (let col = 0; col < this.listColumns; ++col) {
 				res.push([]);
@@ -263,15 +263,15 @@ export default {
 
 			return res;
 		},
-		onModalSubmit: function () {
+		onModalSubmit() {
 			return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit;
 		},
 	},
 	methods: {
-		momo: function (...args) {
+		momo(...args) {
 			return moment(...args);
 		},
-		packToCode: function (pack) {
+		packToCode(pack) {
 			if (pack === "default") {
 				return "16x";
 			}
@@ -288,17 +288,17 @@ export default {
 				})
 				.join("");
 		},
-		showMore: function () {
+		showMore() {
 			this.displayedResults += 100;
 		},
-		getRes: function () {
+		getRes() {
 			axios.get(`${this.$root.apiURL}/contributions/packs`).then((res) => {
 				res.data.forEach((r) => {
 					this.addRes(r, r.replaceAll("_", " "));
 				});
 			});
 		},
-		getAuthors: function () {
+		getAuthors() {
 			axios
 				.get(`${this.$root.apiURL}/contributions/authors`)
 				.then((res) => {
@@ -328,13 +328,13 @@ export default {
 				selected: boolean,
 			});
 		},
-		openAdd: function () {
+		openAdd() {
 			this.newSubmit = true;
 			Vue.nextTick(() => {
 				this.$refs.mod.open(undefined, this.packsToChoose, true);
 			});
 		},
-		startSearch: function () {
+		startSearch() {
 			this.search.searching = true;
 			axios
 				.get(
@@ -385,7 +385,7 @@ export default {
 				.finally(() => (this.search.searching = false))
 				.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
-		editContribution: function (contrib) {
+		editContribution(contrib) {
 			this.newSubmit = false;
 			this.$refs.mod.open(contrib, this.packsToChoose, false);
 		},
@@ -462,7 +462,7 @@ export default {
 
 			return went_well;
 		},
-		onPackChange: function (selected, key) {
+		onPackChange(selected, key) {
 			if (key === this.all_packs) {
 				if (selected) {
 					// just checked all, unckeck others
@@ -487,7 +487,7 @@ export default {
 				}
 			}
 		},
-		onPackUnselected: function (key) {
+		onPackUnselected(key) {
 			// ensure at least one selected
 			if (this.packsSelected.length === 0) {
 				const index_entry = this.form.packs.findIndex((entry) => entry.key === key);
@@ -500,7 +500,7 @@ export default {
 				// do nothing, at least one is selected
 			}
 		},
-		onChangeSubmit: function (data) {
+		onChangeSubmit(data) {
 			axios
 				.put(
 					`${this.$root.apiURL}/contributions/${data.id}`,
@@ -522,7 +522,7 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		deleteContribution: function (id) {
+		deleteContribution(id) {
 			axios
 				.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
 				.then(() => {
@@ -534,20 +534,20 @@ export default {
 				});
 		},
 	},
-	created: function () {
+	created() {
 		this.contributors_selected = this.queryToIds;
 		this.addRes(this.all_packs, this.all_packs_display, true);
 		window.eventBus.$on("newContributor", (l) => {
 			this.contributors = l;
 		});
 	},
-	mounted: function () {
+	mounted() {
 		this.getRes();
 		this.getAuthors();
 	},
 	watch: {
 		contributors: {
-			handler: function (contributors) {
+			handler(contributors) {
 				// FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
 				const contributors_id = contributors.map((c) => c.id);
 				this.contributors_selected = this.contributors_selected.filter((c) =>

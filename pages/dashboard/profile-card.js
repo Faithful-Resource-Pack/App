@@ -50,7 +50,7 @@ export default {
 </dashboard-card>
   `,
 	computed: {
-		user: function () {
+		user() {
 			return this.$root.user;
 		},
 	},

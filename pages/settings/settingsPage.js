@@ -42,7 +42,7 @@ export default {
   </v-card>
 </v-container>
   `,
-	data: function () {
+	data() {
 		return {
 			panels: 1,
 			jsonText: "{}",
@@ -50,7 +50,7 @@ export default {
 		};
 	},
 	computed: {
-		jsonIsNotValid: function () {
+		jsonIsNotValid() {
 			try {
 				const stringParsed = JSON.parse(this.jsonText);
 				return false;
@@ -98,7 +98,7 @@ export default {
 			} catch (_ignore) {}
 		},
 	},
-	created: function () {
+	created() {
 		axios
 			.get(this.$root.apiURL + "/settings/raw", {
 				headers: {

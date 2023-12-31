@@ -63,7 +63,7 @@ export default {
   </v-col>
 </v-row>
 `,
-	data: function () {
+	data() {
 		return {
 			ratio: 5 / 3,
 			height: 314,
@@ -71,16 +71,16 @@ export default {
 		};
 	},
 	computed: {
-		width: function () {
+		width() {
 			return this.height * this.ratio;
 		},
-		theme: function () {
+		theme() {
 			return this.$root.isDark ? "dark" : "classic";
 		},
-		types: function () {
+		types() {
 			return this.labels.reduce((acc, cur, i) => ({ ...acc, [cur]: this.series[i] }), {});
 		},
-		values: function () {
+		values() {
 			return this.series
 				.map((e, i) => {
 					return [this.labels[i], e];
@@ -88,7 +88,7 @@ export default {
 				.sort((a, b) => b[1] - a[1])
 				.map((e, i) => [i, ...e]);
 		},
-		shade: function () {
+		shade() {
 			let start = this.GColor(this.colors[this.colors.length - 1]);
 			let end = this.GColor(this.colors[0]);
 
@@ -96,7 +96,7 @@ export default {
 		},
 	},
 	methods: {
-		GColor: function (r, g, b) {
+		GColor(r, g, b) {
 			if (r !== undefined && g === undefined && b === undefined) {
 				g = Number.parseInt(r.slice(3, 5), 16);
 				b = Number.parseInt(r.slice(5, 7), 16);
@@ -119,7 +119,7 @@ export default {
 				this.renderComponent = true;
 			});
 		},
-		createColorRange: function (c1, c2, n = 255) {
+		createColorRange(c1, c2, n = 255) {
 			var colorList = [],
 				tmpColor,
 				variance;
@@ -137,16 +137,16 @@ export default {
 			return colorList;
 		},
 	},
-	created: function () {
+	created() {
 		if (this.series.length !== this.labels.length) {
 			throw new Error("Failed to parse series and labels");
 		}
 	},
 	watch: {
-		theme: function () {
+		theme() {
 			this.forceRerender();
 		},
-		loading: function (n) {
+		loading(n) {
 			if (n === false) this.renderComponent = true;
 		},
 	},

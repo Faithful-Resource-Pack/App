@@ -43,41 +43,41 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-	data: function () {
+	data() {
 		return {
 			data: undefined,
 		};
 	},
 	computed: {
-		total: function () {
+		total() {
 			if (this.data && this.data.total) return this.data.total;
 			return "";
 		},
-		chart: function () {
+		chart() {
 			return this.$refs.chart;
 		},
-		url: function () {
+		url() {
 			return "/users/stats";
 		},
-		series: function () {
+		series() {
 			return this.data
 				? Object.values(this.data.total_per_roles)
 				: new Array(14).fill(undefined).map(() => 0);
 		},
-		labels: function () {
+		labels() {
 			return this.data
 				? Object.keys(this.data.total_per_roles)
 				: new Array(14).fill(undefined).map(() => "??");
 		},
 	},
 	methods: {
-		get: function () {
+		get() {
 			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
 				this.data = res.data;
 			});
 		},
 	},
-	created: function () {
+	created() {
 		this.get();
 	},
 };

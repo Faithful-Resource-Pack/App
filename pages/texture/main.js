@@ -158,19 +158,19 @@ export default {
 		};
 	},
 	computed: {
-		texturesTypes: function () {
+		texturesTypes() {
 			return ["all", ...this.types];
 		},
-		type: function () {
+		type() {
 			if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type))
 				return this.$route.params.type;
 			return undefined;
 		},
-		name: function () {
+		name() {
 			if (this.type !== undefined) return this.$route.params.name;
 			return this.$route.params.type;
 		},
-		listColumns: function () {
+		listColumns() {
 			let columns = 1;
 
 			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
@@ -184,7 +184,7 @@ export default {
 
 			return columns;
 		},
-		splittedResults: function () {
+		splittedResults() {
 			const res = [];
 
 			const keys = Object.keys(this.textures);
@@ -220,7 +220,7 @@ export default {
 				? `/textures/${t}/${name !== undefined ? name : this.name}`
 				: `/textures/${t}`;
 		},
-		startSearch: function () {
+		startSearch() {
 			let newPath = this.textureURL(this.type, this.search);
 
 			// DO NOT CHANGE ROUTE IF SAME PATH
@@ -231,15 +231,15 @@ export default {
 				this.getTextures();
 			}
 		},
-		clearSearch: function () {
+		clearSearch() {
 			this.search = "";
 			this.startSearch();
 		},
-		openDialog: function (data = {}) {
+		openDialog(data = {}) {
 			this.dialogOpen = true;
 			this.dialogData = data;
 		},
-		disableDialog: function (refresh = false) {
+		disableDialog(refresh = false) {
 			if (refresh) {
 				this.getTypes();
 				this.getEditions();
@@ -247,20 +247,20 @@ export default {
 				this.getVersions();
 			}
 		},
-		openModifyMCDialog: function () {
+		openModifyMCDialog() {
 			this.MCDialogOpen = true;
 		},
-		disableMCDialog: function () {
+		disableMCDialog() {
 			this.MCDialogOpen = false;
 		},
-		openNewMCDialog: function () {
+		openNewMCDialog() {
 			this.addMultiple = true;
 		},
-		askRemove: function (data) {
+		askRemove(data) {
 			this.remove.data = data;
 			this.remove.confirm = true;
 		},
-		getTypes: function () {
+		getTypes() {
 			axios
 				.get(`${this.$root.apiURL}/textures/tags`)
 				.then((res) => {
@@ -275,7 +275,7 @@ export default {
 					});
 				});
 		},
-		getEditions: function () {
+		getEditions() {
 			axios
 				.get(`${this.$root.apiURL}/textures/editions`)
 				.then((res) => {
@@ -285,7 +285,7 @@ export default {
 					console.error(err);
 				});
 		},
-		getVersions: function () {
+		getVersions() {
 			axios
 				.get(`${this.$root.apiURL}/textures/versions`)
 				.then((res) => {
@@ -295,7 +295,7 @@ export default {
 					console.error(err);
 				});
 		},
-		getTextures: function () {
+		getTextures() {
 			let url = new URL(`${this.$root.apiURL}/textures/search`);
 			if (this.$route.params.type && this.$route.params.type != "all")
 				url.searchParams.set("tag", this.$route.params.type);
@@ -310,17 +310,17 @@ export default {
 					console.error(err);
 				});
 		},
-		update: function (textures = true) {
+		update(textures = true) {
 			this.getTypes();
 			if (textures) this.getTextures();
 			this.getEditions();
 			this.getVersions();
 		},
-		showMore: function () {
+		showMore() {
 			this.displayedResults += 100;
 			this.update();
 		},
-		removeTexture: function (data) {
+		removeTexture(data) {
 			const textureId = data.id;
 			return axios
 				.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
@@ -342,7 +342,7 @@ export default {
 			}
 		},
 	},
-	mounted: function () {
+	mounted() {
 		this.update(false);
 		window.updatePageStyles(this);
 	},

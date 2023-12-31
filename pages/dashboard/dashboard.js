@@ -42,7 +42,7 @@ export default {
 </div>
 `,
 	computed: {
-		admin: function () {
+		admin() {
 			// if not logged in
 			if (!this.$root.isUserLogged) return false;
 
@@ -55,7 +55,7 @@ export default {
 				this.$root.user.roles.includes("Developer")
 			);
 		},
-		colors: function () {
+		colors() {
 			// https://colordesigner.io/gradient-generator
 			if (this.$root.isDark) {
 				return ["#1e1e1e", "#303c27", "#425d30", "#537f38", "#65a33f", "#76c945"];

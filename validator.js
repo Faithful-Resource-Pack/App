@@ -28,7 +28,7 @@ function useSchema(editions, versions) {
 			name: "editions",
 			type: "array",
 			length: { min: 1, max: 1 },
-			validator: function (array) {
+			validator(array) {
 				array.forEach((edi) => {
 					if (!editions.includes(edi))
 						throw new Error(
@@ -42,7 +42,7 @@ function useSchema(editions, versions) {
 		{
 			name: "paths",
 			type: "array",
-			validator: function (array, parent) {
+			validator(array, parent) {
 				single(
 					array,
 					{
@@ -97,7 +97,7 @@ function textureSchema(types, editions, versions) {
 				name: "type",
 				type: "array",
 				length: { min: 1 },
-				validator: function (array) {
+				validator(array) {
 					array.forEach((type) => {
 						if (!types.includes(type))
 							throw new Error('Unknown type "' + type + '". Only accepts ' + JSON.stringify(types));

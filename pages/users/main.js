@@ -131,7 +131,7 @@ export default {
 		userURL(t) {
 			return "/users/" + t + "/" + (this.name || "");
 		},
-		startSearch: function () {
+		startSearch() {
 			// ok so url is /whatever/ => /whatever/<search>
 			// ok so url is /whatever/<oldSearch> => /whatever/<search>
 			// ok so url is /whatever/<role> =>/whatever/<role>/<search>
@@ -156,7 +156,7 @@ export default {
 			}
 			this.getUsers();
 		},
-		getRoles: function () {
+		getRoles() {
 			axios
 				.get(`${this.$root.apiURL}/users/roles`)
 				.then((response) => {
@@ -171,7 +171,7 @@ export default {
 					});
 				});
 		},
-		getUsers: function () {
+		getUsers() {
 			this.loading = true;
 			let url = `${this.$root.apiURL}${this.$route.path
 				.split("/")
@@ -187,49 +187,49 @@ export default {
 					this.loading = false;
 				});
 		},
-		update: function () {
+		update() {
 			this.getRoles();
 			this.getUsers();
 		},
-		clearSearch: function () {
+		clearSearch() {
 			this.search = "";
 			this.startSearch();
 		},
-		openDialog: function (data = undefined) {
+		openDialog(data = undefined) {
 			this.dialogData = data;
 			this.dialogDataAdd = data === undefined ? true : false;
 			this.dialogOpen = true;
 		},
-		disableDialog: function (refresh = false) {
+		disableDialog(refresh = false) {
 			this.dialogOpen = false;
 			this.dialogData = {};
 			this.dialogDataAdd = false;
 
 			if (refresh) this.update();
 		},
-		askRemove: function (data) {
+		askRemove(data) {
 			this.remove.data = data;
 			this.remove.confirm = true;
 		},
 	},
 	computed: {
-		usersRoles: function () {
+		usersRoles() {
 			return ["all", ...this.roles];
 		},
-		role: function () {
+		role() {
 			if (this.$route.params.type && this.usersRoles.includes(this.$route.params.type)) {
 				return this.$route.params.type;
 			}
 			return undefined;
 		},
-		name: function () {
+		name() {
 			if (this.role !== undefined) {
 				return this.$route.params.name;
 			}
 
 			return this.$route.params.type;
 		},
-		listColumns: function () {
+		listColumns() {
 			let columns = 1;
 
 			if (this.$vuetify.breakpoint.mdAndUp && this.users.length >= 6) {
@@ -241,7 +241,7 @@ export default {
 
 			return columns;
 		},
-		splittedUsers: function () {
+		splittedUsers() {
 			const res = [];
 			for (let col = 0; col < this.listColumns; ++col) {
 				res.push([]);
@@ -256,7 +256,7 @@ export default {
 			return res;
 		},
 	},
-	mounted: function () {
+	mounted() {
 		this.getRoles();
 		window.updatePageStyles(this);
 	},

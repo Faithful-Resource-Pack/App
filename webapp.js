@@ -327,7 +327,7 @@ axios
 			},
 			watch: {
 				selectedLang: {
-					handler: function (newValue, oldValue) {
+					handler(newValue, oldValue) {
 						_set_lang(newValue);
 						if (Object.keys(this.langs).includes(newValue)) {
 							if (Object.keys(this.langs).includes(oldValue)) {
@@ -383,7 +383,7 @@ axios
 					immediate: true,
 				},
 				isDark: {
-					handler: function (n) {
+					handler(n) {
 						let arr = ["theme--light", "theme--dark"];
 						if (n == true) {
 							arr = arr.reverse();
@@ -396,10 +396,10 @@ axios
 					},
 					immediate: true,
 				},
-				drawer: function (n) {
+				drawer(n) {
 					localStorage.setItem(MENU_KEY, String(n));
 				},
-				isUserLogged: function (n) {
+				isUserLogged(n) {
 					if (!n) return;
 
 					// add all routes with no role
@@ -413,7 +413,7 @@ axios
 							router.addRoute(r);
 						});
 				},
-				userRoles: function (n, o) {
+				userRoles(n, o) {
 					if (o === undefined || o.length === undefined) return;
 					if (n.length === undefined) return;
 					// only update routes based on your roles fetched (role list is longer)
@@ -451,7 +451,7 @@ axios
 				},
 			},
 			computed: {
-				user: function () {
+				user() {
 					return {
 						access_token: this.discordAuth.access_token,
 
@@ -463,7 +463,7 @@ axios
 						roles: this.appUser.appUserRoles || [],
 					};
 				},
-				apiURL: function () {
+				apiURL() {
 					if (
 						Vue.config.devtools &&
 						this.vapiURL &&
@@ -473,7 +473,7 @@ axios
 						return this.vapiURL.replace("localhost", window.location.host);
 					return this.vapiURL;
 				},
-				apiOptions: function () {
+				apiOptions() {
 					return {
 						headers: { discord: this.user.access_token },
 					};
@@ -482,7 +482,7 @@ axios
 				 * Check user perms & add (or not) tabs & routes following user perms
 				 * @returns all tabs to be added in the html
 				 */
-				availableTabs: function () {
+				availableTabs() {
 					const res = [];
 					const roles = this.userRoles;
 
@@ -509,24 +509,24 @@ axios
 
 					return res;
 				},
-				year: function () {
+				year() {
 					return new Date().getFullYear();
 				},
-				isDesktop: function () {
+				isDesktop() {
 					return this.$vuetify.breakpoint.lgAndUp;
 				},
 				/**
 				 * Tell if the user is logged
 				 * @returns true if the user is logged
 				 */
-				isUserLogged: function () {
+				isUserLogged() {
 					return this.user && this.user.id && this.user.id !== undefined;
 				},
 				/**
 				 * Tell if the user is an admin
 				 * @returns true if user has admin role
 				 */
-				isAdmin: function () {
+				isAdmin() {
 					// if not logged in
 					if (!this.isUserLogged) return false;
 
@@ -540,21 +540,21 @@ axios
 				 * Get in real time the roles of a user
 				 * @returns user discord roles
 				 */
-				userRoles: function () {
+				userRoles() {
 					return this.user.roles;
 				},
-				langBCP47: function () {
+				langBCP47() {
 					return this.lang_to_bcp47(this.selectedLang);
 				},
-				isDark: function () {
+				isDark() {
 					return this.$vuetify.theme.dark;
 				},
 			},
 			methods: {
-				lang_to_bcp47: function (lang) {
+				lang_to_bcp47(lang) {
 					return LANGUAGES.filter((l) => l.lang === lang)[0]?.bcp47;
 				},
-				loadLanguage: function (language) {
+				loadLanguage(language) {
 					const lang = this.languages.filter((l) => l.lang === language)[0];
 
 					if (!lang) return;
@@ -580,7 +580,7 @@ axios
 							this.showSnackBar(e.toString(), "error");
 						});
 				},
-				loadBadge: function (url) {
+				loadBadge(url) {
 					axios.get(this.apiURL + url, this.apiOptions).then((r) => {
 						const res = r.data;
 						let val;
@@ -602,7 +602,7 @@ axios
 						}, 15000);
 					}
 				},
-				lang: function (path, raw = false) {
+				lang(path, raw = false) {
 					let response = this.langs[this.selectedLang];
 
 					// fallback to default when loading new language
@@ -628,10 +628,10 @@ axios
 					// Shall send string to be chained with other string operations
 					return String(response); // enforce string to ensure string methods used after
 				},
-				jsonSnackBar: function (json = undefined) {
+				jsonSnackBar(json = undefined) {
 					const that = this;
 					return {
-						showSnackBar: function () {
+						showSnackBar() {
 							let all_args = [...arguments];
 							if (all_args.length < 2) all_args.push("#222");
 							if (all_args.length < 3) all_args.push(4000);
@@ -641,7 +641,7 @@ axios
 						},
 					};
 				},
-				showSnackBar: function (message, color = "#222", timeout = 4000, json = undefined) {
+				showSnackBar(message, color = "#222", timeout = 4000, json = undefined) {
 					this.snackbar.submessage = "";
 					if (typeof message === "string") {
 						let newline = message.indexOf("\n");
@@ -666,17 +666,17 @@ axios
 					this.snackbar.timeout = timeout;
 					this.snackbar.show = true;
 				},
-				logout: function () {
+				logout() {
 					this.discordAuth.logout();
 				},
 				/**
 				 * Use this function in sub-components to check perms
 				 */
-				checkPermissions: function () {
+				checkPermissions() {
 					console.log(this.$route);
 					console.log(this.$router.options.routes);
 				},
-				compiledMarkdown: function (markdown) {
+				compiledMarkdown(markdown) {
 					if (markdown === null || !markdown) return "";
 					return marked(markdown, { sanitize: true });
 				},
@@ -713,7 +713,7 @@ axios
 			beforeCreate() {
 				pinia._a = this;
 			},
-			created: function () {
+			created() {
 				moment.locale(this.lang_to_bcp47(_get_lang()));
 
 				this.discordAuth
@@ -751,7 +751,7 @@ axios
 
 				window.eventBus = new Vue();
 			},
-			mounted: function () {
+			mounted() {
 				// watch color schemes for light and dark
 				window.matchMedia("(prefers-color-scheme: dark)").onchange = (ev) => {
 					console.log(ev);

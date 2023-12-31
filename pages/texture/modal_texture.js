@@ -101,7 +101,7 @@ export default {
 		types: {
 			type: Array,
 			required: false,
-			default: function () {
+			default() {
 				return [];
 			},
 		},
@@ -135,14 +135,14 @@ export default {
 		};
 	},
 	computed: {
-		dialogTitle: function () {
+		dialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_texture
 				: this.$root.lang().database.titles.change_texture;
 		},
 	},
 	methods: {
-		openSubDialog: function (data, add) {
+		openSubDialog(data, add) {
 			this.subDialogOpen = true;
 			this.subDialogAdd = add;
 
@@ -159,17 +159,17 @@ export default {
 				this.subDialogData = data;
 			}
 		},
-		disableSubDialog: function () {
+		disableSubDialog() {
 			this.subDialogOpen = false;
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
-		closeAndUpdate: function () {
+		closeAndUpdate() {
 			this.remove.confirm = false;
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
-		send: function () {
+		send() {
 			if (!this.$root.isUserLogged) return;
 
 			let promise = Promise.resolve();
@@ -200,7 +200,7 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		getUses: function (textureID) {
+		getUses(textureID) {
 			axios
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
@@ -215,20 +215,20 @@ export default {
 					console.error(err);
 				});
 		},
-		askRemoveUse: function (data) {
+		askRemoveUse(data) {
 			this.remove.data = data;
 			this.remove.confirm = true;
 		},
-		onCancel: function () {
+		onCancel() {
 			this.modalOpened = false;
 			this.disableDialog();
 		},
 	},
 	watch: {
-		value: function (newValue) {
+		value(newValue) {
 			this.modalOpened = newValue;
 		},
-		modalOpened: function (newValue, oldValue) {
+		modalOpened(newValue, oldValue) {
 			if (newValue === true) {
 				Vue.nextTick(() => {
 					if (this.add) this.$refs.form.reset();

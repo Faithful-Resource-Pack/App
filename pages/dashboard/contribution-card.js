@@ -54,16 +54,16 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-	data: function () {
+	data() {
 		return {
 			data: undefined,
 		};
 	},
 	computed: {
-		url: function () {
+		url() {
 			return "/contributions/stats";
 		},
-		totals: function () {
+		totals() {
 			if (!this.data) return [, , ,];
 			return Object.keys(this.data)
 				.filter((e) => e.includes("total"))
@@ -74,10 +74,10 @@ export default {
 					};
 				});
 		},
-		today: function () {
+		today() {
 			return new Date();
 		},
-		locale: function () {
+		locale() {
 			return {
 				months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),
 				days: moment.weekdaysShort().map((e) => e[0].toUpperCase() + e.slice(1)),
@@ -86,17 +86,17 @@ export default {
 		},
 	},
 	methods: {
-		get: function () {
+		get() {
 			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
 				this.data = res.data;
 			});
 		},
 	},
-	created: function () {
+	created() {
 		this.get();
 	},
 	watch: {
-		totals: function (n, o) {
+		totals(n, o) {
 			if (!o) return; // o is undefined
 			if (!o.length) return; // o is empty
 

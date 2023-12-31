@@ -72,7 +72,7 @@ export default {
 		};
 	},
 	methods: {
-		send: function () {
+		send() {
 			const data = JSON.parse(JSON.stringify(this.form));
 			data.token = this.$root.user.access_token;
 

@@ -219,11 +219,11 @@ export default {
 		};
 	},
 	methods: {
-		isMediaOk: function () {
+		isMediaOk() {
 			if (this.newMedia.type !== "" && this.newMedia.link !== "") return false;
 			return true;
 		},
-		validURL: function (str) {
+		validURL(str) {
 			const pattern = new RegExp(
 				"^(https?:\\/\\/)?" + // protocol
 					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
@@ -235,10 +235,10 @@ export default {
 			); // fragment locator
 			return !!pattern.test(str);
 		},
-		removeSocialMedia: function (index) {
+		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);
 		},
-		addSocialMedia: function () {
+		addSocialMedia() {
 			if (!this.localUser.media) this.localUser.media = [];
 
 			this.localUser.media.push({
@@ -251,7 +251,7 @@ export default {
 				link: "",
 			};
 		},
-		validForm: function (boolResult, sentence) {
+		validForm(boolResult, sentence) {
 			if (boolResult) {
 				this.everythingIsOk = true;
 				return true;
@@ -260,7 +260,7 @@ export default {
 			this.everythingIsOk = false;
 			return sentence.toString();
 		},
-		send: function () {
+		send() {
 			if (!this.$root.isUserLogged) return;
 
 			// fix if new user
@@ -280,7 +280,7 @@ export default {
 					this.$root.showSnackBar(error, "error");
 				});
 		},
-		getUserInfo: function () {
+		getUserInfo() {
 			if (!this.$root.isUserLogged) return;
 
 			axios
@@ -298,11 +298,11 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		update: function () {
+		update() {
 			this.getUserInfo();
 		},
 	},
-	mounted: function () {
+	mounted() {
 		this.$root.addAccessTokenListener(this.update);
 	},
 };
