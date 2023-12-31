@@ -326,7 +326,7 @@ export default {
 				progart: "Default Programmer Art",
 				faithful_32x: "Faithful 32x",
 				faithful_64x: "Faithful 64x",
-				classic_faithful_32x: "Classic Faithful 32x",
+				classic_faithful_32x: "Classic Faithful 32x Jappa",
 				classic_faithful_32x_progart: "Classic Faithful 32x Programmer Art",
 				classic_faithful_64x: "Classic Faithful 64x",
 			};
