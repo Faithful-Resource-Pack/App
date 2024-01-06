@@ -130,7 +130,6 @@ export default {
 			add_new_contribution: "Add a new contribution",
 			clone_contribution: "Clone the contribution",
 			no_contributor_yet: "No contributor yet",
-			resolution: "Resource Packs",
 			pack: "Resource Packs",
 			contributor: "User",
 			select_contributor_type: "Select user roles",

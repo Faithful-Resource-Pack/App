@@ -24,7 +24,7 @@ export default {
     </v-row>
 
     <!-- Pack selection -->
-    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.resolution }}</h2>
+    <h2 class="text-h5 my-4 font-weight-medium">{{ $root.lang().database.subtitles.pack }}</h2>
     <div class="d-flex flex-wrap ma-n1">
       <v-card
         v-for="(packs_obj) in form.packs"
