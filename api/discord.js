@@ -9,7 +9,7 @@ const CLIENT_ID = process.env.OAUTH2_ID;
 const CLIENT_TOKEN = process.env.OAUTH2_TOKEN;
 const REDIRECT_URI = `${process.env.REDIRECT_DOMAIN}/api/discord/callback`;
 
-console.log("redirect URI is: " + REDIRECT_URI);
+console.log("Redirect URI is: " + REDIRECT_URI);
 
 router.get("/login", (req, res) => {
 	res.redirect(

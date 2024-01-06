@@ -447,7 +447,7 @@ export default {
 			edition: "Edition",
 			pack: "Pack",
 		},
-		all: "all",
+		all: "All",
 		modal: {
 			items: {
 				information: "information",

@@ -446,6 +446,8 @@ export default {
 			this.loading = true;
 			this.displayedTextures = [];
 
+			const edition = this.current.edition.toLowerCase();
+			if (this.current.version === "latest") this.options.versions = settings.versions[edition];
 			const version =
 				this.current.version === "latest" ? this.options.versions[0] : this.current.version;
 
@@ -454,7 +456,7 @@ export default {
 				.get(
 					`${this.$root.apiURL}/gallery/${this.displayToPackID(
 						this.current.pack,
-					)}/${this.current.edition.toLowerCase()}/${version}/${this.current.tag}${
+					)}/${edition}/${version}/${this.current.tag}${
 						this.current.search ? `?search=${this.current.search}` : ""
 					}`,
 				)
