@@ -590,7 +590,10 @@ export default {
 	mounted() {
 		// redirect from "latest" to actual latest version
 		const split = this.$route.path.split("/");
-		if (split[4] === "latest") this.updateRoute(settings.versions[split[2]][0], "version");
+		if (split[4] === "latest") {
+			split[4] = settings.versions[split[2]][0];
+			this.$router.push(split.join("/"));
+		}
 
 		this.scroll();
 		window.addEventListener("resize", () => {
