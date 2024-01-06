@@ -63,7 +63,7 @@ export default {
           item-text="label"
           item-value="value"
           :value="current.tag"
-          :label="$root.lang('gallery.category.tags')"
+          :label="$root.lang('gallery.category.tag')"
           v-on:change="updateRoute($event, 'tag')"
         ></v-select>
       </v-col>
@@ -209,7 +209,7 @@ export default {
 			options: {
 				packs: Object.values(this.packIDmap()),
 				tags: [this.$root.lang().gallery.all],
-				versions: settings.versions.java.map((e) => e.toLowerCase()),
+				versions: settings.versions.java,
 				editions: settings.editions,
 			},
 			// search values
@@ -218,7 +218,7 @@ export default {
 				tag: "all",
 				// latest is always at top
 				version: settings.versions.java[0],
-				edition: settings.editions[0],
+				edition: "Java",
 				search: null,
 			},
 			// number of displayed results
@@ -277,10 +277,12 @@ export default {
 				if (JSON.stringify(params) === JSON.stringify(old_params)) return;
 
 				// convert legacy urls to modern format
-				this.current.pack = ["16x", "32x", "64x"].includes(params.pack)
-					? this.packIDtoDisplay(this.resToPackID(params.pack))
-					: this.packIDtoDisplay(params.pack);
+				this.current.pack = this.packIDtoDisplay(
+					["16x", "32x", "64x"].includes(params.pack) ? this.resToPackID(params.pack) : params.pack,
+				);
 
+				// change available versions so you don't get a blank item
+				this.options.versions = settings.versions[params.edition];
 				this.current.edition = this.toTitleCase(params.edition);
 				this.current.version = params.version;
 				this.current.tag = params.tag;
@@ -447,9 +449,8 @@ export default {
 			this.displayedTextures = [];
 
 			const edition = this.current.edition.toLowerCase();
-			if (this.current.version === "latest") this.options.versions = settings.versions[edition];
 			const version =
-				this.current.version === "latest" ? this.options.versions[0] : this.current.version;
+				this.current.version === "latest" ? settings.versions[edition][0] : this.current.version;
 
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
@@ -587,6 +588,10 @@ export default {
 		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
 	},
 	mounted() {
+		// redirect from "latest" to actual latest version
+		const split = this.$route.path.split("/");
+		if (split[4] === "latest") this.updateRoute(settings.versions[split[2]][0], "version");
+
 		this.scroll();
 		window.addEventListener("resize", () => {
 			this.computeGrid();

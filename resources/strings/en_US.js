@@ -441,7 +441,7 @@ export default {
 		},
 		category: {
 			search: "Search",
-			tags: "Tags",
+			tag: "Tag",
 			mc_version: "Minecraft Version",
 			edition: "Edition",
 			pack: "Pack",

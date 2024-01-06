@@ -367,7 +367,7 @@ export default {
 		},
 		category: {
 			search: "Buscar",
-			tags: "Tags",
+			tag: "Tags",
 			mc_version: "Versão do Minecraft",
 			edition: "Edição",
 			resolution: "Resolução",
