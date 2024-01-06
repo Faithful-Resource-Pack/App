@@ -198,7 +198,7 @@ export default {
 	data() {
 		return {
 			// whether the page shouldn't be stretched to the full width
-			stretched: localStorage.getItem(STRETCHED_KEY, "true") === "true" ? true : false,
+			stretched: localStorage.getItem(STRETCHED_KEY, "true") === "true",
 			// number of columns you want to display
 			columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -589,7 +589,7 @@ export default {
 	},
 	mounted() {
 		// redirect from "latest" to actual latest version
-		const split = this.$route.path.split("/");
+		const split = this.$route.fullPath.split("/");
 		if (split[4] === "latest") {
 			split[4] = settings.versions[split[2]][0];
 			this.$router.push(split.join("/"));

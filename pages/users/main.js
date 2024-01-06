@@ -197,7 +197,7 @@ export default {
 		},
 		openDialog(data = undefined) {
 			this.dialogData = data;
-			this.dialogDataAdd = data === undefined ? true : false;
+			this.dialogDataAdd = data === undefined;
 			this.dialogOpen = true;
 		},
 		disableDialog(refresh = false) {
