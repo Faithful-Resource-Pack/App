@@ -72,6 +72,7 @@ export default {
 					contributions: "contributions",
 					users: "users",
 					textures: "textures",
+					packs: "packs",
 					files: "files",
 					mods: "mods",
 					modpacks: "modpacks",

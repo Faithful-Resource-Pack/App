@@ -38,6 +38,7 @@ app.get(webappURL, async (req, res) => {
 		`  <script>\n` +
 			`    window.apiURL = '${API_URL}'\n` +
 			`    window.env = ${JSON.stringify(WINDOW_ENV)}\n` +
+			`    window.DEV = ${DEV}\n` +
 			`  </script>\n</head>`,
 	);
 

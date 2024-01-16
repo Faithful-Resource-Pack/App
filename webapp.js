@@ -4,6 +4,7 @@ const ContributionPage = () => import("./pages/contribution/main.js");
 const UsersPage = () => import("./pages/users/main.js");
 const ContributorStatsPage = () => import("./pages/contribution-stats/main.js");
 const TexturePage = () => import("./pages/texture/main.js");
+const PackPage = () => import("./pages/pack/main.js")
 const ProfilePage = () => import("./pages/profile/main.js");
 const AddonNewPage = () => import("./pages/addon/newAddonForm.js");
 const AddonEditPage = () => import("./pages/addon/editAddonForm.js");
@@ -236,6 +237,14 @@ const ALL_TABS = [
 				routes: [
 					{ path: "/textures", redirect: "/textures/all" },
 					{ path: "/textures/:type?/:name*", component: TexturePage },
+				],
+			},
+			{
+				enabled: window.DEV,
+				icon: "mdi-cube",
+				label: "packs",
+				routes: [
+					{ path: "/packs", component: PackPage },
 				],
 			},
 			{
