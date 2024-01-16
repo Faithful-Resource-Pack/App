@@ -276,9 +276,9 @@ export default {
 			this.displayedResults += 100;
 		},
 		getRes() {
-			axios.get(`${this.$root.apiURL}/contributions/packs`).then((res) => {
-				res.data.forEach((r) => {
-					this.addRes(r, r.replaceAll("_", " "));
+			axios.get(`${this.$root.apiURL}/packs/search?type=submission`).then((res) => {
+				Object.values(res.data).forEach((r) => {
+					this.addPack(r.id, r.name);
 				});
 			});
 		},
@@ -305,11 +305,11 @@ export default {
 			const index = this.contributors_selected.indexOf(id);
 			if (index >= 0) this.contributors_selected.splice(index, 1);
 		},
-		addRes(name, value, boolean = false) {
+		addPack(name, value, selected = false) {
 			this.form.packs.push({
 				key: name,
 				value: value,
-				selected: boolean,
+				selected,
 			});
 		},
 		openAdd() {
@@ -449,7 +449,7 @@ export default {
 		onPackChange(selected, key) {
 			if (key === this.all_packs) {
 				if (selected) {
-					// just checked all, unckeck others
+					// just checked all, uncheck others
 					// better to make all of them not selected instead of replacing data
 					// more stable if more data in entries
 					this.form.packs.forEach((entry) => {
@@ -533,7 +533,7 @@ export default {
 			);
 		});
 		this.contributors_selected = this.queryToIds;
-		this.addRes(this.all_packs, this.all_packs_display, true);
+		this.addPack(this.all_packs, this.all_packs_display, true);
 		window.eventBus.$on("newContributor", (l) => {
 			this.contributors = l;
 		});
