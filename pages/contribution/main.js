@@ -151,7 +151,7 @@ export default {
             <v-list-item-subtitle v-text="(contrib.authors||[]).map(id => contributors.filter(c => c.id == id)[0].username || id).join(', ')"></v-list-item-subtitle>
 
             <div><v-chip label x-small class="mr-1">
-              {{ packToCode(contrib.pack) }}
+              {{ packToCode[contrib.pack] }}
             </v-chip><a :href="'/#/gallery?show=' + contrib.texture" target="_blank"><v-chip style="cursor: pointer" label x-small class="mr-1">
               #{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1"></span>
             </v-chip></a>
@@ -193,6 +193,7 @@ export default {
 			all_packs_display: "All",
 			contributors: [],
 			contributors_selected: [],
+			packToCode: {},
 			search: {
 				searching: false,
 				search_results: [],
@@ -270,23 +271,6 @@ export default {
 	methods: {
 		momo(...args) {
 			return moment(...args);
-		},
-		packToCode(pack) {
-			if (pack === "default") {
-				return "16x";
-			}
-			if (pack.includes("classic_faithful_32x")) {
-				if (pack.includes("progart")) pack = pack.replace("progart", "__p_a");
-				else pack += "__j_a_p_p_a";
-			}
-			return pack
-				.split("_")
-				.map((word) => {
-					let number = Number.parseInt(word, 10);
-
-					return Number.isNaN(number) ? (word[0] || " ").toUpperCase() : number;
-				})
-				.join("");
 		},
 		showMore() {
 			this.displayedResults += 100;
@@ -402,7 +386,7 @@ export default {
 		 * @param {Array<MultipleContribution>} entries Input entrues
 		 * @returns {Promise<void>}
 		 */
-		onNewSubmit: async function (entries) {
+		async onNewSubmit(entries) {
 			if (!Array.isArray(entries)) return;
 
 			// prepare final data
@@ -535,6 +519,19 @@ export default {
 		},
 	},
 	created() {
+		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
+			this.packToCode = Object.values(res.data).reduce(
+				(acc, cur) => ({
+					...acc,
+					[cur.id]: cur.name
+						.split(" ")
+						// Classic Faithful 32x Programmer Art -> CF32PA
+						.map((el) => (isNaN(Number(el[0])) ? el[0].toUpperCase() : el.match(/\d+/g)?.[0]))
+						.join(""),
+				}),
+				{},
+			);
+		});
 		this.contributors_selected = this.queryToIds;
 		this.addRes(this.all_packs, this.all_packs_display, true);
 		window.eventBus.$on("newContributor", (l) => {

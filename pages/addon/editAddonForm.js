@@ -209,7 +209,7 @@ export default {
 					this.headerSource = undefined;
 				});
 		},
-		handleScreenshot: async function (screenshots, index, remove = false, id) {
+		async handleScreenshot(screenshots, index, remove = false, id) {
 			if (Array.isArray(screenshots) && screenshots.length === 0) return;
 
 			let promise;

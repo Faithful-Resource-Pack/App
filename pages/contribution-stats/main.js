@@ -165,9 +165,6 @@ export default {
 			const stack = d3.stack().keys(allPack).order(d3.stackOrderNone).offset(d3.stackOffsetNone);
 
 			const series = stack(data);
-
-			console.log(series);
-
 			const [max, secondMax] = data
 				.map((d) => d.faithful_32x + d.faithful_64x)
 				.reduce(

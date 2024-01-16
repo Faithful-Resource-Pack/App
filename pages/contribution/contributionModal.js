@@ -243,7 +243,7 @@ export default {
 			this.close();
 			this.onCancel();
 		},
-		closeOrAndSubmit: async function () {
+		async closeOrAndSubmit() {
 			const result_data_list = Object.values(this.formRecords).map((f) => {
 				delete f.formId;
 				return f;

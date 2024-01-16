@@ -1,7 +1,7 @@
 /* global axios, Vue */
 
 export default {
-	name: "texture-modal",
+	name: "gallery-modal",
 	template: `
     <v-dialog
       v-model="opened"
@@ -53,7 +53,7 @@ export default {
                           </div>
                         </div>
                       </div>
-                      <h2>{{ packToName(url[0]) }}</h2>
+                      <h2>{{ packToName[url[0]] }}</h2>
                     </div>
                   </template>
                 </div>
@@ -137,6 +137,11 @@ export default {
 			type: Object,
 			required: true,
 		},
+		// saves on duplicate code, since it's already in the gallery page
+		packToName: {
+			type: Object,
+			required: true,
+		},
 		onClose: {
 			type: Function,
 			default: () => {},
@@ -167,18 +172,6 @@ export default {
 		},
 	},
 	methods: {
-		packToName(pack) {
-			// TODO: move this to pack API when that's done
-			return {
-				default: "Default Jappa",
-				progart: "Default Programmer Art",
-				faithful_32x: "Faithful 32x",
-				faithful_64x: "Faithful 64x",
-				classic_faithful_32x: "Classic Faithful 32x Jappa",
-				classic_faithful_32x_progart: "Classic Faithful 32x Programmer Art",
-				classic_faithful_64x: "Classic Faithful 64x",
-			}[pack];
-		},
 		closeModal() {
 			this.onClose();
 			this.opened = false;
@@ -205,7 +198,7 @@ export default {
 						.sort((a, b) => b.date - a.date)
 						.map((el) => ({
 							date: this.timestampToDate(el.date),
-							pack: this.packToName(el.pack),
+							pack: this.packToName[el.pack],
 							contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
 						}));
 				case this.infos[0]:
@@ -306,21 +299,20 @@ export default {
 					];
 			}
 		},
-		ucfirst(text) {
+		toTitleCase(text) {
 			return text[0].toUpperCase() + text.substring(1);
 		},
 	},
 	computed: {
 		infosText() {
 			return {
-				texture: this.ucfirst(this.$root.lang().gallery.modal.infos.texture),
-				uses: this.ucfirst(this.$root.lang().gallery.modal.infos.uses),
-				paths: this.ucfirst(this.$root.lang().gallery.modal.infos.paths),
+				texture: this.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
+				uses: this.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
+				paths: this.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
 			};
 		},
 		grouped() {
 			const result = [];
-
 			if (this.textureObj) {
 				Object.entries(this.textureObj.urls).forEach((urlArr, i) => {
 					if (i % 2 === 0) result.push([]);

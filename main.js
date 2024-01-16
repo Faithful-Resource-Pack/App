@@ -66,8 +66,7 @@ app.get(webappURL, async (req, res) => {
 });
 
 app.listen(port, () => {
-	console.log(`API url at ${API_URL}`);
-	console.log(`Listening at http://localhost:${port}`);
+	console.log(`API at ${API_URL}`);
 	console.log(`Web App at http://localhost:${port}${webappURL}`);
 
 	if (DEV && process.send) {

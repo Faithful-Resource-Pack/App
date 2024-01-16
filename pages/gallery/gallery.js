@@ -1,6 +1,6 @@
 /* global axios, Vue, settings */
 
-const textureModal = () => import("./modal.js");
+const galleryModal = () => import("./modal.js");
 const textureTooltip = () => import("./gallery_tooltip.js");
 
 const Chain = function (val) {
@@ -20,7 +20,7 @@ const STRETCHED_KEY = "gallery_stretched";
 export default {
 	name: "texture-page",
 	components: {
-		textureModal,
+		galleryModal,
 		textureTooltip,
 	},
 	template: `
@@ -30,7 +30,9 @@ export default {
     <v-row>
       <v-col cols="12" sm="6">
         <v-select
-          :items="options.packs"
+          :items="packList"
+          item-text="label"
+          item-value="value"
           :value="current.pack"
           :label="$root.lang('gallery.category.pack')"
           v-on:change="updateRoute($event, 'pack')"
@@ -39,7 +41,9 @@ export default {
 
       <v-col cols="12" sm="6">
         <v-select
-          :items="options.editions"
+          :items="computeEditions"
+          item-text="label"
+          item-value="value"
           :value="current.edition"
           :label="$root.lang('gallery.category.edition')"
           v-on:change="updateRoute($event, 'edition')"
@@ -171,7 +175,7 @@ export default {
               :mojang="isMojang(current.pack)"
               :texture="texture"
               :contributions="loadedContributions"
-              :pack="displayToPackID(current.pack)"
+              :pack="current.pack"
               :discordIDtoName="discordIDtoName"
             />
           </tippy>
@@ -180,13 +184,14 @@ export default {
     </v-list>
     <div class="bottomElement"></div>
 
-    <texture-modal
+    <gallery-modal
       v-model="modalOpen"
       :textureID="modalTextureID"
       :textureObj="modalTextureObj"
       :contributors="loadedContributors"
+			:packToName="packToName"
       :onClose="() => changeShareURL()"
-    ></texture-modal>
+    ></gallery-modal>
 
     <v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
       <v-icon>
@@ -207,18 +212,18 @@ export default {
 			error: undefined,
 			// search values available
 			options: {
-				packs: Object.values(this.packIDmap()),
+				packs: [],
 				tags: [this.$root.lang().gallery.all],
 				versions: settings.versions.java,
 				editions: settings.editions,
 			},
 			// search values
 			current: {
-				pack: "Faithful 32x",
+				pack: "faithful_32x",
 				tag: "all",
 				// latest is always at top
 				version: settings.versions.java[0],
-				edition: "Java",
+				edition: "java",
 				search: null,
 			},
 			// number of displayed results
@@ -235,6 +240,7 @@ export default {
 			modalTextureObj: {},
 			// whether modal is opened
 			modalOpen: false,
+			packToName: {},
 			// styles
 			styles: {
 				// gallery cell styles
@@ -255,6 +261,15 @@ export default {
 		};
 	},
 	computed: {
+		packList() {
+			return Object.entries(this.packToName).map(([id, name]) => ({
+				label: name,
+				value: id,
+			}));
+		},
+		computeEditions() {
+			return settings.editions.map((e) => ({ label: e, value: e.toLowerCase() }));
+		},
 		displayedTexturesObject() {
 			return this.displayedTextures.reduce((acc, cur) => {
 				acc[cur.textureID] = cur;
@@ -262,12 +277,10 @@ export default {
 			}, {});
 		},
 		tagItems() {
-			return this.options.tags.map((e, i) => {
-				return {
-					label: e,
-					value: i === 0 ? "all" : e,
-				};
-			});
+			return this.options.tags.map((e, i) => ({
+				label: e,
+				value: i === 0 ? "all" : e,
+			}));
 		},
 	},
 	watch: {
@@ -277,13 +290,13 @@ export default {
 				if (JSON.stringify(params) === JSON.stringify(old_params)) return;
 
 				// convert legacy urls to modern format
-				this.current.pack = this.packIDtoDisplay(
-					["16x", "32x", "64x"].includes(params.pack) ? this.resToPackID(params.pack) : params.pack,
-				);
+				this.current.pack = ["16x", "32x", "64x"].includes(params.pack)
+					? this.resToPackID(params.pack)
+					: params.pack;
 
 				// change available versions so you don't get a blank item
 				this.options.versions = settings.versions[params.edition];
-				this.current.edition = this.toTitleCase(params.edition);
+				this.current.edition = params.edition;
 				this.current.version = params.version;
 				this.current.tag = params.tag;
 				this.current.search = params.search;
@@ -306,8 +319,7 @@ export default {
 		},
 	},
 	methods: {
-		isMojang(displayName) {
-			const packID = this.displayToPackID(displayName);
+		isMojang(packID) {
 			return ["default", "progart"].includes(packID);
 		},
 		resToPackID(res) {
@@ -321,32 +333,6 @@ export default {
 					return "faithful_64x";
 			}
 		},
-		packIDmap() {
-			// TODO: move this to pack API when that's done
-			return {
-				default: "Default Jappa",
-				progart: "Default Programmer Art",
-				faithful_32x: "Faithful 32x",
-				faithful_64x: "Faithful 64x",
-				classic_faithful_32x: "Classic Faithful 32x Jappa",
-				classic_faithful_32x_progart: "Classic Faithful 32x Programmer Art",
-				classic_faithful_64x: "Classic Faithful 64x",
-			};
-		},
-		packIDtoDisplay(packID) {
-			return this.packIDmap()[packID];
-		},
-		displayToPackID(displayName) {
-			// convert to tuples, flip tuples backwards, and convert back to object
-			return Object.fromEntries(
-				Object.entries(this.packIDmap()).map(([id, displayName]) => [displayName, id]),
-			)[displayName];
-		},
-		/** @param {string} str */
-		toTitleCase(str) {
-			// used for "unconverting" URL editions into display editions
-			return str[0].toUpperCase() + str.slice(1);
-		},
 		shareID() {
 			let index = location.hash.indexOf("?show=");
 			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
@@ -356,17 +342,9 @@ export default {
 
 			let new_hash = location.hash;
 			// we remove it
-			if (index !== -1) {
-				new_hash = new_hash.substring(0, index);
-			}
-
-			if (id !== undefined) {
-				new_hash += "?show=" + id.toString();
-			}
-
-			if (!dry_run) {
-				location.hash = new_hash;
-			}
+			if (index !== -1) new_hash = new_hash.substring(0, index);
+			if (id !== undefined) new_hash += "?show=" + id.toString();
+			if (!dry_run) location.hash = new_hash;
 
 			return location.href.replace(location.hash, "") + new_hash;
 		},
@@ -425,19 +403,15 @@ export default {
 
 			// user safe interaction
 			// check if pack exist
-			if (!Object.values(this.packIDmap()).includes(this.current.pack))
-				this.current.pack = "Faithful 32x";
+			if (!Object.keys(this.packToName).includes(this.current.pack))
+				this.current.pack = "faithful_32x";
 
-			const edition = this.current.edition.toLowerCase();
-
-			if (!settings.versions[edition].includes(this.current.version)) {
-				this.current.version = settings.versions[edition][0];
-				this.options.versions = settings.versions[edition];
+			if (!settings.versions[this.current.edition].includes(this.current.version)) {
+				this.current.version = settings.versions[this.current.edition][0];
+				this.options.versions = settings.versions[this.current.edition];
 			}
 
-			let route = `/gallery/${edition}/${this.displayToPackID(this.current.pack)}/${
-				this.current.version
-			}/${this.current.tag}`;
+			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
 			route += !this.current.search ? "" : `/${this.current.search}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
@@ -448,18 +422,17 @@ export default {
 			this.loading = true;
 			this.displayedTextures = [];
 
-			const edition = this.current.edition.toLowerCase();
 			const version =
-				this.current.version === "latest" ? settings.versions[edition][0] : this.current.version;
+				this.current.version === "latest"
+					? settings.versions[this.current.edition][0]
+					: this.current.version;
 
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
 				.get(
-					`${this.$root.apiURL}/gallery/${this.displayToPackID(
-						this.current.pack,
-					)}/${edition}/${version}/${this.current.tag}${
-						this.current.search ? `?search=${this.current.search}` : ""
-					}`,
+					`${this.$root.apiURL}/gallery/${this.current.pack}/${this.current.edition}/${version}/${
+						this.current.tag
+					}${this.current.search ? `?search=${this.current.search}` : ""}`,
 				)
 				.then((res) => {
 					this.displayedTextures = res.data;
@@ -563,6 +536,16 @@ export default {
 		axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
 			this.options.tags = [...this.options.tags, ...res.data];
 		});
+		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
+			this.options.packs = Object.values(res.data).map((v) => v.name);
+			this.packToName = Object.values(res.data).reduce(
+				(acc, cur) => ({
+					...acc,
+					[cur.id]: cur.name,
+				}),
+				{},
+			);
+		});
 		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
 			this.loadedContributors = res.data.reduce((acc, cur) => {
 				acc[cur.id] = cur;
@@ -596,9 +579,7 @@ export default {
 		}
 
 		this.scroll();
-		window.addEventListener("resize", () => {
-			this.computeGrid();
-		});
+		window.addEventListener("resize", this.computeGrid);
 		this.computeGrid();
 	},
 };
