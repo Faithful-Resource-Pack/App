@@ -62,7 +62,7 @@ export default {
     },
     data: {
       type: Object,
-      required: true,
+      required: false,
     },
     roles: {
       type: Array,

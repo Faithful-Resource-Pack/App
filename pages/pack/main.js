@@ -1,13 +1,36 @@
 /* global axios, Vue */
 
+const PackCreator = () => import("./pack_creator.js");
+
 export default {
   name: "pack-page",
+  components: {
+    "pack-creator": PackCreator,
+  },
   template: `
     <v-container>
       <div class="styles" v-html="pageStyles"></div>
-      <div class="text-h4 py-4">
-        {{ $root.lang().database.titles.packs }}
-      </div>
+      <pack-creator
+        :color="pageColor"
+        :dialog="dialogOpen"
+        :disableDialog="disableDialog"
+        :data="dialogData"
+        :add="dialogDataAdd"
+        :tags="packTags">
+      </pack-creator>
+
+      <v-row no-gutters class="py-0 mb-0" align="center">
+        <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+        <div class="text-h4 py-4">
+          {{ $root.lang().database.titles.packs }}
+        </div>
+        </v-col>
+        <v-col cols="12" sm="6" class="mt-4 py-sm-0">
+          <v-btn block :color="pageColor" @click="openDialog()">
+            {{ $root.lang('database.labels.add_new_pack') }}<v-icon right dark>mdi-plus</v-icon>
+          </v-btn>
+        </v-col>
+      </v-row>
 
       <!-- tag switcher -->
       <div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_type }}</div>
@@ -41,6 +64,16 @@ export default {
               <v-list-item-title v-text="pack.name"></v-list-item-title>
               <v-list-item-subtitle v-text="(pack.tags.map(formatTags) || []).join(', ')"></v-list-item-subtitle>
             </v-list-item-content>
+
+            <!-- action buttons -->
+            <v-list-item-action class="merged">
+              <v-btn icon @click="openDialog(pack)">
+                <v-icon color="lighten-1">mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn icon @click="askRemove(pack)">
+                <v-icon color="red lighten-1">mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
           </v-list-item>
         </v-col></v-row>
       </v-list>
@@ -60,6 +93,11 @@ export default {
       textColorOnPage: "white--text",
       tags: [],
       packs: [],
+      dialogOpen: false,
+      dialogData: {},
+      dialogDataAdd: false,
+      removeConfirm: false,
+      removeData: {},
     };
   },
   methods: {
@@ -95,6 +133,20 @@ export default {
         .split("_")
         .map((p) => (p == "progart" ? "Programmer Art" : p[0].toUpperCase() + p.slice(1)))
         .join(" ");
+    },
+    openDialog(data = undefined) {
+      this.dialogData = data;
+      this.dialogDataAdd = data === undefined;
+      this.dialogOpen = true;
+    },
+    disableDialog(refresh = false) {
+      this.dialogOpen = false;
+      this.dialogData = {};
+      if (refresh) this.startSearch();
+    },
+    askRemove(data) {
+      this.removeData = data;
+      this.removeConfirm = true;
     },
   },
   computed: {

@@ -11,7 +11,14 @@ export default {
   template: `
     <v-container>
       <div class="styles" v-html="pageStyles"></div>
-      <user-modal :color="pageColor" :dialog="dialogOpen" :disableDialog="disableDialog" :add="dialogDataAdd" :data="dialogData" :roles="roles"></user-modal>
+      <user-modal
+        :color="pageColor"
+        :dialog="dialogOpen"
+        :disableDialog="disableDialog"
+        :add="dialogDataAdd"
+        :data="dialogData"
+        :roles="roles">
+      </user-modal>
       <user-remove-confirm
         :confirm="remove.confirm"
         :disableDialog="function() { remove.confirm = false; update() }"

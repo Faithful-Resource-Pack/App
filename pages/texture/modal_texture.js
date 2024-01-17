@@ -15,8 +15,21 @@ export default {
       content-class="colored"
       max-width="600"
     >
-      <use-modal :color="color" :subDialog="subDialogOpen" :disableSubDialog="disableSubDialog" :add="subDialogAdd" :textureID="formData.id" :usesLength="Object.keys(formData.uses).length" :data="subDialogData"></use-modal>
-      <remove-confirm type="use" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
+      <use-modal
+        :color="color"
+        :subDialog="subDialogOpen"
+        :disableSubDialog="disableSubDialog"
+        :add="subDialogAdd"
+        :textureID="formData.id"
+        :usesLength="Object.keys(formData.uses).length"
+        :data="subDialogData">
+      </use-modal>
+      <remove-confirm
+        type="use"
+        :confirm="remove.confirm"
+        :disableDialog="closeAndUpdate"
+        :data="remove.data">
+      </remove-confirm>
 
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
