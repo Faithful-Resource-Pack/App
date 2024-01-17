@@ -1,27 +1,27 @@
 const SEARCH_DELAY = 300;
 
 export default {
-	name: "user-select",
-	props: {
-		contributors: {
-			required: true,
-			type: Array,
-		},
-		value: {
-			required: true,
-		},
-		dense: {
-			type: Boolean,
-			required: false,
-			default: () => false,
-		},
-		limit: {
-			type: Number,
-			required: false,
-			default: () => 0,
-		},
-	},
-	template: `
+  name: "user-select",
+  props: {
+    contributors: {
+      required: true,
+      type: Array,
+    },
+    value: {
+      required: true,
+    },
+    dense: {
+      type: Boolean,
+      required: false,
+      default: () => false,
+    },
+    limit: {
+      type: Number,
+      required: false,
+      default: () => 0,
+    },
+  },
+  template: `
 <v-autocomplete
     v-bind="$attrs"
     v-model="content"
@@ -89,109 +89,109 @@ export default {
     </template>
     </v-autocomplete>
 `,
-	computed: {
-		contributorList() {
-			return [...this.contributors, ...Object.values(this.loadedContributors)];
-		},
-	},
-	data() {
-		return {
-			content: this.value,
-			search: null,
-			isSearching: false,
-			searchTimeout: undefined,
-			previousSearches: [],
-			loadedContributors: {},
-		};
-	},
-	watch: {
-		value: {
-			handler(n, o) {
-				if (JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
-			},
-			immediate: true,
-			deep: true,
-		},
-		content: {
-			handler(n) {
-				this.$emit("input", n);
-			},
-			deep: true,
-		},
-		search(val) {
-			if (!val) return;
+  computed: {
+    contributorList() {
+      return [...this.contributors, ...Object.values(this.loadedContributors)];
+    },
+  },
+  data() {
+    return {
+      content: this.value,
+      search: null,
+      isSearching: false,
+      searchTimeout: undefined,
+      previousSearches: [],
+      loadedContributors: {},
+    };
+  },
+  watch: {
+    value: {
+      handler(n, o) {
+        if (JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
+      },
+      immediate: true,
+      deep: true,
+    },
+    content: {
+      handler(n) {
+        this.$emit("input", n);
+      },
+      deep: true,
+    },
+    search(val) {
+      if (!val) return;
 
-			if (this.searchTimeout) {
-				clearTimeout(this.searchTimeout);
-			}
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
 
-			this.searchTimeout = setTimeout(() => {
-				this.searchTimeout = undefined;
-				this.startSearch(val);
-			}, SEARCH_DELAY);
-		},
-		loadedContributors: {
-			handler(n) {
-				window.eventBus.$emit("newContributor", this.contributorList);
-			},
-			deep: true,
-		},
-	},
-	methods: {
-		remove(id) {
-			const index = this.content.indexOf(id);
-			if (index >= 0) this.content.splice(index, 1);
-		},
-		startSearch(val) {
-			val = val.trim();
+      this.searchTimeout = setTimeout(() => {
+        this.searchTimeout = undefined;
+        this.startSearch(val);
+      }, SEARCH_DELAY);
+    },
+    loadedContributors: {
+      handler(n) {
+        window.eventBus.$emit("newContributor", this.contributorList);
+      },
+      deep: true,
+    },
+  },
+  methods: {
+    remove(id) {
+      const index = this.content.indexOf(id);
+      if (index >= 0) this.content.splice(index, 1);
+    },
+    startSearch(val) {
+      val = val.trim();
 
-			// limit search on client and server side
-			if (val.length < 3) return;
+      // limit search on client and server side
+      if (val.length < 3) return;
 
-			// make search only if not searched before
-			let alreadySearched = false;
-			let i = 0;
-			while (i < this.previousSearches.length && !alreadySearched) {
-				alreadySearched = this.previousSearches[i].includes(val);
-				++i;
-			}
-			if (alreadySearched) return;
+      // make search only if not searched before
+      let alreadySearched = false;
+      let i = 0;
+      while (i < this.previousSearches.length && !alreadySearched) {
+        alreadySearched = this.previousSearches[i].includes(val);
+        ++i;
+      }
+      if (alreadySearched) return;
 
-			this.previousSearches.push(val);
-			this.isSearching = true;
+      this.previousSearches.push(val);
+      this.isSearching = true;
 
-			axios
-				.get(
-					// we can assume contribution editors are admin
-					`${this.$root.apiURL}/users/role/all/${val}`,
-					this.$root.apiOptions,
-				)
-				.then((res) => {
-					const results = res.data;
-					results.forEach((result) => {
-						// in case some clever guy forgot its username or uuid or anything
-						Vue.set(
-							this.loadedContributors,
-							result.id,
-							Object.merge(
-								{
-									username: "",
-									uuid: "",
-									type: [],
-									media: [],
-								},
-								result,
-							),
-						);
-					});
-				})
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-					console.error(err);
-				})
-				.finally(() => {
-					this.isSearching = false;
-				});
-		},
-	},
+      axios
+        .get(
+          // we can assume contribution editors are admin
+          `${this.$root.apiURL}/users/role/all/${val}`,
+          this.$root.apiOptions,
+        )
+        .then((res) => {
+          const results = res.data;
+          results.forEach((result) => {
+            // in case some clever guy forgot its username or uuid or anything
+            Vue.set(
+              this.loadedContributors,
+              result.id,
+              Object.merge(
+                {
+                  username: "",
+                  uuid: "",
+                  type: [],
+                  media: [],
+                },
+                result,
+              ),
+            );
+          });
+        })
+        .catch((err) => {
+          this.$root.showSnackBar(err, "error");
+          console.error(err);
+        })
+        .finally(() => {
+          this.isSearching = false;
+        });
+    },
+  },
 };

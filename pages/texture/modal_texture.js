@@ -4,12 +4,12 @@ const useModal = () => import("./modal_use.js");
 const removeConfirm = () => import("./remove-confirm.js");
 
 export default {
-	name: "texture-modal",
-	components: {
-		useModal,
-		removeConfirm,
-	},
-	template: `
+  name: "texture-modal",
+  components: {
+    useModal,
+    removeConfirm,
+  },
+  template: `
   <v-dialog
       v-model="modalOpened"
       content-class="colored"
@@ -80,171 +80,171 @@ export default {
       </v-card>
     </v-dialog>
   `,
-	props: {
-		value: {
-			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
-		add: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
-		data: {
-			type: Object,
-			required: true,
-		},
-		types: {
-			type: Array,
-			required: false,
-			default() {
-				return [];
-			},
-		},
-		color: {
-			type: String,
-			required: false,
-			default: "primary",
-		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
-		},
-	},
-	data() {
-		return {
-			modalOpened: false,
-			formData: {
-				name: "",
-				tags: [],
-				id: "",
-				uses: {},
-			},
-			subDialogOpen: false,
-			subDialogData: {},
-			subDialogAdd: false,
-			remove: {
-				confirm: false,
-				data: {},
-			},
-		};
-	},
-	computed: {
-		dialogTitle() {
-			return this.add
-				? this.$root.lang().database.titles.add_texture
-				: this.$root.lang().database.titles.change_texture;
-		},
-	},
-	methods: {
-		openSubDialog(data, add) {
-			this.subDialogOpen = true;
-			this.subDialogAdd = add;
+  props: {
+    value: {
+      type: Boolean,
+      required: true,
+    },
+    disableDialog: {
+      type: Function,
+      required: true,
+    },
+    add: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    data: {
+      type: Object,
+      required: true,
+    },
+    types: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+    color: {
+      type: String,
+      required: false,
+      default: "primary",
+    },
+    textColor: {
+      type: String,
+      required: false,
+      default: "",
+    },
+  },
+  data() {
+    return {
+      modalOpened: false,
+      formData: {
+        name: "",
+        tags: [],
+        id: "",
+        uses: {},
+      },
+      subDialogOpen: false,
+      subDialogData: {},
+      subDialogAdd: false,
+      remove: {
+        confirm: false,
+        data: {},
+      },
+    };
+  },
+  computed: {
+    dialogTitle() {
+      return this.add
+        ? this.$root.lang().database.titles.add_texture
+        : this.$root.lang().database.titles.change_texture;
+    },
+  },
+  methods: {
+    openSubDialog(data, add) {
+      this.subDialogOpen = true;
+      this.subDialogAdd = add;
 
-			if (add) {
-				let texture_id = String(this.formData.id);
-				let use_ids = Object.keys(this.formData.uses);
-				let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
-				let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
-				let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
-				let next_id = texture_id + next_letter;
-				// Autofill use id
-				this.subDialogData = { id: next_id };
-			} else {
-				this.subDialogData = data;
-			}
-		},
-		disableSubDialog() {
-			this.subDialogOpen = false;
-			this.getUses(this.formData.id);
-			this.$forceUpdate();
-		},
-		closeAndUpdate() {
-			this.remove.confirm = false;
-			this.getUses(this.formData.id);
-			this.$forceUpdate();
-		},
-		send() {
-			if (!this.$root.isUserLogged) return;
+      if (add) {
+        let texture_id = String(this.formData.id);
+        let use_ids = Object.keys(this.formData.uses);
+        let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
+        let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
+        let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
+        let next_id = texture_id + next_letter;
+        // Autofill use id
+        this.subDialogData = { id: next_id };
+      } else {
+        this.subDialogData = data;
+      }
+    },
+    disableSubDialog() {
+      this.subDialogOpen = false;
+      this.getUses(this.formData.id);
+      this.$forceUpdate();
+    },
+    closeAndUpdate() {
+      this.remove.confirm = false;
+      this.getUses(this.formData.id);
+      this.$forceUpdate();
+    },
+    send() {
+      if (!this.$root.isUserLogged) return;
 
-			let promise = Promise.resolve();
-			if (this.add) {
-				// this modal is NEVER used to add textures but anyway
-				const data = JSON.parse(JSON.stringify(this.formData));
-				data.token = this.$root.user.access_token;
-				promise = axios.post("/textures/add", data);
-			} else {
-				const data = {
-					name: this.formData.name,
-					tags: this.formData.tags,
-				};
-				promise = axios.put(
-					`${this.$root.apiURL}/textures/${this.formData.id}`,
-					data,
-					this.$root.apiOptions,
-				);
-			}
+      let promise = Promise.resolve();
+      if (this.add) {
+        // this modal is NEVER used to add textures but anyway
+        const data = JSON.parse(JSON.stringify(this.formData));
+        data.token = this.$root.user.access_token;
+        promise = axios.post("/textures/add", data);
+      } else {
+        const data = {
+          name: this.formData.name,
+          tags: this.formData.tags,
+        };
+        promise = axios.put(
+          `${this.$root.apiURL}/textures/${this.formData.id}`,
+          data,
+          this.$root.apiOptions,
+        );
+      }
 
-			promise
-				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
-				})
-				.catch((err) => {
-					console.error(err);
-					this.$root.showSnackBar(err, "error");
-				});
-		},
-		getUses(textureID) {
-			axios
-				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
-				.then((res) => {
-					const temp = res.data;
-					this.formData.uses = {};
+      promise
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+          this.disableDialog(true);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$root.showSnackBar(err, "error");
+        });
+    },
+    getUses(textureID) {
+      axios
+        .get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
+        .then((res) => {
+          const temp = res.data;
+          this.formData.uses = {};
 
-					for (let i = 0; i < temp.length; i++) {
-						this.formData.uses[temp[i].id] = temp[i];
-					}
-				})
-				.catch(function (err) {
-					console.error(err);
-				});
-		},
-		askRemoveUse(data) {
-			this.remove.data = data;
-			this.remove.confirm = true;
-		},
-		onCancel() {
-			this.modalOpened = false;
-			this.disableDialog();
-		},
-	},
-	watch: {
-		value(newValue) {
-			this.modalOpened = newValue;
-		},
-		modalOpened(newValue, oldValue) {
-			if (newValue === true) {
-				Vue.nextTick(() => {
-					if (this.add) this.$refs.form.reset();
+          for (let i = 0; i < temp.length; i++) {
+            this.formData.uses[temp[i].id] = temp[i];
+          }
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    },
+    askRemoveUse(data) {
+      this.remove.data = data;
+      this.remove.confirm = true;
+    },
+    onCancel() {
+      this.modalOpened = false;
+      this.disableDialog();
+    },
+  },
+  watch: {
+    value(newValue) {
+      this.modalOpened = newValue;
+    },
+    modalOpened(newValue, oldValue) {
+      if (newValue === true) {
+        Vue.nextTick(() => {
+          if (this.add) this.$refs.form.reset();
 
-					if (!this.add) {
-						this.formData.name = this.data.name;
-						this.formData.tags = this.data.tags;
-						this.formData.id = this.data.id;
-						this.getUses(this.data.id);
-					}
-				});
-			} else {
-				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-				this.disableDialog();
-			}
-			this.$emit("input", newValue);
-		},
-	},
+          if (!this.add) {
+            this.formData.name = this.data.name;
+            this.formData.tags = this.data.tags;
+            this.formData.id = this.data.id;
+            this.getUses(this.data.id);
+          }
+        });
+      } else {
+        // Fixes bug where click outside changes dialog to false but not dialogOpen to false
+        this.disableDialog();
+      }
+      this.$emit("input", newValue);
+    },
+  },
 };

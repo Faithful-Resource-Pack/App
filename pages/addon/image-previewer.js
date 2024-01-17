@@ -1,11 +1,11 @@
 const FullscreenPreview = () => import("./fullscreen-preview.js");
 
 export default {
-	name: `image-previewer`,
-	components: {
-		FullscreenPreview,
-	},
-	template: `
+  name: `image-previewer`,
+  components: {
+    FullscreenPreview,
+  },
+  template: `
 <v-container :class="[notEmpty ? 'px-0 pt-0' : 'pa-0']">
   <div class="scroller" style="overflow: auto; white-space: nowrap;">
     <div class="scroller-content">
@@ -36,50 +36,50 @@ export default {
   />
 </v-container>
   `,
-	props: {
-		sources: {
-			required: true,
-			type: Array,
-		},
-		ids: {
-			required: false,
-			type: Array,
-			default: undefined,
-		},
-		deletable: {
-			required: false,
-			type: Boolean,
-			default: true,
-		},
-	},
-	data() {
-		return {
-			fullscreenIndex: undefined,
-		};
-	},
-	computed: {
-		fullscreenItem() {
-			if (this.fullscreenIndex === undefined) return undefined;
-			return this.sources[this.fullscreenIndex];
-		},
-		notEmpty() {
-			return this.sources && !!this.sources.length;
-		},
-	},
-	methods: {
-		onDelete(item, index, e) {
-			if (e) e.target.blur();
+  props: {
+    sources: {
+      required: true,
+      type: Array,
+    },
+    ids: {
+      required: false,
+      type: Array,
+      default: undefined,
+    },
+    deletable: {
+      required: false,
+      type: Boolean,
+      default: true,
+    },
+  },
+  data() {
+    return {
+      fullscreenIndex: undefined,
+    };
+  },
+  computed: {
+    fullscreenItem() {
+      if (this.fullscreenIndex === undefined) return undefined;
+      return this.sources[this.fullscreenIndex];
+    },
+    notEmpty() {
+      return this.sources && !!this.sources.length;
+    },
+  },
+  methods: {
+    onDelete(item, index, e) {
+      if (e) e.target.blur();
 
-			if (this.ids !== undefined) {
-				this.$emit("item-delete", item, index, this.ids[index]);
-			} else {
-				this.$emit("item-delete", item, index, undefined);
-			}
-		},
-		onFullscreen(item, index, e) {
-			if (e) e.target.blur();
-			this.fullscreenIndex = index;
-			this.$refs.preview.open();
-		},
-	},
+      if (this.ids !== undefined) {
+        this.$emit("item-delete", item, index, this.ids[index]);
+      } else {
+        this.$emit("item-delete", item, index, undefined);
+      }
+    },
+    onFullscreen(item, index, e) {
+      if (e) e.target.blur();
+      this.fullscreenIndex = index;
+      this.$refs.preview.open();
+    },
+  },
 };

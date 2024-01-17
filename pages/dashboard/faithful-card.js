@@ -1,16 +1,16 @@
 const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-	name: "faithful-card",
-	components: {
-		"dashboard-card": DashBoardCard,
-	},
-	props: {
-		show: {
-			required: true,
-		},
-	},
-	template: `
+  name: "faithful-card",
+  components: {
+    "dashboard-card": DashBoardCard,
+  },
+  props: {
+    show: {
+      required: true,
+    },
+  },
+  template: `
 <dashboard-card
   :title="''"
   id="faithful-card"

@@ -3,11 +3,11 @@
 const addonRemoveConfirm = () => import("./remove-confirm.js");
 
 export default {
-	name: "own-addon-page",
-	components: {
-		addonRemoveConfirm,
-	},
-	template: `
+  name: "own-addon-page",
+  components: {
+    addonRemoveConfirm,
+  },
+  template: `
   <v-container>
     <div class="text-h4 py-4">
       {{ $root.lang().addons.titles.submissions }}
@@ -99,48 +99,48 @@ export default {
     </addon-remove-confirm>
   </v-container>
   `,
-	data() {
-		return {
-			addons: [],
-			remove: {
-				confirm: false,
-				data: {},
-			},
-			dialogAddon: {},
-			dialogOpen: false,
-			loading: true,
-			failed: {},
-			timestamp: new Date().getTime(),
-		};
-	},
-	methods: {
-		closeDialog() {
-			this.dialogOpen = false;
-			this.dialogAddon = {};
-			this.update();
-		},
-		deleteAddon(addon) {
-			this.remove.data = addon;
-			this.remove.confirm = true;
-		},
-		getAddons(authorID) {
-			axios
-				.get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
-				.then((res) => {
-					this.addons = res.data;
-					this.loading = false;
-					this.$forceUpdate();
-				})
-				.catch(function (err) {
-					console.error(err);
-				});
-		},
-		update() {
-			this.getAddons(this.$root.user.id);
-			this.$forceUpdate();
-		},
-	},
-	mounted() {
-		this.getAddons(this.$root.user.id);
-	},
+  data() {
+    return {
+      addons: [],
+      remove: {
+        confirm: false,
+        data: {},
+      },
+      dialogAddon: {},
+      dialogOpen: false,
+      loading: true,
+      failed: {},
+      timestamp: new Date().getTime(),
+    };
+  },
+  methods: {
+    closeDialog() {
+      this.dialogOpen = false;
+      this.dialogAddon = {};
+      this.update();
+    },
+    deleteAddon(addon) {
+      this.remove.data = addon;
+      this.remove.confirm = true;
+    },
+    getAddons(authorID) {
+      axios
+        .get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
+        .then((res) => {
+          this.addons = res.data;
+          this.loading = false;
+          this.$forceUpdate();
+        })
+        .catch(function (err) {
+          console.error(err);
+        });
+    },
+    update() {
+      this.getAddons(this.$root.user.id);
+      this.$forceUpdate();
+    },
+  },
+  mounted() {
+    this.getAddons(this.$root.user.id);
+  },
 };

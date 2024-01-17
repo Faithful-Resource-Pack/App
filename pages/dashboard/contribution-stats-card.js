@@ -1,18 +1,18 @@
 const DashBoardCard = () => import("./dashcard.js");
 
 export default {
-	name: "contribution-stats-card",
-	components: {
-		"dashboard-card": DashBoardCard,
-	},
-	props: {
-		admin: {
-			required: true,
-			type: Boolean,
-			default: false,
-		},
-	},
-	template: `
+  name: "contribution-stats-card",
+  components: {
+    "dashboard-card": DashBoardCard,
+  },
+  props: {
+    admin: {
+      required: true,
+      type: Boolean,
+      default: false,
+    },
+  },
+  template: `
 <dashboard-card
   id="contribution-stats-card"
   :title="$root.lang('global.tabs.database.subtabs.contributions') || ''"
@@ -48,20 +48,20 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-	data() {
-		return {
-			data: undefined,
-		};
-	},
-	computed: {
-		totals() {
-			if (!this.data) return [];
-			return this.data;
-		},
-	},
-	methods: {
-		onTotals(data) {
-			this.data = data;
-		},
-	},
+  data() {
+    return {
+      data: undefined,
+    };
+  },
+  computed: {
+    totals() {
+      if (!this.data) return [];
+      return this.data;
+    },
+  },
+  methods: {
+    onTotals(data) {
+      this.data = data;
+    },
+  },
 };

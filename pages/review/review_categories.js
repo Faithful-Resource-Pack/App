@@ -1,20 +1,20 @@
 export default {
-	name: "review-categories",
-	props: {
-		value: {
-			type: String,
-			required: true,
-		},
-		categories: {
-			type: Array, // [{ label: String, color: String }]
-			required: true,
-		},
-		activeColor: {
-			type: String,
-			required: true,
-		},
-	},
-	template: `
+  name: "review-categories",
+  props: {
+    value: {
+      type: String,
+      required: true,
+    },
+    categories: {
+      type: Array, // [{ label: String, color: String }]
+      required: true,
+    },
+    activeColor: {
+      type: String,
+      required: true,
+    },
+  },
+  template: `
 <v-row justify="center" dense>
     <v-col
         v-for="(cat, cat_i) in categories"
@@ -36,21 +36,21 @@ export default {
         </v-card>
     </v-col>
 </v-row>`,
-	data() {
-		return {
-			content: {},
-		};
-	},
-	methods: {
-		onClick(val) {
-			this.$emit("input", val);
-		},
-	},
-	computed: {
-		classes() {
-			return this.categories.map((v) =>
-				v.value === this.value ? this.activeColor + " selected" : "",
-			);
-		},
-	},
+  data() {
+    return {
+      content: {},
+    };
+  },
+  methods: {
+    onClick(val) {
+      this.$emit("input", val);
+    },
+  },
+  computed: {
+    classes() {
+      return this.categories.map((v) =>
+        v.value === this.value ? this.activeColor + " selected" : "",
+      );
+    },
+  },
 };

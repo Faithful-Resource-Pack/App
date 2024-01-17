@@ -1,6 +1,6 @@
 export default {
-	name: "review-translations-page",
-	template: `
+  name: "review-translations-page",
+  template: `
   <v-container>
     <div class="text-h4 py-4">
     <h4>{{ $root.lang().review.titles.translation }}</h4>
@@ -9,7 +9,7 @@ export default {
     </div>
   </v-container>
   `,
-	data() {
-		window.location.href = "https://translate.faithfulpack.net/";
-	},
+  data() {
+    window.location.href = "https://translate.faithfulpack.net/";
+  },
 };

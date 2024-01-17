@@ -1,8 +1,8 @@
 /* global axios */
 
 export default {
-	name: "user-remove-confirm",
-	template: `
+  name: "user-remove-confirm",
+  template: `
   <v-dialog
       v-model="confirm"
       content-class="colored"
@@ -34,46 +34,46 @@ export default {
       </v-card>
     </v-dialog>
   `,
-	props: {
-		confirm: {
-			type: Boolean,
-			required: true,
-		},
-		data: {
-			type: Object,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
-	},
-	data() {
-		return {
-			formData: {},
-		};
-	},
-	computed: {
-		username() {
-			return this.$props.data.username;
-		},
-		id() {
-			return this.$props.data.id;
-		},
-	},
-	methods: {
-		deleteContributor() {
-			axios
-				.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
-				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
-				})
-				.catch((error) => {
-					console.error(error);
-					this.$root.showSnackBar(err, "error");
-					this.disableDialog(true);
-				});
-		},
-	},
+  props: {
+    confirm: {
+      type: Boolean,
+      required: true,
+    },
+    data: {
+      type: Object,
+      required: true,
+    },
+    disableDialog: {
+      type: Function,
+      required: true,
+    },
+  },
+  data() {
+    return {
+      formData: {},
+    };
+  },
+  computed: {
+    username() {
+      return this.$props.data.username;
+    },
+    id() {
+      return this.$props.data.id;
+    },
+  },
+  methods: {
+    deleteContributor() {
+      axios
+        .delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+          this.disableDialog(true);
+        })
+        .catch((error) => {
+          console.error(error);
+          this.$root.showSnackBar(err, "error");
+          this.disableDialog(true);
+        });
+    },
+  },
 };

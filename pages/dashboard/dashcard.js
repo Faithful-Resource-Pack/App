@@ -1,23 +1,23 @@
 export default {
-	name: "dashboard-card",
-	props: {
-		title: {
-			required: false,
-			type: String,
-			default: "",
-		},
-		go_to: {
-			required: false,
-			type: String,
-			default: undefined,
-		},
-		can_go_to: {
-			required: false,
-			type: Boolean,
-			default: false,
-		},
-	},
-	template: `
+  name: "dashboard-card",
+  props: {
+    title: {
+      required: false,
+      type: String,
+      default: "",
+    },
+    go_to: {
+      required: false,
+      type: String,
+      default: undefined,
+    },
+    can_go_to: {
+      required: false,
+      type: Boolean,
+      default: false,
+    },
+  },
+  template: `
   <v-card flat class="dashboard-card">
   <v-card-title class="d-flex align-center pb-2">
     <span class="title text-h5"> {{ title }} </span>

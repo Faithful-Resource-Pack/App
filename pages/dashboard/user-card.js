@@ -2,23 +2,23 @@ const DashBoardCard = () => import("./dashcard.js");
 const RolesGraph = () => import("./roles-graph.js");
 
 export default {
-	name: "user-card",
-	components: {
-		"dashboard-card": DashBoardCard,
-		"roles-graph": RolesGraph,
-	},
-	props: {
-		admin: {
-			required: true,
-			type: Boolean,
-			default: false,
-		},
-		colors: {
-			required: true,
-			type: Array,
-		},
-	},
-	template: `
+  name: "user-card",
+  components: {
+    "dashboard-card": DashBoardCard,
+    "roles-graph": RolesGraph,
+  },
+  props: {
+    admin: {
+      required: true,
+      type: Boolean,
+      default: false,
+    },
+    colors: {
+      required: true,
+      type: Array,
+    },
+  },
+  template: `
 <dashboard-card
   :title="$root.lang('global.tabs.database.subtabs.users') || ''"
   go_to="/users"
@@ -43,41 +43,41 @@ export default {
   </v-card-text>
 </dashboard-card>
   `,
-	data() {
-		return {
-			data: undefined,
-		};
-	},
-	computed: {
-		total() {
-			if (this.data && this.data.total) return this.data.total;
-			return "";
-		},
-		chart() {
-			return this.$refs.chart;
-		},
-		url() {
-			return "/users/stats";
-		},
-		series() {
-			return this.data
-				? Object.values(this.data.total_per_roles)
-				: new Array(14).fill(undefined).map(() => 0);
-		},
-		labels() {
-			return this.data
-				? Object.keys(this.data.total_per_roles)
-				: new Array(14).fill(undefined).map(() => "??");
-		},
-	},
-	methods: {
-		get() {
-			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
-				this.data = res.data;
-			});
-		},
-	},
-	created() {
-		this.get();
-	},
+  data() {
+    return {
+      data: undefined,
+    };
+  },
+  computed: {
+    total() {
+      if (this.data && this.data.total) return this.data.total;
+      return "";
+    },
+    chart() {
+      return this.$refs.chart;
+    },
+    url() {
+      return "/users/stats";
+    },
+    series() {
+      return this.data
+        ? Object.values(this.data.total_per_roles)
+        : new Array(14).fill(undefined).map(() => 0);
+    },
+    labels() {
+      return this.data
+        ? Object.keys(this.data.total_per_roles)
+        : new Array(14).fill(undefined).map(() => "??");
+    },
+  },
+  methods: {
+    get() {
+      axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
+        this.data = res.data;
+      });
+    },
+  },
+  created() {
+    this.get();
+  },
 };

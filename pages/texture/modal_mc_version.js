@@ -1,8 +1,8 @@
 /* global axios */
 
 export default {
-	name: "version-modal",
-	template: `
+  name: "version-modal",
+  template: `
   <v-dialog
     v-model="MCDialog"
     content-class="colored"
@@ -48,46 +48,46 @@ export default {
       </v-card-actions>
     </v-card>
   </v-dialog>`,
-	props: {
-		MCDialog: {
-			type: Boolean,
-			required: true,
-		},
-		disableMCDialog: {
-			type: Function,
-			required: true,
-		},
-		color: {
-			type: String,
-			required: false,
-			default: "primary",
-		},
-	},
-	data() {
-		return {
-			form: {
-				actual: settings.versions.java[0],
-				new: settings.versions.java[0],
-			},
-		};
-	},
-	methods: {
-		send() {
-			const data = JSON.parse(JSON.stringify(this.form));
-			data.token = this.$root.user.access_token;
+  props: {
+    MCDialog: {
+      type: Boolean,
+      required: true,
+    },
+    disableMCDialog: {
+      type: Function,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: false,
+      default: "primary",
+    },
+  },
+  data() {
+    return {
+      form: {
+        actual: settings.versions.java[0],
+        new: settings.versions.java[0],
+      },
+    };
+  },
+  methods: {
+    send() {
+      const data = JSON.parse(JSON.stringify(this.form));
+      data.token = this.$root.user.access_token;
 
-			const old_version = this.form.actual;
-			const new_version = this.form.new;
-			axios
-				.put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
-				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableMCDialog(true);
-				})
-				.catch((err) => {
-					console.error(err);
-					this.$root.showSnackBar(err, "error");
-				});
-		},
-	},
+      const old_version = this.form.actual;
+      const new_version = this.form.new;
+      axios
+        .put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+          this.disableMCDialog(true);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$root.showSnackBar(err, "error");
+        });
+    },
+  },
 };

@@ -1,38 +1,38 @@
 const Chain = function (val) {
-	return {
-		value: val,
-		chain(predicate) {
-			if (this.value !== undefined) return Chain(predicate(this.value));
-			return this;
-		},
-	};
+  return {
+    value: val,
+    chain(predicate) {
+      if (this.value !== undefined) return Chain(predicate(this.value));
+      return this;
+    },
+  };
 };
 
 export default {
-	name: "texture-tooltip",
-	props: {
-		texture: {
-			type: Object,
-			required: true,
-		},
-		mojang: {
-			type: Boolean,
-			required: true,
-		},
-		contributions: {
-			type: Object,
-			required: true,
-		},
-		pack: {
-			type: String,
-			required: true,
-		},
-		discordIDtoName: {
-			type: Function,
-			required: true,
-		},
-	},
-	template: `
+  name: "texture-tooltip",
+  props: {
+    texture: {
+      type: Object,
+      required: true,
+    },
+    mojang: {
+      type: Boolean,
+      required: true,
+    },
+    contributions: {
+      type: Object,
+      required: true,
+    },
+    pack: {
+      type: String,
+      required: true,
+    },
+    discordIDtoName: {
+      type: Function,
+      required: true,
+    },
+  },
+  template: `
 <div class="tooltip"><div class="texture-tooltip">
     <div class="texture-info-container">
         <span class="texture-id" v-text="'#' + texture.textureID" />
@@ -55,40 +55,40 @@ export default {
         </span>
     </div>
 </div></div>`,
-	computed: {
-		last_contribution() {
-			let contribs = Chain(this.contributions)
-				.chain((contribs) => contribs[this.pack])
-				.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
+  computed: {
+    last_contribution() {
+      let contribs = Chain(this.contributions)
+        .chain((contribs) => contribs[this.pack])
+        .chain((res_contribs) => res_contribs[this.texture.textureID]).value;
 
-			// get best timestamp contrib
-			return contribs
-				? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
-				: undefined;
-		},
-		last_contribution_names() {
-			if (this.last_contribution === undefined) return "";
-			return this.last_contribution.contributors
-				.map((d) => {
-					return this.discordIDtoName(d).replace(/\s/gm, "\u00A0");
-				})
-				.join(", ");
-		},
-		icon() {
-			return "icon-people" + (this.last_contribution.contributors.length === 1 ? "" : "s");
-		},
-		modded() {
-			let something_with_path = this.texture.url;
-			return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].reduce(
-				(acc, cur) => acc || something_with_path.includes(cur),
-				false,
-			);
-		},
-	},
-	methods: {
-		timestampToDate(t) {
-			const a = new Date(t);
-			return moment(a).format("ll");
-		},
-	},
+      // get best timestamp contrib
+      return contribs
+        ? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
+        : undefined;
+    },
+    last_contribution_names() {
+      if (this.last_contribution === undefined) return "";
+      return this.last_contribution.contributors
+        .map((d) => {
+          return this.discordIDtoName(d).replace(/\s/gm, "\u00A0");
+        })
+        .join(", ");
+    },
+    icon() {
+      return "icon-people" + (this.last_contribution.contributors.length === 1 ? "" : "s");
+    },
+    modded() {
+      let something_with_path = this.texture.url;
+      return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].reduce(
+        (acc, cur) => acc || something_with_path.includes(cur),
+        false,
+      );
+    },
+  },
+  methods: {
+    timestampToDate(t) {
+      const a = new Date(t);
+      return moment(a).format("ll");
+    },
+  },
 };
