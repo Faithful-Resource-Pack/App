@@ -241,7 +241,7 @@ export default {
     value(newValue) {
       this.modalOpened = newValue;
     },
-    modalOpened(newValue, oldValue) {
+    modalOpened(newValue) {
       if (newValue === true) {
         Vue.nextTick(() => {
           if (this.add) this.$refs.form.reset();
