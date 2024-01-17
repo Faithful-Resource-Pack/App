@@ -29,42 +29,42 @@ export default {
     },
   },
   template: `
-<v-card
-  v-bind="$attrs"
-  :disabled="disabled"
-  :color="flat ? '' : 'rgba(0,0,0,0.165)'"
-  :flat="flat"
-  :class="['qd-datepicker', flat ? '' : 'pt-2 px-4 pb-4']"
-  :style="style"
->
-	<div class="font-weight-medium text--secondary mb-2" v-text="labels.year" />
-	<v-text-field
-    class="mt-0"
-    placeholder="Regular"
-    flat hide-details dense
-    type="number" :value="year"
-    :max="this_year" min="0"
-    v-on:input="(e) => newYear(e)"
-  ></v-text-field>
-	<div class="font-weight-medium text--secondary my-2" v-text="labels.month" />
-	<v-row class="qd-months" dense>
-		<v-col cols="2" v-for='i in 12' :key="'qd-month-col' + i">
-			<v-btn :key="'qd-month-' + i" class="qd-month pa-0" block :color="i-1 == month ? 'primary' : ''"
-        :disabled="disabled" elevation="0" small @click="() => newMonth(i)" >
-        {{ upper_months[i-1] }}
-      </v-btn>
-		</v-col>
-	</v-row>
-	<div class="font-weight-medium text--secondary my-2" v-text="labels.day" />
-	<div class="qd-days">
-		<v-btn
-      v-for='i in 31' :key="'qd-day-' + i" class="qd-day px-0"
-      :color="i == day ? 'primary' : ''" rounded :text="i !== day"
-      :elevation="i == day ? 2 : 0" @click="() => newDay(i)"
-      :disabled="disabled || i > days_in_month" >{{ i }}</v-btn>
-	</div>
-</v-card>
-	  `,
+    <v-card
+      v-bind="$attrs"
+      :disabled="disabled"
+      :color="flat ? '' : 'rgba(0,0,0,0.165)'"
+      :flat="flat"
+      :class="['qd-datepicker', flat ? '' : 'pt-2 px-4 pb-4']"
+      :style="style"
+    >
+      <div class="font-weight-medium text--secondary mb-2" v-text="labels.year" />
+      <v-text-field
+        class="mt-0"
+        placeholder="Regular"
+        flat hide-details dense
+        type="number" :value="year"
+        :max="this_year" min="0"
+        v-on:input="(e) => newYear(e)"
+      ></v-text-field>
+      <div class="font-weight-medium text--secondary my-2" v-text="labels.month" />
+      <v-row class="qd-months" dense>
+        <v-col cols="2" v-for='i in 12' :key="'qd-month-col' + i">
+          <v-btn :key="'qd-month-' + i" class="qd-month pa-0" block :color="i-1 == month ? 'primary' : ''"
+            :disabled="disabled" elevation="0" small @click="() => newMonth(i)" >
+            {{ upper_months[i-1] }}
+          </v-btn>
+        </v-col>
+      </v-row>
+      <div class="font-weight-medium text--secondary my-2" v-text="labels.day" />
+      <div class="qd-days">
+        <v-btn
+          v-for='i in 31' :key="'qd-day-' + i" class="qd-day px-0"
+          :color="i == day ? 'primary' : ''" rounded :text="i !== day"
+          :elevation="i == day ? 2 : 0" @click="() => newDay(i)"
+          :disabled="disabled || i > days_in_month" >{{ i }}</v-btn>
+      </div>
+    </v-card>
+  `,
   data() {
     return {
       date: new Date(new Date(this.value).setHours(0, 0, 0, 0)),

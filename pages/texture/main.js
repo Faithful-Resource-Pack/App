@@ -34,7 +34,7 @@ export default {
         :key="t"
         :class="['my-1 mr-2', activeType(t)]"
         :to="textureURL(t)"
-        :exact="t == 'All'"
+        :exact="t == 'all'"
       >{{ t }}</v-btn>
     </div>
     <v-select
@@ -208,7 +208,7 @@ export default {
     activeType(t) {
       let res = {};
       if (
-        (t === "All" && !this.type && !!this.name) ||
+        (t === "all" && !this.type && !!this.name) ||
         (t && this.type && t.toLowerCase() === this.type.toLowerCase())
       ) {
         res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
@@ -306,9 +306,7 @@ export default {
         .then((res) => {
           this.textures = res.data;
         })
-        .catch(function (err) {
-          console.error(err);
-        });
+        .catch((err) => console.error(err));
     },
     update(textures = true) {
       this.getTypes();

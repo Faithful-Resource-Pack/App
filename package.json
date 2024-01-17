@@ -1,49 +1,49 @@
 {
-	"name": "faithful-web-app",
-	"version": "1.0.0",
-	"description": "The official Web Application for the Faithful website.",
-	"main": "main.js",
-	"scripts": {
-		"dev": "nodemon main.js --watch .env --watch main.js",
-		"start": "pm2 start \"node main.js\" --name \"APP\"",
-		"watch": "browser-refresh main.js",
-		"prettier": "prettier \"{,!(node_modules)/**/}*.js\" --config .prettierrc --write",
-		"test:app": "env-cmd -f ./tests/.env.test node main.js",
-		"test:mocha": "mocha --recursive tests/**/*.test.js",
-		"nodemon:app:test": "nodemon --exec pnpm run test:app",
-		"nodemon:mock_server": "nodemon --exec node tests/mock_server.js"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/Faithful-Resource-Pack/App.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/Faithful-Resource-Pack/App/issues"
-	},
-	"homepage": "https://github.com/Faithful-Resource-Pack/App#readme",
-	"dependencies": {
-		"axios": "^1.6.3",
-		"btoa": "^1.2.1",
-		"dotenv": "^16.3.1",
-		"express": "^4.18.2",
-		"moment": "^2.30.1",
-		"node-domexception": "^2.0.1",
-		"node-fetch": "^3.3.2",
-		"node-localstorage": "^3.0.5",
-		"prettier": "^3.1.1",
-		"twin-bcrypt": "^2.1.1",
-		"url": "^0.11.3"
-	},
-	"devDependencies": {
-		"@types/express": "^4.17.21",
-		"chai": "^5.0.0",
-		"cors": "^2.8.5",
-		"env-cmd": "^10.1.0",
-		"mocha": "^10.2.0",
-		"nodemon": "^3.0.2",
-		"puppeteer": "^21.6.1"
-	}
+  "name": "faithful-web-app",
+  "version": "1.0.0",
+  "description": "The official Web Application for the Faithful website.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "nodemon main.js --watch .env --watch main.js",
+    "start": "pm2 start \"node main.js\" --name \"APP\"",
+    "watch": "browser-refresh main.js",
+    "prettier": "prettier \"{,!(node_modules)/**/}*.js\" --config .prettierrc --write",
+    "test:app": "env-cmd -f ./tests/.env.test node main.js",
+    "test:mocha": "mocha --recursive tests/**/*.test.js",
+    "nodemon:app:test": "nodemon --exec pnpm run test:app",
+    "nodemon:mock_server": "nodemon --exec node tests/mock_server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Faithful-Resource-Pack/App.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Faithful-Resource-Pack/App/issues"
+  },
+  "homepage": "https://github.com/Faithful-Resource-Pack/App#readme",
+  "dependencies": {
+    "axios": "^1.6.3",
+    "btoa": "^1.2.1",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "moment": "^2.30.1",
+    "node-domexception": "^2.0.1",
+    "node-fetch": "^3.3.2",
+    "node-localstorage": "^3.0.5",
+    "prettier": "^3.1.1",
+    "twin-bcrypt": "^2.1.1",
+    "url": "^0.11.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "chai": "^5.0.0",
+    "cors": "^2.8.5",
+    "env-cmd": "^10.1.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.2",
+    "puppeteer": "^21.6.1"
+  }
 }

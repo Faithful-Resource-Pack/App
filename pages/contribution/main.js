@@ -129,6 +129,9 @@ export default {
 
     <!-- Search button -->
     <v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">{{ $root.lang().database.labels.search_contributions }}<v-icon right dark>mdi-magnify</v-icon></v-btn>
+
+    <div class="my-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
+
     <v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
       <v-row><v-col :cols="12/listColumns" xs="1"
           v-for="(contrib_arr, index) in splittedResults"

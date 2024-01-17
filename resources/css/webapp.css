@@ -1248,21 +1248,21 @@ body .texture-avatar {
 \* ===================== */
 
 .qd-month {
-	text-transform: none !important;
+  text-transform: none !important;
 }
 
 .qd-days {
-	display: grid;
+  display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr  1fr 1fr 1fr 1fr;
   grid-gap: 4px;
 }
 
 .qd-days > * {
-	aspect-ratio: 1;
-	max-height: 32px;
+  aspect-ratio: 1;
+  max-height: 32px;
 }
 .qd-day {
-	min-width: auto !important;
-	width: 100% !important;
-	height: 100% !important;
+  min-width: auto !important;
+  width: 100% !important;
+  height: 100% !important;
 }

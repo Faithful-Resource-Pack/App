@@ -9,8 +9,8 @@ export default {
   template: `
 <v-container>
   <div class="text-h4 py-4">
-		{{ $root.lang().settings.title }}
-	</div>
+    {{ $root.lang().settings.title }}
+  </div>
   <div class="my-2">
     <v-btn color="primary" :disabled="jsonIsNotValid" block append-icon v-on:click="save">
       {{ $root.lang().global.btn.save }} <v-icon small>mdi-content-save</v-icon>

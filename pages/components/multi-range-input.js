@@ -29,7 +29,7 @@ export default {
     class="my-0 pt-0"
   />
 </v-form>
-	  `,
+    `,
   data() {
     return {
       ranges: [],

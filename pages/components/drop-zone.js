@@ -52,7 +52,7 @@ export default {
       <div v-else><slot name="label"></slot></div>
     </label>
   </div>
-	`,
+  `,
   data() {
     return {
       isDragging: false,

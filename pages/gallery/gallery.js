@@ -189,7 +189,7 @@ export default {
       :textureID="modalTextureID"
       :textureObj="modalTextureObj"
       :contributors="loadedContributors"
-			:packToName="packToName"
+      :packToName="packToName"
       :onClose="() => changeShareURL()"
     ></gallery-modal>
 

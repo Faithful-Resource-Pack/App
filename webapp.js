@@ -243,7 +243,10 @@ const ALL_TABS = [
         enabled: window.DEV,
         icon: "mdi-cube",
         label: "packs",
-        routes: [{ path: "/packs", component: PackPage }],
+        routes: [
+          { path: "/packs", redirect: "/packs/all" },
+          { path: "/packs/:type?/", component: PackPage },
+        ],
       },
       {
         enabled: true,
