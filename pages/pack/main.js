@@ -1,11 +1,13 @@
 /* global axios, Vue */
 
 const PackCreator = () => import("./pack_creator.js");
+const PackRemoveConfirm = () => import("./pack_remove_confirm.js");
 
 export default {
   name: "pack-page",
   components: {
     "pack-creator": PackCreator,
+    "pack-remove-confirm": PackRemoveConfirm
   },
   template: `
     <v-container>
@@ -16,8 +18,13 @@ export default {
         :disableDialog="disableDialog"
         :data="dialogData"
         :add="dialogDataAdd"
-        :tags="packTags">
+        :tags="tags">
       </pack-creator>
+      <pack-remove-confirm
+        :confirm="remove.confirm"
+        :disableDialog="function() { remove.confirm = false; startSearch(); }"
+        :data="remove.data">
+      </pack-remove-confirm>
 
       <v-row no-gutters class="py-0 mb-0" align="center">
         <v-col cols="12" sm="6" class="mt-4 py-sm-0">
@@ -96,8 +103,10 @@ export default {
       dialogOpen: false,
       dialogData: {},
       dialogDataAdd: false,
-      removeConfirm: false,
-      removeData: {},
+      remove: {
+        data: {},
+        confirm: false,
+      },
     };
   },
   methods: {
@@ -145,8 +154,8 @@ export default {
       if (refresh) this.startSearch();
     },
     askRemove(data) {
-      this.removeData = data;
-      this.removeConfirm = true;
+      this.remove.data = data;
+      this.remove.confirm = true;
     },
   },
   computed: {

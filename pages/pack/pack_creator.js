@@ -13,13 +13,14 @@ export default {
         :disableDialog="disableSubmission"
         :data="submissionData"
         :add="submissionAdd"
+        :first="add"
         @submissionFinished="addSubmissionData"
       >
       </submission-creator>
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
-          <v-form ref="form">
+          <v-form ref="form" lazy-validation>
             <v-text-field
               :color="color"
               :hint="add ? $root.lang().database.hints.pack_id_creation : $root.lang().database.hints.pack_id_editing"
@@ -126,7 +127,7 @@ export default {
     },
     disableSubmission() {
       this.submissionOpen = false;
-      this.getSubmission(this.formData.id);
+      if (!this.add) this.getSubmission(this.formData.id);
       this.$forceUpdate();
     },
     validURL(str) {
@@ -142,11 +143,39 @@ export default {
       return pattern.test(str);
     },
     addSubmissionData(data) {
+      if (!this.submissionAdd) return;
       this.formData.submission = data || {};
     },
     send() {
-      console.log("PACK DATA SENT " + JSON.stringify(this.formData, null, 4));
-      this.disableDialog();
+      const data = { ...this.formData };
+
+      // if user doesn't specify id on pack creation, the API will assume it
+      if (this.add) {
+        if (!data.submission.id) delete data.submission.id;
+        if (!data.id) delete data.id;
+      }
+
+      // only add submission property if filled out
+      if (
+        !this.submissionAdd || // if changing submission, already done separately
+        !data.submission ||
+        !Object.keys(data.submission ?? {}).length
+      )
+        delete data.submission;
+
+      const requestPromise = this.submissionAdd || this.add
+        ? axios.post(`${this.$root.apiURL}/packs`, data, this.$root.apiOptions)
+        : axios.put(`${this.$root.apiURL}/packs/${data.id}`, data, this.$root.apiOptions);
+
+      requestPromise
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+          this.disableDialog(true);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$root.showSnackBar(err, "error");
+        });
     },
   },
   computed: {
@@ -163,12 +192,10 @@ export default {
           if (this.add) this.$refs.form.reset();
 
           if (!this.add) {
-            this.formData.id = this.data.id;
-            this.formData.name = this.data.name;
-            this.formData.tags = this.data.tags;
-            this.formData.logo = this.data.logo;
-            this.formData.resolution = this.data.resolution;
-            this.formData.github = this.data.github;
+            for (const [k, v] of Object.entries(this.data)) {
+              if (this.formData[k] === undefined) continue;
+              this.formData[k] = v;
+            }
             this.getSubmission(this.data.id);
           }
         });

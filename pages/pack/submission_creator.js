@@ -9,10 +9,10 @@ export default {
       <v-card>
         <v-card-title class="headline" v-text="submissionTitle"></v-card-title>
         <v-card-text>
-          <v-form ref="form" v-model="formValid">
+          <v-form ref="form" v-model="formValid" lazy-validation>
             <v-text-field
               :color="color"
-              v-if="!add"
+              v-if="!first"
               persistent-hint
               :hint="$root.lang().database.hints.pack_id_editing"
               v-model="formData.id"
@@ -29,9 +29,9 @@ export default {
               :label="$root.lang().database.labels.submission_reference">
             </v-select>
             <v-container>
-              <v-row><v-checkbox :color="color" v-model="formData.council_enabled" :label="$root.lang().database.labels.council_enabled">
-              </v-checkbox></v-row>
-              <v-row><v-range></v-range></v-row>
+              <v-row>
+                <v-checkbox :color="color" v-model="formData.council_enabled" :label="$root.lang().database.labels.council_enabled"></v-checkbox>
+              </v-row>
             </v-container>
           </v-form>
         </v-card-text>
@@ -79,6 +79,11 @@ export default {
       required: false,
       default: false,
     },
+    first: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -92,8 +97,8 @@ export default {
           council: "",
           results: "",
         },
-        time_to_council: "",
-        time_to_results: "",
+        time_to_council: 0,
+        time_to_results: 0,
         contributor_role: "",
       },
       packs: [],
@@ -101,8 +106,28 @@ export default {
   },
   methods: {
     send() {
-      this.$emit("submissionFinished", this.formData);
-      this.disableDialog();
+      if (this.first) {
+        this.$emit("submissionFinished", this.formData);
+        return this.disableDialog();
+      }
+
+      const requestPromise = this.add
+        ? axios.post(`${this.$root.apiURL}/submissions`, this.formData, this.$root.apiOptions)
+        : axios.put(
+            `${this.$root.apiURL}/submissions/${this.formData.id}`,
+            this.formData,
+            this.$root.apiOptions,
+          );
+
+      requestPromise
+        .then(() => {
+          this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+          this.disableDialog(true);
+        })
+        .catch((err) => {
+          console.error(err);
+          this.$root.showSnackBar(err, "error");
+        });
     },
   },
   computed: {
@@ -124,14 +149,11 @@ export default {
     dialog(newValue) {
       if (newValue === true) {
         Vue.nextTick(() => {
-          if (!this.add) {
-            this.formData.id = this.data.id;
-            this.formData.reference = this.data.reference;
-            this.formData.channels = this.data.channels;
-            this.formData.council_enabled = this.data.council_enabled;
-            this.formData.time_to_council = this.data.time_to_council;
-            this.formData.time_to_results = this.data.time_to_results;
-            this.formData.contributor_role = this.data.contributor_role;
+          if (!this.first) {
+            for (const [k, v] of Object.entries(this.data)) {
+              if (this.formData[k] === undefined) continue;
+              this.formData[k] = v;
+            }
           } else {
             this.$refs.form.reset();
             if (this.data.id) this.formData.id = this.data.id;

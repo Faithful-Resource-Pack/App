@@ -178,7 +178,7 @@ export default {
       pack_logo: "Pack logo URL",
       council_enabled: "Enable council",
       submission_reference: "Reference pack",
-      edit_submission: "Edit Submission information",
+      edit_submission: "Edit submission information",
       invalid_url: "This URL is not valid",
       new_submission: "Enable Submissions",
       edit_mc_version: "Modify a Minecraft Version",
