@@ -15,17 +15,17 @@ export default {
     content-class="colored"
     max-width="800"
   >
-    <path-modal :color="color" v-model="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :useID="subFormData.id" :pathData="subPathDialogData"></path-modal>
+    <path-modal :color="color" v-model="subPathDialogOpen" :disableSubPathDialog="disableSubPathDialog" :add="Object.keys(subPathDialogData).length == 0" :use="subFormData.id" :pathData="subPathDialogData"></path-modal>
     <remove-confirm type="path" :confirm="remove.confirm" :disableDialog="closeAndUpdate" :data="remove.data"></remove-confirm>
 
     <v-card>
       <v-card-title class="headline" v-text="subDialogTitle"></v-card-title>
       <v-card-text>
         <v-form ref="form" v-model="formValid">
-          <v-text-field :color="color"v-model="subFormData.textureUseName" :label="$root.lang().database.labels.use_name"></v-text-field>
+          <v-text-field :color="color"v-model="subFormData.name" :label="$root.lang().database.labels.use_name"></v-text-field>
           <v-text-field :color="color" required persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.use_id" required v-model="subFormData.id" :label="$root.lang().database.labels.use_id"></v-text-field>
-          <v-text-field :color="color" v-if="add == false" persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.textureID" :label="$root.lang().database.labels.texture_id"></v-text-field>
-          <v-select required :color="color" :item-color="color" required v-model="subFormData.editions[0]" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
+          <v-text-field :color="color" v-if="add == false" persistent-hint :hint="'⚠️ ' + $root.lang().database.hints.texture_id" required clearable v-model="subFormData.texture" :label="$root.lang().database.labels.texture_id"></v-text-field>
+          <v-select required :color="color" :item-color="color" required v-model="subFormData.edition" :items="editions" :label="$root.lang().database.labels.use_edition"></v-select>
           <h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
           <p v-if="add" align="center" style="color: red">⚠️<br><strong>{{ $root.lang().database.hints.warning_path }}</strong></p>
           <v-list v-if="Object.keys(subFormData.paths).length && add == false" label="Texture Paths">
@@ -36,8 +36,8 @@ export default {
             >
               <v-list-item-content>
                 <v-list-item-title
-                  :title="path.path"
-                  v-text="path.path"
+                  :title="path.name"
+                  v-text="path.name"
                 />
                 <v-list-item-subtitle :title="(path.versions||[]).join(', ')" v-text="(path.versions||[]).join(', ')"></v-list-item-subtitle>
               </v-list-item-content>
@@ -122,10 +122,10 @@ export default {
     return {
       formValid: false,
       subFormData: {
-        editions: [],
+        edition: "",
         id: "",
-        textureID: "",
-        textureUseName: "",
+        texture: "",
+        name: "",
         paths: {},
       },
       subPathDialogOpen: false,
@@ -183,9 +183,9 @@ export default {
     send() {
       const formData = this.subFormData;
       const data = {
-        name: formData.textureUseName || "",
-        texture: formData.textureID,
-        edition: formData.editions[0],
+        name: formData.name || "",
+        texture: formData.texture,
+        edition: formData.edition,
       };
 
       let method = "put";
@@ -219,10 +219,7 @@ export default {
             temp[i].versions.sort(this.MinecraftSorter);
             this.subFormData.paths[temp[i].id] = {
               ...temp[i],
-              useId: temp[i].useId || temp[i].use,
-              useID: temp[i].useId || temp[i].use,
-              use: temp[i].use || temp[i].useId,
-              path: temp[i].path || temp[i].name,
+              use: temp[i].use || useId,
             };
           }
         })
@@ -239,10 +236,10 @@ export default {
     subDialog(n, o) {
       Vue.nextTick(() => {
         if (!this.add) {
-          this.subFormData.editions = [this.data.edition];
+          this.subFormData.edition = this.data.edition;
           this.subFormData.id = this.data.id;
-          this.subFormData.textureUseName = this.data.name;
-          this.subFormData.textureID = this.data.texture;
+          this.subFormData.name = this.data.name;
+          this.subFormData.texture = this.data.texture;
           this.getPaths(this.data.id);
         } else {
           this.$refs.form.reset();

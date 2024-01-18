@@ -87,7 +87,7 @@ export default {
   `,
   data() {
     return {
-      pageColor: "amber darken-2",
+      pageColor: "amber accent-4",
       pageStyles: "",
       search: "",
       textColorOnPage: "white--text",

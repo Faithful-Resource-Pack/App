@@ -61,7 +61,7 @@ export default {
       </div>
 
       <!-- main buttons -->
-      <v-btn block @click="openDialog()" :color="pageColor" class="my-6">
+      <v-btn block @click="openDialog()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
         {{ $root.lang().database.labels.add_new_contributor }}<v-icon right dark>mdi-plus</v-icon>
       </v-btn>
 
@@ -118,7 +118,7 @@ export default {
     </v-container>`,
   data() {
     return {
-      pageColor: "indigo lighten-2",
+      pageColor: "indigo accent-2",
       textColorOnPage: "white--text",
       pageStyles: "",
       recompute: false,

@@ -10,7 +10,7 @@ export default {
     removeConfirm,
   },
   template: `
-  <v-dialog
+    <v-dialog
       v-model="modalOpened"
       content-class="colored"
       max-width="600"
@@ -51,7 +51,7 @@ export default {
                 <v-list-item-content>
                   <v-list-item-title>
                     <v-list-item style="display: inline; padding: 0 0 0 5px;">
-                      <template v-if="use.textureUseName || use.name">{{ use.textureUseName || use.name }}</template>
+                      <template v-if="use.name">{{ use.name }}</template>
                       <template v-else><i>{{ $root.lang().database.labels.nameless }}</i></template>
                     </v-list-item>
                     <v-list-item-subtitle style="display: block; padding: 0 0 0 5px;"  v-text="use.edition"></v-list-item-subtitle>

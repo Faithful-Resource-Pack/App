@@ -1,7 +1,21 @@
+const submissionCreator = () => import("./submission_creator.js");
+
 export default {
   name: "pack-creator",
+  components: {
+    submissionCreator,
+  },
   template: `
     <v-dialog v-model="dialog" content-class="colored" max-width="600">
+      <submission-creator
+        :color="color"
+        :dialog="submissionOpen"
+        :disableDialog="disableSubmission"
+        :data="submissionData"
+        :add="submissionAdd"
+        @submissionFinished="addSubmissionData"
+      >
+      </submission-creator>
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
@@ -16,10 +30,10 @@ export default {
             <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="tags" :label="$root.lang().database.labels.pack_tags"></v-select>
             <v-text-field :color="color" required type="number" v-model="formData.resolution" :label="$root.lang().database.labels.pack_resolution"></v-text-field>
             <v-text-field :color="color" required :rules="downloadLinkRules" clearable v-model="formData.logo" :label="$root.lang().database.labels.pack_logo"></v-text-field>
-            <v-btn v-if="Object.keys(formData.submission).length" block :style="{ 'margin-top': '10px' }" color="secondary" @click="editSubmissionModal()">
+            <v-btn v-if="Object.keys(formData.submission).length" block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, false)">
               {{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
             </v-btn>
-            <v-btn v-else block :style="{ 'margin-top': '10px' }" color="secondary" @click="newSubmissionModal()">
+            <v-btn v-else block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, true)">
               {{ $root.lang().database.labels.new_submission }}<v-icon right>mdi-plus</v-icon>
             </v-btn>
 
@@ -86,9 +100,21 @@ export default {
         submission: {},
       },
       downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().database.labels.invalid_url],
+      submissionOpen: false,
+      submissionData: {},
+      submissionAdd: false,
     };
   },
   methods: {
+    submissionModal(data, add) {
+      this.submissionOpen = true;
+      this.submissionAdd = add;
+      if (add)
+        this.submissionData = {
+          id: data.id,
+        };
+      else this.submissionData = data.submission;
+    },
     getSubmission(packID) {
       axios
         .get(`${this.$root.apiURL}/submissions/${packID}`)
@@ -97,6 +123,11 @@ export default {
         .then((res) => {
           this.formData.submission = res.data;
         });
+    },
+    disableSubmission() {
+      this.submissionOpen = false;
+      this.getSubmission(this.formData.id);
+      this.$forceUpdate();
     },
     validURL(str) {
       const pattern = new RegExp(
@@ -110,8 +141,12 @@ export default {
       ); // fragment locator
       return pattern.test(str);
     },
+    addSubmissionData(data) {
+      this.formData.submission = data || {};
+    },
     send() {
-      console.log("PACK DATA SENT");
+      console.log("PACK DATA SENT " + JSON.stringify(this.formData, null, 4));
+      this.disableDialog();
     },
   },
   computed: {
