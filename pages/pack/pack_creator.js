@@ -38,9 +38,40 @@ export default {
               :label="$root.lang().database.labels.pack_id">
             </v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.pack_name"></v-text-field>
-            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="tags" :label="$root.lang().database.labels.pack_tags"></v-select>
+            <v-combobox
+              :color="color"
+              :item-color="color"
+              required
+              multiple
+              deletable-chips
+              small-chips
+              v-model="formData.tags"
+              :items="tags"
+              :label="$root.lang().database.labels.pack_tags">
+            </v-combobox>
             <v-text-field :color="color" required type="number" v-model="formData.resolution" :label="$root.lang().database.labels.pack_resolution"></v-text-field>
             <v-text-field :color="color" :rules="downloadLinkRules" clearable v-model="formData.logo" :label="$root.lang().database.labels.pack_logo"></v-text-field>
+            <h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
+            <p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
+            <div v-for="(edition, index) in editions" :key="index">
+              <p class="text-body-1">{{ toTitleCase(edition) }}</p>
+              <v-row>
+                <v-col>
+                  <v-text-field
+                    :color="color"
+                    :label="$root.lang().database.labels.github_org"
+                    v-model="(formData.github[edition] || createNewGithub(edition)).org">
+                  </v-text-field>
+                </v-col>
+                <v-col>
+                  <v-text-field
+                    :color="color"
+                    :label="$root.lang().database.labels.github_repo"
+                    v-model="(formData.github[edition] || createNewGithub(edition)).repo">
+                  </v-text-field>
+                </v-col>
+              </v-row>
+            </div>
             <h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
             <div v-if="Object.keys(formData.submission).length">
               <v-container>
@@ -124,6 +155,7 @@ export default {
         github: {},
         submission: {},
       },
+      editions: [],
       downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().database.labels.invalid_url],
       submissionOpen: false,
       submissionData: {},
@@ -184,6 +216,9 @@ export default {
       ); // fragment locator
       return pattern.test(str);
     },
+    toTitleCase(val) {
+      return val[0].toUpperCase() + val.slice(1);
+    },
     addSubmissionData(data) {
       if (!this.submissionAdd) return;
       this.formData.submission = data || {};
@@ -191,7 +226,7 @@ export default {
     send() {
       const data = { ...this.formData };
 
-      // if user doesn't specify id on pack creation, the API will assume it
+      // if user doesn't specify id on pack creation (falsy), the API will assume it
       if (this.add) {
         if (!data.submission.id) delete data.submission.id;
         if (!data.id) delete data.id;
@@ -199,6 +234,16 @@ export default {
 
       // stop accidental casting
       if (!data.logo) data.logo = null;
+
+      Object.entries(data.github).forEach(([k, v]) => {
+        if (!v.repo || !v.org) delete data.github[k];
+      });
+
+      if (!Object.keys(data.github).length)
+        return this.$root.showSnackBar(
+          "At least one GitHub repository needs to be present.",
+          "error",
+        );
 
       // only add submission property if filled out
       if (
@@ -223,6 +268,18 @@ export default {
           this.$root.showSnackBar(err, "error");
         });
     },
+    createNewGithub(edition) {
+      this.formData.github[edition] = {
+        org: null,
+        repo: null,
+      };
+      return this.formData.github[edition];
+    },
+  },
+  created() {
+    axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
+      this.editions = res.data;
+    });
   },
   computed: {
     dialogTitle() {

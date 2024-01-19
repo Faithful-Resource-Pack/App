@@ -240,7 +240,7 @@ const ALL_TABS = [
         ],
       },
       {
-        enabled: window.DEV,
+        enabled: true,
         icon: "mdi-cube",
         label: "packs",
         routes: [
