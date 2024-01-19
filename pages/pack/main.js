@@ -7,7 +7,7 @@ export default {
   name: "pack-page",
   components: {
     "pack-creator": PackCreator,
-    "pack-remove-confirm": PackRemoveConfirm
+    "pack-remove-confirm": PackRemoveConfirm,
   },
   template: `
     <v-container>
@@ -155,6 +155,7 @@ export default {
     },
     disableDialog(refresh = false) {
       this.dialogOpen = false;
+      // clear form
       this.dialogData = {};
       if (refresh) this.startSearch();
     },

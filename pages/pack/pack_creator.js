@@ -5,7 +5,7 @@ export default {
   name: "pack-creator",
   components: {
     submissionCreator,
-    packRemoveConfirm
+    packRemoveConfirm,
   },
   template: `
     <v-dialog v-model="dialog" content-class="colored" max-width="600">
@@ -40,7 +40,7 @@ export default {
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.pack_name"></v-text-field>
             <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="tags" :label="$root.lang().database.labels.pack_tags"></v-select>
             <v-text-field :color="color" required type="number" v-model="formData.resolution" :label="$root.lang().database.labels.pack_resolution"></v-text-field>
-            <v-text-field :color="color" required :rules="downloadLinkRules" clearable v-model="formData.logo" :label="$root.lang().database.labels.pack_logo"></v-text-field>
+            <v-text-field :color="color" :rules="downloadLinkRules" clearable v-model="formData.logo" :label="$root.lang().database.labels.pack_logo"></v-text-field>
             <h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
             <div v-if="Object.keys(formData.submission).length">
               <v-container>
@@ -132,7 +132,7 @@ export default {
         id: "",
         name: "",
         confirm: false,
-      }
+      },
     };
   },
   methods: {
@@ -145,6 +145,13 @@ export default {
         };
       else this.submissionData = data.submission;
     },
+    disableSubmission() {
+      this.submissionOpen = false;
+      // clear form
+      this.submissionData = {};
+      if (!this.add) this.getSubmission(this.formData.id);
+      this.$forceUpdate();
+    },
     getSubmission(packID) {
       axios
         .get(`${this.$root.apiURL}/submissions/${packID}`)
@@ -153,11 +160,6 @@ export default {
         .then((res) => {
           this.formData.submission = res.data;
         });
-    },
-    disableSubmission() {
-      this.submissionOpen = false;
-      if (!this.add) this.getSubmission(this.formData.id);
-      this.$forceUpdate();
     },
     deleteSubmission() {
       if (this.add) {
@@ -194,6 +196,9 @@ export default {
         if (!data.submission.id) delete data.submission.id;
         if (!data.id) delete data.id;
       }
+
+      // stop accidental casting
+      if (!data.logo) data.logo = null;
 
       // only add submission property if filled out
       if (

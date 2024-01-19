@@ -54,7 +54,7 @@ export default {
     type: {
       type: String,
       required: true,
-    }
+    },
   },
   methods: {
     deletePack() {
