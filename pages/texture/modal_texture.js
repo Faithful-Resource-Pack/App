@@ -37,7 +37,7 @@ export default {
           <v-form ref="form">
             <v-text-field :disabled="!add" :color="color" persistent-hint :hint="'⚠️' + $root.lang().database.hints.texture_id" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.texture_id"></v-text-field>
             <v-text-field :color="color" required clearable v-model="formData.name" :label="$root.lang().database.labels.texture_name"></v-text-field>
-            <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="types" :label="$root.lang().database.labels.texture_type"></v-select>
+            <v-combobox :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="types" :label="$root.lang().database.labels.texture_type"></v-combobox>
 
             <h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
             <v-list v-if="Object.keys(formData.uses).length" :label="$root.lang().database.labels.texture_uses">

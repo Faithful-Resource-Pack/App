@@ -221,7 +221,6 @@ export default {
     },
   },
   created() {
-    console.log(this.formData);
     axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
       this.packs = Object.values(res.data);
     });
