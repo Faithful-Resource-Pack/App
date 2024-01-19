@@ -21,9 +21,11 @@ export default {
         :tags="tags">
       </pack-creator>
       <pack-remove-confirm
+        type="packs"
         :confirm="remove.confirm"
         :disableDialog="function() { remove.confirm = false; startSearch(); }"
-        :data="remove.data">
+        :id="remove.id"
+        :name="remove.name">
       </pack-remove-confirm>
 
       <v-row no-gutters class="py-0 mb-0" align="center">
@@ -41,13 +43,15 @@ export default {
 
       <!-- tag switcher -->
       <div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_type }}</div>
-      <v-btn
-        v-for="t in packTags"
-        :key="t"
-        :class="['my-1 mr-2', activeTag(t)]"
-        :to="packURL(t)"
-        :exact="t == 'all'"
-      >{{ formatTags(t) }}</v-btn>
+      <div class="selector">
+        <v-btn
+          v-for="t in packTags"
+          :key="t"
+          :class="['my-1 mr-2', activeTag(t)]"
+          :to="packURL(t)"
+          :exact="t == 'all'"
+        >{{ formatTags(t) }}</v-btn>
+      </div>
 
       <!-- results -->
       <div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
@@ -104,7 +108,8 @@ export default {
       dialogData: {},
       dialogDataAdd: false,
       remove: {
-        data: {},
+        id: "",
+        name: "",
         confirm: false,
       },
     };
@@ -135,7 +140,7 @@ export default {
         .catch((err) => console.error(err));
     },
     packURL(tag) {
-      return "/packs/" + tag ?? "all";
+      return "/packs/" + tag || "all";
     },
     formatTags(s) {
       return s
@@ -154,7 +159,8 @@ export default {
       if (refresh) this.startSearch();
     },
     askRemove(data) {
-      this.remove.data = data;
+      this.remove.id = data.id;
+      this.remove.name = data.name;
       this.remove.confirm = true;
     },
   },

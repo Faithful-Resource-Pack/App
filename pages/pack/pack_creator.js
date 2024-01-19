@@ -1,9 +1,11 @@
 const submissionCreator = () => import("./submission_creator.js");
+const packRemoveConfirm = () => import("./pack_remove_confirm.js");
 
 export default {
   name: "pack-creator",
   components: {
     submissionCreator,
+    packRemoveConfirm
   },
   template: `
     <v-dialog v-model="dialog" content-class="colored" max-width="600">
@@ -17,6 +19,14 @@ export default {
         @submissionFinished="addSubmissionData"
       >
       </submission-creator>
+      <pack-remove-confirm
+        type="submissions"
+        :confirm="remove.confirm"
+        :disableDialog="function() { remove.confirm = false; getSubmission(data.id); }"
+        :id="remove.id"
+        :name="remove.name">
+      >
+      </pack-remove-confirm>
       <v-card>
         <v-card-title class="headline" v-text="dialogTitle"></v-card-title>
         <v-card-text>
@@ -31,9 +41,23 @@ export default {
             <v-select :color="color" :item-color="color" required multiple deletable-chips small-chips v-model="formData.tags" :items="tags" :label="$root.lang().database.labels.pack_tags"></v-select>
             <v-text-field :color="color" required type="number" v-model="formData.resolution" :label="$root.lang().database.labels.pack_resolution"></v-text-field>
             <v-text-field :color="color" required :rules="downloadLinkRules" clearable v-model="formData.logo" :label="$root.lang().database.labels.pack_logo"></v-text-field>
-            <v-btn v-if="Object.keys(formData.submission).length" block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, false)">
-              {{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
-            </v-btn>
+            <h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
+            <div v-if="Object.keys(formData.submission).length">
+              <v-container>
+                <v-row>
+                  <v-col>
+                    <v-btn block color="secondary" @click="submissionModal(formData, false)">
+                      {{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
+                    </v-btn>
+                  </v-col>
+                  <v-col cols="2">
+                    <v-btn block color="error darken-1" @click="deleteSubmission(formData)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </div>
             <v-btn v-else block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, true)">
               {{ $root.lang().database.labels.new_submission }}<v-icon right>mdi-plus</v-icon>
             </v-btn>
@@ -92,11 +116,11 @@ export default {
     return {
       modalOpened: false,
       formData: {
-        id: "",
-        name: "",
+        id: null,
+        name: null,
         tags: [],
-        logo: "",
-        resolution: 0,
+        logo: null,
+        resolution: null,
         github: {},
         submission: {},
       },
@@ -104,6 +128,11 @@ export default {
       submissionOpen: false,
       submissionData: {},
       submissionAdd: false,
+      remove: {
+        id: "",
+        name: "",
+        confirm: false,
+      }
     };
   },
   methods: {
@@ -129,6 +158,17 @@ export default {
       this.submissionOpen = false;
       if (!this.add) this.getSubmission(this.formData.id);
       this.$forceUpdate();
+    },
+    deleteSubmission() {
+      if (this.add) {
+        // reset directly, no need for confirmation modal
+        this.formData.submission = {};
+        return;
+      }
+
+      this.remove.id = this.data.id;
+      this.remove.name = "submission data for " + this.data.name;
+      this.remove.confirm = true;
     },
     validURL(str) {
       const pattern = new RegExp(
@@ -163,9 +203,10 @@ export default {
       )
         delete data.submission;
 
-      const requestPromise = this.submissionAdd || this.add
-        ? axios.post(`${this.$root.apiURL}/packs`, data, this.$root.apiOptions)
-        : axios.put(`${this.$root.apiURL}/packs/${data.id}`, data, this.$root.apiOptions);
+      const requestPromise =
+        this.submissionAdd || this.add
+          ? axios.post(`${this.$root.apiURL}/packs`, data, this.$root.apiOptions)
+          : axios.put(`${this.$root.apiURL}/packs/${data.id}`, data, this.$root.apiOptions);
 
       requestPromise
         .then(() => {

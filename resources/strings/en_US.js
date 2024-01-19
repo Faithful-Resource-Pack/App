@@ -137,6 +137,7 @@ export default {
       clone_contribution: "Clone the contribution",
       no_contributor_yet: "No contributor yet",
       pack: "Resource Packs",
+      submissions: "Submission information",
       resource_packs: "Filter by pack",
       contributor: "User",
       select_user_role: "Filter by role",

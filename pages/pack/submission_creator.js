@@ -106,6 +106,7 @@ export default {
   },
   methods: {
     send() {
+      // all pack info is added in one big request on creation so we beam it back
       if (this.first) {
         this.$emit("submissionFinished", this.formData);
         return this.disableDialog();

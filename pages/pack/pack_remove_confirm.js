@@ -12,7 +12,7 @@ export default {
         <v-card-title class="headline">{{ $root.lang().database.titles.confirm_deletion }}</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>{{ $root.lang().database.labels.ask_deletion.replace('%s', data.name).replace('%d', data.id) }}</p>
+            <p>{{ $root.lang().database.labels.ask_deletion.replace('%s', name).replace('%d', id) }}</p>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -39,19 +39,27 @@ export default {
       type: Boolean,
       required: true,
     },
-    data: {
-      type: Object,
+    id: {
+      type: String,
       required: true,
+    },
+    name: {
+      type: String,
+      required: false,
     },
     disableDialog: {
       type: Function,
       required: true,
     },
+    type: {
+      type: String,
+      required: true,
+    }
   },
   methods: {
     deletePack() {
       axios
-        .delete(`${this.$root.apiURL}/packs/${this.data.id}`, this.$root.apiOptions)
+        .delete(`${this.$root.apiURL}/${this.type}/${this.id}`, this.$root.apiOptions)
         .then(() => {
           this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
           this.disableDialog(true);
