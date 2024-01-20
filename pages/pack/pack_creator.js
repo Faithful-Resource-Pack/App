@@ -73,26 +73,21 @@ export default {
               </v-row>
             </div>
             <h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
-            <div v-if="Object.keys(formData.submission).length">
-              <v-container>
-                <v-row>
-                  <v-col>
-                    <v-btn block color="secondary" @click="submissionModal(formData, false)">
-                      {{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
-                    </v-btn>
-                  </v-col>
-                  <v-col cols="2">
-                    <v-btn block color="error darken-1" @click="deleteSubmission(formData)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </div>
+            <v-row v-if="Object.keys(formData.submission).length">
+              <v-col>
+                <v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, false)">
+                  {{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
+                </v-btn>
+              </v-col>
+              <v-col cols="2">
+                <v-btn block :style="{ 'margin-top': '10px' }" color="error darken-1" @click="deleteSubmission(formData)">
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-col>
+            </v-row>
             <v-btn v-else block :style="{ 'margin-top': '10px' }" color="secondary" @click="submissionModal(formData, true)">
               {{ $root.lang().database.labels.new_submission }}<v-icon right>mdi-plus</v-icon>
             </v-btn>
-
           </v-form>
         </v-card-text>
         <v-card-actions>

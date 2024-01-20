@@ -10,98 +10,101 @@ export default {
         <v-card-title class="headline" v-text="submissionTitle"></v-card-title>
         <v-card-text>
           <v-form ref="form" v-model="formValid" lazy-validation>
-            <v-text-field
-              :color="color"
-              v-if="!first"
-              persistent-hint
-              :hint="$root.lang().database.hints.pack_id_editing"
-              v-model="formData.id"
-              :label="$root.lang().database.labels.pack_id" />
-            <v-select
-              :color="color"
-              :item-color="color"
-              required
-              :hint="$root.lang().database.hints.pack_reference"
-              v-model="formData.reference"
-              :items="computePacks"
-              item-text="label"
-              item-value="value"
-              :label="$root.lang().database.labels.submission_reference">
-            </v-select>
-            <v-container>
-              <v-row>
-                <v-col>
-                  <v-text-field
-                    :color="color"
-                    persistent-hint
-                    clearable
-                    required
-                    :hint="$root.lang().database.hints.submission_timings"
-                    v-model="formData.time_to_results"
-                    :label="$root.lang().database.labels.time_to_results"
-                  />
+            <v-row>
+              <v-col v-if="!first">
+                <v-text-field
+                :color="color"
+                persistent-hint
+                :hint="$root.lang().database.hints.pack_id_editing"
+                v-model="formData.id"
+                :label="$root.lang().database.labels.pack_id" />
                 </v-col>
-                <v-col v-if="formData.council_enabled">
-                  <v-text-field
-                    :color="color"
-                    persistent-hint
-                    clearable
-                    required
-                    :hint="$root.lang().database.hints.submission_timings"
-                    v-model="formData.time_to_council"
-                    :label="$root.lang().database.labels.time_to_council"
-                  />
-                </v-col>
-              </v-row>
-              <v-row>
-                <v-col>
-                  <v-checkbox
-                    :color="color"
-                    v-model="formData.council_enabled"
-                    :label="$root.lang().database.labels.council_enabled"
-                  />
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    :color="color"
-                    clearable
-                    v-model="formData.contributor_role"
-                    :label="$root.lang().database.labels.contributor_role"
-                  />
-                </v-col>
-              </v-row>
-              <h2 class="title">{{ $root.lang().database.subtitles.channels }}</h2>
-              <p class="text-caption">{{ $root.lang().database.hints.channel_ids }}</p>
-              <v-row>
-                <v-col>
-                  <v-text-field
-                    :color="color"
-                    required
-                    clearable
-                    v-model="formData.channels.submit"
-                    :label="$root.lang().database.labels.channels.submit"
-                  />
-                </v-col>
-                <v-col v-if="formData.council_enabled">
-                  <v-text-field
-                    :color="color"
-                    required
-                    clearable
-                    v-model="formData.channels.council"
-                    :label="$root.lang().database.labels.channels.council"
-                  />
-                </v-col>
-                <v-col>
-                  <v-text-field
-                    :color="color"
-                    required
-                    clearable
-                    v-model="formData.channels.results"
-                    :label="$root.lang().database.labels.channels.results"
-                  />
-                </v-col>
-              </v-row>
-            </v-container>
+              <v-col>
+                <v-select
+                  :color="color"
+                  :item-color="color"
+                  required
+                  :hint="$root.lang().database.hints.pack_reference"
+                  v-model="formData.reference"
+                  :items="computePacks"
+                  item-text="label"
+                  item-value="value"
+                  :label="$root.lang().database.labels.submission_reference">
+                </v-select>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  :color="color"
+                  persistent-hint
+                  clearable
+                  required
+                  :hint="$root.lang().database.hints.submission_timings"
+                  v-model="formData.time_to_results"
+                  :label="$root.lang().database.labels.time_to_results"
+                />
+              </v-col>
+              <v-col v-if="formData.council_enabled">
+                <v-text-field
+                  :color="color"
+                  persistent-hint
+                  clearable
+                  required
+                  :hint="$root.lang().database.hints.submission_timings"
+                  v-model="formData.time_to_council"
+                  :label="$root.lang().database.labels.time_to_council"
+                />
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
+                <v-checkbox
+                  :color="color"
+                  v-model="formData.council_enabled"
+                  :label="$root.lang().database.labels.council_enabled"
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  :color="color"
+                  clearable
+                  v-model="formData.contributor_role"
+                  :label="$root.lang().database.labels.contributor_role"
+                />
+              </v-col>
+            </v-row>
+            <h2 class="title">{{ $root.lang().database.subtitles.channels }}</h2>
+            <p class="text-caption">{{ $root.lang().database.hints.channel_ids }}</p>
+            <v-row>
+              <v-col>
+                <v-text-field
+                  :color="color"
+                  required
+                  clearable
+                  v-model="formData.channels.submit"
+                  :label="$root.lang().database.labels.channels.submit"
+                />
+              </v-col>
+              <v-col v-if="formData.council_enabled">
+                <v-text-field
+                  :color="color"
+                  required
+                  clearable
+                  v-model="formData.channels.council"
+                  :label="$root.lang().database.labels.channels.council"
+                />
+              </v-col>
+              <v-col>
+                <v-text-field
+                  :color="color"
+                  required
+                  clearable
+                  v-model="formData.channels.results"
+                  :label="$root.lang().database.labels.channels.results"
+                />
+              </v-col>
+            </v-row>
           </v-form>
         </v-card-text>
         <v-card-actions>
