@@ -24,7 +24,7 @@ export default {
         :confirm="remove.confirm"
         :disableDialog="function() { remove.confirm = false; getSubmission(data.id); }"
         :id="remove.id"
-        :name="remove.name">
+        :label="remove.label">
       >
       </pack-remove-confirm>
       <v-card>
@@ -157,7 +157,7 @@ export default {
       submissionAdd: false,
       remove: {
         id: "",
-        name: "",
+        label: "",
         confirm: false,
       },
     };
@@ -196,7 +196,10 @@ export default {
       }
 
       this.remove.id = this.data.id;
-      this.remove.name = "submission data for " + this.data.name;
+      this.remove.label = this.remove.name = this.$root
+        .lang()
+        .database.labels.ask_submission_deletion.replace("%s", this.data.name)
+        .replace("%d", this.data.id);
       this.remove.confirm = true;
     },
     validURL(str) {

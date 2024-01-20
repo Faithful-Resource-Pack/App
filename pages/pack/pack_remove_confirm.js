@@ -12,7 +12,7 @@ export default {
         <v-card-title class="headline">{{ $root.lang().database.titles.confirm_deletion }}</v-card-title>
         <v-card-text>
           <v-form ref="form" lazy-validation>
-            <p>{{ $root.lang().database.labels.ask_deletion.replace('%s', name).replace('%d', id) }}</p>
+            <p>{{ label }}</p>
           </v-form>
         </v-card-text>
         <v-card-actions>
@@ -43,7 +43,7 @@ export default {
       type: String,
       required: true,
     },
-    name: {
+    label: {
       type: String,
       required: false,
     },

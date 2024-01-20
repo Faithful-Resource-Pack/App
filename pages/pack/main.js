@@ -25,7 +25,7 @@ export default {
         :confirm="remove.confirm"
         :disableDialog="function() { remove.confirm = false; startSearch(); }"
         :id="remove.id"
-        :name="remove.name">
+        :label="remove.label">
       </pack-remove-confirm>
 
       <v-row no-gutters class="py-0 mb-0" align="center">
@@ -109,7 +109,7 @@ export default {
       dialogDataAdd: false,
       remove: {
         id: "",
-        name: "",
+        label: "",
         confirm: false,
       },
     };
@@ -161,7 +161,10 @@ export default {
     },
     askRemove(data) {
       this.remove.id = data.id;
-      this.remove.name = data.name;
+      this.remove.label = this.$root
+        .lang()
+        .database.labels.ask_deletion.replace("%s", data.name)
+        .replace("%d", data.id);
       this.remove.confirm = true;
     },
   },
