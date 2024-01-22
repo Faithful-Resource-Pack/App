@@ -332,7 +332,9 @@ export default {
       texture.tags = this.sortTags(
         [
           ...texture.tags,
-          this.$root.toTitleCase(textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1]),
+          this.$root.toTitleCase(
+            textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1],
+          ),
         ].map(this.formatTag),
       );
     },

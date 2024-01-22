@@ -580,10 +580,10 @@ export default {
     },
   },
   reconnect: {
-    reconnecting: "Reconnecting...",
-    refreshing_discord_token: "Refreshing Discord token...",
-    dummy_step: "Downloading RAM...",
-    updating_profile_information: "Updating profile information...",
+    reconnecting: "Reconnecting…",
+    refreshing_discord_token: "Refreshing Discord token…",
+    dummy_step: "Downloading RAM…",
+    updating_profile_information: "Updating profile information…",
     failed_to_reconnect: "Failed to reconnect",
   },
   datepicker: {
