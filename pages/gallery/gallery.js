@@ -118,7 +118,7 @@ export default {
     >
       <div class="text-center">
         <template v-if="loading">
-          <div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message.general }}</div>
+          <div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
           <v-progress-circular
             class="ma-1"
             v-if="loading"

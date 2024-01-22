@@ -10,7 +10,6 @@ export default {
       transition="dialog-bottom-transition"
       @click.stop="() => closeModal()"
     >
-
       <v-card>
         <v-toolbar>
           <v-btn
@@ -19,7 +18,6 @@ export default {
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-
           <template v-if="Object.keys(textureObj).length > 0">
             <v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
 
@@ -33,7 +31,6 @@ export default {
             <v-toolbar-title>{{ $root.lang().global.loading }}</v-toolbar-title>
           </template>
         </v-toolbar>
-
         <template v-if="Object.keys(textureObj).length > 0">
           <div class="gallery-dialog-container d-sm-flex flex-column flex-sm-row pa-2 pa-sm-7">
             <div class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0">
@@ -149,14 +146,13 @@ export default {
   },
   data() {
     return {
-      resolutions: ["16x", ...settings.resolutions],
       tab: null,
       items: [
         this.$root.lang().gallery.modal.items.information,
         this.$root.lang().gallery.modal.items.authors,
       ],
       infos: ["texture", "uses", "paths"],
-      authors: settings.resolutions,
+      authors: ["32x", "64x"],
       opened: false,
     };
   },
@@ -299,16 +295,13 @@ export default {
           ];
       }
     },
-    toTitleCase(text) {
-      return text[0].toUpperCase() + text.substring(1);
-    },
   },
   computed: {
     infosText() {
       return {
-        texture: this.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
-        uses: this.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
-        paths: this.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
+        texture: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
+        uses: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
+        paths: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
       };
     },
     grouped() {

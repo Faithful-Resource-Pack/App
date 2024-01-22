@@ -62,7 +62,7 @@ export default {
 
       <!-- main buttons -->
       <v-btn block @click="openDialog()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
-        {{ $root.lang().database.labels.add_new_contributor }}<v-icon right dark>mdi-plus</v-icon>
+        {{ $root.lang().database.labels.add_new_user }}<v-icon right dark>mdi-plus</v-icon>
       </v-btn>
 
       <!-- results -->
@@ -230,14 +230,14 @@ export default {
       return ["all", ...this.roles];
     },
     role() {
-      if (this.$route.params.type && this.usersRoles.includes(this.$route.params.type)) {
-        return this.$route.params.type;
+      if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role)) {
+        return this.$route.params.role;
       }
       return undefined;
     },
     name() {
       if (this.role !== undefined) return this.$route.params.name;
-      return this.$route.params.type;
+      return this.$route.params.role;
     },
     listColumns() {
       let columns = 1;

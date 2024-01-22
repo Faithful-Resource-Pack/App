@@ -42,7 +42,7 @@ export default {
       </v-row>
 
       <!-- tag switcher -->
-      <div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_type }}</div>
+      <div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_tag }}</div>
       <div class="selector">
         <v-btn
           v-for="t in packTags"
@@ -129,8 +129,8 @@ export default {
 
       // "all" tag searches everything
       const url = new URL(`${this.$root.apiURL}/packs/search`);
-      if (this.tags.includes(this.$route.params.type))
-        url.searchParams.set("tag", this.$route.params.type);
+      if (this.tags.includes(this.$route.params.tag))
+        url.searchParams.set("tag", this.$route.params.tag);
 
       axios
         .get(url.toString())
@@ -173,7 +173,7 @@ export default {
       return ["all", ...this.tags];
     },
     tag() {
-      if (this.$route.params.type) return this.$route.params.type;
+      if (this.$route.params.tag) return this.$route.params.tag;
       return "all";
     },
     listColumns() {

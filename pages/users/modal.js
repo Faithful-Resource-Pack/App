@@ -18,7 +18,7 @@ export default {
               <v-form ref="form" lazy-validation>
                 <v-text-field :color="color" required :readonly="add == false" v-model="formData.id" :label="$root.lang().database.labels.discord_id"></v-text-field>
                 <v-text-field :color="color" required clearable v-model="formData.username" :label="$root.lang().database.labels.username"></v-text-field>
-                <v-select :color="color" :item-color="color" required multiple small-chips v-model="formData.roles" :items="roles" :label="$root.lang().database.labels.contributor_type"></v-select>
+                <v-select :color="color" :item-color="color" required multiple small-chips v-model="formData.roles" :items="roles" :label="$root.lang().database.labels.user_role"></v-select>
                 <v-text-field :color="color" clearable v-model="formData.uuid" :label="$root.lang().database.labels.uuid"></v-text-field>
                 <v-checkbox :color="color" required clearable v-model="formData.anonymous" :label="$root.lang().database.labels.anonymous"></v-checkbox>
                 <v-text v-if="formData.anonymous">{{ $root.lang().database.labels.anonymous_explain }}</v-text>
@@ -94,8 +94,8 @@ export default {
   computed: {
     dialogTitle() {
       return this.add
-        ? this.$root.lang().database.titles.add_contributor
-        : this.$root.lang().database.titles.change_contributor;
+        ? this.$root.lang().database.titles.add_user
+        : this.$root.lang().database.titles.change_user;
     },
   },
   methods: {

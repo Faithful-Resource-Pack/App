@@ -51,9 +51,9 @@ export default {
           item-text="username"
           item-value="id"
           outlined
-          :label="$root.lang('database.subtitles.contributor')"
+          :label="$root.lang('database.subtitles.user')"
           persistent-placeholder
-          :placeholder="$root.lang().database.labels.one_contributor"
+          :placeholder="$root.lang().database.labels.select_user"
           multiple
           hide-details
           class="my-0 pt-0"

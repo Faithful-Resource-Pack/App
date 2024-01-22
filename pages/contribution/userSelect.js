@@ -22,70 +22,71 @@ export default {
     },
   },
   template: `
-<v-autocomplete
-    v-bind="$attrs"
-    v-model="content"
-    :items="contributorList"
-    :loading="contributors.length == 0 || isSearching"
-    :search-input.sync="search"
-    item-text="username"
-    item-value="id"
-    :placeholder="$root.lang().database.labels.one_contributor"
-    multiple
-    :dense="dense"
-    :error-messages="content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')]: []"
-    chips
-    >
+    <v-autocomplete
+      v-bind="$attrs"
+      v-model="content"
+      :items="contributorList"
+      :loading="contributors.length == 0 || isSearching"
+      :search-input.sync="search"
+      item-text="username"
+      item-value="id"
+      :placeholder="$root.lang().database.labels.one_contributor"
+      multiple
+      :dense="dense"
+      :error-messages="content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')]: []"
+      chips
+      >
     <!-- SELECTED THINGY -->
     <template v-slot:selection="data">
-        <v-chip
-        :key="data.item.id"
-        v-bind="data.attrs"
-        :input-value="data.selected"
-        :disabled="data.disabled"
-        close
-        @click:close="remove(data.item.id)"
-        v-if="!limit || data.index < limit"
-        >
+      <v-chip
+      :key="data.item.id"
+      v-bind="data.attrs"
+      :input-value="data.selected"
+      :disabled="data.disabled"
+      close
+      @click:close="remove(data.item.id)"
+      v-if="!limit || data.index < limit"
+      >
         <v-avatar
-            :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
-            left
+          :class="{ accent: data.item.uuid == undefined, 'text--white': true }"
+          left
         >
-            <template v-if="data.item.uuid != undefined">
+          <template v-if="data.item.uuid != undefined">
             <v-img eager
-                :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
-                :alt="(data.item.username || ('' + data.item.id)).slice(0, 1)"
+              :src="'https://visage.surgeplay.com/face/24/' + data.item.uuid"
+              :alt="(data.item.username || ('' + data.item.id)).slice(0, 1)"
             />
-            </template>
-            <template v-else>
+          </template>
+          <template v-else>
             {{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}
-            </template>
+          </template>
         </v-avatar>
         {{ data.item.username || data.item.id }}
-        </v-chip>
-        <span v-else-if="!limit || data.index == limit" v-text="'+ ' + String(content.length - limit)"/>
+      </v-chip>
+      <span v-else-if="!limit || data.index == limit" v-text="'+ ' + String(content.length - limit)"/>
     </template>
     <!-- LIST ITEM PART -->
     <template v-slot:item="data">
-        <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
+      <template v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'">
         <v-list-item-content v-text="data.item"></v-list-item-content>
-        </template>
-        <template v-else>
+      </template>
+      <template v-else>
         <v-list-item-content>
-            <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'"></v-list-item-title>
+          <v-list-item-title v-text="data.item.username || $root.lang().database.labels.anonymous + ' (' + data.item.id + ')'">
+          </v-list-item-title>
         </v-list-item-content>
         <v-list-item-avatar :style="{ 'background': data.item.uuid ? 'transparent' : '#4e4e4e' }">
-            <template v-if="data.item.uuid">
+          <template v-if="data.item.uuid">
             <v-img eager :src="'https://visage.surgeplay.com/head/48/' + data.item.uuid" />
-            </template>
-            <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
+          </template>
+          <div v-else>{{ (data.item.username || ('' + data.item.id)).slice(0, 1) }}</div>
         </v-list-item-avatar>
-        </template>
+      </template>
     </template>
     <template v-slot:no-data>
-        <v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
-            {{ $root.lang('database.subtitles.search') }} <v-icon right dark>mdi-magnify</v-icon>
-        </v-btn>
+      <v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
+        {{ $root.lang('database.subtitles.search') }} <v-icon right dark>mdi-magnify</v-icon>
+      </v-btn>
     </template>
     </v-autocomplete>
 `,

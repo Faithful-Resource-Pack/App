@@ -270,21 +270,16 @@ export default {
 
       return result;
     },
-    toTitleCase(str) {
-      return str
-        .split("_")
-        .map((v) => v[0].toUpperCase() + v.slice(1))
-        .join(" ");
-    },
     onCancel() {
       this.modalOpened = false;
     },
     sortTags(input) {
       // remove duplicates/null items and alphabetically sort
       let arr = [...new Set(input.filter((i) => i))].sort();
-      // shift java and bedrock tags to start
-      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i != "Bedrock")];
-      if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i != "Java")];
+      // shift java, realms, and bedrock tags to start
+      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
+      if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
+      if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
       return arr;
     },
     formatTag(tag) {
@@ -309,8 +304,8 @@ export default {
           path.versions.push(settings.versions[edition][0]);
         }
       });
-      if (!texture.tags.includes(this.toTitleCase(edition))) {
-        texture.tags = this.sortTags([this.toTitleCase(edition), ...texture.tags]);
+      if (!texture.tags.includes(this.$root.toTitleCase(edition))) {
+        texture.tags = this.sortTags([this.$root.toTitleCase(edition), ...texture.tags]);
       }
     },
     pathAdded(el, path, use, texture) {
@@ -337,7 +332,7 @@ export default {
       texture.tags = this.sortTags(
         [
           ...texture.tags,
-          this.toTitleCase(textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1]),
+          this.$root.toTitleCase(textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1]),
         ].map(this.formatTag),
       );
     },

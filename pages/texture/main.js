@@ -58,7 +58,7 @@ export default {
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.textures }}
     </div>
-    <div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tags }}</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tag }}</div>
     <div v-if="$vuetify.breakpoint.smAndUp" class="selector">
       <v-btn
         v-for="t in textureTags"
@@ -69,7 +69,7 @@ export default {
       >{{ t }}</v-btn>
     </div>
     <v-select
-      id="selectTextureType"
+      id="selectTextureTag"
       v-else
       :items="textureTags.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
       item-text="text"
@@ -77,7 +77,7 @@ export default {
       :color="pageColor"
       :item-color="pageColor"
       filled
-      v-model="selectTextureType"
+      v-model="selectTextureTag"
     ></v-select>
     <div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
     <div class="my-2">
@@ -185,7 +185,7 @@ export default {
         data: {},
       },
       displayedResults: INCREMENT,
-      selectTextureType: "all",
+      selectTextureTag: "all",
     };
   },
   computed: {
@@ -193,13 +193,13 @@ export default {
       return ["all", ...this.tags];
     },
     tag() {
-      if (this.$route.params.type && this.textureTags.includes(this.$route.params.type))
-        return this.$route.params.type;
+      if (this.$route.params.tag && this.textureTags.includes(this.$route.params.tag))
+        return this.$route.params.tag;
       return undefined;
     },
     name() {
       if (this.tag !== undefined) return this.$route.params.name;
-      return this.$route.params.type;
+      return this.$route.params.tag;
     },
     listColumns() {
       let columns = 1;
@@ -221,9 +221,7 @@ export default {
       const keys = Object.keys(this.textures);
       const len = keys.length;
 
-      for (let col = 0; col < this.listColumns; ++col) {
-        res.push([]);
-      }
+      for (let col = 0; col < this.listColumns; ++col) res.push([]);
 
       let arrayIndex = 0;
 
@@ -329,8 +327,8 @@ export default {
     },
     getTextures() {
       let url = new URL(`${this.$root.apiURL}/textures/search`);
-      if (this.$route.params.type && this.$route.params.type != "all")
-        url.searchParams.set("tag", this.$route.params.type);
+      if (this.$route.params.tag && this.$route.params.tag != "all")
+        url.searchParams.set("tag", this.$route.params.tag);
       if (this.$route.params.name)
         url.searchParams.set("name", this.$route.params.name.replace(/ /g, "_"));
       axios
@@ -364,9 +362,9 @@ export default {
       this.getTextures();
     },
     tag(n) {
-      this.selectTextureType = n;
+      this.selectTextureTag = n;
     },
-    selectTextureType(n) {
+    selectTextureTag(n) {
       if (n) {
         this.$router.push(this.textureURL(n)).catch(() => {});
       }

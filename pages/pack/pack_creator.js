@@ -214,9 +214,6 @@ export default {
       ); // fragment locator
       return pattern.test(str);
     },
-    toTitleCase(val) {
-      return val[0].toUpperCase() + val.slice(1);
-    },
     addSubmissionData(data) {
       if (!this.submissionAdd) return;
       this.formData.submission = data || {};

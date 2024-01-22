@@ -227,7 +227,7 @@ const ALL_TABS = [
         label: "users",
         routes: [
           { path: "/users", redirect: "/users/all" },
-          { path: "/users/:type?/:name*", component: UsersPage },
+          { path: "/users/:role?/:name*", component: UsersPage },
         ],
       },
       {
@@ -236,7 +236,7 @@ const ALL_TABS = [
         label: "textures",
         routes: [
           { path: "/textures", redirect: "/textures/all" },
-          { path: "/textures/:type?/:name*", component: TexturePage },
+          { path: "/textures/:tag?/:name*", component: TexturePage },
         ],
       },
       {
@@ -245,7 +245,7 @@ const ALL_TABS = [
         label: "packs",
         routes: [
           { path: "/packs", redirect: "/packs/all" },
-          { path: "/packs/:type?/", component: PackPage },
+          { path: "/packs/:tag?/", component: PackPage },
         ],
       },
       {
@@ -675,6 +675,12 @@ axios
           this.snackbar.color = color;
           this.snackbar.timeout = timeout;
           this.snackbar.show = true;
+        },
+        toTitleCase(str) {
+          return str
+            .split("_")
+            .map((v) => v[0].toUpperCase() + v.slice(1))
+            .join(" ");
         },
         logout() {
           this.discordAuth.logout();
