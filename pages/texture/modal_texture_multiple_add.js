@@ -1,7 +1,11 @@
 /* global axios, Vue, Prism */
 
 const emptyPath = function () {
-  return ["", [], false];
+  return {
+    name: "",
+    versions: [],
+    mcmeta: false,
+  };
 };
 
 const emptyUse = function () {
@@ -83,9 +87,23 @@ export default {
                 <h2 class="title my-2">{{ $root.lang().database.subtitles.add_manually }}</h2>
                 <v-container fluid class="pa-0" v-for="(texture, t_i) in textures" :key="'tex-' + t_i">
                   <v-row dense>
-                    <v-col><v-text-field :color="color" class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable /></v-col>
-                    <v-col><v-select :color="color" :item-color="color" class="mb-1" v-model="texture.tags" :items="tags" :placeholder="$root.lang().database.labels.texture_tags" multiple hide-details dense clearable small-chips /></v-col>
-                    <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteTexture(t_i)">mdi-close</v-icon></v-col>
+                    <v-col>
+                      <v-text-field :color="color" class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable />
+                    </v-col>
+                    <v-col>
+                      <v-select
+                        :color="color"
+                        :item-color="color"
+                        class="mb-1"
+                        v-model="texture.tags"
+                        :items="tags"
+                        :placeholder="$root.lang().database.labels.texture_tags"
+                        multiple hide-details dense clearable small-chips
+                      />
+                    </v-col>
+                    <v-col class="flex-grow-0 flex-shrink-0">
+                      <v-icon color="error" @click="() => deleteTexture(t_i)">mdi-close</v-icon>
+                    </v-col>
                   </v-row>
                   <v-row dense class="mb-2">
                     <v-col class="flex-grow-0 flex-shrink-0">
@@ -95,9 +113,25 @@ export default {
                     <v-col>
                       <v-container fluid class="pa-0" v-for="(use, u_i) in texture.uses" :key="'tex-' + t_i + '-use-' + u_i">
                         <v-row dense>
-                          <v-col><v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
-                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use, texture)" v-model="use.edition" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
-                          <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon></v-col>
+                          <v-col>
+                            <v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable />
+                          </v-col>
+                          <v-col>
+                            <v-select
+                              :color="color"
+                              :item-color="color"
+                              class="mb-1"
+                              :items="editions"
+                              @change="(e) => onEditionChange(e, use, texture)"
+                              v-model="use.edition"
+                              :placeholder="$root.lang().database.labels.use_edition"
+                              hide-details dense
+                              clearable
+                            />
+                          </v-col>
+                          <v-col class="flex-grow-0 flex-shrink-0">
+                            <v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon>
+                          </v-col>
                         </v-row>
                         <v-row dense class="mb-2">
                           <v-col class="flex-grow-0 flex-shrink-0">
@@ -107,10 +141,35 @@ export default {
                           <v-col>
                             <v-container class="pa-0" fluid v-for="(path, p_i) in use.paths" :key="'tex-' + t_i + '-use-' + u_i + '-p_i-' + p_i">
                               <v-row dense>
-                                <v-col><v-text-field :color="color" class="mb-0" v-model="path[0]" :placeholder="$root.lang().database.labels.path" hide-details dense clearable /></v-col>
-                                <v-col><v-select :color="color" :item-color="color" class="mb-0" :items="versions_sorted" v-model="path[1]" :placeholder="$root.lang().database.labels.versions" multiple hide-details dense clearable small-chips /></v-col>
-                                <v-col class="flex-grow-0 flex-shrink-0"><v-checkbox :color="color" v-model="path[2]" hide-details label="MCMETA"></v-checkbox></v-col>
-                                <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">mdi-close</v-icon></v-col>
+                                <v-col>
+                                  <v-text-field
+                                    :color="color"
+                                    class="mb-0"
+                                    v-model="path.name"
+                                    :placeholder="$root.lang().database.labels.path"
+                                    dense clearable
+                                    @change="(e) => pathAdded(e, path, use, texture)"
+                                    persistent-hint
+                                    :hint="$root.lang().database.hints.path_prefill"
+                                  />
+                                </v-col>
+                                <v-col>
+                                  <v-select
+                                    :color="color"
+                                    :item-color="color"
+                                    class="mb-0"
+                                    :items="versions_sorted"
+                                    v-model="path.versions"
+                                    :placeholder="$root.lang().database.labels.versions"
+                                    multiple hide-details dense clearable small-chips
+                                  />
+                                </v-col>
+                                <v-col class="flex-grow-0 flex-shrink-0">
+                                  <v-checkbox :color="color" v-model="path.mcmeta" hide-details label="MCMETA"></v-checkbox>
+                                </v-col>
+                                <v-col class="flex-grow-0 flex-shrink-0">
+                                  <v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">mdi-close</v-icon>
+                                </v-col>
                               </v-row>
                             </v-container>
                           </v-col>
@@ -228,17 +287,59 @@ export default {
       if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i != "Java")];
       return arr;
     },
+    formatTag(tag) {
+      switch (tag) {
+        case "Blocks":
+          return "Block";
+        case "Items":
+          return "Item";
+        case "Gui":
+          return "GUI";
+        case "Ui":
+          return "UI";
+        default:
+          return tag;
+      }
+    },
     onEditionChange(edition, use, texture) {
       if (!use.paths) use.paths = [emptyPath()];
       use.paths.forEach((path) => {
         // if version is empty
-        if (path[1].length == 0) {
-          path[1].push(settings.versions[edition][0]);
+        if (path.versions.length == 0) {
+          path.versions.push(settings.versions[edition][0]);
         }
       });
       if (!texture.tags.includes(this.toTitleCase(edition))) {
         texture.tags = this.sortTags([this.toTitleCase(edition), ...texture.tags]);
       }
+    },
+    pathAdded(el, path, use, texture) {
+      // largely ripped from https://github.com/3vorp/faithful-utilities/blob/main/tools/createTextures.js
+      if (!el || !path) return;
+
+      const split = el.split("/");
+      const name = split[split.length - 1].split(".")[0];
+      const edition = el.startsWith("assets") ? "java" : "bedrock";
+      if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
+
+      if (!use) return;
+      if (!use.edition) {
+        use.edition = edition;
+        this.onEditionChange(edition, use, texture);
+      }
+
+      if (!use.name) use.name = name;
+
+      if (!texture) return;
+      if (!texture.name) texture.name = name;
+
+      const textureFolderIndex = el.split("/").findIndex((v) => v == "textures");
+      texture.tags = this.sortTags(
+        [
+          ...texture.tags,
+          this.toTitleCase(textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1]),
+        ].map(this.formatTag),
+      );
     },
     versionsLeft(textureIndex, useIndex) {
       const otherUseIndex = 1 - useIndex;
@@ -268,9 +369,9 @@ export default {
           name: u.name,
           edition: u.edition,
           paths: u.paths.map((p) => ({
-            name: String(p[0]),
-            versions: p[1],
-            mcmeta: p[2] || false,
+            name: p.name,
+            versions: p.versions,
+            mcmeta: p.mcmeta || false,
           })),
         })),
       }));
