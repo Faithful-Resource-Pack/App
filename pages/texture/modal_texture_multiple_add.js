@@ -7,7 +7,7 @@ const emptyPath = function () {
 const emptyUse = function () {
   return {
     name: "",
-    editions: [],
+    edition: "",
     paths: [emptyPath()],
   };
 };
@@ -15,7 +15,7 @@ const emptyUse = function () {
 const emptyTexture = function () {
   return {
     name: "",
-    type: [],
+    tags: [],
     uses: [emptyUse()],
   };
 };
@@ -27,7 +27,7 @@ export default {
       type: Boolean,
       required: true,
     },
-    types: {
+    tags: {
       type: Array,
       required: false,
       default() {
@@ -84,7 +84,7 @@ export default {
                 <v-container fluid class="pa-0" v-for="(texture, t_i) in textures" :key="'tex-' + t_i">
                   <v-row dense>
                     <v-col><v-text-field :color="color" class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable /></v-col>
-                    <v-col><v-select :color="color" :item-color="color" class="mb-1" v-model="texture.type" :items="types" :placeholder="$root.lang().database.labels.texture_type" multiple hide-details dense clearable small-chips /></v-col>
+                    <v-col><v-select :color="color" :item-color="color" class="mb-1" v-model="texture.tags" :items="tags" :placeholder="$root.lang().database.labels.texture_tags" multiple hide-details dense clearable small-chips /></v-col>
                     <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteTexture(t_i)">mdi-close</v-icon></v-col>
                   </v-row>
                   <v-row dense class="mb-2">
@@ -96,7 +96,7 @@ export default {
                       <v-container fluid class="pa-0" v-for="(use, u_i) in texture.uses" :key="'tex-' + t_i + '-use-' + u_i">
                         <v-row dense>
                           <v-col><v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
-                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use)" v-model="use.editions[0]" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
+                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use)" v-model="use.edition" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
                           <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon></v-col>
                         </v-row>
                         <v-row dense class="mb-2">
@@ -248,10 +248,10 @@ export default {
       const data = JSON.parse(JSON.stringify(this.textures));
       const api_data = data.map((e) => ({
         name: e.name,
-        tags: e.type,
+        tags: e.tags,
         uses: e.uses.map((u) => ({
           name: u.name,
-          edition: u.editions[0],
+          edition: u.edition,
           paths: u.paths.map((p) => ({
             name: String(p[0]),
             versions: p[1],

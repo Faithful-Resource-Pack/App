@@ -25,7 +25,7 @@ export default {
       :disableDialog="disableDialog"
       :add="Object.keys(dialogData).length == 0"
       :data="dialogData"
-      :types="types">
+      :tags="tags">
     </texture-modal>
     <version-modal
       :color="pageColor"
@@ -36,7 +36,7 @@ export default {
       :textColor="textColorOnPage"
       :color="pageColor"
       v-model="addMultiple"
-      :types="types"
+      :tags="tags"
       :editions="editions"
       :versions="versions">
     </add-multiple-texture>
@@ -47,7 +47,8 @@ export default {
       :editions="editions"
       :versions="versions">
     </add-minecraft-version>
-    <remove-confirm type="texture"
+    <remove-confirm
+      type="texture"
       :confirm="remove.confirm"
       :data="remove.data"
       :disableDialog="() => { remove.confirm = false; }"
@@ -57,12 +58,12 @@ export default {
     <div class="text-h4 py-4">
       {{ $root.lang().database.titles.textures }}
     </div>
-    <div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_type }}</div>
+    <div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tags }}</div>
     <div v-if="$vuetify.breakpoint.smAndUp" class="selector">
       <v-btn
-        v-for="t in texturesTypes"
+        v-for="t in textureTags"
         :key="t"
-        :class="['my-1 mr-2', activeType(t)]"
+        :class="['my-1 mr-2', activeTag(t)]"
         :to="textureURL(t)"
         :exact="t == 'all'"
       >{{ t }}</v-btn>
@@ -70,7 +71,7 @@ export default {
     <v-select
       id="selectTextureType"
       v-else
-      :items="texturesTypes.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
+      :items="textureTags.map(e => { return {'text': e.toUpperCase(), 'value': e } })"
       item-text="text"
       item-value="value"
       :color="pageColor"
@@ -171,7 +172,7 @@ export default {
       newVersionModal: false,
       addMultiple: false,
       recompute: false,
-      types: [],
+      tags: [],
       editions: [],
       versions: [],
       textures: {},
@@ -188,16 +189,16 @@ export default {
     };
   },
   computed: {
-    texturesTypes() {
-      return ["all", ...this.types];
+    textureTags() {
+      return ["all", ...this.tags];
     },
-    type() {
-      if (this.$route.params.type && this.texturesTypes.includes(this.$route.params.type))
+    tag() {
+      if (this.$route.params.type && this.textureTags.includes(this.$route.params.type))
         return this.$route.params.type;
       return undefined;
     },
     name() {
-      if (this.type !== undefined) return this.$route.params.name;
+      if (this.tag !== undefined) return this.$route.params.name;
       return this.$route.params.type;
     },
     listColumns() {
@@ -235,11 +236,11 @@ export default {
     },
   },
   methods: {
-    activeType(t) {
+    activeTag(t) {
       let res = {};
       if (
-        (t === "all" && !this.type && !!this.name) ||
-        (t && this.type && t.toLowerCase() === this.type.toLowerCase())
+        (t === "all" && !this.tag && !!this.name) ||
+        (t && this.tag && t.toLowerCase() === this.tag.toLowerCase())
       ) {
         res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
       }
@@ -251,7 +252,7 @@ export default {
         : `/textures/${t}`;
     },
     startSearch() {
-      let newPath = this.textureURL(this.type, this.search);
+      let newPath = this.textureURL(this.tag, this.search);
 
       // DO NOT CHANGE ROUTE IF SAME PATH
       if (newPath !== this.$route.path) {
@@ -270,8 +271,9 @@ export default {
       this.dialogData = data;
     },
     disableDialog(refresh = false) {
+      this.dialogOpen = false;
       if (refresh) {
-        this.getTypes();
+        this.getTags();
         this.getEditions();
         this.getTextures();
         this.getVersions();
@@ -290,11 +292,11 @@ export default {
       this.remove.data = data;
       this.remove.confirm = true;
     },
-    getTypes() {
+    getTags() {
       axios
         .get(`${this.$root.apiURL}/textures/tags`)
         .then((res) => {
-          this.types = res.data;
+          this.tags = res.data;
         })
         .catch(function (err) {
           console.error(err);
@@ -339,7 +341,7 @@ export default {
         .catch((err) => console.error(err));
     },
     update(textures = true) {
-      this.getTypes();
+      this.getTags();
       if (textures) this.getTextures();
       this.getEditions();
       this.getVersions();
@@ -361,7 +363,7 @@ export default {
     $route() {
       this.getTextures();
     },
-    type(n) {
+    tag(n) {
       this.selectTextureType = n;
     },
     selectTextureType(n) {

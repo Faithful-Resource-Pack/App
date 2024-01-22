@@ -80,7 +80,6 @@ export default {
   data() {
     return {
       amOpened: false,
-      // those var names don't make sense anymore lmao
       subPathFormData: {
         id: "",
         use: "",
