@@ -96,7 +96,7 @@ export default {
                       <v-container fluid class="pa-0" v-for="(use, u_i) in texture.uses" :key="'tex-' + t_i + '-use-' + u_i">
                         <v-row dense>
                           <v-col><v-text-field :color="color" class="mb-1" v-model="use.name" :placeholder="$root.lang().database.labels.use_name" hide-details dense clearable /></v-col>
-                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use)" v-model="use.edition" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
+                          <v-col><v-select :color="color" :item-color="color" class="mb-1" :items="editions" @change="(e) => onEditionChange(e, use, texture)" v-model="use.edition" :placeholder="$root.lang().database.labels.use_edition" hide-details dense clearable /></v-col>
                           <v-col class="flex-grow-0 flex-shrink-0"><v-icon color="error" @click="() => deleteUse(t_i, u_i)">mdi-close</v-icon></v-col>
                         </v-row>
                         <v-row dense class="mb-2">
@@ -211,19 +211,34 @@ export default {
 
       return result;
     },
+    toTitleCase(str) {
+      return str
+        .split("_")
+        .map((v) => v[0].toUpperCase() + v.slice(1))
+        .join(" ");
+    },
     onCancel() {
       this.modalOpened = false;
     },
-    onEditionChange(value, use) {
-      if (value !== "bedrock") return;
-
+    sortTags(input) {
+      // remove duplicates/null items and alphabetically sort
+      let arr = [...new Set(input.filter((i) => i))].sort();
+      // shift java and bedrock tags to start
+      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i != "Bedrock")];
+      if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i != "Java")];
+      return arr;
+    },
+    onEditionChange(edition, use, texture) {
       if (!use.paths) use.paths = [emptyPath()];
       use.paths.forEach((path) => {
         // if version is empty
         if (path[1].length == 0) {
-          path[1].push("bedrock-latest");
+          path[1].push(settings.versions[edition][0]);
         }
       });
+      if (!texture.tags.includes(this.toTitleCase(edition))) {
+        texture.tags = this.sortTags([this.toTitleCase(edition), ...texture.tags]);
+      }
     },
     versionsLeft(textureIndex, useIndex) {
       const otherUseIndex = 1 - useIndex;
@@ -248,7 +263,7 @@ export default {
       const data = JSON.parse(JSON.stringify(this.textures));
       const api_data = data.map((e) => ({
         name: e.name,
-        tags: e.tags,
+        tags: this.sortTags(e.tags),
         uses: e.uses.map((u) => ({
           name: u.name,
           edition: u.edition,
