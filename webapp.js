@@ -19,7 +19,7 @@ const ReconnectPage = () => import("./pages/reconnect/reconnect.js");
 window.colors = (
   await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")
 ).default;
-window.colorToHex = function (color) {
+window.colorToHex = (color) => {
   const color_arr = color.trim().split(" ");
 
   try {
@@ -102,15 +102,10 @@ const LANGS = {
 let lang_value;
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
-const _get_lang = function () {
-  lang_value = localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
+const _get_lang = () => localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
 
-  return lang_value;
-};
-
-const _set_lang = function (val) {
-  val = String(val);
-  lang_value = val;
+const _set_lang = (val) => {
+  lang_value = String(val);
   localStorage.setItem(LANG_KEY, val);
 };
 ///////////

@@ -296,7 +296,7 @@ export default {
         .then((res) => {
           this.tags = res.data;
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         })
         .finally(() => {
@@ -311,7 +311,7 @@ export default {
         .then((res) => {
           this.editions = res.data;
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },
@@ -321,7 +321,7 @@ export default {
         .then((res) => {
           this.versions = res.data;
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },

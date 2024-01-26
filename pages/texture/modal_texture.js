@@ -224,7 +224,7 @@ export default {
             this.formData.uses[temp[i].id] = temp[i];
           }
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },

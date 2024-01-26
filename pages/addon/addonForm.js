@@ -631,10 +631,10 @@ export default {
         // start reader
         const reader = new FileReader();
 
-        reader.onload = function (e) {
+        reader.onload = (e) => {
           const image = new Image();
           image.src = e.target.result;
-          image.onload = function () {
+          image.onload = () => {
             try {
               validateImage(this);
               resolve();
@@ -642,13 +642,9 @@ export default {
               reject(error);
             }
           };
-          image.onerror = function (error) {
-            reject(e);
-          };
+          image.onerror = () => reject(e);
         };
-        reader.onerror = function (error) {
-          reject(e);
-        };
+        reader.onerror = () => reject(e);
 
         // set file to be read
         reader.readAsDataURL(file);

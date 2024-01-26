@@ -5,7 +5,7 @@ const jsonBooleanEditor = () => import("./jsonBooleanEditor.js");
 const jsonNullEditor = () => import("./jsonNullEditor.js");
 const jsonArrayEditor = () => import("./jsonArrayEditor.js");
 
-var deepEqual = function (x, y) {
+function deepEqual(x, y) {
   if (x === y) {
     return true;
   } else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
@@ -19,7 +19,7 @@ var deepEqual = function (x, y) {
 
     return true;
   } else return false;
-};
+}
 
 export default {
   name: "json-editor",

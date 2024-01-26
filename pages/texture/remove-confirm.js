@@ -109,7 +109,7 @@ export default {
 
           this.$forceUpdate();
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },

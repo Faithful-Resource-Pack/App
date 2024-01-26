@@ -131,7 +131,7 @@ export default {
           this.loading = false;
           this.$forceUpdate();
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },

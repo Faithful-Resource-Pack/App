@@ -1,6 +1,6 @@
 /* global axios, Vue, Prism */
 
-const emptyPath = function () {
+const emptyPath = () => {
   return {
     name: "",
     versions: [],
@@ -8,7 +8,7 @@ const emptyPath = function () {
   };
 };
 
-const emptyUse = function () {
+const emptyUse = () => {
   return {
     name: "",
     edition: "",
@@ -16,7 +16,7 @@ const emptyUse = function () {
   };
 };
 
-const emptyTexture = function () {
+const emptyTexture = () => {
   return {
     name: "",
     tags: [],

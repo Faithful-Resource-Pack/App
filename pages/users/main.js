@@ -175,7 +175,7 @@ export default {
         .then((response) => {
           this.roles = response.data;
         })
-        .catch(function (error) {
+        .catch((error) => {
           console.error(error);
         })
         .finally(() => {

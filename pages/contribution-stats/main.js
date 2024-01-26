@@ -82,7 +82,7 @@ export default {
           this.contrib.sort((a, b) => a.date - b.date);
           this.buildGraph();
         })
-        .catch(function (error) {
+        .catch((error) => {
           this.$root.showSnackBar(err, "error");
         });
     },
@@ -157,9 +157,7 @@ export default {
         .style("text-anchor", "end")
         .attr("dx", "-.15em")
         .attr("dy", ".15em")
-        .attr("transform", function () {
-          return "rotate(-45)";
-        });
+        .attr("transform", () => "rotate(-45)");
 
       // create stack data from
       const stack = d3.stack().keys(allPack).order(d3.stackOrderNone).offset(d3.stackOffsetNone);
@@ -206,7 +204,7 @@ export default {
         .attr("width", xScale.bandwidth())
         .attr("y", (d) => yScale(d[1]))
         .attr("height", (d) => height - spacing - yScale(d[1] - d[0]))
-        .on("mouseover", function (...args) {
+        .on("mouseover", (...args) => {
           const [event, d] = args;
           div.transition().duration(200).style("opacity", 0.9);
           div
@@ -221,10 +219,10 @@ export default {
             .style("left", event.pageX + "px")
             .style("top", event.pageY + "px");
         })
-        .on("mousemove", function (event) {
+        .on("mousemove", (event) => {
           div.style("left", event.pageX + "px").style("top", event.pageY + "px");
         })
-        .on("mouseout", function () {
+        .on("mouseout", () => {
           div.transition().duration(500).style("opacity", 0);
         });
 

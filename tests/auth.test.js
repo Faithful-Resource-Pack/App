@@ -50,7 +50,7 @@ describe("Auth test", async () => {
   const REFRESH_TOKEN = "0987654321";
   const EXPIRES_IN = "604800"; // s = 7 days
 
-  it("should create an account for " + USERNAME, async function () {
+  it("should create an account for " + USERNAME, async () => {
     // directly go to web app
     await page.goto(
       WEBAPP_ROOT_URL +

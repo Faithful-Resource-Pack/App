@@ -223,7 +223,7 @@ export default {
             };
           }
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error(err);
         });
     },

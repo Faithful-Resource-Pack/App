@@ -1,7 +1,7 @@
 const jsonEditor = () => import("./jsonObjectEditor.js");
 const jsonAddEditor = () => import("./jsonAddEditor.js");
 
-var deepEqual = function (x, y) {
+function deepEqual(x, y) {
   if (x === y) {
     return true;
   } else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
@@ -15,7 +15,7 @@ var deepEqual = function (x, y) {
 
     return true;
   } else return false;
-};
+}
 
 export default {
   name: "json-string-editor",

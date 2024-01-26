@@ -78,8 +78,8 @@ app.listen(port, () => {
 // https://www.techonthenet.com/js/language_tags.php
 const langPath = ["resources", "strings"];
 const languagesPath = path.join(__dirname, ...langPath);
-const getLanguages = function () {
-  return fs.promises.readdir(languagesPath).then((files) => {
+const getLanguages = () =>
+  fs.promises.readdir(languagesPath).then((files) => {
     const result = files
       .filter((f) => f.endsWith("js"))
       .map((e) => {
@@ -93,7 +93,6 @@ const getLanguages = function () {
 
     return result;
   });
-};
 
 app.use(
   express.static(".", {
@@ -107,7 +106,7 @@ app.use("/api/discord", require("./api/discord"));
  * @param {Response<any, Record<string, any>, number>} res
  * @return {Function}
  */
-const errorHandler = function (res) {
+const errorHandler = (res) => {
   return (err) => {
     // advance parsing for axios errors and custom codes errors
     const code = (err.response ? err.response.status : err.code) || 400;

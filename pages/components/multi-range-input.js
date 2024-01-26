@@ -69,7 +69,7 @@ export default {
           let i = 0;
           while (incorrectValue === undefined && i < list.length) {
             const s = list[i];
-            const correct = (function () {
+            const correct = (() => {
               if (String(Number.parseInt(s, 10)) === s) return true;
               const numbers = s.split(/\s*-\s*/);
               if (numbers.length !== 2) return false;
