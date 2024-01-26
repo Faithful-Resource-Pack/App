@@ -105,7 +105,6 @@ export default {
 
       delete data.id; // excess property and therefore is not allowed
       delete data.media; // excess property and therefore is not allowed
-      delete data.warns; // excess property and therefore is not allowed _yeet_
 
       Object.keys(data).forEach((k) => (data[k] = data[k] === null ? this.default[k] : data[k]));
 

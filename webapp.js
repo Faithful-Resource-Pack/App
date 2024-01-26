@@ -629,7 +629,7 @@ axios
 
           // warns user if string not found
           if (response === undefined) {
-            console.warn(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
+            console.error(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
           }
 
           // if raw we can use the object directly after

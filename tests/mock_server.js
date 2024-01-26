@@ -30,7 +30,6 @@ function createServer(port = undefined, username = undefined, callback = undefin
       uuid: "",
       anonymous: false,
       roles: [],
-      warns: [],
       id: String(discord_id),
       media: [],
     });
