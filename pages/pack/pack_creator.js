@@ -54,7 +54,7 @@ export default {
             <h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
             <p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
             <div v-for="(edition, index) in editions" :key="index">
-              <p class="text-body-1">{{ toTitleCase(edition) }}</p>
+              <p class="text-body-1">{{ this.$root.toTitleCase(edition) }}</p>
               <v-row>
                 <v-col>
                   <v-text-field
