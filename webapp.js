@@ -30,7 +30,7 @@ window.colorToHex = function (color) {
     return "currentcolor";
   }
 };
-window.updatePageStyles = function (cmp) {
+window.updatePageStyles = (cmp) => {
   if (!cmp.$el) return;
   if (!cmp.$el.id) cmp.$el.id = cmp.name;
 
@@ -62,7 +62,7 @@ window.updatePageStyles = function (cmp) {
 
 Object.defineProperty(Object.prototype, "isObject", {
   /**
-   * @param {*} item to be tested
+   * @param {any} item to be tested
    * @returns {Boolean} true if the item is an JS Object
    */
   value: (item) => {
@@ -155,7 +155,7 @@ const ALL_TABS = [
       },
       {
         enabled: true,
-        icon: "mdi-texture",
+        icon: "mdi-image-multiple",
         label: "gallery",
         unlogged: true,
         routes: [
