@@ -25,7 +25,7 @@ export default {
   },
   template: `
 <div>
-  <v-text-field v-model="newValue" type="number" dense hide-details placeholder="nuber..." />
+  <v-text-field v-model="newValue" type="number" dense hide-details placeholder="number..." />
 </div>`,
   props: {
     value: {

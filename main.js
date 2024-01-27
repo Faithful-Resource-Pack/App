@@ -1,13 +1,12 @@
-/* global __dirname */
-
 require("dotenv").config();
 
 const express = require("express");
-const fs = require("fs");
-const path = require("path");
+const { readFileSync } = require("fs");
+const { readdir } = require("fs/promises");
+const { join } = require("path");
 const port = process.env.PORT;
-const VERBOSE = (process.env.VERBOSE || "false") === "true";
-const DEV = (process.env.DEV || "false") === "true";
+const VERBOSE = process.env.VERBOSE === "true";
+const DEV = process.env.DEV === "true";
 const API_URL = process.env.API_URL || "https://api.faithfulpack.net/v2";
 const app = express();
 app.disable("x-powered-by");
@@ -26,8 +25,9 @@ app.use(
 );
 app.use(express.json({ limit: "50mb" }));
 
+// serve base url through express, the rest is mostly web js
 app.get(webappURL, async (req, res) => {
-  let file = fs.readFileSync("./index.html", "utf8");
+  let file = readFileSync("./index.html", "utf8");
 
   const WINDOW_ENV = {
     DISCORD_USER_URL: process.env["DISCORD_USER_URL"] || undefined,
@@ -56,7 +56,7 @@ app.get(webappURL, async (req, res) => {
     );
   }
 
-  let langs = await getLanguages().catch(errorHandler(res));
+  const langs = await getLanguages().catch(errorHandler(res));
 
   file = file.replace(
     "</body>",
@@ -77,10 +77,10 @@ app.listen(port, () => {
 
 // https://www.techonthenet.com/js/language_tags.php
 const langPath = ["resources", "strings"];
-const languagesPath = path.join(__dirname, ...langPath);
+const languagesPath = join(__dirname, ...langPath);
 const getLanguages = () =>
-  fs.promises.readdir(languagesPath).then((files) => {
-    const result = files
+  readdir(languagesPath).then((files) =>
+    files
       .filter((f) => f.endsWith("js"))
       .map((e) => {
         const name = e.split(".").slice(0, -1).join(".");
@@ -89,36 +89,32 @@ const getLanguages = () =>
           bcp47: name.replace("_", "-"),
           file: ["", ...langPath, e].join("/"),
         };
-      });
-
-    return result;
-  });
+      }),
+  );
 
 app.use(
   express.static(".", {
     extensions: ["html", "xml", "json"],
   }),
 );
+
 app.use("/api/discord", require("./api/discord"));
 
 /**
- * Error handling generic for all request
- * @param {Response<any, Record<string, any>, number>} res
- * @return {Function}
+ * Error handling generic for all requests
+ * @param {express.Response<any, Record<string, any>, number>} res
  */
-const errorHandler = (res) => {
-  return (err) => {
-    // advance parsing for axios errors and custom codes errors
-    const code = (err.response ? err.response.status : err.code) || 400;
-    const message =
-      (err.response && err.response.data ? err.response.data.error : err.message) || err;
+const errorHandler = (res) => (err) => {
+  // advance parsing for axios errors and custom codes errors
+  const code = (err.response ? err.response.status : err.code) || 400;
+  const message =
+    (err.response && err.response.data ? err.response.data.error : err.message) || err;
 
-    if (VERBOSE) {
-      console.error(code, message);
-      console.error(err.stack);
-    }
-    res.status(code);
-    res.send({ error: `${message}` });
-    res.end();
-  };
+  if (VERBOSE) {
+    console.error(code, message);
+    console.error(err.stack);
+  }
+  res.status(code);
+  res.send({ error: `${message}` });
+  res.end();
 };

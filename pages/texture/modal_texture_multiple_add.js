@@ -79,7 +79,7 @@ export default {
                   <v-expansion-panel>
                     <v-expansion-panel-header class="px-0 py-0"><h2 class="title">{{ $root.lang().database.subtitles.import_json_data }}</h2></v-expansion-panel-header>
                     <v-expansion-panel-content class="mx-n6">
-                      <prism-editor class="ma-0 my-editor fixed-height mb-2" v-model="formData.importjson" :highlight="highlighter" line-numbers></prism-editor>
+                      <prism-editor class="ma-0 my-editor fixed-height mb-2" v-model="formData.importJSON" :highlight="highlighter" line-numbers></prism-editor>
                       <v-btn block @click="parseJSON" :color="color" :class="[textColor]">{{ $root.lang().database.labels.parse_json }}</v-btn>
                     </v-expansion-panel-content>
                   </v-expansion-panel>
@@ -215,7 +215,7 @@ export default {
       panel: undefined,
       closeOnSubmit: false,
       formData: {
-        importjson: "[]",
+        importJSON: "[]",
       },
       textures: [emptyTexture()],
     };
@@ -350,7 +350,7 @@ export default {
     },
     parseJSON() {
       try {
-        const data = JSON.parse(this.formData.importjson);
+        const data = JSON.parse(this.formData.importJSON);
         this.textures = data;
       } catch (err) {
         console.error(err);

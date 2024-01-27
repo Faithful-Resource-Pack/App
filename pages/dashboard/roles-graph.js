@@ -107,8 +107,8 @@ export default {
       b = typeof b === "undefined" ? 0 : b;
       return { r: r, g: g, b: b };
     },
-    toRGB(gcolor) {
-      return `rgb(${gcolor.r}, ${gcolor.g}, ${gcolor.b})`;
+    toRGB(gColor) {
+      return `rgb(${gColor.r}, ${gColor.g}, ${gColor.b})`;
     },
     forceRerender() {
       // Remove my-component from the DOM

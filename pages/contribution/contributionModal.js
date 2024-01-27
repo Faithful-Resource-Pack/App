@@ -281,7 +281,7 @@ export default {
 
       form = JSON.parse(JSON.stringify(form));
 
-      // stop unexisting forms
+      // stop fake forms
       const form_id = form.formId;
       if (!this.formRecords[form_id]) return;
 

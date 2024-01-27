@@ -149,7 +149,7 @@ export default {
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title v-text="momo(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
+            <v-list-item-title v-text="parseDate(new Date(contrib.date)).format('ll') + ' '+ (!!contrib.name ? ' - ' + contrib.name : '')"></v-list-item-title>
             <v-list-item-subtitle v-text="(contrib.authors||[]).map(id => contributors.filter(c => c.id == id)[0].username || id).join(', ')"></v-list-item-subtitle>
 
             <div><v-chip label x-small class="mr-1">
@@ -271,7 +271,7 @@ export default {
     },
   },
   methods: {
-    momo(...args) {
+    parseDate(...args) {
       return moment(...args);
     },
     showMore() {
@@ -360,7 +360,7 @@ export default {
           );
         })
         .then((results) => {
-          const texturesFromIds = results.map((r) => r.data).flat(); // remerge results
+          const texturesFromIds = results.map((r) => r.data).flat(); // merge results
 
           this.search.search_results.forEach((contrib) => {
             const found_texture = texturesFromIds.find((t) => t.id === contrib.texture);
@@ -385,7 +385,7 @@ export default {
      * @property {Array<number|[number, number]>} texture Texture range array
      */
     /**
-     * @param {Array<MultipleContribution>} entries Input entrues
+     * @param {Array<MultipleContribution>} entries Input entries
      * @returns {Promise<void>}
      */
     async onNewSubmit(entries) {
@@ -393,7 +393,7 @@ export default {
 
       // prepare final data
       let final_contributions = [];
-      for (let entry of entries) {
+      for (const entry of entries) {
         const generated_range = window.generateRange(entry.texture);
 
         if (generated_range.length === 0) {
@@ -412,7 +412,7 @@ export default {
           return false;
         }
 
-        for (let texture_id of generated_range) {
+        for (const texture_id of generated_range) {
           const new_contribution = {
             date: new Date(entry.date).getTime(),
             resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
