@@ -671,7 +671,12 @@ axios
           this.snackbar.timeout = timeout;
           this.snackbar.show = true;
         },
+        /**
+         * Reused everywhere so it's global
+         */
         toTitleCase(str) {
+          // fix null values
+          if (!str) return str;
           return str
             .split("_")
             .map((v) => v[0].toUpperCase() + v.slice(1))
