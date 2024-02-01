@@ -253,10 +253,10 @@
 
 <script>
 /* global Vue, axios, marked */
-const UserList = () => import("./userlist.js");
-const ImagePreviewer = () => import("./image-previewer.js");
-const FullscreenPreview = () => import("./fullscreen-preview.js");
-const DropZone = () => import("../components/drop-zone.js");
+const UserList = () => import("./userlist.vue");
+const ImagePreviewer = () => import("./image-previewer.vue");
+const FullscreenPreview = () => import("./fullscreen-preview.vue");
+const DropZone = () => import("../components/drop-zone.vue");
 
 export default {
   name: "addon-form",
@@ -298,7 +298,7 @@ export default {
       default: () => false,
     },
   },
-  
+
   data() {
     return {
       form: {

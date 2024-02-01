@@ -4,8 +4,8 @@
 </div></template>
 
 <script>
-const jsonEditor = () => import("./jsonObjectEditor.js");
-const jsonAddEditor = () => import("./jsonAddEditor.js");
+const jsonEditor = () => import("./jsonObjectEditor.vue");
+const jsonAddEditor = () => import("./jsonAddEditor.vue");
 
 function deepEqual(x, y) {
   if (x === y) {
@@ -25,7 +25,7 @@ function deepEqual(x, y) {
 
 export default {
   name: "json-null-editor",
-  
+
   props: {
     value: {
       required: true,

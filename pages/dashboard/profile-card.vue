@@ -39,7 +39,7 @@
   </template>
 
 <script>
-const DashBoardCard = () => import("./dashcard.js");
+const DashBoardCard = () => import("./dashcard.vue");
 
 export default {
   name: "profile-card",
@@ -51,7 +51,7 @@ export default {
       required: true,
     },
   },
-  
+
   computed: {
     user() {
       return this.$root.user;

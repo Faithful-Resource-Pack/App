@@ -1,9 +1,11 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
-const { readFileSync } = require("fs");
-const { readdir } = require("fs/promises");
-const { join } = require("path");
+import express from "express";
+import { readFileSync } from "fs";
+import { readdir } from "fs/promises";
+import { join } from "path";
+import discord from "./api/discord.js";
+
 const port = process.env.PORT;
 const VERBOSE = process.env.VERBOSE === "true";
 const DEV = process.env.DEV === "true";
@@ -23,6 +25,7 @@ app.use(
     limit: "50mb",
   }),
 );
+
 app.use(express.json({ limit: "50mb" }));
 
 // serve base url through express, the rest is mostly web js
@@ -77,7 +80,7 @@ app.listen(port, () => {
 
 // https://www.techonthenet.com/js/language_tags.php
 const langPath = ["resources", "strings"];
-const languagesPath = join(__dirname, ...langPath);
+const languagesPath = join(process.cwd(), ...langPath);
 const getLanguages = () =>
   readdir(languagesPath).then((files) =>
     files
@@ -98,7 +101,7 @@ app.use(
   }),
 );
 
-app.use("/api/discord", require("./api/discord"));
+app.use("/api/discord", discord);
 
 /**
  * Error handling generic for all requests

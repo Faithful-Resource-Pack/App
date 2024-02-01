@@ -72,8 +72,8 @@
 <script>
 /* global axios, Vue */
 
-const pathModal = () => import("./modal_path.js");
-const removeConfirm = () => import("./remove-confirm.js");
+const pathModal = () => import("./modal_path.vue");
+const removeConfirm = () => import("./remove-confirm.vue");
 
 export default {
   name: "use-modal",
@@ -81,7 +81,7 @@ export default {
     pathModal,
     removeConfirm,
   },
-  
+
   props: {
     subDialog: {
       type: Boolean,

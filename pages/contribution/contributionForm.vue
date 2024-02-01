@@ -52,9 +52,9 @@
   </template>
 
 <script>
-const userSelect = () => import("./userSelect.js");
-const quickDatePicker = () => import("../components/quick-date-picker.js");
-const multiRangeInput = () => import("../components/multi-range-input.js");
+const userSelect = () => import("./userSelect.vue");
+const quickDatePicker = () => import("../components/quick-date-picker.vue");
+const multiRangeInput = () => import("../components/multi-range-input.vue");
 
 export default {
   name: "contribution-form",
@@ -81,7 +81,7 @@ export default {
       required: true,
     },
   },
-  
+
   data() {
     return {
       content: this.value,

@@ -34,7 +34,7 @@
   </template>
 
 <script>
-const DashBoardCard = () => import("./dashcard.js");
+const DashBoardCard = () => import("./dashcard.vue");
 
 export default {
   name: "contribution-card",
@@ -56,7 +56,7 @@ export default {
       type: Function,
     },
   },
-  
+
   data() {
     return {
       data: undefined,

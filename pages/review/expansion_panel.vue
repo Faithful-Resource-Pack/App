@@ -151,8 +151,8 @@
   </template>
 
 <script>
-const FullscreenPreview = () => import("../addon/fullscreen-preview.js");
-const ImagePreviewer = () => import("../addon/image-previewer.js");
+const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
+const ImagePreviewer = () => import("../addon/image-previewer.vue");
 
 export default {
   name: "exp-panel",
@@ -160,7 +160,7 @@ export default {
     ImagePreviewer,
     FullscreenPreview,
   },
-  
+
   props: {
     addons: {
       type: Array,

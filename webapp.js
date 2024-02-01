@@ -1,20 +1,20 @@
 /* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
 
-const ContributionPage = () => import("./pages/contribution/main.js");
-const UsersPage = () => import("./pages/users/main.js");
-const ContributorStatsPage = () => import("./pages/contribution-stats/main.js");
-const TexturePage = () => import("./pages/texture/main.js");
-const PackPage = () => import("./pages/pack/main.js");
-const ProfilePage = () => import("./pages/profile/main.js");
-const AddonNewPage = () => import("./pages/addon/newAddonForm.js");
-const AddonEditPage = () => import("./pages/addon/editAddonForm.js");
-const AddonSubmissionsPage = () => import("./pages/addon/submissions.js");
-const ReviewAddonsPage = () => import("./pages/review/review_addons.js");
-const ReviewTranslationsPage = () => import("./pages/review/review_translations.js");
-const GalleryPage = () => import("./pages/gallery/gallery.js");
-const SettingsPage = () => import("./pages/settings/settingsPage.js");
-const DashboardPage = () => import("./pages/dashboard/dashboard.js");
-const ReconnectPage = () => import("./pages/reconnect/reconnect.js");
+const ContributionPage = () => import("./pages/contribution/main.vue");
+const UsersPage = () => import("./pages/users/main.vue");
+const ContributorStatsPage = () => import("./pages/contribution-stats/main.vue");
+const TexturePage = () => import("./pages/texture/main.vue");
+const PackPage = () => import("./pages/pack/main.vue");
+const ProfilePage = () => import("./pages/profile/main.vue");
+const AddonNewPage = () => import("./pages/addon/newAddonForm.vue");
+const AddonEditPage = () => import("./pages/addon/editAddonForm.vue");
+const AddonSubmissionsPage = () => import("./pages/addon/submissions.vue");
+const ReviewAddonsPage = () => import("./pages/review/review_addons.vue");
+const ReviewTranslationsPage = () => import("./pages/review/review_translations.vue");
+const GalleryPage = () => import("./pages/gallery/gallery.vue");
+const SettingsPage = () => import("./pages/settings/settingsPage.vue");
+const DashboardPage = () => import("./pages/dashboard/dashboard.vue");
+const ReconnectPage = () => import("./pages/reconnect/reconnect.vue");
 
 window.colors = (
   await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")
@@ -297,6 +297,7 @@ axios
           vapiURL: window.apiURL,
           selectedLang: _get_lang(),
           langs: LANGS,
+          // declared in main.js using node
           languages: LANGUAGES,
           window: {
             width: window.innerWidth,
@@ -570,7 +571,8 @@ axios
             return; // everything will update
           }
 
-          import(lang.file)
+
+          import(/* @vite-ignore */ lang.file)
             .then((r) => {
               r = r.default;
               console.log(r);

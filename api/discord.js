@@ -1,9 +1,8 @@
-require("dotenv").config();
+import "dotenv/config";
 
-const express = require("express");
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+import { URLSearchParams } from "url";
+import express from "express";
 const router = express.Router();
-const { URLSearchParams } = require("url");
 
 const CLIENT_ID = process.env.OAUTH2_ID;
 const CLIENT_TOKEN = process.env.OAUTH2_TOKEN;
@@ -89,4 +88,4 @@ router.get("/callback", (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;

@@ -68,7 +68,7 @@
   </template>
 
 <script>
-const DashBoardCard = () => import("./dashcard.js");
+const DashBoardCard = () => import("./dashcard.vue");
 
 export default {
   name: "addon-card",
@@ -82,7 +82,7 @@ export default {
       default: false,
     },
   },
-  
+
   data() {
     return {
       data: undefined,

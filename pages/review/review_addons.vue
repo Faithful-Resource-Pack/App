@@ -74,11 +74,11 @@ d88   888  888    888 d88   888
 <script>
 /* global axios */
 
-const ExpPanel = () => import("./expansion_panel.js");
-const DenyPopup = () => import("./deny_popup.js");
-const ReviewCategories = () => import("./review_categories.js");
-const ReviewList = () => import("./review_list.js");
-const ReviewPreview = () => import("./review_previewer.js");
+const ExpPanel = () => import("./expansion_panel.vue");
+const DenyPopup = () => import("./deny_popup.vue");
+const ReviewCategories = () => import("./review_categories.vue");
+const ReviewList = () => import("./review_list.vue");
+const ReviewPreview = () => import("./review_previewer.vue");
 
 const searchMixin = {
   methods: {
@@ -144,7 +144,7 @@ export default {
     ReviewPreview,
   },
   mixins: [searchMixin],
-  
+
   data() {
     return {
       pageColor: "deep-purple lighten-2",

@@ -86,8 +86,8 @@
 <script>
 /* global axios, Vue */
 
-const useModal = () => import("./modal_use.js");
-const removeConfirm = () => import("./remove-confirm.js");
+const useModal = () => import("./modal_use.vue");
+const removeConfirm = () => import("./remove-confirm.vue");
 
 export default {
   name: "texture-modal",
@@ -95,7 +95,7 @@ export default {
     useModal,
     removeConfirm,
   },
-  
+
   props: {
     value: {
       type: Boolean,

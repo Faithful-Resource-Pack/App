@@ -109,8 +109,8 @@
 
 <script>
 /* global axios, Vue */
-const UserModal = () => import("./modal.js");
-const UserRemoveConfirm = () => import("./remove-confirm.js");
+const UserModal = () => import("./modal.vue");
+const UserRemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {
   name: "users-page",
@@ -118,7 +118,7 @@ export default {
     UserModal,
     UserRemoveConfirm,
   },
-  
+
   data() {
     return {
       pageColor: "indigo accent-2",

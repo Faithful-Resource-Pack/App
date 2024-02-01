@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "The official Web Application for the Faithful website.",
   "main": "main.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon main.js --watch .env --watch main.js",
+    "dev": "vite --host",
     "start": "pm2 start \"node main.js\" --name \"APP\"",
     "watch": "browser-refresh main.js",
     "prettier": "prettier \"{,!(node_modules)/**/}*.js\" --config .prettierrc --write",
@@ -25,6 +26,7 @@
   },
   "homepage": "https://github.com/Faithful-Resource-Pack/App#readme",
   "dependencies": {
+    "@vitejs/plugin-vue2": "^2.3.1",
     "axios": "^1.6.5",
     "btoa": "^1.2.1",
     "dotenv": "^16.3.1",
@@ -35,7 +37,9 @@
     "node-localstorage": "^3.0.5",
     "prettier": "^3.2.4",
     "twin-bcrypt": "^2.1.1",
-    "url": "^0.11.3"
+    "url": "^0.11.3",
+    "vite": "^5.0.12",
+    "vue": "2"
   },
   "devDependencies": {
     "@types/express": "^4.17.21",

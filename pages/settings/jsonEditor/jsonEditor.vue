@@ -9,12 +9,12 @@
 </div></template>
 
 <script>
-const jsonObjectEditor = () => import("./jsonObjectEditor.js");
-const jsonStringEditor = () => import("./jsonStringEditor.js");
-const jsonNumberEditor = () => import("./jsonNumberEditor.js");
-const jsonBooleanEditor = () => import("./jsonBooleanEditor.js");
-const jsonNullEditor = () => import("./jsonNullEditor.js");
-const jsonArrayEditor = () => import("./jsonArrayEditor.js");
+const jsonObjectEditor = () => import("./jsonObjectEditor.vue");
+const jsonStringEditor = () => import("./jsonStringEditor.vue");
+const jsonNumberEditor = () => import("./jsonNumberEditor.vue");
+const jsonBooleanEditor = () => import("./jsonBooleanEditor.vue");
+const jsonNullEditor = () => import("./jsonNullEditor.vue");
+const jsonArrayEditor = () => import("./jsonArrayEditor.vue");
 
 function deepEqual(x, y) {
   if (x === y) {
@@ -42,7 +42,7 @@ export default {
     jsonNullEditor,
     jsonArrayEditor,
   },
-  
+
   props: {
     value: {
       required: true,

@@ -103,8 +103,8 @@
   </template>
 
 <script>
-const submissionCreator = () => import("./submission_creator.js");
-const packRemoveConfirm = () => import("./pack_remove_confirm.js");
+const submissionCreator = () => import("./submission_creator.vue");
+const packRemoveConfirm = () => import("./pack_remove_confirm.vue");
 
 export default {
   name: "pack-creator",
@@ -112,7 +112,7 @@ export default {
     submissionCreator,
     packRemoveConfirm,
   },
-  
+
   props: {
     dialog: {
       type: Boolean,

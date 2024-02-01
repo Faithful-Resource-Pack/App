@@ -38,7 +38,7 @@
   </template>
 
 <script>
-const DashBoardCard = () => import("./dashcard.js");
+const DashBoardCard = () => import("./dashcard.vue");
 
 export default {
   name: "faithful-card",
@@ -50,6 +50,6 @@ export default {
       required: true,
     },
   },
-  
+
 };
 </script>

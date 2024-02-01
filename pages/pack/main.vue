@@ -89,8 +89,8 @@
 <script>
 /* global axios, Vue */
 
-const PackCreator = () => import("./pack_creator.js");
-const PackRemoveConfirm = () => import("./pack_remove_confirm.js");
+const PackCreator = () => import("./pack_creator.vue");
+const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
 
 export default {
   name: "pack-page",
@@ -98,7 +98,7 @@ export default {
     "pack-creator": PackCreator,
     "pack-remove-confirm": PackRemoveConfirm,
   },
-  
+
   data() {
     return {
       pageColor: "amber accent-4",

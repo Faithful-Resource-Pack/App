@@ -178,14 +178,14 @@
 
 <script>
 /* global axios */
-const contributionModal = () => import("./contributionModal.js");
+const contributionModal = () => import("./contributionModal.vue");
 
 export default {
   components: {
     contributionModal,
   },
   name: "contribution-page",
-  
+
   data() {
     const INCREMENT = 250;
 

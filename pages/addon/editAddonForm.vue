@@ -63,14 +63,14 @@
   </template>
 
 <script>
-const addonForm = () => import("./addonForm.js");
+const addonForm = () => import("./addonForm.vue");
 
 export default {
   name: "edit-addon-form",
   components: {
     "addon-form": addonForm,
   },
-  
+
   data() {
     return {
       hidisabled: false,

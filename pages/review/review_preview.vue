@@ -133,8 +133,8 @@
 </div></template>
 
 <script>
-const FullscreenPreview = () => import("../addon/fullscreen-preview.js");
-const ImagePreviewer = () => import("../addon/image-previewer.js");
+const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
+const ImagePreviewer = () => import("../addon/image-previewer.vue");
 
 export default {
   name: "review-preview",
@@ -149,7 +149,7 @@ export default {
       default: undefined,
     },
   },
-  
+
   data() {
     return {
       imagePreview: "",

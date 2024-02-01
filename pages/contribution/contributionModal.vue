@@ -107,7 +107,7 @@
 <script>
 /* global axios */
 
-const contributionForm = () => import("./contributionForm.js");
+const contributionForm = () => import("./contributionForm.vue");
 
 export default {
   name: "contribution-modal",
@@ -135,7 +135,7 @@ export default {
       default: false,
     },
   },
-  
+
   data() {
     return {
       modalOpened: false,

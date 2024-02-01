@@ -128,8 +128,8 @@
         <v-divider
           :key="'divider-' + tabIndex"
           style="margin-bottom: 10px"
-          v-if="isUserLogged || (tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0"
-        />
+          v-if="isUserLogged || (tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0">
+        </v-divider>
       </template>
 
       <v-list dense nav>

@@ -31,14 +31,14 @@
   </template>
 
 <script>
-const FullscreenPreview = () => import("./fullscreen-preview.js");
+const FullscreenPreview = () => import("./fullscreen-preview.vue");
 
 export default {
   name: `image-previewer`,
   components: {
     FullscreenPreview,
   },
-  
+
   props: {
     sources: {
       required: true,

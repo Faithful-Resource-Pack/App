@@ -39,14 +39,14 @@
 
 <script>
 /* global axios, Vue, Prism */
-const JSONEditor = () => import("./jsonEditor/jsonEditor.js");
+const JSONEditor = () => import("./jsonEditor/jsonEditor.vue");
 
 export default {
   name: "settings-page",
   components: {
     "json-editor": JSONEditor,
   },
-  
+
   data() {
     return {
       panels: 1,

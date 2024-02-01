@@ -15,7 +15,7 @@
 </div></template>
 
 <script>
-const ReviewPreview = () => import("./review_preview.js");
+const ReviewPreview = () => import("./review_preview.vue");
 
 export default {
   name: "review-previewer",
@@ -34,6 +34,6 @@ export default {
       default: "black",
     },
   },
-  
+
 };
 </script>

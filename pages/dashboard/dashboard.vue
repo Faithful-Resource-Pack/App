@@ -26,12 +26,12 @@
 </template>
 
 <script>
-const AddonCard = () => import("./addon-card.js");
-const ProfileCard = () => import("./profile-card.js");
-const UserCard = () => import("./user-card.js");
-const ContributionCard = () => import("./contribution-card.js");
-const ContributionStatsCard = () => import("./contribution-stats-card.js");
-const FaithfulCard = () => import("./faithful-card.js");
+const AddonCard = () => import("./addon-card.vue");
+const ProfileCard = () => import("./profile-card.vue");
+const UserCard = () => import("./user-card.vue");
+const ContributionCard = () => import("./contribution-card.vue");
+const ContributionStatsCard = () => import("./contribution-stats-card.vue");
+const FaithfulCard = () => import("./faithful-card.vue");
 
 export default {
   name: "dashboardPage",
@@ -43,7 +43,7 @@ export default {
     "contribution-stats-card": ContributionStatsCard,
     "faithful-card": FaithfulCard,
   },
-  
+
   computed: {
     admin() {
       // if not logged in

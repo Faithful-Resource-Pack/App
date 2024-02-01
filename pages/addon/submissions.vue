@@ -94,14 +94,14 @@
 <script>
 /* global axios */
 
-const addonRemoveConfirm = () => import("./remove-confirm.js");
+const addonRemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {
   name: "own-addon-page",
   components: {
     addonRemoveConfirm,
   },
-  
+
   data() {
     return {
       addons: [],

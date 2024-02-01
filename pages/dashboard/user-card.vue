@@ -25,8 +25,8 @@
   </template>
 
 <script>
-const DashBoardCard = () => import("./dashcard.js");
-const RolesGraph = () => import("./roles-graph.js");
+const DashBoardCard = () => import("./dashcard.vue");
+const RolesGraph = () => import("./roles-graph.vue");
 
 export default {
   name: "user-card",
@@ -45,7 +45,7 @@ export default {
       type: Array,
     },
   },
-  
+
   data() {
     return {
       data: undefined,

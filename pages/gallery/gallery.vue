@@ -179,8 +179,8 @@
 <script>
 /* global axios, Vue, settings */
 
-const galleryModal = () => import("./modal.js");
-const textureTooltip = () => import("./gallery_tooltip.js");
+const galleryModal = () => import("./modal.vue");
+const textureTooltip = () => import("./gallery_tooltip.vue");
 
 const Chain = function (val) {
   return {
@@ -202,7 +202,7 @@ export default {
     galleryModal,
     textureTooltip,
   },
-  
+
   data() {
     return {
       // whether the page shouldn't be stretched to the full width

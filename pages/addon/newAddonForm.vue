@@ -17,14 +17,14 @@
   </template>
 
 <script>
-const addonForm = () => import("./addonForm.js");
+const addonForm = () => import("./addonForm.vue");
 
 export default {
   name: "new-addon-form",
   components: {
     "addon-form": addonForm,
   },
-  
+
   data() {
     return {
       header: undefined,

@@ -149,11 +149,11 @@
 <script>
 /* global axios, Vue */
 
-const TextureModal = () => import("./modal_texture.js");
-const MCVersionModal = () => import("./modal_mc_version.js");
-const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.js");
-const ModalVersionAdd = () => import("./modal_version_add.js");
-const RemoveConfirm = () => import("./remove-confirm.js");
+const TextureModal = () => import("./modal_texture.vue");
+const MCVersionModal = () => import("./modal_mc_version.vue");
+const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.vue");
+const ModalVersionAdd = () => import("./modal_version_add.vue");
+const RemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {
   name: "texture-page",
@@ -164,7 +164,7 @@ export default {
     "add-minecraft-version": ModalVersionAdd,
     "remove-confirm": RemoveConfirm,
   },
-  
+
   data() {
     const INCREMENT = 250;
 
