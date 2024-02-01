@@ -267,6 +267,14 @@ const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP)
     };
   });
 
+
+window.apiURL = import.meta.env.API_URL || "https://api.faithfulpack.net/v2";
+window.env = {
+  DISCORD_USER_URL: import.meta.env.DISCORD_USER_URL || undefined,
+};
+window.DEV = import.meta.env.DEV === "true";
+
+
 // add all tabs routes unlogged
 ALL_TABS.filter((t) => t.roles === undefined)
   .map((t) => t.subtabs)
@@ -588,7 +596,6 @@ axios
           import(/* @vite-ignore */ lang.file)
             .then((r) => {
               r = r.default;
-              console.log(r);
               this.langs[lang.lang] = Object.merge({}, enUS, r);
               // we need to wait for this.langs to be updated
               this.$nextTick(() => {

@@ -10,4 +10,12 @@ export default {
   server: {
     port: process.env.PORT,
   },
+  optimizeDeps: {
+    esbuildOptions: {
+      target: 'esnext'
+    }
+  },
+  build: {
+    target: 'esnext'
+  }
 };
