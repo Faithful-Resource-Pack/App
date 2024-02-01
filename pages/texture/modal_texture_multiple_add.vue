@@ -26,7 +26,7 @@
                       <v-text-field :color="color" class="mb-1" v-model="texture.name" :placeholder="$root.lang().database.labels.texture_name" hide-details dense clearable />
                     </v-col>
                     <v-col>
-                      <v-select
+                      <v-combobox
                         :color="color"
                         :item-color="color"
                         class="mb-1"
@@ -211,7 +211,7 @@ export default {
       default: "",
     },
   },
-  
+
   data() {
     return {
       modalOpened: false,
@@ -278,7 +278,7 @@ export default {
     },
     sortTags(input) {
       // remove duplicates/null items and alphabetically sort
-      let arr = [...new Set(input.filter((i) => i))].sort();
+      let arr = [...new Set(input.filter((i) => this.tags.includes(i)))].sort();
       // shift java, realms, and bedrock tags to start
       if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
       if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
