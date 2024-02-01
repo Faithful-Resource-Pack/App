@@ -59,13 +59,6 @@ app.get(webappURL, async (req, res) => {
     );
   }
 
-  const langs = await getLanguages().catch(errorHandler(res));
-
-  file = file.replace(
-    "</body>",
-    "<script>const LANGUAGES = " + JSON.stringify(langs) + "</script></body>",
-  );
-
   res.send(file);
 });
 
@@ -77,23 +70,6 @@ app.listen(port, () => {
     process.send("online");
   }
 });
-
-// https://www.techonthenet.com/js/language_tags.php
-const langPath = ["resources", "strings"];
-const languagesPath = join(process.cwd(), ...langPath);
-const getLanguages = () =>
-  readdir(languagesPath).then((files) =>
-    files
-      .filter((f) => f.endsWith("js"))
-      .map((e) => {
-        const name = e.split(".").slice(0, -1).join(".");
-        return {
-          lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
-          bcp47: name.replace("_", "-"),
-          file: ["", ...langPath, e].join("/"),
-        };
-      }),
-  );
 
 app.use(
   express.static(".", {

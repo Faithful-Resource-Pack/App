@@ -254,6 +254,19 @@ const ALL_TABS = [
   },
 ];
 
+// https://www.techonthenet.com/js/language_tags.php
+/** @type {Record<String, () => Promise<any>>} */
+const LANGUAGES_MODULES_MAP = import.meta.glob('/resources/strings/*.js')
+const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP)
+  .map((e) => {
+    const name = e.split("/").pop().split(".")[0];
+    return {
+      lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
+      bcp47: name.replace("_", "-"),
+      file: e,
+    };
+  });
+
 // add all tabs routes unlogged
 ALL_TABS.filter((t) => t.roles === undefined)
   .map((t) => t.subtabs)
