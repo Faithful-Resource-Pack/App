@@ -10,11 +10,40 @@
         <v-row>
           <v-col class="col-12" :sm="12">
             <v-form ref="form">
-              <v-text-field :color="color" v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.path_id" v-model="subPathFormData.id" :label="$root.lang().database.labels.path_id"></v-text-field>
-              <v-text-field :color="color" v-if="add == false" :hint="'⚠️' + $root.lang().database.hints.use_id" v-model="subPathFormData.use" :label="$root.lang().database.labels.use_id"></v-text-field>
-              <v-text-field :color="color" :hint="$root.lang().database.hints.path" v-model="subPathFormData.name" :label="$root.lang().database.labels.path"></v-text-field>
-              <v-select     :color="color" :item-color="color" required multiple small-chips v-model="subPathFormData.versions" :items="sortedVersions" :label="$root.lang().database.labels.versions"></v-select>
-              <v-checkbox   :color="color" v-model="subPathFormData.mcmeta" :label="$root.lang().database.labels.mcmeta" />
+              <v-text-field
+                :color="color"
+                v-if="add == false"
+                :hint="'⚠️' + $root.lang().database.hints.path_id"
+                v-model="subPathFormData.id"
+                :label="$root.lang().database.labels.path_id">
+              </v-text-field>
+              <v-text-field
+                :color="color"
+                v-if="add == false"
+                :hint="'⚠️' + $root.lang().database.hints.use_id"
+                v-model="subPathFormData.use"
+                :label="$root.lang().database.labels.use_id">
+              </v-text-field>
+              <v-text-field
+                :color="color"
+                :hint="$root.lang().database.hints.path"
+                v-model="subPathFormData.name"
+                @change="(e) => formatPath(e)"
+                :label="$root.lang().database.labels.path">
+              </v-text-field>
+              <v-select
+                :color="color"
+                :item-color="color"
+                required multiple small-chips
+                v-model="subPathFormData.versions"
+                :items="sortedVersions"
+                :label="$root.lang().database.labels.versions">
+              </v-select>
+              <v-checkbox
+                :color="color"
+                v-model="subPathFormData.mcmeta"
+                :label="$root.lang().database.labels.mcmeta"
+              />
             </v-form>
           </v-col>
         </v-row>
@@ -44,7 +73,6 @@
 
 export default {
   name: "path-modal",
-  
   props: {
     value: {
       type: Boolean,
@@ -106,6 +134,10 @@ export default {
     onCancel() {
       this.amOpened = false;
       this.disableSubPathDialog();
+    },
+    formatPath(e) {
+      // windows fix
+      this.subPathFormData.name = e.replace(/\\/g, "/");
     },
     MinecraftSorter(a, b) {
       const aSplit = a.split(".").map((s) => parseInt(s));
