@@ -309,12 +309,15 @@ export default {
       }
     },
     pathAdded(el, path, use, texture) {
+      // windows fix
+      path.name = el.replace(/\\/g, "/");
+
       // largely ripped from https://github.com/3vorp/faithful-utilities/blob/main/tools/createTextures.js
       if (!el || !path) return;
 
-      const split = el.split("/");
+      const split = path.name.split("/");
       const name = split[split.length - 1].split(".")[0];
-      const edition = el.startsWith("assets") ? "java" : "bedrock";
+      const edition = path.name.startsWith("assets") ? "java" : "bedrock";
       if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 
       if (!use) return;
@@ -328,13 +331,11 @@ export default {
       if (!texture) return;
       if (!texture.name) texture.name = name;
 
-      const textureFolderIndex = el.split("/").findIndex((v) => v == "textures");
+      const textureFolderIndex = split.findIndex((v) => v == "textures");
       texture.tags = this.sortTags(
         [
           ...texture.tags,
-          this.$root.toTitleCase(
-            textureFolderIndex == -1 ? null : el.split("/")[textureFolderIndex + 1],
-          ),
+          this.$root.toTitleCase(textureFolderIndex == -1 ? null : split[textureFolderIndex + 1]),
         ].map(this.formatTag),
       );
     },
