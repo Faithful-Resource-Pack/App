@@ -148,29 +148,23 @@
 <script>
 /* global axios, Vue, Prism */
 
-const emptyPath = () => {
-  return {
-    name: "",
-    versions: [],
-    mcmeta: false,
-  };
-};
+const emptyPath = () => ({
+  name: "",
+  versions: [],
+  mcmeta: false,
+});
 
-const emptyUse = () => {
-  return {
-    name: "",
-    edition: "",
-    paths: [emptyPath()],
-  };
-};
+const emptyUse = () => ({
+  name: "",
+  edition: "",
+  paths: [emptyPath()],
+});
 
-const emptyTexture = () => {
-  return {
-    name: "",
-    tags: [],
-    uses: [emptyUse()],
-  };
-};
+const emptyTexture = () => ({
+  name: "",
+  tags: [],
+  uses: [emptyUse()],
+});
 
 export default {
   name: "add-multiple-texture-modal",
