@@ -138,6 +138,8 @@ export default {
     formatPath(e) {
       // windows fix
       this.subPathFormData.name = e.replace(/\\/g, "/");
+      // infer png extension if not present
+      if (!e.includes(".")) this.subPathFormData.name += ".png";
     },
     MinecraftSorter(a, b) {
       const aSplit = a.split(".").map((s) => parseInt(s));

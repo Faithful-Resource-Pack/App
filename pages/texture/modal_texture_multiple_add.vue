@@ -313,6 +313,8 @@ export default {
     pathAdded(el, path, use, texture) {
       // windows fix
       path.name = el.replace(/\\/g, "/");
+      // infer png extension if not present
+      if (!path.name.includes(".")) path.name += ".png";
 
       // largely ripped from https://github.com/3vorp/faithful-utilities/blob/main/tools/createTextures.js
       if (!el || !path) return;
