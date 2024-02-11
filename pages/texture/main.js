@@ -124,11 +124,10 @@ export default {
             class="my-4"
             :key="texture.id"
           >
-            <v-list-item-avatar
-              tile
-              class="texture-avatar my-0"
-              v-text="texture.id"
-            ></v-list-item-avatar>
+            <a :href="'/#/gallery?show=' + texture.id">
+              <v-list-item-avatar tile class="texture-avatar my-0 white--text" v-text="texture.id">
+              </v-list-item-avatar>
+            </a>
 
             <v-list-item-content class="py-0">
               <v-list-item-title v-text="texture.name"></v-list-item-title>

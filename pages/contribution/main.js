@@ -144,7 +144,7 @@ export default {
         >
           <v-list-item-avatar tile class="texture-preview">
             <a :href="'/#/gallery?show=' + contrib.texture">
-            <v-img class="texture-img" :src="contrib.url" :lazy-src="'https://database.faithfulpack.net/images/branding/logos/transparent/64/f' + contrib.resolution + '_logo.png'"/>
+              <v-img class="texture-img" :src="contrib.url" :lazy-src="'https://database.faithfulpack.net/images/branding/logos/transparent/64/f' + contrib.resolution + '_logo.png'"/>
             </a>
           </v-list-item-avatar>
 
