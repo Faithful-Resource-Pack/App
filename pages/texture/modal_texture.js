@@ -182,26 +182,32 @@ export default {
       this.getUses(this.formData.id);
       this.$forceUpdate();
     },
+    sortTags(input) {
+      // remove duplicates/null items and alphabetically sort
+      let arr = [...new Set(input.filter((i) => i))].sort();
+      // shift broader tags to start
+      if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
+      if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
+      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
+      if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
+      return arr;
+    },
     send() {
       if (!this.$root.isUserLogged) return;
 
-      let promise = Promise.resolve();
-      if (this.add) {
-        // this modal is NEVER used to add textures but anyway
-        const data = JSON.parse(JSON.stringify(this.formData));
-        data.token = this.$root.user.access_token;
-        promise = axios.post("/textures/add", data);
-      } else {
-        const data = {
-          name: this.formData.name,
-          tags: this.formData.tags,
-        };
-        promise = axios.put(
-          `${this.$root.apiURL}/textures/${this.formData.id}`,
-          data,
-          this.$root.apiOptions,
-        );
-      }
+      const data = {
+        name: this.formData.name,
+        tags: this.sortTags(this.formData.tags),
+      };
+
+      // modal isn't used for adding anymore but oh well
+      const promise = this.add
+        ? axios.post(`${this.$root.apiURL}/textures`, data, this.$root.apiOptions)
+        : axios.put(
+            `${this.$root.apiURL}/textures/${this.formData.id}`,
+            data,
+            this.$root.apiOptions,
+          );
 
       promise
         .then(() => {

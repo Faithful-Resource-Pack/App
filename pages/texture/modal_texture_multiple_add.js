@@ -269,10 +269,11 @@ export default {
     },
     sortTags(input) {
       // remove duplicates/null items and alphabetically sort
-      let arr = [...new Set(input.filter((i) => this.tags.includes(i)))].sort();
-      // shift java, realms, and bedrock tags to start
-      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
+      let arr = [...new Set(input.filter((i) => i))].sort();
+      // shift broader tags to start
       if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
+      if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
+      if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
       if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
       return arr;
     },
