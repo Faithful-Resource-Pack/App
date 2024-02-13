@@ -29,7 +29,7 @@
     <v-btn
       id="login-button"
       class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-2 blurple"
-      href="/api/discord/login"
+      :href="this.$root.discordAuth.discordAuthURL"
     >
       {{ $root.lang().global.login }}
     </v-btn>

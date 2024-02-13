@@ -1,9 +1,19 @@
 const discordAuthStore = Pinia.defineStore("discordAuth", {
   state: () => ({
+    apiURL: undefined,
     access_token: undefined,
     refresh_token: undefined,
     expires_at: undefined,
   }),
+
+  getters: {
+    discordAuthURL: function() {
+      return `${this.$state.apiURL}/auth/discord/webapp`
+    },
+    discordRefreshURL: function() {
+      return `${this.$state.apiURL}/auth/discord/refresh`
+    },
+  },
 
   actions: {
     verifySearchParams(search) {
@@ -45,7 +55,7 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
     refreshLogin(auth = undefined) {
       if (auth === undefined) auth = this.$state;
 
-      return fetch("/api/discord/refresh", {
+      return fetch(this.$state.apiURL + "/auth/discord/refresh", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,8 +74,10 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
         });
     },
     logout() {
+      const apiURL = this.$state.apiURL;
       this.$reset(); // ! Very important to reset all stores
       this.$patch({
+        apiURL,
         access_token: this.$state.access_token,
       });
     },

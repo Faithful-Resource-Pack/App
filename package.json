@@ -6,8 +6,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview",
     "start": "pm2 start \"node main.js\" --name \"APP\"",
-    "watch": "browser-refresh main.js",
     "prettier": "prettier \"{,!(node_modules)/**/}*.js\" --config .prettierrc --write",
     "test:app": "env-cmd -f ./tests/.env.test node main.js",
     "test:mocha": "mocha --recursive tests/**/*.test.js",
@@ -48,6 +49,7 @@
     "env-cmd": "^10.1.0",
     "mocha": "^10.2.0",
     "nodemon": "^3.0.3",
-    "puppeteer": "^21.7.0"
+    "puppeteer": "^21.7.0",
+    "vue-router": "3"
   }
 }

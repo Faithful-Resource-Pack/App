@@ -99,13 +99,20 @@ const LANGS = {
   en: enUS,
 };
 
-let lang_value;
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
-const _get_lang = () => localStorage.getItem(LANG_KEY) || LANG_DEFAULT;
+const _get_lang = () => {
+  const stored_lang = localStorage.getItem(LANG_KEY);
+
+  if( stored_lang === null ) // no key
+    return LANG_DEFAULT;
+  else if ( stored_lang in LANGUAGES.map(e => e.lang) ) // if trusted input value
+    return stored_lang;
+  else
+    return LANG_DEFAULT;
+}
 
 const _set_lang = (val) => {
-  lang_value = String(val);
   localStorage.setItem(LANG_KEY, val);
 };
 ///////////
@@ -121,7 +128,13 @@ const ALL_ROUTES = [
   { path: "/reconnect", component: ReconnectPage },
 ];
 
-const router = new VueRouter({ routes: ALL_ROUTES });
+/** @type {import('vue-router').RouterOptions} */
+const router_options = {
+  routes: ALL_ROUTES,
+  mode: "history"
+};
+/** @type {import('vue-router').default} */
+const router = new VueRouter(router_options);
 
 // `to` field in subtab will be the first route path
 const ALL_TABS = [
@@ -268,7 +281,7 @@ const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP)
   });
 
 
-window.apiURL = import.meta.env.API_URL || "https://api.faithfulpack.net/v2";
+window.apiURL = import.meta.env.VITE_API_URL || "https://api.faithfulpack.net/v2";
 window.env = {
   DISCORD_USER_URL: import.meta.env.DISCORD_USER_URL || undefined,
 };
@@ -749,10 +762,12 @@ axios
       created() {
         moment.locale(this.lang_to_bcp47(_get_lang()));
 
+        this.discordAuth.apiURL = window.apiURL;
         this.discordAuth
           .begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
           .then(() => {
-            window.location.search = "";
+            if(window.location.search !== "") // avoid redirect loop
+              window.location.search = "";
           })
           .catch((err) => {
             if (!err.message.includes("auth method")) this.showSnackBar(err, "error", 3000);

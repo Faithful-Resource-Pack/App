@@ -49,7 +49,7 @@ export default {
     this.reconnect_steps.push(this.$root.lang("reconnect.refreshing_discord_token"));
 
     axios
-      .post("/api/discord/refresh", data)
+      .post(this.$root.discordAuth.discordRefreshURL, data)
       .then((response) => {
         this.reconnect_steps.push(this.$root.lang("reconnect.dummy_step"));
         return response.data;

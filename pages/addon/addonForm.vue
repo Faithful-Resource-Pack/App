@@ -114,7 +114,8 @@
           persistent-hint
         />
 
-        <!-- Addon description preview -->
+        <!-- Addon description preview (using marked and sanitized)-->
+        <!-- eslint-disable vue/no-v-text-v-html-on-component -->
         <v-container
           id="addon-description-preview"
           v-if="submittedForm.description && submittedForm.description.length > 0"
@@ -122,6 +123,7 @@
           style="background-color: rgba(33,33,33,1); border-radius: 5px;"
           v-html="$root.compiledMarkdown(submittedForm.description)"
         />
+        <!-- eslint-enable vue/no-v-text-v-html-on-component -->
 
         <!-- Addon authors selection -->
         <user-list
