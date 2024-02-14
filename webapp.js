@@ -280,7 +280,6 @@ const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP)
     };
   });
 
-
 window.apiURL = import.meta.env.VITE_API_URL || "https://api.faithfulpack.net/v2";
 window.env = {
   DISCORD_USER_URL: import.meta.env.DISCORD_USER_URL || undefined,
