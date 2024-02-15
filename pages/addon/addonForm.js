@@ -634,9 +634,9 @@ export default {
         reader.onload = (e) => {
           const image = new Image();
           image.src = e.target.result;
-          image.onload = () => {
+          image.onload = function() { // do not use anonymous fn
             try {
-              validateImage(this);
+              validateImage(this); // this is image now
               resolve();
             } catch (error) {
               reject(error);
