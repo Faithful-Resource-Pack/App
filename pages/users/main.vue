@@ -101,6 +101,17 @@
             </v-list-item-action>
           </v-list-item>
         </v-col></v-row>
+
+        <v-btn
+          :style="{ 'margin': 'auto', 'min-width': '250px !important' }"
+          :disabled="displayedResults >= Object.keys(users).length"
+          :color="pageColor"
+          :class="textColorOnPage"
+          block
+          @click="showMore()"
+          :v-if="displayedResults < Object.keys(users).length"
+          elevation="2"
+        >{{ $root.lang().global.btn.load_more }}</v-btn>
       </v-list>
       <div v-else><br>
         <p><i>{{ $root.lang().global.no_results }}</i></p>
@@ -120,6 +131,8 @@ export default {
   },
 
   data() {
+    const INCREMENT = 250;
+
     return {
       pageColor: "indigo accent-2",
       textColorOnPage: "white--text",
@@ -137,6 +150,7 @@ export default {
         confirm: false,
         data: {},
       },
+      displayedResults: INCREMENT,
     };
   },
   methods: {
@@ -203,9 +217,13 @@ export default {
           this.loading = false;
         });
     },
-    update() {
+    update(users = true) {
       this.getRoles();
-      this.getUsers();
+      if (users) this.getUsers();
+    },
+    showMore() {
+      this.displayedResults += 100;
+      this.update(false);
     },
     clearSearch() {
       this.search = "";
@@ -233,9 +251,8 @@ export default {
       return ["all", ...this.roles];
     },
     role() {
-      if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role)) {
+      if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role))
         return this.$route.params.role;
-      }
       return undefined;
     },
     name() {
@@ -245,9 +262,9 @@ export default {
     listColumns() {
       let columns = 1;
 
-      if (this.$vuetify.breakpoint.mdAndUp && this.users.length >= 6) {
+      if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
         columns = 2;
-        if (this.$vuetify.breakpoint.lgAndUp && this.users.length >= 21) {
+        if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
           columns = 3;
         }
       }
@@ -256,15 +273,17 @@ export default {
     },
     splittedUsers() {
       const res = [];
-      for (let col = 0; col < this.listColumns; ++col) {
-        res.push([]);
-      }
+
+      const keys = Object.keys(this.users);
+      const len = keys.length;
+
+      for (let col = 0; col < this.listColumns; ++col) res.push([]);
 
       let arrayIndex = 0;
-      this.users.forEach((contrib) => {
-        res[arrayIndex].push(contrib);
+      for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+        res[arrayIndex].push(this.users[keys[i]]);
         arrayIndex = (arrayIndex + 1) % this.listColumns;
-      });
+      }
 
       return res;
     },
