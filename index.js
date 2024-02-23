@@ -104,13 +104,14 @@ const LANG_DEFAULT = "en";
 const _get_lang = () => {
   const stored_lang = localStorage.getItem(LANG_KEY);
 
-  if( stored_lang === null ) // no key
+  if (stored_lang === null)
+    // no key
     return LANG_DEFAULT;
-  else if ( stored_lang in LANGUAGES.map(e => e.lang) ) // if trusted input value
+  else if (stored_lang in LANGUAGES.map((e) => e.lang))
+    // if trusted input value
     return stored_lang;
-  else
-    return LANG_DEFAULT;
-}
+  else return LANG_DEFAULT;
+};
 
 const _set_lang = (val) => {
   localStorage.setItem(LANG_KEY, val);
@@ -131,7 +132,7 @@ const ALL_ROUTES = [
 /** @type {import('vue-router').RouterOptions} */
 const router_options = {
   routes: ALL_ROUTES,
-  mode: "history"
+  mode: "history",
 };
 /** @type {import('vue-router').default} */
 const router = new VueRouter(router_options);
@@ -269,23 +270,15 @@ const ALL_TABS = [
 
 // https://www.techonthenet.com/js/language_tags.php
 /** @type {Record<String, () => Promise<any>>} */
-const LANGUAGES_MODULES_MAP = import.meta.glob('/resources/strings/*.js')
-const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP)
-  .map((e) => {
-    const name = e.split("/").pop().split(".")[0];
-    return {
-      lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
-      bcp47: name.replace("_", "-"),
-      file: e,
-    };
-  });
-
-window.apiURL = import.meta.env.VITE_API_URL || "https://api.faithfulpack.net/v2";
-window.env = {
-  DISCORD_USER_URL: import.meta.env.DISCORD_USER_URL || undefined,
-};
-window.DEV = import.meta.env.DEV === "true";
-
+const LANGUAGES_MODULES_MAP = import.meta.glob("/resources/strings/*.js");
+const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP).map((e) => {
+  const name = e.split("/").pop().split(".")[0];
+  return {
+    lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
+    bcp47: name.replace("_", "-"),
+    file: e,
+  };
+});
 
 // add all tabs routes unlogged
 ALL_TABS.filter((t) => t.roles === undefined)
@@ -298,7 +291,7 @@ ALL_TABS.filter((t) => t.roles === undefined)
     router.addRoute(r);
   });
 
-Vue.config.devtools = location.hostname === "localhost" || location.hostname === "127.0.0.1";
+Vue.config.devtools = ["localhost", "127.0.0.1"].includes(location.hostname) === "localhost";
 
 window.v = undefined;
 axios
@@ -604,7 +597,6 @@ axios
             return; // everything will update
           }
 
-
           import(/* @vite-ignore */ lang.file)
             .then((r) => {
               r = r.default;
@@ -765,7 +757,8 @@ axios
         this.discordAuth
           .begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
           .then(() => {
-            if(window.location.search !== "") // avoid redirect loop
+            if (window.location.search !== "")
+              // avoid redirect loop
               window.location.search = "";
           })
           .catch((err) => {
