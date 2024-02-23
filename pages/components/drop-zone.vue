@@ -1,101 +1,99 @@
 <template>
-  <div
-    class="drop-zone"
-    :class="{ 'dropzone-dragging' : isDragging, 'disabled': disabled, 'enabled': !disabled }"
-  >
-    <div
-      class="dropzone-border"
-      @dragover.stop="dragover"
-      @dragleave.stop="dragleave"
-      @drop.stop="drop"
-      @click.stop="click"
-    ></div>
-    <input
-      type="file"
-      :multiple="multiple"
-      name="file"
-      id="fileInput"
-      class="hidden-input"
-      @change="onChange"
-      ref="file"
-      :accept="accept"
-    />
+	<div
+		class="drop-zone"
+		:class="{ 'dropzone-dragging': isDragging, disabled: disabled, enabled: !disabled }"
+	>
+		<div
+			class="dropzone-border"
+			@dragover.stop="dragover"
+			@dragleave.stop="dragleave"
+			@drop.stop="drop"
+			@click.stop="click"
+		></div>
+		<input
+			type="file"
+			:multiple="multiple"
+			name="file"
+			id="fileInput"
+			class="hidden-input"
+			@change="onChange"
+			ref="file"
+			:accept="accept"
+		/>
 
-    <label
-      for="fileInput" class="label"
-    >
-      <div v-if="isDragging">Release to drop files here.</div>
-      <div v-else><slot name="label"></slot></div>
-    </label>
-  </div>
-  </template>
+		<label for="fileInput" class="label">
+			<div v-if="isDragging">Release to drop files here.</div>
+			<div v-else><slot name="label"></slot></div>
+		</label>
+	</div>
+</template>
 
 <script>
-/* global Vue, axios */
+	/* global Vue, axios */
 
-export default {
-  name: "drop-zone",
-  props: {
-    accept: {
-      required: false,
-      type: String,
-      default: () => "image/jpg, image/jpeg, image/png, image/gif",
-    },
-    multiple: {
-      required: false,
-      type: Boolean,
-      default: () => false,
-    },
-    value: {
-      required: true,
-    },
-    disabled: {
-      required: false,
-      type: Boolean,
-      default: () => false,
-    },
-  },
-  
-  data() {
-    return {
-      isDragging: false,
-    };
-  },
-  methods: {
-    onChange() {
-      const files = this.multiple ? [...this.$refs.file.files] : this.$refs.file.files[0];
-      this.$emit("change", files);
-      this.$emit("input", files);
-    },
+	export default {
+		name: "drop-zone",
+		props: {
+			accept: {
+				required: false,
+				type: String,
+				default: () => "image/jpg, image/jpeg, image/png, image/gif",
+			},
+			multiple: {
+				required: false,
+				type: Boolean,
+				default: () => false,
+			},
+			value: {
+				required: true,
+			},
+			disabled: {
+				required: false,
+				type: Boolean,
+				default: () => false,
+			},
+		},
 
-    dragover(e) {
-      if (this.disabled) return;
+		data() {
+			return {
+				isDragging: false,
+			};
+		},
+		methods: {
+			onChange() {
+				const files = this.multiple ? [...this.$refs.file.files] : this.$refs.file.files[0];
+				this.$emit("change", files);
+				this.$emit("input", files);
+			},
 
-      e.preventDefault();
-      this.isDragging = true;
-    },
+			dragover(e) {
+				if (this.disabled) return;
 
-    dragleave(e) {
-      if (this.disabled) return;
+				e.preventDefault();
+				this.isDragging = true;
+			},
 
-      e.preventDefault();
-      this.isDragging = false;
-    },
+			dragleave(e) {
+				if (this.disabled) return;
 
-    drop(e) {
-      if (this.disabled) return;
+				e.preventDefault();
+				this.isDragging = false;
+			},
 
-      e.preventDefault();
-      this.$refs.file.files = e.dataTransfer.files;
-      this.onChange();
-      this.isDragging = false;
-    },
+			drop(e) {
+				if (this.disabled) return;
 
-    click() {
-      if (this.disabled) return;
-      this.$refs.file.click();
-      this.$refs.file.blur();
-    },
-  },
-};
+				e.preventDefault();
+				this.$refs.file.files = e.dataTransfer.files;
+				this.onChange();
+				this.isDragging = false;
+			},
+
+			click() {
+				if (this.disabled) return;
+				this.$refs.file.click();
+				this.$refs.file.blur();
+			},
+		},
+	};
 </script>

@@ -3,9 +3,10 @@
     "trailingComma": "all",
     "singleQuote": false,
     "printWidth": 100,
-    "useTabs": false,
-    "tabWidth": 2,
+    "useTabs": true,
     "bracketSpacing": true,
     "arrowParens": "always",
-    "parser": "typescript"
+    "vueIndentScriptAndStyle": true,
+    "parser": "typescript",
+    "overrides": [{ "files": "*.vue", "options": { "parser": "vue" } }]
 }
