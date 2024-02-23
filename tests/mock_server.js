@@ -1,5 +1,5 @@
-var express = require("express");
-var cors = require("cors");
+const express = require("express");
+const cors = require("cors");
 
 require("dotenv").config({
 	path: __dirname + "/.env.test",
