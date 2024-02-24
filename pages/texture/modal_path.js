@@ -135,7 +135,7 @@ export default {
     },
     formatPath(e) {
       // windows fix
-      this.subPathFormData.name = e.replace(/\\/g, "/");
+      this.subPathFormData.name = e.replace(/\\/g, "/").trim();
       // infer png extension if not present
       if (!e.includes(".")) this.subPathFormData.name += ".png";
     },
