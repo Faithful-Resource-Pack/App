@@ -364,7 +364,7 @@
 			},
 			pathAdded(el, path, use, texture) {
 				// windows fix
-				path.name = el.replace(/\\/g, "/");
+				path.name = el.replace(/\\/g, "/").trim();
 				// infer png extension if not present
 				if (!path.name.includes(".")) path.name += ".png";
 
