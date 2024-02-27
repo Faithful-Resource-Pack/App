@@ -14,7 +14,7 @@
 			type="packs"
 			:confirm="remove.confirm"
 			:disableDialog="
-				function () {
+				() => {
 					remove.confirm = false;
 					startSearch();
 				}
@@ -99,119 +99,117 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import axios from "axios";
 
-	const PackCreator = () => import("./pack_creator.vue");
-	const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
+const PackCreator = () => import("./pack_creator.vue");
+const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
 
-	export default {
-		name: "pack-page",
-		components: {
-			"pack-creator": PackCreator,
-			"pack-remove-confirm": PackRemoveConfirm,
+export default {
+	name: "pack-page",
+	components: {
+		"pack-creator": PackCreator,
+		"pack-remove-confirm": PackRemoveConfirm,
+	},
+	data() {
+		return {
+			pageColor: "amber accent-4",
+			pageStyles: "",
+			search: "",
+			textColorOnPage: "white--text",
+			tags: [],
+			packs: [],
+			dialogOpen: false,
+			dialogData: {},
+			dialogDataAdd: false,
+			remove: {
+				id: "",
+				label: "",
+				confirm: false,
+			},
+		};
+	},
+	methods: {
+		activeTag(t) {
+			const result = {};
+			result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
+				(t === "all" && !this.tag) || (t && this.tag && t.toLowerCase() === this.tag.toLowerCase());
+
+			return result;
 		},
+		startSearch() {
+			// change url to match
+			const newPath = this.packURL(this.tag);
+			if (newPath !== this.$route.path) return this.$router.push(newPath);
 
-		data() {
-			return {
-				pageColor: "amber accent-4",
-				pageStyles: "",
-				search: "",
-				textColorOnPage: "white--text",
-				tags: [],
-				packs: [],
-				dialogOpen: false,
-				dialogData: {},
-				dialogDataAdd: false,
-				remove: {
-					id: "",
-					label: "",
-					confirm: false,
-				},
-			};
+			// "all" tag searches everything
+			const url = new URL(`${this.$root.apiURL}/packs/search`);
+			if (this.tags.includes(this.$route.params.tag))
+				url.searchParams.set("tag", this.$route.params.tag);
+
+			axios
+				.get(url.toString())
+				.then((res) => {
+					this.packs = res.data;
+				})
+				.catch((err) => console.error(err));
 		},
-		methods: {
-			activeTag(t) {
-				const result = {};
-				result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
-					(t === "all" && !this.tag) ||
-					(t && this.tag && t.toLowerCase() === this.tag.toLowerCase());
-
-				return result;
-			},
-			startSearch() {
-				// change url to match
-				const newPath = this.packURL(this.tag);
-				if (newPath !== this.$route.path) return this.$router.push(newPath);
-
-				// "all" tag searches everything
-				const url = new URL(`${this.$root.apiURL}/packs/search`);
-				if (this.tags.includes(this.$route.params.tag))
-					url.searchParams.set("tag", this.$route.params.tag);
-
-				axios
-					.get(url.toString())
-					.then((res) => {
-						this.packs = res.data;
-					})
-					.catch((err) => console.error(err));
-			},
-			packURL(tag) {
-				return "/packs/" + tag || "all";
-			},
-			formatTags(s) {
-				return s
-					.split("_")
-					.map((p) => (p == "progart" ? "Programmer Art" : p[0].toUpperCase() + p.slice(1)))
-					.join(" ");
-			},
-			openDialog(data = undefined) {
-				this.dialogData = data;
-				this.dialogDataAdd = data === undefined;
-				this.dialogOpen = true;
-			},
-			disableDialog(refresh = false) {
-				this.dialogOpen = false;
-				// clear form
-				this.dialogData = {};
-				if (refresh) this.startSearch();
-			},
-			askRemove(data) {
-				this.remove.id = data.id;
-				this.remove.label = this.$root
-					.lang()
-					.database.labels.ask_deletion.replace("%s", data.name)
-					.replace("%d", data.id);
-				this.remove.confirm = true;
-			},
+		packURL(tag) {
+			return "/packs/" + tag || "all";
 		},
-		computed: {
-			packTags() {
-				return ["all", ...this.tags];
-			},
-			tag() {
-				if (this.$route.params.tag) return this.$route.params.tag;
-				return "all";
-			},
-			listColumns() {
-				// big screens use two columns, smaller use one
-				return this.$vuetify.breakpoint.mdAndUp ? 2 : 1;
-			},
+		formatTags(s) {
+			return s
+				.split("_")
+				.map((p) => (p == "progart" ? "Programmer Art" : p[0].toUpperCase() + p.slice(1)))
+				.join(" ");
 		},
-		mounted() {
-			axios.get(`${this.$root.apiURL}/packs/tags`).then((res) => (this.tags = res.data));
-			this.startSearch();
-			window.updatePageStyles(this);
+		openDialog(data = undefined) {
+			this.dialogData = data;
+			this.dialogDataAdd = data === undefined;
+			this.dialogOpen = true;
 		},
-		watch: {
-			"$route.params": {
-				handler(params, old) {
-					// if hash changed but not params
-					if (JSON.stringify(params) === JSON.stringify(old)) return;
+		disableDialog(refresh = false) {
+			this.dialogOpen = false;
+			// clear form
+			this.dialogData = {};
+			if (refresh) this.startSearch();
+		},
+		askRemove(data) {
+			this.remove.id = data.id;
+			this.remove.label = this.$root
+				.lang()
+				.database.labels.ask_deletion.replace("%s", data.name)
+				.replace("%d", data.id);
+			this.remove.confirm = true;
+		},
+	},
+	computed: {
+		packTags() {
+			return ["all", ...this.tags];
+		},
+		tag() {
+			if (this.$route.params.tag) return this.$route.params.tag;
+			return "all";
+		},
+		listColumns() {
+			// big screens use two columns, smaller use one
+			return this.$vuetify.breakpoint.mdAndUp ? 2 : 1;
+		},
+	},
+	mounted() {
+		axios.get(`${this.$root.apiURL}/packs/tags`).then((res) => (this.tags = res.data));
+		this.startSearch();
+		window.updatePageStyles(this);
+	},
+	watch: {
+		"$route.params": {
+			handler(params, old) {
+				// if hash changed but not params
+				if (JSON.stringify(params) === JSON.stringify(old)) return;
 
-					// search whenever the url changes (when tag is switched)
-					this.startSearch();
-				},
+				// search whenever the url changes (when tag is switched)
+				this.startSearch();
 			},
 		},
-	};
+	},
+};
 </script>

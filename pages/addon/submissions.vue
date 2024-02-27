@@ -13,6 +13,7 @@
 				<v-col
 					:cols="$vuetify.breakpoint.mdAndUp ? 4 : $vuetify.breakpoint.smAndUp ? 6 : 12"
 					v-for="addon in addons"
+					:key="addon.id"
 				>
 					<v-card style="background-color: rgba(255, 255, 255, 0.05)">
 						<v-img
@@ -78,7 +79,7 @@
 						</v-card-text>
 
 						<v-card-actions style="justify-content: flex-end">
-							<v-btn text :href="'/#/addons/edit/' + addon.id">
+							<v-btn text :href="'/addons/edit/' + addon.id">
 								{{ $root.lang().global.btn.edit }}
 							</v-btn>
 							<v-btn color="red" text @click="deleteAddon(addon)">
@@ -93,7 +94,7 @@
 		<addon-remove-confirm
 			:confirm="remove.confirm"
 			:disableDialog="
-				function () {
+				() => {
 					remove.confirm = false;
 					update();
 				}
@@ -105,59 +106,58 @@
 </template>
 
 <script>
-	/* global axios */
+import axios from "axios";
 
-	const addonRemoveConfirm = () => import("./remove-confirm.vue");
+const addonRemoveConfirm = () => import("./remove-confirm.vue");
 
-	export default {
-		name: "own-addon-page",
-		components: {
-			addonRemoveConfirm,
+export default {
+	name: "own-addon-page",
+	components: {
+		addonRemoveConfirm,
+	},
+	data() {
+		return {
+			addons: [],
+			remove: {
+				confirm: false,
+				data: {},
+			},
+			dialogAddon: {},
+			dialogOpen: false,
+			loading: true,
+			failed: {},
+			timestamp: new Date().getTime(),
+		};
+	},
+	methods: {
+		closeDialog() {
+			this.dialogOpen = false;
+			this.dialogAddon = {};
+			this.update();
 		},
-
-		data() {
-			return {
-				addons: [],
-				remove: {
-					confirm: false,
-					data: {},
-				},
-				dialogAddon: {},
-				dialogOpen: false,
-				loading: true,
-				failed: {},
-				timestamp: new Date().getTime(),
-			};
+		deleteAddon(addon) {
+			this.remove.data = addon;
+			this.remove.confirm = true;
 		},
-		methods: {
-			closeDialog() {
-				this.dialogOpen = false;
-				this.dialogAddon = {};
-				this.update();
-			},
-			deleteAddon(addon) {
-				this.remove.data = addon;
-				this.remove.confirm = true;
-			},
-			getAddons(authorID) {
-				axios
-					.get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
-					.then((res) => {
-						this.addons = res.data;
-						this.loading = false;
-						this.$forceUpdate();
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			},
-			update() {
-				this.getAddons(this.$root.user.id);
-				this.$forceUpdate();
-			},
+		getAddons(authorID) {
+			axios
+				.get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
+				.then((res) => {
+					this.addons = res.data;
+					this.loading = false;
+					this.$forceUpdate();
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 		},
-		mounted() {
+		update() {
 			this.getAddons(this.$root.user.id);
+			this.$forceUpdate();
 		},
-	};
+	},
+	mounted() {
+		this.getAddons(this.$root.user.id);
+	},
+};
 </script>

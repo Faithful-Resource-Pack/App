@@ -52,73 +52,70 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import Vue from "vue";
+import axios from "axios";
 
-	export default {
-		name: "use-modal",
-		props: {
-			dialog: {
-				type: Boolean,
-				required: true,
-			},
-			editions: {
-				type: Array,
-				required: false,
-				default() {
-					return [];
-				},
-			},
-			versions: {
-				type: Array,
-				required: false,
-				default() {
-					return [];
-				},
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
+export default {
+	name: "use-modal",
+	props: {
+		dialog: {
+			type: Boolean,
+			required: true,
+		},
+		editions: {
+			type: Array,
+			required: false,
+			default() {
+				return [];
 			},
 		},
-
-		data() {
-			return {
-				form: {
-					edition: "",
-					version: "",
-					newVersion: "",
-				},
-			};
-		},
-		methods: {
-			send() {
-				axios
-					.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
-					.then(() => {
-						this.$root.showSnackBar(
-							this.$root.lang().database.labels.add_version_success,
-							"success",
-						);
-					})
-					.catch((err) => {
-						console.error(err);
-						this.$root.showSnackBar(err, "error");
-					});
+		versions: {
+			type: Array,
+			required: false,
+			default() {
+				return [];
 			},
 		},
-		watch: {
-			dialog(newValue, oldValue) {
-				if (oldValue !== newValue && newValue === true) {
-					Vue.nextTick(() => {
-						this.$refs.form.reset();
-					});
-				}
-			},
+		disableDialog: {
+			type: Function,
+			required: true,
 		},
-	};
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+	},
+	data() {
+		return {
+			form: {
+				edition: "",
+				version: "",
+				newVersion: "",
+			},
+		};
+	},
+	methods: {
+		send() {
+			axios
+				.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, "success");
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+	},
+	watch: {
+		dialog(newValue, oldValue) {
+			if (oldValue !== newValue && newValue === true) {
+				Vue.nextTick(() => {
+					this.$refs.form.reset();
+				});
+			}
+		},
+	},
+};
 </script>

@@ -84,73 +84,73 @@
 </template>
 
 <script>
-	const DashBoardCard = () => import("./dashcard.vue");
+import axios from "axios";
+const DashboardCard = () => import("./dashcard.vue");
 
-	export default {
-		name: "addon-card",
-		components: {
-			"dashboard-card": DashBoardCard,
+export default {
+	name: "addon-card",
+	components: {
+		DashboardCard,
+	},
+	props: {
+		admin: {
+			required: true,
+			type: Boolean,
+			default: false,
 		},
-		props: {
-			admin: {
-				required: true,
-				type: Boolean,
-				default: false,
+	},
+	data() {
+		return {
+			data: undefined,
+			status_color: {
+				approved: "success--text",
+				pending: "warning--text",
+				denied: "error--text",
+				archived: "grey--text",
 			},
+			loading: true,
+			loading_for: 1,
+			request_admin: false,
+		};
+	},
+	computed: {
+		adminResults() {
+			return this.data && Object.keys(this.data).length > 2;
 		},
-
-		data() {
-			return {
-				data: undefined,
-				status_color: {
-					approved: "success--text",
-					pending: "warning--text",
-					denied: "error--text",
-					archived: "grey--text",
-				},
-				loading: true,
-				loading_for: 1,
-				request_admin: false,
-			};
+		statuses() {
+			return Object.keys(this.status_color);
 		},
-		computed: {
-			adminResults() {
-				return this.data && Object.keys(this.data).length > 2;
-			},
-			statuses() {
-				return Object.keys(this.status_color);
-			},
-			roles() {
-				return this.$root.user.roles.length;
-			},
-			url() {
-				return "/addons/stats" + (this.admin ? "-admin" : "");
-			},
+		roles() {
+			return this.$root.user.roles.length;
 		},
-		methods: {
-			get() {
+		url() {
+			return "/addons/stats" + (this.admin ? "-admin" : "");
+		},
+	},
+	methods: {
+		get() {
+			this.loading = true;
+			axios
+				.get(this.$root.apiURL + this.url, this.$root.apiOptions)
+				.then((res) => {
+					this.data = res.data;
+				})
+				.finally(() => {
+					this.loading = false;
+				});
+		},
+	},
+	created() {
+		this.get();
+	},
+	watch: {
+		roles(n, o) {
+			if (n != o && this.admin) {
 				this.loading = true;
-				axios
-					.get(this.$root.apiURL + this.url, this.$root.apiOptions)
-					.then((res) => {
-						this.data = res.data;
-					})
-					.finally(() => {
-						this.loading = false;
-					});
-			},
+				this.loading_for = 4;
+				this.get();
+			}
 		},
-		created() {
-			this.get();
-		},
-		watch: {
-			roles(n, o) {
-				if (n != o && this.admin) {
-					this.loading = true;
-					this.loading_for = 4;
-					this.get();
-				}
-			},
-		},
-	};
+	},
+};
 </script>

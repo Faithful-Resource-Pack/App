@@ -41,64 +41,61 @@
 </template>
 
 <script>
-	/* global axios, TwinBcrypt */
-
-	export default {
-		name: "remove-confirm",
-
-		props: {
-			confirm: {
-				type: Boolean,
-				required: true,
-			},
-			data: {
-				type: Object,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			type: {
-				type: String,
-				required: true,
-			},
-			onSubmit: {
-				type: Function,
-				default() {
-					return Promise.resolve();
-				},
+import axios from "axios";
+export default {
+	name: "remove-confirm",
+	props: {
+		confirm: {
+			type: Boolean,
+			required: true,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+		onSubmit: {
+			type: Function,
+			default() {
+				return Promise.resolve();
 			},
 		},
-		data() {
-			return {
-				formData: {},
-				deletePaths: true,
-				paths: {},
-			};
+	},
+	data() {
+		return {
+			formData: {},
+			deletePaths: true,
+			paths: {},
+		};
+	},
+	methods: {
+		getPaths(useID) {
+			axios
+				.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
+				.then((res) => {
+					const temp = res.data;
+					this.data.paths = {};
+
+					for (let i = 0; i < temp.length; i++) this.data.paths[temp[i].id] = temp[i];
+
+					this.$forceUpdate();
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 		},
-		methods: {
-			getPaths(useID) {
-				axios
-					.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
-					.then((res) => {
-						const temp = res.data;
-						this.data.paths = {};
-
-						for (let i = 0; i < temp.length; i++) {
-							this.data.paths[temp[i].id] = temp[i];
-						}
-
-						this.$forceUpdate();
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			},
-			deleteData() {
-				if (this.type === "use") {
+		deleteData() {
+			switch (this.type) {
+				case "use":
 					const useId = this.data.id;
-					axios
+					return axios
 						.delete(`${this.$root.apiURL}/uses/${useId}`, this.$root.apiOptions)
 						.then(() => {
 							this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
@@ -109,10 +106,9 @@
 							this.$root.showSnackBar(err, "error");
 							this.disableDialog(true);
 						});
-					return;
-				} else if (this.type === "path") {
+				case "path":
 					let pathId = this.data.id;
-					axios
+					return axios
 						.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
 						.then(() => {
 							this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
@@ -123,17 +119,15 @@
 							this.$root.showSnackBar(err, "error");
 							this.disableDialog(true);
 						});
-				} else if (this.type === "texture") {
-					this.onSubmit(this.data)
-						.then(() => {
-							this.disableDialog(true);
-						})
+				case "texture":
+					return this.onSubmit(this.data)
+						.then(() => this.disableDialog(true))
 						.catch((err) => {
 							console.error(err);
 							this.$root.showSnackBar(err, "error");
 						});
-				}
-			},
+			}
 		},
-	};
+	},
+};
 </script>

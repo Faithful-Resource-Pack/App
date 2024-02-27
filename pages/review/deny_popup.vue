@@ -31,24 +31,23 @@
 </template>
 
 <script>
-	export default {
-		name: "deny-popup",
-
-		props: {
-			reasonPopup: {
-				type: Boolean,
-				required: true,
-			},
-			closePopup: {
-				type: Function,
-				required: true,
-			},
+export default {
+	name: "deny-popup",
+	props: {
+		reasonPopup: {
+			type: Boolean,
+			required: true,
 		},
-		data() {
-			return {
-				denyReason: "",
-				reasonRules: [(u) => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule],
-			};
+		closePopup: {
+			type: Function,
+			required: true,
 		},
-	};
+	},
+	data() {
+		return {
+			denyReason: "",
+			reasonRules: [(u) => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule],
+		};
+	},
+};
 </script>

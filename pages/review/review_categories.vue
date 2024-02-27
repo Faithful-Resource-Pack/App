@@ -23,39 +23,38 @@
 </template>
 
 <script>
-	export default {
-		name: "review-categories",
-		props: {
-			value: {
-				type: String,
-				required: true,
-			},
-			categories: {
-				type: Array, // [{ label: String, color: String }]
-				required: true,
-			},
-			activeColor: {
-				type: String,
-				required: true,
-			},
+export default {
+	name: "review-categories",
+	props: {
+		value: {
+			type: String,
+			required: true,
 		},
-
-		data() {
-			return {
-				content: {},
-			};
+		categories: {
+			type: Array, // [{ label: String, color: String }]
+			required: true,
 		},
-		methods: {
-			onClick(val) {
-				this.$emit("input", val);
-			},
+		activeColor: {
+			type: String,
+			required: true,
 		},
-		computed: {
-			classes() {
-				return this.categories.map((v) =>
-					v.value === this.value ? this.activeColor + " selected" : "",
-				);
-			},
+	},
+	data() {
+		return {
+			content: {},
+		};
+	},
+	methods: {
+		onClick(val) {
+			this.$emit("input", val);
 		},
-	};
+	},
+	computed: {
+		classes() {
+			return this.categories.map((v) =>
+				v.value === this.value ? this.activeColor + " selected" : "",
+			);
+		},
+	},
+};
 </script>

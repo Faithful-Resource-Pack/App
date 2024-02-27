@@ -20,36 +20,35 @@
 </template>
 
 <script>
-	export default {
-		name: "review-list",
-		props: {
-			value: {
-				type: String,
-				required: true,
-			},
-			items: {
-				type: Array, // [{ primary: String, secondary: String, key: Number }]
-				required: true,
-			},
-			empty: {
-				type: String,
-				required: true,
-			},
-			activeColor: {
-				type: String,
-				required: true,
-			},
+export default {
+	name: "review-list",
+	props: {
+		value: {
+			type: String,
+			required: true,
 		},
-
-		methods: {
-			onClick(key) {
-				this.$emit("input", key);
-			},
+		items: {
+			type: Array, // [{ primary: String, secondary: String, key: Number }]
+			required: true,
 		},
-		computed: {
-			classes() {
-				return this.items.map((v) => (v.key === this.value ? this.activeColor + " selected" : ""));
-			},
+		empty: {
+			type: String,
+			required: true,
 		},
-	};
+		activeColor: {
+			type: String,
+			required: true,
+		},
+	},
+	methods: {
+		onClick(key) {
+			this.$emit("input", key);
+		},
+	},
+	computed: {
+		classes() {
+			return this.items.map((v) => (v.key === this.value ? this.activeColor + " selected" : ""));
+		},
+	},
+};
 </script>

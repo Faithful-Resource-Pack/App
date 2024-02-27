@@ -186,7 +186,7 @@
 							@click="openDenyPopup(addonInPanel, 'archive')"
 						>
 							{{ $root.lang().global.btn.archive }} </v-btn
-						><v-btn text color="yellow" :href="'/#/addons/edit/' + addonInPanel.id">
+						><v-btn text color="yellow" :href="'/addons/edit/' + addonInPanel.id">
 							{{ $root.lang().global.btn.edit }}
 						</v-btn>
 					</div>
@@ -197,120 +197,121 @@
 </template>
 
 <script>
-	const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
-	const ImagePreviewer = () => import("../addon/image-previewer.vue");
+import axios from "axios";
 
-	export default {
-		name: "exp-panel",
-		components: {
-			ImagePreviewer,
-			FullscreenPreview,
+const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
+const ImagePreviewer = () => import("../addon/image-previewer.vue");
+
+export default {
+	name: "exp-panel",
+	components: {
+		ImagePreviewer,
+		FullscreenPreview,
+	},
+	props: {
+		addons: {
+			type: Array,
+			required: true,
 		},
-
-		props: {
-			addons: {
-				type: Array,
-				required: true,
-			},
-			reviewAddon: {
-				type: Function,
-				required: true,
-			},
-			openDenyPopup: {
-				type: Function,
-				required: true,
-			},
-			contributors: {
-				type: Array,
-				required: true,
-			},
-			update: {
-				type: Function,
-				required: true,
-			},
-			status: {
-				type: String,
-				required: true,
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
-			},
-			value: {
-				type: String,
-				required: true,
-			},
+		reviewAddon: {
+			type: Function,
+			required: true,
 		},
-		data() {
-			return {
-				imagePreview: "",
-				dialogAddon: {},
-				dialogOpen: false,
-
-				addonInPanelLoading: true,
-				addonInPanel: {},
-				addonURL: undefined,
-				addonInPanelHeaderURL: undefined,
-			};
+		openDenyPopup: {
+			type: Function,
+			required: true,
 		},
-		computed: {
-			addonSources() {
-				return (this.addonInPanel.files || [])
-					.filter((f) => f.use === "carousel" || f.use === "screenshot")
-					.map((f) => f.source);
-			},
+		contributors: {
+			type: Array,
+			required: true,
 		},
-		methods: {
-			getAddon(id) {
-				this.addonInPanelLoading = true;
-
-				this.$emit("input", id);
-
-				// allSettled if no header res
-				Promise.allSettled([
-					axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
-					axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
-				]).then(([res, header_res]) => {
-					// void value if already here (closing tab)
-					if (this.addonInPanel.id === res.value.data.id) {
-						this.addonInPanel = {};
-						this.addonInPanelLoading = true;
-						return;
-					}
-
-					this.addonInPanel = res.value.data;
-					this.addonInPanelLoading = false;
-
-					if (header_res.value)
-						this.addonInPanelHeaderURL = header_res.value.data + "?t=" + new Date().getTime();
-					else this.addonInPanelHeaderURL = null;
-				});
-			},
-			openDialog() {
-				this.dialogAddon = this.addonInPanel;
-				this.dialogOpen = true;
-			},
-			closeDialog() {
-				this.dialogOpen = false;
-				this.dialogAddon = {};
-				this.update();
-			},
-			getUsername(id) {
-				if (id === null || id === undefined) return "Herobrine";
-				return this.contributors.filter((c) => c.id === id)[0].username || "Unknown User";
-			},
+		update: {
+			type: Function,
+			required: true,
 		},
-		mounted() {
-			let found_addon = this.addons.find((a) => a.id === this.value);
-
-			if (found_addon) {
-				const refs = this.$refs[this.value];
-				if (refs === undefined) return;
-
-				const ref = refs[0];
-				ref.$children[0].$el.click();
-			}
+		status: {
+			type: String,
+			required: true,
 		},
-	};
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+		value: {
+			type: String,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			imagePreview: "",
+			dialogAddon: {},
+			dialogOpen: false,
+
+			addonInPanelLoading: true,
+			addonInPanel: {},
+			addonURL: undefined,
+			addonInPanelHeaderURL: undefined,
+		};
+	},
+	computed: {
+		addonSources() {
+			return (this.addonInPanel.files || [])
+				.filter((f) => f.use === "carousel" || f.use === "screenshot")
+				.map((f) => f.source);
+		},
+	},
+	methods: {
+		getAddon(id) {
+			this.addonInPanelLoading = true;
+
+			this.$emit("input", id);
+
+			// allSettled if no header res
+			Promise.allSettled([
+				axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
+				axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
+			]).then(([res, header_res]) => {
+				// void value if already here (closing tab)
+				if (this.addonInPanel.id === res.value.data.id) {
+					this.addonInPanel = {};
+					this.addonInPanelLoading = true;
+					return;
+				}
+
+				this.addonInPanel = res.value.data;
+				this.addonInPanelLoading = false;
+
+				if (header_res.value)
+					this.addonInPanelHeaderURL = header_res.value.data + "?t=" + new Date().getTime();
+				else this.addonInPanelHeaderURL = null;
+			});
+		},
+		openDialog() {
+			this.dialogAddon = this.addonInPanel;
+			this.dialogOpen = true;
+		},
+		closeDialog() {
+			this.dialogOpen = false;
+			this.dialogAddon = {};
+			this.update();
+		},
+		getUsername(id) {
+			if (id === null || id === undefined) return "Herobrine";
+			return this.contributors.find((c) => c.id === id)?.username || "Unknown User";
+		},
+	},
+	mounted() {
+		const foundAddon = this.addons.find((a) => a.id === this.value);
+
+		if (foundAddon) {
+			const refs = this.$refs[this.value];
+			if (refs === undefined) return;
+
+			const ref = refs[0];
+			ref.$children[0].$el.click();
+		}
+	},
+};
 </script>

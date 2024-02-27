@@ -10,11 +10,10 @@
 </template>
 
 <script>
-	export default {
-		name: "review-translations-page",
-
-		data() {
-			window.location.href = "https://translate.faithfulpack.net/";
-		},
-	};
+export default {
+	name: "review-translations-page",
+	created() {
+		window.location.href = "https://translate.faithfulpack.net/";
+	},
+};
 </script>

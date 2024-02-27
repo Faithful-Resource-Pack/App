@@ -13,7 +13,7 @@
 		<user-remove-confirm
 			:confirm="remove.confirm"
 			:disableDialog="
-				function () {
+				() => {
 					remove.confirm = false;
 					update();
 				}
@@ -130,178 +130,179 @@
 </template>
 
 <script>
-	/* global axios, Vue */
-	const UserModal = () => import("./modal.vue");
-	const UserRemoveConfirm = () => import("./remove-confirm.vue");
+import Vue from "vue";
+import axios from "axios";
 
-	export default {
-		name: "users-page",
-		components: {
-			UserModal,
-			UserRemoveConfirm,
+const UserModal = () => import("./modal.vue");
+const UserRemoveConfirm = () => import("./remove-confirm.vue");
+
+export default {
+	name: "users-page",
+	components: {
+		UserModal,
+		UserRemoveConfirm,
+	},
+	data() {
+		const INCREMENT = 250;
+
+		return {
+			pageColor: "indigo accent-2",
+			textColorOnPage: "white--text",
+			pageStyles: "",
+			recompute: false,
+			roles: [],
+			search: "",
+			searchPromise: undefined,
+			users: [],
+			loading: false,
+			dialogOpen: false,
+			dialogData: {},
+			dialogDataAdd: false,
+			remove: {
+				confirm: false,
+				data: {},
+			},
+			displayedResults: INCREMENT,
+		};
+	},
+	methods: {
+		activeRole(t) {
+			let result = {};
+			result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
+				(t === "all" && !this.role && !!this.name) ||
+				(t && this.role && t.toLowerCase() === this.role.toLowerCase());
+
+			return result;
 		},
-
-		data() {
-			const INCREMENT = 250;
-
-			return {
-				pageColor: "indigo accent-2",
-				textColorOnPage: "white--text",
-				pageStyles: "",
-				recompute: false,
-				roles: [],
-				search: "",
-				searchPromise: undefined,
-				users: [],
-				loading: false,
-				dialogOpen: false,
-				dialogData: {},
-				dialogDataAdd: false,
-				remove: {
-					confirm: false,
-					data: {},
-				},
-				displayedResults: INCREMENT,
-			};
+		userURL(t) {
+			return "/users/" + t + "/" + (this.name || "");
 		},
-		methods: {
-			activeRole(t) {
-				let result = {};
-				result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
-					(t === "all" && !this.role && !!this.name) ||
-					(t && this.role && t.toLowerCase() === this.role.toLowerCase());
+		startSearch() {
+			// /whatever/ => /whatever/<search>
+			// /whatever/<oldSearch> => /whatever/<search>
+			// /whatever/<role> =>/whatever/<role>/<search>
+			// /whatever/<role>/<name> => /whatever/<role>/<search>
+			let newPath;
+			if (this.name) {
+				const splitted = this.$route.path.split("/");
+				splitted.pop();
+				newPath = splitted.join("/");
+			} else {
+				newPath = this.$route.path;
+			}
 
-				return result;
-			},
-			userURL(t) {
-				return "/users/" + t + "/" + (this.name || "");
-			},
-			startSearch() {
-				// ok so url is /whatever/ => /whatever/<search>
-				// ok so url is /whatever/<oldSearch> => /whatever/<search>
-				// ok so url is /whatever/<role> =>/whatever/<role>/<search>
-				// ok so url is /whatever/<role>/<name> => /whatever/<role>/<search>
-				let newPath;
-				if (this.name) {
-					const splitted = this.$route.path.split("/");
-					splitted.pop();
-					newPath = splitted.join("/");
-				} else {
-					newPath = this.$route.path;
-				}
-
-				if (!newPath.endsWith("/")) newPath += "/";
-				if (this.search) newPath += this.search;
-				if (newPath !== this.$route.path) {
-					this.$router.push(newPath).catch(() => {});
-				}
-				this.getUsers();
-			},
-			getRoles() {
-				axios
-					.get(`${this.$root.apiURL}/users/roles`)
-					.then((response) => {
-						this.roles = response.data;
-					})
-					.catch((error) => {
-						console.error(error);
-					})
-					.finally(() => {
-						Vue.nextTick(() => {
-							this.search = this.name;
-						});
+			if (!newPath.endsWith("/")) newPath += "/";
+			if (this.search) newPath += this.search;
+			if (newPath !== this.$route.path) {
+				this.$router.push(newPath).catch(() => {});
+			}
+			this.getUsers();
+		},
+		getRoles() {
+			axios
+				.get(`${this.$root.apiURL}/users/roles`)
+				.then((response) => {
+					this.roles = response.data;
+				})
+				.catch((error) => {
+					console.error(error);
+				})
+				.finally(() => {
+					Vue.nextTick(() => {
+						this.search = this.name;
 					});
-			},
-			getUsers() {
-				this.loading = true;
-				const url = `${this.$root.apiURL}${this.$route.path
-					.split("/")
-					.map((str) => (str === "users" ? "users/role" : str))
-					.join("/")}`;
-				axios
-					.get(url, this.$root.apiOptions)
-					.then((res) => {
-						this.users = res.data;
-					})
-					.catch((err) => console.error(err))
-					.finally(() => {
-						this.loading = false;
-					});
-			},
-			update(users = true) {
-				this.getRoles();
-				if (users) this.getUsers();
-			},
-			showMore() {
-				this.displayedResults += 100;
-				this.update(false);
-			},
-			clearSearch() {
-				this.search = "";
-				this.startSearch();
-			},
-			openDialog(data = undefined) {
-				this.dialogData = data;
-				this.dialogDataAdd = data === undefined;
-				this.dialogOpen = true;
-			},
-			disableDialog(refresh = false) {
-				this.dialogOpen = false;
-				this.dialogData = {};
-				this.dialogDataAdd = false;
-
-				if (refresh) this.update();
-			},
-			askRemove(data) {
-				this.remove.data = data;
-				this.remove.confirm = true;
-			},
+				});
 		},
-		computed: {
-			usersRoles() {
-				return ["all", ...this.roles];
-			},
-			role() {
-				if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role))
-					return this.$route.params.role;
-				return undefined;
-			},
-			name() {
-				if (this.role !== undefined) return this.$route.params.name;
-				return this.$route.params.role;
-			},
-			listColumns() {
-				let columns = 1;
-
-				if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
-					columns = 2;
-					if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
-						columns = 3;
-					}
-				}
-
-				return columns;
-			},
-			splittedUsers() {
-				const res = [];
-
-				const keys = Object.keys(this.users);
-				const len = keys.length;
-
-				for (let col = 0; col < this.listColumns; ++col) res.push([]);
-
-				let arrayIndex = 0;
-				for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-					res[arrayIndex].push(this.users[keys[i]]);
-					arrayIndex = (arrayIndex + 1) % this.listColumns;
-				}
-
-				return res;
-			},
+		getUsers() {
+			this.loading = true;
+			const url = `${this.$root.apiURL}${this.$route.path
+				.split("/")
+				.map((str) => (str === "users" ? "users/role" : str))
+				.join("/")}`;
+			axios
+				.get(url, this.$root.apiOptions)
+				.then((res) => {
+					this.users = res.data;
+				})
+				.catch((err) => console.error(err))
+				.finally(() => {
+					this.loading = false;
+				});
 		},
-		mounted() {
+		update(users = true) {
 			this.getRoles();
-			window.updatePageStyles(this);
+			if (users) this.getUsers();
 		},
-	};
+		showMore() {
+			this.displayedResults += 100;
+			this.update(false);
+		},
+		clearSearch() {
+			this.search = "";
+			this.startSearch();
+		},
+		openDialog(data = undefined) {
+			this.dialogData = data;
+			this.dialogDataAdd = data === undefined;
+			this.dialogOpen = true;
+		},
+		disableDialog(refresh = false) {
+			this.dialogOpen = false;
+			this.dialogData = {};
+			this.dialogDataAdd = false;
+
+			if (refresh) this.update();
+		},
+		askRemove(data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+	},
+	computed: {
+		usersRoles() {
+			return ["all", ...this.roles];
+		},
+		role() {
+			if (this.$route.params.role && this.usersRoles.includes(this.$route.params.role))
+				return this.$route.params.role;
+			return undefined;
+		},
+		name() {
+			if (this.role !== undefined) return this.$route.params.name;
+			return this.$route.params.role;
+		},
+		listColumns() {
+			let columns = 1;
+
+			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
+				columns = 2;
+				if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
+					columns = 3;
+				}
+			}
+
+			return columns;
+		},
+		splittedUsers() {
+			const res = [];
+
+			const keys = Object.keys(this.users);
+			const len = keys.length;
+
+			for (let col = 0; col < this.listColumns; ++col) res.push([]);
+
+			let arrayIndex = 0;
+			for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+				res[arrayIndex].push(this.users[keys[i]]);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			}
+
+			return res;
+		},
+	},
+	mounted() {
+		this.getRoles();
+		window.updatePageStyles(this);
+	},
+};
 </script>

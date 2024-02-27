@@ -137,7 +137,7 @@
 					>
 						<v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent">
 							<v-list-item v-for="texture in textures_arr" class="my-4" :key="texture.id">
-								<a :href="'/#/gallery?show=' + texture.id">
+								<a :href="'/gallery?show=' + texture.id">
 									<v-list-item-avatar
 										tile
 										class="texture-avatar my-0 white--text"
@@ -189,235 +189,235 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import Vue from "vue";
+import axios from "axios";
 
-	const TextureModal = () => import("./modal_texture.vue");
-	const MCVersionModal = () => import("./modal_mc_version.vue");
-	const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.vue");
-	const ModalVersionAdd = () => import("./modal_version_add.vue");
-	const RemoveConfirm = () => import("./remove-confirm.vue");
+const TextureModal = () => import("./modal_texture.vue");
+const MCVersionModal = () => import("./modal_mc_version.vue");
+const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.vue");
+const ModalVersionAdd = () => import("./modal_version_add.vue");
+const RemoveConfirm = () => import("./remove-confirm.vue");
 
-	export default {
-		name: "texture-page",
-		components: {
-			"texture-modal": TextureModal,
-			"version-modal": MCVersionModal,
-			"add-multiple-texture": TextureModalMultipleAdd,
-			"add-minecraft-version": ModalVersionAdd,
-			"remove-confirm": RemoveConfirm,
-		},
+export default {
+	name: "texture-page",
+	components: {
+		"texture-modal": TextureModal,
+		"version-modal": MCVersionModal,
+		"add-multiple-texture": TextureModalMultipleAdd,
+		"add-minecraft-version": ModalVersionAdd,
+		"remove-confirm": RemoveConfirm,
+	},
+	data() {
+		const INCREMENT = 250;
 
-		data() {
-			const INCREMENT = 250;
-
-			return {
-				pageColor: "blue darken-1",
-				pageStyles: "",
-				textColorOnPage: "white--text",
-				newVersionModal: false,
-				addMultiple: false,
-				recompute: false,
-				tags: [],
-				editions: [],
-				versions: [],
-				textures: {},
-				search: "",
-				dialogOpen: false,
-				MCDialogOpen: false,
-				dialogData: {},
-				remove: {
-					confirm: false,
-					data: {},
-				},
-				displayedResults: INCREMENT,
-				selectTextureTag: "all",
-			};
-		},
-		computed: {
-			textureTags() {
-				return ["all", ...this.tags];
+		return {
+			pageColor: "blue darken-1",
+			pageStyles: "",
+			textColorOnPage: "white--text",
+			newVersionModal: false,
+			addMultiple: false,
+			recompute: false,
+			tags: [],
+			editions: [],
+			versions: [],
+			textures: {},
+			search: "",
+			dialogOpen: false,
+			MCDialogOpen: false,
+			dialogData: {},
+			remove: {
+				confirm: false,
+				data: {},
 			},
-			tag() {
-				if (this.$route.params.tag && this.textureTags.includes(this.$route.params.tag))
-					return this.$route.params.tag;
-				return undefined;
-			},
-			name() {
-				if (this.tag !== undefined) return this.$route.params.name;
+			displayedResults: INCREMENT,
+			selectTextureTag: "all",
+		};
+	},
+	computed: {
+		textureTags() {
+			return ["all", ...this.tags];
+		},
+		tag() {
+			if (this.$route.params.tag && this.textureTags.includes(this.$route.params.tag))
 				return this.$route.params.tag;
-			},
-			listColumns() {
-				let columns = 1;
-
-				if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
-					columns = 2;
-					if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
-						columns = 3;
-					}
-				}
-
-				if (Object.keys(this.textures).length === 1) columns = 1;
-
-				return columns;
-			},
-			splittedResults() {
-				const res = [];
-
-				const keys = Object.keys(this.textures);
-				const len = keys.length;
-
-				for (let col = 0; col < this.listColumns; ++col) res.push([]);
-
-				let arrayIndex = 0;
-
-				for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-					res[arrayIndex].push(this.textures[keys[i]]);
-					arrayIndex = (arrayIndex + 1) % this.listColumns;
-				}
-
-				return res;
-			},
+			return undefined;
 		},
-		methods: {
-			activeTag(t) {
-				let res = {};
-				if (
-					(t === "all" && !this.tag && !!this.name) ||
-					(t && this.tag && t.toLowerCase() === this.tag.toLowerCase())
-				) {
-					res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
-				}
-				return res;
-			},
-			textureURL(t, name = undefined) {
-				return this.name || name
-					? `/textures/${t}/${name !== undefined ? name : this.name}`
-					: `/textures/${t}`;
-			},
-			startSearch() {
-				let newPath = this.textureURL(this.tag, this.search);
-
-				// DO NOT CHANGE ROUTE IF SAME PATH
-				if (newPath !== this.$route.path) {
-					this.$router.push(newPath);
-				} else {
-					// else get textures manually
-					this.getTextures();
-				}
-			},
-			clearSearch() {
-				this.search = "";
-				this.startSearch();
-			},
-			openDialog(data = {}) {
-				this.dialogOpen = true;
-				this.dialogData = data;
-			},
-			disableDialog(refresh = false) {
-				this.dialogOpen = false;
-				if (refresh) {
-					this.getTags();
-					this.getEditions();
-					this.getTextures();
-					this.getVersions();
-				}
-			},
-			openModifyMCDialog() {
-				this.MCDialogOpen = true;
-			},
-			disableMCDialog() {
-				this.MCDialogOpen = false;
-			},
-			openNewMCDialog() {
-				this.addMultiple = true;
-			},
-			askRemove(data) {
-				this.remove.data = data;
-				this.remove.confirm = true;
-			},
-			getTags() {
-				axios
-					.get(`${this.$root.apiURL}/textures/tags`)
-					.then((res) => {
-						this.tags = res.data;
-					})
-					.catch((err) => {
-						console.error(err);
-					})
-					.finally(() => {
-						Vue.nextTick(() => {
-							this.search = this.name;
-						});
-					});
-			},
-			getEditions() {
-				axios
-					.get(`${this.$root.apiURL}/textures/editions`)
-					.then((res) => {
-						this.editions = res.data;
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			},
-			getVersions() {
-				axios
-					.get(`${this.$root.apiURL}/textures/versions`)
-					.then((res) => {
-						this.versions = res.data;
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			},
-			getTextures() {
-				let url = new URL(`${this.$root.apiURL}/textures/search`);
-				if (this.$route.params.tag && this.$route.params.tag != "all")
-					url.searchParams.set("tag", this.$route.params.tag);
-				if (this.$route.params.name)
-					url.searchParams.set("name", this.$route.params.name.replace(/ /g, "_"));
-				axios
-					.get(url.toString())
-					.then((res) => {
-						this.textures = res.data;
-					})
-					.catch((err) => console.error(err));
-			},
-			update(textures = true) {
-				this.getTags();
-				if (textures) this.getTextures();
-				this.getEditions();
-				this.getVersions();
-			},
-			showMore() {
-				this.displayedResults += 100;
-				this.update();
-			},
-			removeTexture(data) {
-				const textureId = data.id;
-				return axios
-					.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
-					.then(() => {
-						this.startSearch();
-					});
-			},
+		name() {
+			if (this.tag !== undefined) return this.$route.params.name;
+			return this.$route.params.tag;
 		},
-		watch: {
-			$route() {
+		listColumns() {
+			let columns = 1;
+
+			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
+				columns = 2;
+				if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
+					columns = 3;
+				}
+			}
+
+			if (Object.keys(this.textures).length === 1) columns = 1;
+
+			return columns;
+		},
+		splittedResults() {
+			const res = [];
+
+			const keys = Object.keys(this.textures);
+			const len = keys.length;
+
+			for (let col = 0; col < this.listColumns; ++col) res.push([]);
+
+			let arrayIndex = 0;
+
+			for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
+				res[arrayIndex].push(this.textures[keys[i]]);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			}
+
+			return res;
+		},
+	},
+	methods: {
+		activeTag(t) {
+			let res = {};
+			if (
+				(t === "all" && !this.tag && !!this.name) ||
+				(t && this.tag && t.toLowerCase() === this.tag.toLowerCase())
+			) {
+				res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
+			}
+			return res;
+		},
+		textureURL(t, name = undefined) {
+			return this.name || name
+				? `/textures/${t}/${name !== undefined ? name : this.name}`
+				: `/textures/${t}`;
+		},
+		startSearch() {
+			let newPath = this.textureURL(this.tag, this.search);
+
+			// DO NOT CHANGE ROUTE IF SAME PATH
+			if (newPath !== this.$route.path) {
+				this.$router.push(newPath);
+			} else {
+				// else get textures manually
 				this.getTextures();
-			},
-			tag(n) {
-				this.selectTextureTag = n;
-			},
-			selectTextureTag(n) {
-				if (n) {
-					this.$router.push(this.textureURL(n)).catch(() => {});
-				}
-			},
+			}
 		},
-		mounted() {
-			this.update(false);
-			window.updatePageStyles(this);
+		clearSearch() {
+			this.search = "";
+			this.startSearch();
 		},
-	};
+		openDialog(data = {}) {
+			this.dialogOpen = true;
+			this.dialogData = data;
+		},
+		disableDialog(refresh = false) {
+			this.dialogOpen = false;
+			if (refresh) {
+				this.getTags();
+				this.getEditions();
+				this.getTextures();
+				this.getVersions();
+			}
+		},
+		openModifyMCDialog() {
+			this.MCDialogOpen = true;
+		},
+		disableMCDialog() {
+			this.MCDialogOpen = false;
+		},
+		openNewMCDialog() {
+			this.addMultiple = true;
+		},
+		askRemove(data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		getTags() {
+			axios
+				.get(`${this.$root.apiURL}/textures/tags`)
+				.then((res) => {
+					this.tags = res.data;
+				})
+				.catch((err) => {
+					console.error(err);
+				})
+				.finally(() => {
+					Vue.nextTick(() => {
+						this.search = this.name;
+					});
+				});
+		},
+		getEditions() {
+			axios
+				.get(`${this.$root.apiURL}/textures/editions`)
+				.then((res) => {
+					this.editions = res.data;
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		},
+		getVersions() {
+			axios
+				.get(`${this.$root.apiURL}/textures/versions`)
+				.then((res) => {
+					this.versions = res.data;
+				})
+				.catch((err) => {
+					console.error(err);
+				});
+		},
+		getTextures() {
+			const url = new URL(`${this.$root.apiURL}/textures/search`);
+			if (this.$route.params.tag && this.$route.params.tag != "all")
+				url.searchParams.set("tag", this.$route.params.tag);
+			if (this.$route.params.name)
+				url.searchParams.set("name", this.$route.params.name.replace(/ /g, "_"));
+			axios
+				.get(url.toString())
+				.then((res) => {
+					this.textures = res.data;
+				})
+				.catch((err) => console.error(err));
+		},
+		update(textures = true) {
+			this.getTags();
+			if (textures) this.getTextures();
+			this.getEditions();
+			this.getVersions();
+		},
+		showMore() {
+			this.displayedResults += 100;
+			this.update();
+		},
+		removeTexture(data) {
+			const textureId = data.id;
+			return axios
+				.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
+				.then(() => {
+					this.startSearch();
+				});
+		},
+	},
+	watch: {
+		$route() {
+			this.getTextures();
+		},
+		tag(n) {
+			this.selectTextureTag = n;
+		},
+		selectTextureTag(n) {
+			if (n) {
+				this.$router.push(this.textureURL(n)).catch(() => {});
+			}
+		},
+	},
+	mounted() {
+		this.update(false);
+		window.updatePageStyles(this);
+	},
+};
 </script>

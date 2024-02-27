@@ -17,101 +17,100 @@
 </template>
 
 <script>
-	const jsonEditor = () => import("./jsonEditor.vue");
-	const jsonAddEditor = () => import("./jsonAddEditor.vue");
+const jsonEditor = () => import("./jsonEditor.vue");
+const jsonAddEditor = () => import("./jsonAddEditor.vue");
 
-	function deepEqual(x, y) {
-		if (x === y) {
-			return true;
-		} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
-			if (Object.keys(x).length != Object.keys(y).length) return false;
+function deepEqual(x, y) {
+	if (x === y) {
+		return true;
+	} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
+		if (Object.keys(x).length != Object.keys(y).length) return false;
 
-			for (var prop in x) {
-				if (y.hasOwnProperty(prop)) {
-					if (!deepEqual(x[prop], y[prop])) return false;
-				} else return false;
-			}
+		for (var prop in x) {
+			if (y.hasOwnProperty(prop)) {
+				if (!deepEqual(x[prop], y[prop])) return false;
+			} else return false;
+		}
 
-			return true;
-		} else return false;
-	}
+		return true;
+	} else return false;
+}
 
-	export default {
-		name: "json-object-editor",
-		components: {
-			jsonEditor,
-			jsonAddEditor,
+export default {
+	name: "json-object-editor",
+	components: {
+		jsonEditor,
+		jsonAddEditor,
+	},
+	props: {
+		value: {
+			required: true,
 		},
+		parent: {
+			required: false,
+			default: undefined,
+		},
+		root: {
+			required: false,
+			type: Boolean,
+			default: false,
+		},
+	},
+	data() {
+		return {
+			values: [],
+			toggled: true,
+		};
+	},
+	methods: {
+		deleteItem(index) {
+			this.values.splice(index, 1);
+		},
+		extractKeysAndValues() {
+			this.values = this.value;
+		},
+		onClickChild(obj) {
+			this.values.push(obj);
+		},
+		/**
+		 * Constructs object with key and values
+		 * @returns {Object} final object constructed
+		 */
+		construct() {
+			if (!this.values.length) throw new Error("Not an array");
 
-		props: {
-			value: {
-				required: true,
-			},
-			parent: {
-				required: false,
-				default: undefined,
-			},
-			root: {
-				required: false,
-				type: Boolean,
-				default: false,
-			},
+			return this.values;
 		},
-		data() {
-			return {
-				values: [],
-				toggled: true,
-			};
-		},
-		methods: {
-			deleteItem(index) {
-				this.values.splice(index, 1);
-			},
-			extractKeysAndValues() {
-				this.values = this.value;
-			},
-			onClickChild(obj) {
-				this.values.push(obj);
-			},
-			/**
-			 * Constructs object with key and values
-			 * @returns {Object} final object constructed
-			 */
-			construct() {
-				if (!this.values.length) throw new Error("Not an array");
+	},
+	watch: {
+		value: {
+			handler(n, o) {
+				if (o === undefined) return;
+				if (deepEqual(n, o)) return;
+				// console.log('object value', n, o, this.values, this.value);
 
-				return this.values;
+				if (Array.isArray(n)) {
+					this.extractKeysAndValues();
+				}
 			},
+			immediate: true,
+			deep: true,
 		},
-		watch: {
-			value: {
-				handler(n, o) {
-					if (o === undefined) return;
-					if (deepEqual(n, o)) return;
-					// console.log('object value', n, o, this.values, this.value);
+		values: {
+			handler(n, o) {
+				if (o === undefined) return;
+				if (deepEqual(n, o)) return;
+				// console.log('values', n, o, this.values, this.value);
 
-					if (Array.isArray(n)) {
-						this.extractKeysAndValues();
-					}
-				},
-				immediate: true,
-				deep: true,
+				this.$emit("input", this.construct());
 			},
-			values: {
-				handler(n, o) {
-					if (o === undefined) return;
-					if (deepEqual(n, o)) return;
-					// console.log('values', n, o, this.values, this.value);
-
-					this.$emit("input", this.construct());
-				},
-				deep: true,
-			},
+			deep: true,
 		},
-		created() {},
-		beforeMount() {
-			if (!Array.isArray(this.value)) throw new Error("Value not an object");
-			this.extractKeysAndValues();
-		},
-	};
+	},
+	created() {},
+	beforeMount() {
+		if (!Array.isArray(this.value)) throw new Error("Value not an object");
+		this.extractKeysAndValues();
+	},
+};
 </script>

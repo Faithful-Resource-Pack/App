@@ -1,4 +1,6 @@
-const discordUserStore = Pinia.defineStore("discordUser", {
+import { defineStore } from "pinia";
+
+export const discordUserStore = defineStore("discordUser", {
 	state: () => ({
 		discordUserURL: "https://discord.com/api/users/@me",
 		discordId: undefined,
@@ -27,7 +29,6 @@ const discordUserStore = Pinia.defineStore("discordUser", {
 				}
 			});
 		},
-
 		watchDiscordAuth(store, onError) {
 			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
 			store.$subscribe((mutation) => {

@@ -38,46 +38,43 @@
 </template>
 
 <script>
-	const AddonCard = () => import("./addon-card.vue");
-	const ProfileCard = () => import("./profile-card.vue");
-	const UserCard = () => import("./user-card.vue");
-	const ContributionCard = () => import("./contribution-card.vue");
-	const ContributionStatsCard = () => import("./contribution-stats-card.vue");
-	const FaithfulCard = () => import("./faithful-card.vue");
+const AddonCard = () => import("./addon-card.vue");
+const ProfileCard = () => import("./profile-card.vue");
+const UserCard = () => import("./user-card.vue");
+const ContributionCard = () => import("./contribution-card.vue");
+const ContributionStatsCard = () => import("./contribution-stats-card.vue");
+const FaithfulCard = () => import("./faithful-card.vue");
 
-	export default {
-		name: "dashboardPage",
-		components: {
-			"addon-card": AddonCard,
-			"profile-card": ProfileCard,
-			"user-card": UserCard,
-			"contribution-card": ContributionCard,
-			"contribution-stats-card": ContributionStatsCard,
-			"faithful-card": FaithfulCard,
+export default {
+	name: "dashboardPage",
+	components: {
+		AddonCard,
+		ProfileCard,
+		UserCard,
+		ContributionCard,
+		ContributionStatsCard,
+		FaithfulCard,
+	},
+	computed: {
+		admin() {
+			// if not logged in
+			if (!this.$root.isUserLogged) return false;
+
+			// if user not loaded
+			if (!this.$root.user) return false;
+
+			// check roles
+			return (
+				this.$root.user.roles.includes("Administrator") ||
+				this.$root.user.roles.includes("Developer")
+			);
 		},
-
-		computed: {
-			admin() {
-				// if not logged in
-				if (!this.$root.isUserLogged) return false;
-
-				// if user not loaded
-				if (!this.$root.user) return false;
-
-				// check roles
-				return (
-					this.$root.user.roles.includes("Administrator") ||
-					this.$root.user.roles.includes("Developer")
-				);
-			},
-			colors() {
-				// https://colordesigner.io/gradient-generator
-				if (this.$root.isDark) {
-					return ["#1e1e1e", "#303c27", "#425d30", "#537f38", "#65a33f", "#76c945"];
-				} else {
-					return ["#f0f0f0", "#b5dd9e", "#a6d889", "#97d374", "#87ce5d", "#76c945"];
-				}
-			},
+		colors() {
+			// https://colordesigner.io/gradient-generator
+			if (this.$root.isDark)
+				return ["#1e1e1e", "#303c27", "#425d30", "#537f38", "#65a33f", "#76c945"];
+			return ["#f0f0f0", "#b5dd9e", "#a6d889", "#97d374", "#87ce5d", "#76c945"];
 		},
-	};
+	},
+};
 </script>

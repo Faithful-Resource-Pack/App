@@ -13,24 +13,24 @@
 </template>
 
 <script>
-	export default {
-		name: "dashboard-card",
-		props: {
-			title: {
-				required: false,
-				type: String,
-				default: "",
-			},
-			go_to: {
-				required: false,
-				type: String,
-				default: undefined,
-			},
-			can_go_to: {
-				required: false,
-				type: Boolean,
-				default: false,
-			},
+export default {
+	name: "dashboard-card",
+	props: {
+		title: {
+			required: false,
+			type: String,
+			default: "",
 		},
-	};
+		go_to: {
+			required: false,
+			type: String,
+			default: undefined,
+		},
+		can_go_to: {
+			required: false,
+			type: Boolean,
+			default: false,
+		},
+	},
+};
 </script>

@@ -16,24 +16,24 @@
 </template>
 
 <script>
-	const ReviewPreview = () => import("./review_preview.vue");
+const ReviewPreview = () => import("./review_preview.vue");
 
-	export default {
-		name: "review-previewer",
-		components: {
-			ReviewPreview,
+export default {
+	name: "review-previewer",
+	components: {
+		ReviewPreview,
+	},
+	props: {
+		addonId: {
+			type: String,
+			required: false,
+			default: undefined,
 		},
-		props: {
-			addonId: {
-				type: String,
-				required: false,
-				default: undefined,
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "black",
-			},
+		color: {
+			type: String,
+			required: false,
+			default: "black",
 		},
-	};
+	},
+};
 </script>

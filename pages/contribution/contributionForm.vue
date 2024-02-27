@@ -80,56 +80,55 @@
 </template>
 
 <script>
-	const userSelect = () => import("./userSelect.vue");
-	const quickDatePicker = () => import("../components/quick-date-picker.vue");
-	const multiRangeInput = () => import("../components/multi-range-input.vue");
+const userSelect = () => import("./userSelect.vue");
+const quickDatePicker = () => import("../components/quick-date-picker.vue");
+const multiRangeInput = () => import("../components/multi-range-input.vue");
 
-	export default {
-		name: "contribution-form",
-		components: {
-			"user-select": userSelect,
-			"quick-date-picker": quickDatePicker,
-			"multi-range-input": multiRangeInput,
+export default {
+	name: "contribution-form",
+	components: {
+		userSelect,
+		quickDatePicker,
+		multiRangeInput,
+	},
+	props: {
+		contributors: {
+			required: true,
+			type: Array,
 		},
-		props: {
-			contributors: {
-				required: true,
-				type: Array,
-			},
-			value: {
-				required: true,
-			},
-			disabled: {
-				type: Boolean,
-				required: false,
-				default: () => false,
-			},
-			multiple: {
-				type: Boolean,
-				required: true,
-			},
+		value: {
+			required: true,
 		},
-
-		data() {
-			return {
-				content: this.value,
-				months: moment.monthsShort(),
-			};
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: () => false,
 		},
-		watch: {
-			value: {
-				handler(n, o) {
-					if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
-				},
-				immediate: true,
-				deep: true,
-			},
-			content: {
-				handler(n) {
-					this.$emit("input", n);
-				},
-				deep: true,
-			},
+		multiple: {
+			type: Boolean,
+			required: true,
 		},
-	};
+	},
+	data() {
+		return {
+			content: this.value,
+			months: moment.monthsShort(),
+		};
+	},
+	watch: {
+		value: {
+			handler(n, o) {
+				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
+			},
+			immediate: true,
+			deep: true,
+		},
+		content: {
+			handler(n) {
+				this.$emit("input", n);
+			},
+			deep: true,
+		},
+	},
+};
 </script>

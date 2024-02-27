@@ -5,66 +5,65 @@
 </template>
 
 <script>
-	const jsonEditor = () => import("./jsonObjectEditor.vue");
-	const jsonAddEditor = () => import("./jsonAddEditor.vue");
+const jsonEditor = () => import("./jsonObjectEditor.vue");
+const jsonAddEditor = () => import("./jsonAddEditor.vue");
 
-	function deepEqual(x, y) {
-		if (x === y) {
-			return true;
-		} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
-			if (Object.keys(x).length != Object.keys(y).length) return false;
+function deepEqual(x, y) {
+	if (x === y) {
+		return true;
+	} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
+		if (Object.keys(x).length != Object.keys(y).length) return false;
 
-			for (var prop in x) {
-				if (y.hasOwnProperty(prop)) {
-					if (!deepEqual(x[prop], y[prop])) return false;
-				} else return false;
-			}
+		for (var prop in x) {
+			if (y.hasOwnProperty(prop)) {
+				if (!deepEqual(x[prop], y[prop])) return false;
+			} else return false;
+		}
 
-			return true;
-		} else return false;
-	}
+		return true;
+	} else return false;
+}
 
-	export default {
-		name: "json-boolean-editor",
-		components: {
-			jsonEditor,
-			jsonAddEditor,
+export default {
+	name: "json-boolean-editor",
+	components: {
+		jsonEditor,
+		jsonAddEditor,
+	},
+	props: {
+		value: {
+			required: true,
 		},
+		parent: {
+			required: false,
+			default: undefined,
+		},
+	},
+	data() {
+		return {
+			newValue: "",
+		};
+	},
+	watch: {
+		newValue(n, o) {
+			if (n === o) return;
 
-		props: {
-			value: {
-				required: true,
+			this.$emit("input", n);
+		},
+		value: {
+			handler(n, o) {
+				if (o === undefined) return;
+				if (deepEqual(n, o)) return;
+				if (this.keys.length !== this.values.length) return;
+				// console.log('values', n, o, this.keys, this.values, this.value);
+
+				this.$emit("input", this.construct());
 			},
-			parent: {
-				required: false,
-				default: undefined,
-			},
+			deep: true,
 		},
-		data() {
-			return {
-				newValue: "",
-			};
-		},
-		watch: {
-			newValue(n, o) {
-				if (n === o) return;
-
-				this.$emit("input", n);
-			},
-			value: {
-				handler(n, o) {
-					if (o === undefined) return;
-					if (deepEqual(n, o)) return;
-					if (this.keys.length !== this.values.length) return;
-					// console.log('values', n, o, this.keys, this.values, this.value);
-
-					this.$emit("input", this.construct());
-				},
-				deep: true,
-			},
-		},
-		beforeMount() {
-			this.newValue = this.value;
-		},
-	};
+	},
+	beforeMount() {
+		this.newValue = this.value;
+	},
+};
 </script>

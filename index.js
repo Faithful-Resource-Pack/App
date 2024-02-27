@@ -1,5 +1,31 @@
-/* global Vue, VueRouter, Vuetify, location, axios, fetch, marked */
+import Vue from "vue";
+import VueRouter from "vue-router";
+import Vuetify from "vuetify";
+import VueTippy, { TippyComponent } from "vue-tippy";
+import { PrismEditor } from "vue-prism-editor";
+import VueGraph from "vue-graph";
+import VueCalendarHeatmap from "vue-calendar-heatmap";
 
+import axios from "axios";
+import moment from "moment";
+import marked from "marked";
+import { createPinia } from "pinia";
+
+import { discordAuthStore } from "./stores/discordAuthStore";
+import { discordUserStore } from "./stores/discordUserStore";
+import { appUserStore } from "./stores/appUserStore";
+
+// import vue dependencies
+Vue.config.devtools = ["localhost", "127.0.0.1"].includes(location.hostname) === "localhost";
+Vue.use(Vuetify);
+Vue.use(VueRouter);
+Vue.use(VueGraph);
+Vue.use(VueTippy);
+Vue.use(VueCalendarHeatmap);
+Vue.component("tippy", TippyComponent);
+Vue.component("prism-editor", PrismEditor);
+
+// pages used in navbar
 const ContributionPage = () => import("./pages/contribution/main.vue");
 const UsersPage = () => import("./pages/users/main.vue");
 const ContributorStatsPage = () => import("./pages/contribution-stats/main.vue");
@@ -94,6 +120,7 @@ Object.defineProperty(Object.prototype, "merge", {
 
 // languages section
 import enUS from "./resources/strings/en_US.js";
+import DOMPurify from "dompurify";
 
 const LANGS = {
 	en: enUS,
@@ -125,17 +152,13 @@ const MENU_DEFAULT = false;
 window.settings = undefined;
 
 const ALL_ROUTES = [
-	{ path: "/", redirect: "/dashboard/" },
+	{ path: "/", redirect: "/dashboard" },
 	{ path: "/reconnect", component: ReconnectPage },
 ];
 
-/** @type {import('vue-router').RouterOptions} */
-const router_options = {
+const router = new VueRouter({
 	routes: ALL_ROUTES,
-	mode: "history",
-};
-/** @type {import('vue-router').default} */
-const router = new VueRouter(router_options);
+});
 
 // `to` field in subtab will be the first route path
 const ALL_TABS = [
@@ -268,6 +291,15 @@ const ALL_TABS = [
 	},
 ];
 
+// add all tabs routes unlogged
+ALL_TABS.filter((t) => t.roles === undefined)
+	.map((t) => t.subtabs)
+	.flat(1)
+	.filter((s) => s.unlogged)
+	.map((s) => s.routes)
+	.flat(1)
+	.forEach((r) => router.addRoute(r));
+
 // https://www.techonthenet.com/js/language_tags.php
 /** @type {Record<String, () => Promise<any>>} */
 const LANGUAGES_MODULES_MAP = import.meta.glob("/resources/strings/*.js");
@@ -280,19 +312,6 @@ const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP).map((e) => {
 	};
 });
 
-// add all tabs routes unlogged
-ALL_TABS.filter((t) => t.roles === undefined)
-	.map((t) => t.subtabs)
-	.flat(1)
-	.filter((s) => s.unlogged)
-	.map((s) => s.routes)
-	.flat(1)
-	.forEach((r) => {
-		router.addRoute(r);
-	});
-
-Vue.config.devtools = ["localhost", "127.0.0.1"].includes(location.hostname) === "localhost";
-
 window.v = undefined;
 axios
 	.get(`${window.apiURL}/settings/raw`)
@@ -300,11 +319,9 @@ axios
 		window.settings = res.data;
 	})
 	.then(() => {
-		const pinia = Pinia.createPinia();
+		const pinia = createPinia();
 
 		Vue.use(pinia);
-		Vue.use(VueTippy);
-		Vue.component("tippy", VueTippy.TippyComponent);
 
 		let ins = new Vue({
 			router,
@@ -713,24 +730,20 @@ axios
 					console.log(this.$route);
 					console.log(this.$router.options.routes);
 				},
-				compiledMarkdown(markdown) {
-					if (markdown === null || !markdown) return "";
-					return marked(markdown, { sanitize: true });
+				compiledMarkdown(rawText) {
+					if (!rawText) return "";
+					return DOMPurify.sanitize(marked(rawText, { sanitize: true }));
 				},
 				addToken(data) {
 					data.token = this.user.access_token;
 					return data;
 				},
 				emitConnected() {
-					this.atl.forEach((lis) => {
-						lis(this.user.access_token);
-					});
+					this.atl.forEach((lis) => lis(this.user.access_token));
 				},
 				addAccessTokenListener(listener) {
 					this.atl.push(listener);
-					if (this.isUserLogged) {
-						listener(this.user.access_token);
-					}
+					if (this.isUserLogged) listener(this.user.access_token);
 				},
 				onMediaChange(isDark) {
 					// only if system theme

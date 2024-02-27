@@ -30,52 +30,51 @@
 </template>
 
 <script>
-	/* global axios */
+import axios from "axios";
 
-	export default {
-		name: "user-remove-confirm",
-
-		props: {
-			confirm: {
-				type: Boolean,
-				required: true,
-			},
-			data: {
-				type: Object,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
+export default {
+	name: "user-remove-confirm",
+	props: {
+		confirm: {
+			type: Boolean,
+			required: true,
 		},
-		data() {
-			return {
-				formData: {},
-			};
+		data: {
+			type: Object,
+			required: true,
 		},
-		computed: {
-			username() {
-				return this.$props.data.username;
-			},
-			id() {
-				return this.$props.data.id;
-			},
+		disableDialog: {
+			type: Function,
+			required: true,
 		},
-		methods: {
-			deleteContributor() {
-				axios
-					.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((error) => {
-						console.error(error);
-						this.$root.showSnackBar(err, "error");
-						this.disableDialog(true);
-					});
-			},
+	},
+	data() {
+		return {
+			formData: {},
+		};
+	},
+	computed: {
+		username() {
+			return this.$props.data.username;
 		},
-	};
+		id() {
+			return this.$props.data.id;
+		},
+	},
+	methods: {
+		deleteContributor() {
+			axios
+				.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(err, "error");
+					this.disableDialog(true);
+				});
+		},
+	},
+};
 </script>

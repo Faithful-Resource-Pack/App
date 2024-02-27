@@ -20,9 +20,7 @@
 					</v-list-item-content>
 				</v-list-item>
 
-				<!--
-        ================ GENERAL SETTINGS ================
-        -->
+				<!-- ================ GENERAL SETTINGS ================ -->
 				<v-list-item>
 					<v-row
 						:style="{
@@ -101,9 +99,7 @@
 
 				<br />
 
-				<!--
-        ================ SOCIAL SETTINGS ================
-        -->
+				<!-- ================ SOCIAL SETTINGS ================ -->
 				<v-list-item>
 					<v-row class="mb-2"
 						><v-col>
@@ -226,132 +222,131 @@
 </template>
 
 <script>
-	/* global axios */
+import axios from "axios";
 
-	export default {
-		name: "profile-page",
+export default {
+	name: "profile-page",
+	data() {
+		return {
+			uuidMaxLength: 36,
+			usernameMaxLength: 24,
+			everythingIsOk: false,
+			newMedia: {
+				type: "",
+				link: "",
+			},
+			media: settings.socials,
+			urlAddRules: [(u) => this.validForm(this.validURL(u) || u === "", "URL must be valid.")],
+			urlRules: [(u) => this.validForm(this.validURL(u), "URL must be valid.")],
+			uuidRules: [
+				(u) =>
+					this.validForm(
+						(u && u.length === this.uuidMaxLength) || !u,
+						"The UUID needs to be 36 characters long.",
+					),
+			],
+			usernameRules: [
+				(u) => this.validForm(!!u, "Username is required."),
+				(u) =>
+					this.validForm(
+						u && typeof u === "string" && u.trim().length > 0,
+						`Username cannot be empty`,
+					),
+				(u) =>
+					this.validForm(
+						u && u.length <= this.usernameMaxLength,
+						`Username must be less than ${this.usernameMaxLength} characters.`,
+					),
+			],
+			localUser: {},
+		};
+	},
+	methods: {
+		isMediaOk() {
+			if (this.newMedia.type !== "" && this.newMedia.link !== "") return false;
+			return true;
+		},
+		validURL(str) {
+			const pattern = new RegExp(
+				"^(https?:\\/\\/)?" + // protocol
+					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
+					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+					"(\\#[-a-z\\d_]*)?$",
+				"i",
+			); // fragment locator
+			return !!pattern.test(str);
+		},
+		removeSocialMedia(index) {
+			this.localUser.media.splice(index, 1);
+		},
+		addSocialMedia() {
+			if (!this.localUser.media) this.localUser.media = [];
 
-		data() {
-			return {
-				uuidMaxLength: 36,
-				usernameMaxLength: 24,
-				everythingIsOk: false,
-				newMedia: {
-					type: "",
-					link: "",
-				},
-				media: settings.socials,
-				urlAddRules: [(u) => this.validForm(this.validURL(u) || u === "", "URL must be valid.")],
-				urlRules: [(u) => this.validForm(this.validURL(u), "URL must be valid.")],
-				uuidRules: [
-					(u) =>
-						this.validForm(
-							(u && u.length === this.uuidMaxLength) || !u,
-							"The UUID needs to be 36 characters long.",
-						),
-				],
-				usernameRules: [
-					(u) => this.validForm(!!u, "Username is required."),
-					(u) =>
-						this.validForm(
-							u && typeof u === "string" && u.trim().length > 0,
-							`Username cannot be empty`,
-						),
-					(u) =>
-						this.validForm(
-							u && u.length <= this.usernameMaxLength,
-							`Username must be less than ${this.usernameMaxLength} characters.`,
-						),
-				],
-				localUser: {},
+			this.localUser.media.push({
+				type: this.newMedia.type,
+				link: this.newMedia.link,
+			});
+
+			this.newMedia = {
+				type: "",
+				link: "",
 			};
 		},
-		methods: {
-			isMediaOk() {
-				if (this.newMedia.type !== "" && this.newMedia.link !== "") return false;
+		validForm(boolResult, sentence) {
+			if (boolResult) {
+				this.everythingIsOk = true;
 				return true;
-			},
-			validURL(str) {
-				const pattern = new RegExp(
-					"^(https?:\\/\\/)?" + // protocol
-						"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-						"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-						"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
-						"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-						"(\\#[-a-z\\d_]*)?$",
-					"i",
-				); // fragment locator
-				return !!pattern.test(str);
-			},
-			removeSocialMedia(index) {
-				this.localUser.media.splice(index, 1);
-			},
-			addSocialMedia() {
-				if (!this.localUser.media) this.localUser.media = [];
+			}
 
-				this.localUser.media.push({
-					type: this.newMedia.type,
-					link: this.newMedia.link,
+			this.everythingIsOk = false;
+			return sentence.toString();
+		},
+		send() {
+			if (!this.$root.isUserLogged) return;
+
+			// fix if new user
+			const data = {
+				uuid: this.localUser.uuid || "",
+				username: this.localUser.username || "",
+				media: this.localUser.media || [],
+			};
+
+			axios
+				.post(`${this.$root.apiURL}/users/profile/`, data, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(error, "error");
 				});
-
-				this.newMedia = {
-					type: "",
-					link: "",
-				};
-			},
-			validForm(boolResult, sentence) {
-				if (boolResult) {
-					this.everythingIsOk = true;
-					return true;
-				}
-
-				this.everythingIsOk = false;
-				return sentence.toString();
-			},
-			send() {
-				if (!this.$root.isUserLogged) return;
-
-				// fix if new user
-				const data = {
-					uuid: this.localUser.uuid || "",
-					username: this.localUser.username || "",
-					media: this.localUser.media || [],
-				};
-
-				axios
-					.post(`${this.$root.apiURL}/users/profile/`, data, this.$root.apiOptions)
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					})
-					.catch((error) => {
-						console.error(error);
-						this.$root.showSnackBar(error, "error");
-					});
-			},
-			getUserInfo() {
-				if (!this.$root.isUserLogged) return;
-
-				axios
-					.get(`${this.$root.apiURL}/users/profile/`, this.$root.apiOptions)
-					.then((res) => {
-						this.localUser = res.data;
-
-						// fix if new user or empty user
-						this.localUser.uuid = this.localUser.uuid || "";
-						this.localUser.username = this.localUser.username || "";
-						this.localUser.media = this.localUser.media || [];
-					})
-					.catch((err) => {
-						console.error(err);
-						this.$root.showSnackBar(err, "error");
-					});
-			},
-			update() {
-				this.getUserInfo();
-			},
 		},
-		mounted() {
-			this.$root.addAccessTokenListener(this.update);
+		getUserInfo() {
+			if (!this.$root.isUserLogged) return;
+
+			axios
+				.get(`${this.$root.apiURL}/users/profile/`, this.$root.apiOptions)
+				.then((res) => {
+					this.localUser = res.data;
+
+					// fix if new user or empty user
+					this.localUser.uuid = this.localUser.uuid || "";
+					this.localUser.username = this.localUser.username || "";
+					this.localUser.media = this.localUser.media || [];
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
 		},
-	};
+		update() {
+			this.getUserInfo();
+		},
+	},
+	mounted() {
+		this.$root.addAccessTokenListener(this.update);
+	},
+};
 </script>

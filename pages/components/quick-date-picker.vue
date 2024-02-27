@@ -56,109 +56,107 @@
 </template>
 
 <script>
-	/* global Vue, axios */
-	export default {
-		name: "quick-date-picker",
-		props: {
-			months: {
-				required: true,
-			},
-			value: {
-				required: true,
-			},
-			disabled: {
-				type: Boolean,
-				required: false,
-				default: () => false,
-			},
-			flat: {
-				type: Boolean,
-				required: false,
-				default: () => false,
-			},
-			labels: {
-				required: false,
-				default: () => ({ year: "Year", month: "Month", day: "Day" }),
-			},
-			block: {
-				type: Boolean,
-				required: false,
-				default: () => false,
-			},
+export default {
+	name: "quick-date-picker",
+	props: {
+		months: {
+			required: true,
 		},
+		value: {
+			required: true,
+		},
+		disabled: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
+		flat: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
+		labels: {
+			required: false,
+			default: () => ({ year: "Year", month: "Month", day: "Day" }),
+		},
+		block: {
+			type: Boolean,
+			required: false,
+			default: () => false,
+		},
+	},
+	data() {
+		return {
+			date: new Date(new Date(this.value).setHours(0, 0, 0, 0)),
+		};
+	},
+	computed: {
+		style() {
+			return this.block ? "width: 100%" : "width: 290px; max-width: 100%";
+		},
+		day() {
+			return this.date.getDate();
+		},
+		month() {
+			return this.date.getMonth();
+		},
+		year() {
+			return this.date.getFullYear();
+		},
+		date_str() {
+			return this.date.toDateString();
+		},
+		this_year: () => new Date().getFullYear(),
+		days_in_month() {
+			return this.daysInMonth(this.year, this.month + 1);
+		},
+		upper_months() {
+			return this.months.map((name) => name[0].toUpperCase() + name.slice(1));
+		},
+	},
+	methods: {
+		checkAndMaxDate(year, month) {
+			const newDate = new Date(year, month - 1, this.day);
+			if (newDate.getDate() != this.day) {
+				const days_in_new_month = this.daysInMonth(year, month);
+				const new_day = Math.min(this.day, days_in_new_month);
+				const corrected_date = new Date(new Date(year, month - 1, new_day).setHours(0, 0, 0, 0));
+				this.date = corrected_date;
+			}
+		},
+		newDay(i) {
+			this.date.setDate(i);
+			this.date = new Date(this.date);
+		},
+		newMonth(m) {
+			this.checkAndMaxDate(this.year, m);
+			this.date.setMonth(m - 1);
+			this.date = new Date(this.date);
+		},
+		newYear(e) {
+			let parsed = Number.parseInt(e);
+			let new_year = this.year;
+			if (!Number.isNaN(parsed)) new_year = parsed;
 
-		data() {
-			return {
-				date: new Date(new Date(this.value).setHours(0, 0, 0, 0)),
-			};
+			this.checkAndMaxDate(new_year, this.month + 1);
+			this.date.setFullYear(new_year);
+			this.date = new Date(this.date);
 		},
-		computed: {
-			style() {
-				return this.block ? "width: 100%" : "width: 290px; max-width: 100%";
-			},
-			day() {
-				return this.date.getDate();
-			},
-			month() {
-				return this.date.getMonth();
-			},
-			year() {
-				return this.date.getFullYear();
-			},
-			date_str() {
-				return this.date.toDateString();
-			},
-			this_year: () => new Date().getFullYear(),
-			days_in_month() {
-				return this.daysInMonth(this.year, this.month + 1);
-			},
-			upper_months() {
-				return this.months.map((name) => name[0].toUpperCase() + name.slice(1));
-			},
+		daysInMonth(year, month_i) {
+			return new Date(year, month_i, 0).getDate();
 		},
-		methods: {
-			checkAndMaxDate(year, month) {
-				const newDate = new Date(year, month - 1, this.day);
-				if (newDate.getDate() != this.day) {
-					const days_in_new_month = this.daysInMonth(year, month);
-					const new_day = Math.min(this.day, days_in_new_month);
-					const corrected_date = new Date(new Date(year, month - 1, new_day).setHours(0, 0, 0, 0));
-					this.date = corrected_date;
-				}
+	},
+	watch: {
+		value: {
+			handler(n, o) {
+				if (new Date(n).getTime() !== new Date(o).getTime()) this.date = new Date(n);
 			},
-			newDay(i) {
-				this.date.setDate(i);
-				this.date = new Date(this.date);
-			},
-			newMonth(m) {
-				this.checkAndMaxDate(this.year, m);
-				this.date.setMonth(m - 1);
-				this.date = new Date(this.date);
-			},
-			newYear(e) {
-				let parsed = Number.parseInt(e);
-				let new_year = this.year;
-				if (!Number.isNaN(parsed)) new_year = parsed;
-
-				this.checkAndMaxDate(new_year, this.month + 1);
-				this.date.setFullYear(new_year);
-				this.date = new Date(this.date);
-			},
-			daysInMonth(year, month_i) {
-				return new Date(year, month_i, 0).getDate();
-			},
+			immediate: true,
+			deep: true,
 		},
-		watch: {
-			value: {
-				handler(n, o) {
-					if (new Date(n).getTime() !== new Date(o).getTime()) this.date = new Date(n);
-				},
-				immediate: true,
-				deep: true,
-			},
-			date() {
-				this.$emit("input", this.date.getTime());
-			},
+		date() {
+			this.$emit("input", this.date.getTime());
 		},
-	};
+	},
+};
 </script>

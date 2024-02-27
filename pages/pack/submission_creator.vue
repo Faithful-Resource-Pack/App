@@ -117,142 +117,144 @@
 </template>
 
 <script>
-	export default {
-		name: "submission-creator",
+import Vue from "vue";
+import axios from "axios";
 
-		props: {
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
-			},
-			dialog: {
-				type: Boolean,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			data: {
-				type: Object,
-				required: false,
-			},
-			add: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
-			first: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
+export default {
+	name: "submission-creator",
+	props: {
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
 		},
-		data() {
-			return {
-				formValid: false,
-				formData: {
-					id: null,
-					reference: null,
-					council_enabled: null,
-					channels: {
-						submit: null,
-						council: null,
-						results: null,
-					},
-					time_to_council: null,
-					time_to_results: null,
-					contributor_role: null,
+		dialog: {
+			type: Boolean,
+			required: true,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		data: {
+			type: Object,
+			required: false,
+		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		first: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+	},
+	data() {
+		return {
+			formValid: false,
+			formData: {
+				id: null,
+				reference: null,
+				council_enabled: null,
+				channels: {
+					submit: null,
+					council: null,
+					results: null,
 				},
-				packs: [],
-			};
-		},
-		methods: {
-			send() {
-				const data = { ...this.formData };
-
-				if (!data.council_enabled) {
-					// delete properties that may have been shown and hidden at some point
-					delete data.channels.council;
-					delete data.time_to_council;
-				}
-
-				// get rid of empty strings so api can validate properly
-				if (!data.contributor_role) delete data.contributor_role;
-				Object.entries(data.channels).forEach(([k, v]) => {
-					if (!v) data.channels[k] = null;
-				});
-
-				// all pack info is added in one big request on creation so we "beam" it back
-				if (this.first) {
-					this.$emit("submissionFinished", data);
-					return this.disableDialog();
-				}
-
-				const requestPromise = this.add
-					? axios.post(`${this.$root.apiURL}/submissions`, data, this.$root.apiOptions)
-					: axios.put(`${this.$root.apiURL}/submissions/${data.id}`, data, this.$root.apiOptions);
-
-				requestPromise
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((err) => {
-						console.error(err);
-						this.$root.showSnackBar(err, "error");
-					});
+				time_to_council: null,
+				time_to_results: null,
+				contributor_role: null,
 			},
-		},
-		computed: {
-			submissionTitle() {
-				return this.add
-					? this.$root.lang().database.titles.add_submission
-					: this.$root.lang().database.titles.edit_submission;
-			},
-			computePacks() {
-				return this.packs.map((p) => ({ label: p.name, value: p.id }));
-			},
-		},
-		created() {
-			axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
-				this.packs = Object.values(res.data);
+			packs: [],
+		};
+	},
+	methods: {
+		send() {
+			const data = { ...this.formData };
+
+			if (!data.council_enabled) {
+				// delete properties that may have been shown and hidden at some point
+				delete data.channels.council;
+				delete data.time_to_council;
+			}
+
+			// get rid of empty strings so api can validate properly
+			if (!data.contributor_role) delete data.contributor_role;
+			Object.entries(data.channels).forEach(([k, v]) => {
+				if (!v) data.channels[k] = null;
 			});
+
+			// all pack info is added in one big request on creation so we "beam" it back
+			if (this.first) {
+				this.$emit("submissionFinished", data);
+				return this.disableDialog();
+			}
+
+			const requestPromise = this.add
+				? axios.post(`${this.$root.apiURL}/submissions`, data, this.$root.apiOptions)
+				: axios.put(`${this.$root.apiURL}/submissions/${data.id}`, data, this.$root.apiOptions);
+
+			requestPromise
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
 		},
-		watch: {
-			dialog(newValue) {
-				if (newValue === true) {
-					Vue.nextTick(() => {
-						if (!this.first) {
-							for (const [k, v] of Object.entries(this.data)) {
-								if (this.formData[k] === undefined) continue;
-								this.formData[k] = v;
-							}
-						} else {
-							// reset form on init
-							this.formData = {
-								id: null,
-								reference: null,
-								council_enabled: null,
-								channels: {
-									submit: null,
-									council: null,
-									results: null,
-								},
-								time_to_council: null,
-								time_to_results: null,
-								contributor_role: null,
-							};
-							if (this.data.id) this.formData.id = this.data.id;
+	},
+	computed: {
+		submissionTitle() {
+			return this.add
+				? this.$root.lang().database.titles.add_submission
+				: this.$root.lang().database.titles.edit_submission;
+		},
+		computePacks() {
+			return this.packs.map((p) => ({ label: p.name, value: p.id }));
+		},
+	},
+	created() {
+		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
+			this.packs = Object.values(res.data);
+		});
+	},
+	watch: {
+		dialog(newValue) {
+			if (newValue === true) {
+				Vue.nextTick(() => {
+					if (!this.first) {
+						for (const [k, v] of Object.entries(this.data)) {
+							if (this.formData[k] === undefined) continue;
+							this.formData[k] = v;
 						}
-					});
-				} else {
-					// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-					this.disableDialog();
-				}
-				this.$emit("input", newValue);
-			},
+					} else {
+						// reset form on init
+						this.formData = {
+							id: null,
+							reference: null,
+							council_enabled: null,
+							channels: {
+								submit: null,
+								council: null,
+								results: null,
+							},
+							time_to_council: null,
+							time_to_results: null,
+							contributor_role: null,
+						};
+						if (this.data.id) this.formData.id = this.data.id;
+					}
+				});
+			} else {
+				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
+				this.disableDialog();
+			}
+			this.$emit("input", newValue);
 		},
-	};
+	},
+};
 </script>

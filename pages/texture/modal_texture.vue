@@ -122,190 +122,190 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import Vue from "vue";
+import axios from "axios";
 
-	const useModal = () => import("./modal_use.vue");
-	const removeConfirm = () => import("./remove-confirm.vue");
+const useModal = () => import("./modal_use.vue");
+const removeConfirm = () => import("./remove-confirm.vue");
 
-	export default {
-		name: "texture-modal",
-		components: {
-			useModal,
-			removeConfirm,
+export default {
+	name: "texture-modal",
+	components: {
+		useModal,
+		removeConfirm,
+	},
+	props: {
+		value: {
+			type: Boolean,
+			required: true,
 		},
-
-		props: {
-			value: {
-				type: Boolean,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			add: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
-			data: {
-				type: Object,
-				required: true,
-			},
-			tags: {
-				type: Array,
-				required: false,
-				default() {
-					return [];
-				},
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
-			},
-			textColor: {
-				type: String,
-				required: false,
-				default: "",
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: true,
+		},
+		tags: {
+			type: Array,
+			required: false,
+			default() {
+				return [];
 			},
 		},
-		data() {
-			return {
-				modalOpened: false,
-				formData: {
-					name: "",
-					tags: [],
-					id: "",
-					uses: {},
-				},
-				subDialogOpen: false,
-				subDialogData: {},
-				subDialogAdd: false,
-				remove: {
-					confirm: false,
-					data: {},
-				},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+		textColor: {
+			type: String,
+			required: false,
+			default: "",
+		},
+	},
+	data() {
+		return {
+			modalOpened: false,
+			formData: {
+				name: "",
+				tags: [],
+				id: "",
+				uses: {},
+			},
+			subDialogOpen: false,
+			subDialogData: {},
+			subDialogAdd: false,
+			remove: {
+				confirm: false,
+				data: {},
+			},
+		};
+	},
+	computed: {
+		dialogTitle() {
+			return this.add
+				? this.$root.lang().database.titles.add_texture
+				: this.$root.lang().database.titles.change_texture;
+		},
+	},
+	methods: {
+		openSubDialog(data, add) {
+			this.subDialogOpen = true;
+			this.subDialogAdd = add;
+
+			if (add) {
+				let texture_id = String(this.formData.id);
+				let use_ids = Object.keys(this.formData.uses);
+				let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
+				let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
+				let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
+				let next_id = texture_id + next_letter;
+				// Autofill use id
+				this.subDialogData = { id: next_id };
+			} else {
+				this.subDialogData = data;
+			}
+		},
+		disableSubDialog() {
+			this.subDialogOpen = false;
+			this.getUses(this.formData.id);
+			this.$forceUpdate();
+		},
+		closeAndUpdate() {
+			this.remove.confirm = false;
+			this.getUses(this.formData.id);
+			this.$forceUpdate();
+		},
+		sortTags(input) {
+			// remove duplicates/null items and alphabetically sort
+			let arr = [...new Set(input.filter((i) => i))].sort();
+			// shift broader tags to start
+			if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
+			if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
+			if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
+			if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
+			return arr;
+		},
+		send() {
+			if (!this.$root.isUserLogged) return;
+
+			const data = {
+				name: this.formData.name,
+				tags: this.sortTags(this.formData.tags),
 			};
+
+			// modal isn't used for adding anymore but oh well
+			const promise = this.add
+				? axios.post(`${this.$root.apiURL}/textures`, data, this.$root.apiOptions)
+				: axios.put(
+						`${this.$root.apiURL}/textures/${this.formData.id}`,
+						data,
+						this.$root.apiOptions,
+					);
+
+			promise
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
 		},
-		computed: {
-			dialogTitle() {
-				return this.add
-					? this.$root.lang().database.titles.add_texture
-					: this.$root.lang().database.titles.change_texture;
-			},
+		getUses(textureID) {
+			axios
+				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
+				.then((res) => {
+					const temp = res.data;
+					this.formData.uses = {};
+
+					for (let i = 0; i < temp.length; i++) {
+						this.formData.uses[temp[i].id] = temp[i];
+					}
+				})
+				.catch((err) => {
+					console.error(err);
+				});
 		},
-		methods: {
-			openSubDialog(data, add) {
-				this.subDialogOpen = true;
-				this.subDialogAdd = add;
+		askRemoveUse(data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		onCancel() {
+			this.modalOpened = false;
+			this.disableDialog();
+		},
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			if (newValue === true) {
+				Vue.nextTick(() => {
+					if (this.add) this.$refs.form.reset();
 
-				if (add) {
-					let texture_id = String(this.formData.id);
-					let use_ids = Object.keys(this.formData.uses);
-					let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
-					let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
-					let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
-					let next_id = texture_id + next_letter;
-					// Autofill use id
-					this.subDialogData = { id: next_id };
-				} else {
-					this.subDialogData = data;
-				}
-			},
-			disableSubDialog() {
-				this.subDialogOpen = false;
-				this.getUses(this.formData.id);
-				this.$forceUpdate();
-			},
-			closeAndUpdate() {
-				this.remove.confirm = false;
-				this.getUses(this.formData.id);
-				this.$forceUpdate();
-			},
-			sortTags(input) {
-				// remove duplicates/null items and alphabetically sort
-				let arr = [...new Set(input.filter((i) => i))].sort();
-				// shift broader tags to start
-				if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
-				if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
-				if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
-				if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
-				return arr;
-			},
-			send() {
-				if (!this.$root.isUserLogged) return;
-
-				const data = {
-					name: this.formData.name,
-					tags: this.sortTags(this.formData.tags),
-				};
-
-				// modal isn't used for adding anymore but oh well
-				const promise = this.add
-					? axios.post(`${this.$root.apiURL}/textures`, data, this.$root.apiOptions)
-					: axios.put(
-							`${this.$root.apiURL}/textures/${this.formData.id}`,
-							data,
-							this.$root.apiOptions,
-						);
-
-				promise
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((err) => {
-						console.error(err);
-						this.$root.showSnackBar(err, "error");
-					});
-			},
-			getUses(textureID) {
-				axios
-					.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
-					.then((res) => {
-						const temp = res.data;
-						this.formData.uses = {};
-
-						for (let i = 0; i < temp.length; i++) {
-							this.formData.uses[temp[i].id] = temp[i];
-						}
-					})
-					.catch((err) => {
-						console.error(err);
-					});
-			},
-			askRemoveUse(data) {
-				this.remove.data = data;
-				this.remove.confirm = true;
-			},
-			onCancel() {
-				this.modalOpened = false;
+					if (!this.add) {
+						this.formData.name = this.data.name;
+						this.formData.tags = this.data.tags;
+						this.formData.id = this.data.id;
+						this.getUses(this.data.id);
+					}
+				});
+			} else {
+				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
 				this.disableDialog();
-			},
+			}
+			this.$emit("input", newValue);
 		},
-		watch: {
-			value(newValue) {
-				this.modalOpened = newValue;
-			},
-			modalOpened(newValue) {
-				if (newValue === true) {
-					Vue.nextTick(() => {
-						if (this.add) this.$refs.form.reset();
-
-						if (!this.add) {
-							this.formData.name = this.data.name;
-							this.formData.tags = this.data.tags;
-							this.formData.id = this.data.id;
-							this.getUses(this.data.id);
-						}
-					});
-				} else {
-					// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-					this.disableDialog();
-				}
-				this.$emit("input", newValue);
-			},
-		},
-	};
+	},
+};
 </script>

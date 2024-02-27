@@ -49,36 +49,35 @@
 </template>
 
 <script>
-	const DashBoardCard = () => import("./dashcard.vue");
+const DashboardCard = () => import("./dashcard.vue");
 
-	export default {
-		name: "contribution-stats-card",
-		components: {
-			"dashboard-card": DashBoardCard,
+export default {
+	name: "contribution-stats-card",
+	components: {
+		DashboardCard,
+	},
+	props: {
+		admin: {
+			required: true,
+			type: Boolean,
+			default: false,
 		},
-		props: {
-			admin: {
-				required: true,
-				type: Boolean,
-				default: false,
-			},
+	},
+	data() {
+		return {
+			data: undefined,
+		};
+	},
+	computed: {
+		totals() {
+			if (!this.data) return [];
+			return this.data;
 		},
-
-		data() {
-			return {
-				data: undefined,
-			};
+	},
+	methods: {
+		onTotals(data) {
+			this.data = data;
 		},
-		computed: {
-			totals() {
-				if (!this.data) return [];
-				return this.data;
-			},
-		},
-		methods: {
-			onTotals(data) {
-				this.data = data;
-			},
-		},
-	};
+	},
+};
 </script>

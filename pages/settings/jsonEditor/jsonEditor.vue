@@ -20,83 +20,82 @@
 </template>
 
 <script>
-	const jsonObjectEditor = () => import("./jsonObjectEditor.vue");
-	const jsonStringEditor = () => import("./jsonStringEditor.vue");
-	const jsonNumberEditor = () => import("./jsonNumberEditor.vue");
-	const jsonBooleanEditor = () => import("./jsonBooleanEditor.vue");
-	const jsonNullEditor = () => import("./jsonNullEditor.vue");
-	const jsonArrayEditor = () => import("./jsonArrayEditor.vue");
+const jsonObjectEditor = () => import("./jsonObjectEditor.vue");
+const jsonStringEditor = () => import("./jsonStringEditor.vue");
+const jsonNumberEditor = () => import("./jsonNumberEditor.vue");
+const jsonBooleanEditor = () => import("./jsonBooleanEditor.vue");
+const jsonNullEditor = () => import("./jsonNullEditor.vue");
+const jsonArrayEditor = () => import("./jsonArrayEditor.vue");
 
-	function deepEqual(x, y) {
-		if (x === y) {
-			return true;
-		} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
-			if (Object.keys(x).length != Object.keys(y).length) return false;
+function deepEqual(x, y) {
+	if (x === y) {
+		return true;
+	} else if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
+		if (Object.keys(x).length != Object.keys(y).length) return false;
 
-			for (var prop in x) {
-				if (y.hasOwnProperty(prop)) {
-					if (!deepEqual(x[prop], y[prop])) return false;
-				} else return false;
-			}
+		for (var prop in x) {
+			if (y.hasOwnProperty(prop)) {
+				if (!deepEqual(x[prop], y[prop])) return false;
+			} else return false;
+		}
 
-			return true;
-		} else return false;
-	}
+		return true;
+	} else return false;
+}
 
-	export default {
-		name: "json-editor",
-		components: {
-			jsonObjectEditor,
-			jsonStringEditor,
-			jsonNumberEditor,
-			jsonBooleanEditor,
-			jsonNullEditor,
-			jsonArrayEditor,
+export default {
+	name: "json-editor",
+	components: {
+		jsonObjectEditor,
+		jsonStringEditor,
+		jsonNumberEditor,
+		jsonBooleanEditor,
+		jsonNullEditor,
+		jsonArrayEditor,
+	},
+	props: {
+		value: {
+			required: true,
 		},
-
-		props: {
-			value: {
-				required: true,
-			},
-			root: {
-				required: false,
-				type: Boolean,
-				default: false,
-			},
-			parent: {
-				required: false,
-				default: undefined,
-			},
+		root: {
+			required: false,
+			type: Boolean,
+			default: false,
 		},
-		data() {
-			return {
-				newValue: {},
-			};
+		parent: {
+			required: false,
+			default: undefined,
 		},
-		computed: {
-			type() {
-				const obj = this.newValue;
-				return obj === null ? "null" : Array.isArray(obj) ? "array" : typeof obj;
-			},
+	},
+	data() {
+		return {
+			newValue: {},
+		};
+	},
+	computed: {
+		type() {
+			const obj = this.newValue;
+			return obj === null ? "null" : Array.isArray(obj) ? "array" : typeof obj;
 		},
-		watch: {
-			newValue: {
-				handler(n, o) {
-					if (deepEqual(n, o)) return;
-					console.info(this.newValue);
-					this.$forceUpdate();
-					this.$emit("input", n);
-				},
-				deep: true,
+	},
+	watch: {
+		newValue: {
+			handler(n, o) {
+				if (deepEqual(n, o)) return;
+				console.info(this.newValue);
+				this.$forceUpdate();
+				this.$emit("input", n);
 			},
-			value: {
-				handler(n, o) {
-					if (deepEqual(n, o)) return;
-					this.newValue = n;
-				},
-				deep: true,
-				immediate: true,
-			},
+			deep: true,
 		},
-	};
+		value: {
+			handler(n, o) {
+				if (deepEqual(n, o)) return;
+				this.newValue = n;
+			},
+			deep: true,
+			immediate: true,
+		},
+	},
+};
 </script>

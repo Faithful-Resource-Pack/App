@@ -14,7 +14,7 @@
 			type="submissions"
 			:confirm="remove.confirm"
 			:disableDialog="
-				function () {
+				() => {
 					remove.confirm = false;
 					getSubmission(data.id);
 				}
@@ -143,211 +143,211 @@
 </template>
 
 <script>
-	const submissionCreator = () => import("./submission_creator.vue");
-	const packRemoveConfirm = () => import("./pack_remove_confirm.vue");
+import Vue from "vue";
+import axios from "axios";
 
-	export default {
-		name: "pack-creator",
-		components: {
-			submissionCreator,
-			packRemoveConfirm,
+const submissionCreator = () => import("./submission_creator.vue");
+const packRemoveConfirm = () => import("./pack_remove_confirm.vue");
+
+export default {
+	name: "pack-creator",
+	components: {
+		submissionCreator,
+		packRemoveConfirm,
+	},
+	props: {
+		dialog: {
+			type: Boolean,
+			required: true,
 		},
-
-		props: {
-			dialog: {
-				type: Boolean,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
-			},
-			add: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
-			data: {
-				type: Object,
-				required: false,
-			},
-			tags: {
-				type: Array,
-				required: true,
-			},
+		disableDialog: {
+			type: Function,
+			required: true,
 		},
-		data() {
-			return {
-				modalOpened: false,
-				formData: {
-					id: null,
-					name: null,
-					tags: [],
-					logo: null,
-					resolution: null,
-					github: {},
-					submission: {},
-				},
-				editions: [],
-				downloadLinkRules: [
-					(u) => this.validURL(u) || this.$root.lang().database.labels.invalid_url,
-				],
-				submissionOpen: false,
-				submissionData: {},
-				submissionAdd: false,
-				remove: {
-					id: "",
-					label: "",
-					confirm: false,
-				},
-			};
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
 		},
-		methods: {
-			submissionModal(data, add) {
-				this.submissionOpen = true;
-				this.submissionAdd = add;
-				if (add)
-					this.submissionData = {
-						id: data.id,
-					};
-				else this.submissionData = data.submission;
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: false,
+		},
+		tags: {
+			type: Array,
+			required: true,
+		},
+	},
+	data() {
+		return {
+			modalOpened: false,
+			formData: {
+				id: null,
+				name: null,
+				tags: [],
+				logo: null,
+				resolution: null,
+				github: {},
+				submission: {},
 			},
-			disableSubmission() {
-				this.submissionOpen = false;
-				// clear form
-				this.submissionData = {};
-				if (!this.add) this.getSubmission(this.formData.id);
-				this.$forceUpdate();
+			editions: [],
+			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().database.labels.invalid_url],
+			submissionOpen: false,
+			submissionData: {},
+			submissionAdd: false,
+			remove: {
+				id: "",
+				label: "",
+				confirm: false,
 			},
-			getSubmission(packID) {
-				axios
-					.get(`${this.$root.apiURL}/submissions/${packID}`)
-					// set to empty object if no submission exists
-					.catch(() => ({ data: {} }))
-					.then((res) => {
-						this.formData.submission = res.data;
-					});
-			},
-			deleteSubmission() {
-				if (this.add) {
-					// reset directly, no need for confirmation modal
-					this.formData.submission = {};
-					return;
-				}
-
-				this.remove.id = this.data.id;
-				this.remove.label = this.remove.name = this.$root
-					.lang()
-					.database.labels.ask_submission_deletion.replace("%s", this.data.name)
-					.replace("%d", this.data.id);
-				this.remove.confirm = true;
-			},
-			validURL(str) {
-				const pattern = new RegExp(
-					"^(https?:\\/\\/)?" + // protocol
-						"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-						"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-						"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
-						"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-						"(\\#[-a-z\\d_]*)?$",
-					"i",
-				); // fragment locator
-				return pattern.test(str);
-			},
-			addSubmissionData(data) {
-				if (!this.submissionAdd) return;
-				this.formData.submission = data || {};
-			},
-			send() {
-				const data = { ...this.formData };
-
-				// if user doesn't specify id on pack creation (falsy), the API will assume it
-				if (this.add) {
-					if (!data.submission.id) delete data.submission.id;
-					if (!data.id) delete data.id;
-				}
-
-				// stop accidental casting
-				if (!data.logo) data.logo = null;
-
-				Object.entries(data.github).forEach(([k, v]) => {
-					if (!v.repo || !v.org) delete data.github[k];
-				});
-
-				if (!Object.keys(data.github).length)
-					return this.$root.showSnackBar(
-						"At least one GitHub repository needs to be present.",
-						"error",
-					);
-
-				// only add submission property if filled out
-				if (
-					!this.submissionAdd || // if changing submission, already done separately
-					!data.submission ||
-					!Object.keys(data.submission ?? {}).length
-				)
-					delete data.submission;
-
-				const requestPromise =
-					this.submissionAdd || this.add
-						? axios.post(`${this.$root.apiURL}/packs`, data, this.$root.apiOptions)
-						: axios.put(`${this.$root.apiURL}/packs/${data.id}`, data, this.$root.apiOptions);
-
-				requestPromise
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((err) => {
-						console.error(err);
-						this.$root.showSnackBar(err, "error");
-					});
-			},
-			createNewGithub(edition) {
-				this.formData.github[edition] = {
-					org: null,
-					repo: null,
+		};
+	},
+	methods: {
+		submissionModal(data, add) {
+			this.submissionOpen = true;
+			this.submissionAdd = add;
+			if (add)
+				this.submissionData = {
+					id: data.id,
 				};
-				return this.formData.github[edition];
-			},
+			else this.submissionData = data.submission;
 		},
-		created() {
-			axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
-				this.editions = res.data;
-			});
+		disableSubmission() {
+			this.submissionOpen = false;
+			// clear form
+			this.submissionData = {};
+			if (!this.add) this.getSubmission(this.formData.id);
+			this.$forceUpdate();
 		},
-		computed: {
-			dialogTitle() {
-				return this.add
-					? this.$root.lang().database.titles.add_pack
-					: this.$root.lang().database.titles.change_pack;
-			},
+		getSubmission(packID) {
+			axios
+				.get(`${this.$root.apiURL}/submissions/${packID}`)
+				// set to empty object if no submission exists
+				.catch(() => ({ data: {} }))
+				.then((res) => {
+					this.formData.submission = res.data;
+				});
 		},
-		watch: {
-			dialog(newValue) {
-				if (newValue === true) {
-					Vue.nextTick(() => {
-						if (this.add) this.$refs.form.reset();
+		deleteSubmission() {
+			if (this.add) {
+				// reset directly, no need for confirmation modal
+				this.formData.submission = {};
+				return;
+			}
 
-						if (!this.add) {
-							for (const [k, v] of Object.entries(this.data)) {
-								if (this.formData[k] === undefined) continue;
-								this.formData[k] = v;
-							}
-							this.getSubmission(this.data.id);
-						}
-					});
-				} else {
-					// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-					this.disableDialog();
-				}
-				this.$emit("input", newValue);
-			},
+			this.remove.id = this.data.id;
+			this.remove.label = this.remove.name = this.$root
+				.lang()
+				.database.labels.ask_submission_deletion.replace("%s", this.data.name)
+				.replace("%d", this.data.id);
+			this.remove.confirm = true;
 		},
-	};
+		validURL(str) {
+			const pattern = new RegExp(
+				"^(https?:\\/\\/)?" + // protocol
+					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
+					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+					"(\\#[-a-z\\d_]*)?$",
+				"i",
+			); // fragment locator
+			return pattern.test(str);
+		},
+		addSubmissionData(data) {
+			if (!this.submissionAdd) return;
+			this.formData.submission = data || {};
+		},
+		send() {
+			const data = { ...this.formData };
+
+			// if user doesn't specify id on pack creation (falsy), the API will assume it
+			if (this.add) {
+				if (!data.submission.id) delete data.submission.id;
+				if (!data.id) delete data.id;
+			}
+
+			// stop accidental casting
+			if (!data.logo) data.logo = null;
+
+			Object.entries(data.github).forEach(([k, v]) => {
+				if (!v.repo || !v.org) delete data.github[k];
+			});
+
+			if (!Object.keys(data.github).length)
+				return this.$root.showSnackBar(
+					"At least one GitHub repository needs to be present.",
+					"error",
+				);
+
+			// only add submission property if filled out
+			if (
+				!this.submissionAdd || // if changing submission, already done separately
+				!data.submission ||
+				!Object.keys(data.submission ?? {}).length
+			)
+				delete data.submission;
+
+			const requestPromise =
+				this.submissionAdd || this.add
+					? axios.post(`${this.$root.apiURL}/packs`, data, this.$root.apiOptions)
+					: axios.put(`${this.$root.apiURL}/packs/${data.id}`, data, this.$root.apiOptions);
+
+			requestPromise
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
+		createNewGithub(edition) {
+			this.formData.github[edition] = {
+				org: null,
+				repo: null,
+			};
+			return this.formData.github[edition];
+		},
+	},
+	created() {
+		axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
+			this.editions = res.data;
+		});
+	},
+	computed: {
+		dialogTitle() {
+			return this.add
+				? this.$root.lang().database.titles.add_pack
+				: this.$root.lang().database.titles.change_pack;
+		},
+	},
+	watch: {
+		dialog(newValue) {
+			if (newValue === true) {
+				Vue.nextTick(() => {
+					if (this.add) this.$refs.form.reset();
+
+					if (!this.add) {
+						for (const [k, v] of Object.entries(this.data)) {
+							if (this.formData[k] === undefined) continue;
+							this.formData[k] = v;
+						}
+						this.getSubmission(this.data.id);
+					}
+				});
+			} else {
+				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
+				this.disableDialog();
+			}
+			this.$emit("input", newValue);
+		},
+	},
+};
 </script>

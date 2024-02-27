@@ -2,6 +2,7 @@
 	"exclude": ["node_modules"],
 	"compilerOptions": {
 		"resolveJsonModule": true,
-		"baseUrl": "."
+		"baseUrl": ".",
+		"strict": true,
 	}
 }

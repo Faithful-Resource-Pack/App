@@ -20,6 +20,11 @@ export default defineConfig(({ mode }) => {
 		build: {
 			target: "esnext",
 		},
+		resolve: {
+			alias: {
+				vue: "vue/dist/vue.esm.js",
+			},
+		},
 		define: {
 			apiURL: JSON.stringify(env.API_URL),
 			DEV: JSON.stringify(env.DEV),

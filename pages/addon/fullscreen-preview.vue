@@ -7,31 +7,30 @@
 </template>
 
 <script>
-	export default {
-		name: "fullscreen-preview",
-
-		props: {
-			aspectRatio: {
-				required: false,
-				type: Number,
-				default: () => 16 / 9,
-			},
-			src: {
-				required: true,
-			},
+export default {
+	name: "fullscreen-preview",
+	props: {
+		aspectRatio: {
+			required: false,
+			type: Number,
+			default: () => 16 / 9,
 		},
-		data() {
-			return {
-				fullscreen: false,
-			};
+		src: {
+			required: true,
 		},
-		methods: {
-			close() {
-				this.fullscreen = false;
-			},
-			open() {
-				this.fullscreen = true;
-			},
+	},
+	data() {
+		return {
+			fullscreen: false,
+		};
+	},
+	methods: {
+		close() {
+			this.fullscreen = false;
 		},
-	};
+		open() {
+			this.fullscreen = true;
+		},
+	},
+};
 </script>

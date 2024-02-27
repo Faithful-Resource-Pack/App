@@ -38,17 +38,17 @@
 </template>
 
 <script>
-	const DashBoardCard = () => import("./dashcard.vue");
+const DashboardCard = () => import("./dashcard.vue");
 
-	export default {
-		name: "faithful-card",
-		components: {
-			"dashboard-card": DashBoardCard,
+export default {
+	name: "faithful-card",
+	components: {
+		DashboardCard,
+	},
+	props: {
+		show: {
+			required: true,
 		},
-		props: {
-			show: {
-				required: true,
-			},
-		},
-	};
+	},
+};
 </script>

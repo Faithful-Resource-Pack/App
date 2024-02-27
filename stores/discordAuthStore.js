@@ -1,4 +1,6 @@
-const discordAuthStore = Pinia.defineStore("discordAuth", {
+import { defineStore } from "pinia";
+
+export const discordAuthStore = defineStore("discordAuth", {
 	state: () => ({
 		apiURL: undefined,
 		access_token: undefined,
@@ -7,14 +9,13 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 	}),
 
 	getters: {
-		discordAuthURL: function () {
+		discordAuthURL() {
 			return `${this.$state.apiURL}/auth/discord/webapp`;
 		},
-		discordRefreshURL: function () {
+		discordRefreshURL() {
 			return `${this.$state.apiURL}/auth/discord/refresh`;
 		},
 	},
-
 	actions: {
 		verifySearchParams(search) {
 			const urlSearchParams = new URLSearchParams(search);
@@ -81,7 +82,6 @@ const discordAuthStore = Pinia.defineStore("discordAuth", {
 				access_token: this.$state.access_token,
 			});
 		},
-
 		begin(search, storedAuth) {
 			const res = this.verifySearchParams(search);
 			let has_auth_query_params = res[0];

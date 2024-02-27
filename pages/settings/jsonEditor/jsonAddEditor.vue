@@ -13,25 +13,24 @@
 </template>
 
 <script>
-	export default {
-		name: "json-add-editor",
-
-		data() {
-			return {
-				types: {
-					string: "",
-					number: 0,
-					boolean: true,
-					array: [],
-					object: {},
-					null: null,
-				},
-			};
-		},
-		methods: {
-			send(obj) {
-				this.$emit("clicked", obj);
+export default {
+	name: "json-add-editor",
+	data() {
+		return {
+			types: {
+				string: "",
+				number: 0,
+				boolean: true,
+				array: [],
+				object: {},
+				null: null,
 			},
+		};
+	},
+	methods: {
+		send(obj) {
+			this.$emit("clicked", obj);
 		},
-	};
+	},
+};
 </script>

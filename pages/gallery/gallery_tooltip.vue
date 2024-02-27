@@ -13,9 +13,9 @@
 						Modded texture
 					</li>
 					<li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
-					<li v-else-if="last_contribution !== undefined">
-						<p><i :class="icon"></i> {{ last_contribution_names }}</p>
-						<p><i class="icon-time"></i> {{ timestampToDate(last_contribution.date) }}</p>
+					<li v-else-if="lastContribution !== undefined">
+						<p><i :class="icon"></i> {{ lastContributionNames }}</p>
+						<p><i class="icon-time"></i> {{ timestampToDate(lastContribution.date) }}</p>
 					</li>
 					<li v-else>
 						{{ $root.lang("gallery.error_message.contribution_not_found") }}
@@ -32,76 +32,74 @@
 </template>
 
 <script>
-	const Chain = function (val) {
-		return {
-			value: val,
-			chain(predicate) {
-				if (this.value !== undefined) return Chain(predicate(this.value));
-				return this;
-			},
-		};
-	};
+import moment from "moment";
 
-	export default {
-		name: "texture-tooltip",
-		props: {
-			texture: {
-				type: Object,
-				required: true,
-			},
-			mojang: {
-				type: Boolean,
-				required: true,
-			},
-			contributions: {
-				type: Object,
-				required: true,
-			},
-			pack: {
-				type: String,
-				required: true,
-			},
-			discordIDtoName: {
-				type: Function,
-				required: true,
-			},
-		},
-
-		computed: {
-			last_contribution() {
-				let contribs = Chain(this.contributions)
-					.chain((contribs) => contribs[this.pack])
-					.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
-
-				// get best timestamp contrib
-				return contribs
-					? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
-					: undefined;
-			},
-			last_contribution_names() {
-				if (this.last_contribution === undefined) return "";
-				return this.last_contribution.contributors
-					.map((d) => {
-						return this.discordIDtoName(d).replace(/\s/gm, "\u00A0");
-					})
-					.join(", ");
-			},
-			icon() {
-				return "icon-people" + (this.last_contribution.contributors.length === 1 ? "" : "s");
-			},
-			modded() {
-				let something_with_path = this.texture.url;
-				return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].reduce(
-					(acc, cur) => acc || something_with_path.includes(cur),
-					false,
-				);
-			},
-		},
-		methods: {
-			timestampToDate(t) {
-				const a = new Date(t);
-				return moment(a).format("ll");
-			},
+const Chain = function (val) {
+	return {
+		value: val,
+		chain(predicate) {
+			if (this.value !== undefined) return Chain(predicate(this.value));
+			return this;
 		},
 	};
+};
+
+export default {
+	name: "texture-tooltip",
+	props: {
+		texture: {
+			type: Object,
+			required: true,
+		},
+		mojang: {
+			type: Boolean,
+			required: true,
+		},
+		contributions: {
+			type: Object,
+			required: true,
+		},
+		pack: {
+			type: String,
+			required: true,
+		},
+		discordIDtoName: {
+			type: Function,
+			required: true,
+		},
+	},
+	computed: {
+		lastContribution() {
+			const contribs = Chain(this.contributions)
+				.chain((contribs) => contribs[this.pack])
+				.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
+
+			// get best timestamp contrib
+			return contribs
+				? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
+				: undefined;
+		},
+		lastContributionNames() {
+			if (this.lastContribution === undefined) return "";
+			return this.lastContribution.contributors
+				.map((d) => this.discordIDtoName(d).replace(/\s/gm, "\u00A0"))
+				.join(", ");
+		},
+		icon() {
+			return "icon-people" + (this.lastContribution.contributors.length === 1 ? "" : "s");
+		},
+		modded() {
+			const somethingWithPath = this.texture.url;
+
+			return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].some((path) =>
+				somethingWithPath.includes(path),
+			);
+		},
+	},
+	methods: {
+		timestampToDate(t) {
+			return moment(new Date(t)).format("ll");
+		},
+	},
+};
 </script>

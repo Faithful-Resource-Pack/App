@@ -6,7 +6,6 @@
     "useTabs": true,
     "bracketSpacing": true,
     "arrowParens": "always",
-    "vueIndentScriptAndStyle": true,
     "parser": "typescript",
     "overrides": [{ "files": "*.vue", "options": { "parser": "vue" } }]
 }

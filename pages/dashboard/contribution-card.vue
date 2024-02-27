@@ -46,78 +46,80 @@
 </template>
 
 <script>
-	const DashBoardCard = () => import("./dashcard.vue");
+import axios from "axios";
+import moment from "moment";
 
-	export default {
-		name: "contribution-card",
-		components: {
-			"dashboard-card": DashBoardCard,
-		},
-		props: {
-			admin: {
-				required: true,
-				type: Boolean,
-				default: false,
-			},
-			colors: {
-				required: true,
-				type: Array,
-			},
-			statsListener: {
-				required: true,
-				type: Function,
-			},
-		},
+const DashboardCard = () => import("./dashcard.vue");
 
-		data() {
+export default {
+	name: "contribution-card",
+	components: {
+		DashboardCard,
+	},
+	props: {
+		admin: {
+			required: true,
+			type: Boolean,
+			default: false,
+		},
+		colors: {
+			required: true,
+			type: Array,
+		},
+		statsListener: {
+			required: true,
+			type: Function,
+		},
+	},
+	data() {
+		return {
+			data: undefined,
+		};
+	},
+	computed: {
+		url() {
+			return "/contributions/stats";
+		},
+		totals() {
+			if (!this.data) return [, , ,];
+			return Object.keys(this.data)
+				.filter((e) => e.includes("total"))
+				.map((e) => {
+					return {
+						name: e.replace("total_", ""),
+						value: this.data[e],
+					};
+				});
+		},
+		today() {
+			return new Date();
+		},
+		locale() {
 			return {
-				data: undefined,
+				months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),
+				days: moment.weekdaysShort().map((e) => e[0].toUpperCase() + e.slice(1)),
+				...this.$root.lang().dashboard.locale,
 			};
 		},
-		computed: {
-			url() {
-				return "/contributions/stats";
-			},
-			totals() {
-				if (!this.data) return [, , ,];
-				return Object.keys(this.data)
-					.filter((e) => e.includes("total"))
-					.map((e) => {
-						return {
-							name: e.replace("total_", ""),
-							value: this.data[e],
-						};
-					});
-			},
-			today() {
-				return new Date();
-			},
-			locale() {
-				return {
-					months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),
-					days: moment.weekdaysShort().map((e) => e[0].toUpperCase() + e.slice(1)),
-					...this.$root.lang().dashboard.locale,
-				};
-			},
+	},
+	methods: {
+		get() {
+			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
+				this.data = res.data;
+			});
 		},
-		methods: {
-			get() {
-				axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
-					this.data = res.data;
-				});
-			},
-		},
-		created() {
-			this.get();
-		},
-		watch: {
-			totals(n, o) {
-				if (!o) return; // o is undefined
-				if (!o.length) return; // o is empty
+	},
+	created() {
+		this.get();
+	},
+	watch: {
+		totals(n, o) {
+			if (!o) return; // o is undefined
+			if (!o.length) return; // o is empty
 
-				// run
-				this.statsListener(n);
-			},
+			// run
+			this.statsListener(n);
 		},
-	};
+	},
+};
 </script>

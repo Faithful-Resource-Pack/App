@@ -108,208 +108,206 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import moment from "moment";
 
-	export default {
-		name: "gallery-modal",
-
-		props: {
-			value: {
-				type: Boolean,
-				required: true,
-			},
-			textureID: {
-				required: true,
-			},
-			textureObj: {
-				type: Object,
-				required: true,
-			},
-			contributors: {
-				type: Object,
-				required: true,
-			},
-			// saves on duplicate code, since it's already in the gallery page
-			packToName: {
-				type: Object,
-				required: true,
-			},
-			onClose: {
-				type: Function,
-				default: () => {},
-			},
+export default {
+	name: "gallery-modal",
+	props: {
+		value: {
+			type: Boolean,
+			required: true,
 		},
-		data() {
+		textureID: {
+			required: true,
+		},
+		textureObj: {
+			type: Object,
+			required: true,
+		},
+		contributors: {
+			type: Object,
+			required: true,
+		},
+		// saves on duplicate code, since it's already in the gallery page
+		packToName: {
+			type: Object,
+			required: true,
+		},
+		onClose: {
+			type: Function,
+			default: () => {},
+		},
+	},
+	data() {
+		return {
+			tab: null,
+			items: [
+				this.$root.lang().gallery.modal.items.information,
+				this.$root.lang().gallery.modal.items.authors,
+			],
+			infos: ["texture", "uses", "paths"],
+			authors: ["32x", "64x"],
+			opened: false,
+		};
+	},
+	watch: {
+		value: {
+			handler(n) {
+				this.opened = n;
+			},
+			immediate: true,
+		},
+		opened(n) {
+			this.$emit("input", n);
+		},
+	},
+	methods: {
+		closeModal() {
+			this.onClose();
+			this.opened = false;
+		},
+		discordIDtoName(d) {
+			return this.contributors[d]
+				? this.contributors[d].username
+					? this.contributors[d].username
+					: this.$root.lang().gallery.error_message.user_anonymous
+				: this.$root.lang().gallery.error_message.user_not_found;
+		},
+		timestampToDate(t) {
+			return moment(new Date(t)).format("ll");
+		},
+		getItems(item) {
+			let output = [];
+
+			switch (item) {
+				case this.authors[0]:
+				case this.authors[1]:
+					return this.textureObj.contributions
+						.filter((el) => el.resolution === parseInt(item, 10))
+						.sort((a, b) => b.date - a.date)
+						.map((el) => ({
+							date: this.timestampToDate(el.date),
+							pack: this.packToName[el.pack],
+							contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
+						}));
+				case this.infos[0]:
+					return [
+						{
+							...this.textureObj[item],
+							tags: this.textureObj[item].tags.join(", "),
+						},
+					];
+				case this.infos[1]:
+					return Object.values(this.textureObj[item]);
+
+				case this.infos[2]:
+					this.textureObj[item].forEach((path) => {
+						output.push({
+							...path,
+							versions: path.versions.join(", "),
+						});
+					});
+
+					return output;
+			}
+		},
+		getHeaders(item) {
+			switch (item) {
+				case this.authors[0]:
+				case this.authors[1]:
+					return [
+						{
+							text: this.$root.lang().gallery.modal.tabs.date,
+							value: "date",
+						},
+						{
+							text: this.$root.lang("gallery.modal.tabs.pack"),
+							value: "pack",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.authors,
+							value: "contributors",
+						},
+					];
+				case this.infos[0]:
+					return [
+						{
+							text: this.$root.lang().gallery.modal.tabs.id,
+							value: "id",
+							sortable: false,
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.name,
+							value: "name",
+							sortable: false,
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.tags,
+							value: "tags",
+							sortable: false,
+						},
+					];
+				case this.infos[1]:
+					return [
+						{
+							text: this.$root.lang().gallery.modal.tabs.use_id,
+							value: "id",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.use_name,
+							value: "name",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.editions,
+							value: "edition",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.texture_id,
+							value: "texture",
+						},
+					];
+
+				case this.infos[2]:
+					return [
+						{
+							text: this.$root.lang().gallery.modal.tabs.path_id,
+							value: "id",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.resource_pack_path,
+							value: "name",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.mc_versions,
+							value: "versions",
+						},
+						{
+							text: this.$root.lang().gallery.modal.tabs.use_id,
+							value: "use",
+						},
+					];
+			}
+		},
+	},
+	computed: {
+		infosText() {
 			return {
-				tab: null,
-				items: [
-					this.$root.lang().gallery.modal.items.information,
-					this.$root.lang().gallery.modal.items.authors,
-				],
-				infos: ["texture", "uses", "paths"],
-				authors: ["32x", "64x"],
-				opened: false,
+				texture: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
+				uses: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
+				paths: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
 			};
 		},
-		watch: {
-			value: {
-				handler(n) {
-					this.opened = n;
-				},
-				immediate: true,
-			},
-			opened(n) {
-				this.$emit("input", n);
-			},
+		grouped() {
+			const result = [];
+			if (this.textureObj) {
+				Object.entries(this.textureObj.urls).forEach((urlArr, i) => {
+					if (i % 2 === 0) result.push([]);
+					result[result.length - 1].push(urlArr);
+				});
+			}
+
+			return result;
 		},
-		methods: {
-			closeModal() {
-				this.onClose();
-				this.opened = false;
-			},
-			discordIDtoName(d) {
-				return this.contributors[d]
-					? this.contributors[d].username
-						? this.contributors[d].username
-						: this.$root.lang().gallery.error_message.user_anonymous
-					: this.$root.lang().gallery.error_message.user_not_found;
-			},
-			timestampToDate(t) {
-				const a = new Date(t);
-				return moment(a).format("ll");
-			},
-			getItems(item) {
-				let output = [];
-
-				switch (item) {
-					case this.authors[0]:
-					case this.authors[1]:
-						return this.textureObj.contributions
-							.filter((el) => el.resolution === parseInt(item, 10))
-							.sort((a, b) => b.date - a.date)
-							.map((el) => ({
-								date: this.timestampToDate(el.date),
-								pack: this.packToName[el.pack],
-								contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
-							}));
-					case this.infos[0]:
-						return [
-							{
-								...this.textureObj[item],
-								tags: this.textureObj[item].tags.join(", "),
-							},
-						];
-					case this.infos[1]:
-						return Object.values(this.textureObj[item]);
-
-					case this.infos[2]:
-						this.textureObj[item].forEach((path) => {
-							output.push({
-								...path,
-								versions: path.versions.join(", "),
-							});
-						});
-
-						return output;
-				}
-			},
-			getHeaders(item) {
-				switch (item) {
-					case this.authors[0]:
-					case this.authors[1]:
-						return [
-							{
-								text: this.$root.lang().gallery.modal.tabs.date,
-								value: "date",
-							},
-							{
-								text: this.$root.lang("gallery.modal.tabs.pack"),
-								value: "pack",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.authors,
-								value: "contributors",
-							},
-						];
-					case this.infos[0]:
-						return [
-							{
-								text: this.$root.lang().gallery.modal.tabs.id,
-								value: "id",
-								sortable: false,
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.name,
-								value: "name",
-								sortable: false,
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.tags,
-								value: "tags",
-								sortable: false,
-							},
-						];
-					case this.infos[1]:
-						return [
-							{
-								text: this.$root.lang().gallery.modal.tabs.use_id,
-								value: "id",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.use_name,
-								value: "name",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.editions,
-								value: "edition",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.texture_id,
-								value: "texture",
-							},
-						];
-
-					case this.infos[2]:
-						return [
-							{
-								text: this.$root.lang().gallery.modal.tabs.path_id,
-								value: "id",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.resource_pack_path,
-								value: "name",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.mc_versions,
-								value: "versions",
-							},
-							{
-								text: this.$root.lang().gallery.modal.tabs.use_id,
-								value: "use",
-							},
-						];
-				}
-			},
-		},
-		computed: {
-			infosText() {
-				return {
-					texture: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
-					uses: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
-					paths: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
-				};
-			},
-			grouped() {
-				const result = [];
-				if (this.textureObj) {
-					Object.entries(this.textureObj.urls).forEach((urlArr, i) => {
-						if (i % 2 === 0) result.push([]);
-						result[result.length - 1].push(urlArr);
-					});
-				}
-
-				return result;
-			},
-		},
-	};
+	},
+};
 </script>

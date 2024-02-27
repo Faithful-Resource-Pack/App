@@ -77,102 +77,102 @@
 </template>
 
 <script>
-	/* global axios, Vue */
+import Vue from "vue";
+import axios from "axios";
 
-	export default {
-		name: "user-modal",
-
-		props: {
-			dialog: {
-				type: Boolean,
-				required: true,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			add: {
-				type: Boolean,
-				required: false,
-				default: false,
-			},
-			data: {
-				type: Object,
-				required: false,
-			},
-			roles: {
-				type: Array,
-				required: true,
-			},
-			color: {
-				type: String,
-				required: false,
-				default: "primary",
-			},
+export default {
+	name: "user-modal",
+	props: {
+		dialog: {
+			type: Boolean,
+			required: true,
 		},
-		data() {
-			return {
-				formData: {
-					username: "",
-					roles: [],
-					uuid: "",
-					anonymous: false,
-					id: "",
-				},
-				default: {
-					username: "",
-					roles: [],
-					uuid: "",
-					anonymous: false,
-				},
-			};
+		disableDialog: {
+			type: Function,
+			required: true,
 		},
-		computed: {
-			dialogTitle() {
-				return this.add
-					? this.$root.lang().database.titles.add_user
-					: this.$root.lang().database.titles.change_user;
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
+		data: {
+			type: Object,
+			required: false,
+		},
+		roles: {
+			type: Array,
+			required: true,
+		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+	},
+	data() {
+		return {
+			formData: {
+				username: "",
+				roles: [],
+				uuid: "",
+				anonymous: false,
+				id: "",
 			},
-		},
-		methods: {
-			send() {
-				const data = this.formData;
-				const id = data.id;
-
-				delete data.id; // excess property and therefore is not allowed
-				delete data.media; // excess property and therefore is not allowed
-
-				Object.keys(data).forEach((k) => (data[k] = data[k] === null ? this.default[k] : data[k]));
-
-				axios
-					.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((error) => {
-						console.error(error);
-						this.$root.showSnackBar(err, "error");
-					});
+			default: {
+				username: "",
+				roles: [],
+				uuid: "",
+				anonymous: false,
 			},
+		};
+	},
+	computed: {
+		dialogTitle() {
+			return this.add
+				? this.$root.lang().database.titles.add_user
+				: this.$root.lang().database.titles.change_user;
 		},
-		watch: {
-			dialog() {
-				Vue.nextTick(() => {
-					if (!this.add)
-						Object.keys(this.data).forEach((key) => {
-							this.formData[key] = this.data[key];
-						});
-					else
-						this.formData = {
-							username: "",
-							roles: [],
-							uuid: "",
-							anonymous: false,
-							id: "",
-						};
+	},
+	methods: {
+		send() {
+			const data = this.formData;
+			const id = data.id;
+
+			delete data.id; // excess property and therefore is not allowed
+			delete data.media; // excess property and therefore is not allowed
+
+			Object.keys(data).forEach((k) => (data[k] = data[k] === null ? this.default[k] : data[k]));
+
+			axios
+				.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(err, "error");
 				});
-			},
 		},
-	};
+	},
+	watch: {
+		dialog() {
+			Vue.nextTick(() => {
+				if (!this.add)
+					Object.keys(this.data).forEach((key) => {
+						this.formData[key] = this.data[key];
+					});
+				else
+					this.formData = {
+						username: "",
+						roles: [],
+						uuid: "",
+						anonymous: false,
+						id: "",
+					};
+			});
+		},
+	},
+};
 </script>

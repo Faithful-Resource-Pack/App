@@ -1,4 +1,6 @@
-const appUserStore = Pinia.defineStore("appUser", {
+import { defineStore } from "pinia";
+
+export const appUserStore = defineStore("appUser", {
 	state: () => ({
 		appUserId: undefined,
 		appUserRoles: undefined,
@@ -35,7 +37,6 @@ const appUserStore = Pinia.defineStore("appUser", {
 				}
 			});
 		},
-
 		watchDiscordAuth(store, rootApiURL, onError) {
 			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
 			store.$subscribe((mutation) => {

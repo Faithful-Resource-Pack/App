@@ -73,65 +73,64 @@
 </template>
 
 <script>
-	/* global Vue, axios */
+import axios from "axios";
 
-	export default {
-		name: "user-list",
-		props: {
-			label: {
-				type: String,
-				required: true,
-			},
-			hint: {
-				type: String,
-				required: true,
-			},
-			value: {
-				required: true,
-			},
+export default {
+	name: "user-list",
+	props: {
+		label: {
+			type: String,
+			required: true,
 		},
-
-		data() {
-			return {
-				val: [],
-				users: [],
-			};
+		hint: {
+			type: String,
+			required: true,
 		},
-		methods: {
-			remove(id) {
-				const index = this.val.indexOf(id);
-				if (index >= 0) this.val.splice(index, 1);
-			},
-			getUsersIDs() {
-				axios
-					.get(`${this.$root.apiURL}/users/names`)
-					.then((res) => {
-						this.users = res.data.sort((a, b) => {
-							if (!a.username && !b.username) return 0;
-							if (!a.username && b.username) return 1;
-							if (a.username && !b.username) return -1;
+		value: {
+			required: true,
+		},
+	},
+	data() {
+		return {
+			val: [],
+			users: [],
+		};
+	},
+	methods: {
+		remove(id) {
+			const index = this.val.indexOf(id);
+			if (index >= 0) this.val.splice(index, 1);
+		},
+		getUsersIDs() {
+			axios
+				.get(`${this.$root.apiURL}/users/names`)
+				.then((res) => {
+					this.users = res.data.sort((a, b) => {
+						if (!a.username && !b.username) return 0;
+						if (!a.username && b.username) return 1;
+						if (a.username && !b.username) return -1;
 
-							return a.username > b.username ? 1 : b.username > a.username ? -1 : 0;
-						});
-					})
-					.catch((err) => {
-						console.trace(err);
+						return a.username > b.username ? 1 : b.username > a.username ? -1 : 0;
 					});
-			},
+				})
+				.catch((err) => {
+					console.trace(err);
+				});
 		},
-		watch: {
-			val(n) {
-				this.$emit("input", n);
-			},
-			value: {
-				handler(n) {
-					this.val = n;
-				},
-				immediate: true,
-			},
+	},
+	watch: {
+		val(n) {
+			this.$emit("input", n);
 		},
-		mounted() {
-			this.getUsersIDs();
+		value: {
+			handler(n) {
+				this.val = n;
+			},
+			immediate: true,
 		},
-	};
+	},
+	mounted() {
+		this.getUsersIDs();
+	},
+};
 </script>

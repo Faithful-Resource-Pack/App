@@ -23,47 +23,46 @@
 </template>
 
 <script>
-	/* global axios */
+import axios from "axios";
 
-	export default {
-		name: "pack-remove-confirm",
-
-		props: {
-			confirm: {
-				type: Boolean,
-				required: true,
-			},
-			id: {
-				type: String,
-				required: true,
-			},
-			label: {
-				type: String,
-				required: false,
-			},
-			disableDialog: {
-				type: Function,
-				required: true,
-			},
-			type: {
-				type: String,
-				required: true,
-			},
+export default {
+	name: "pack-remove-confirm",
+	props: {
+		confirm: {
+			type: Boolean,
+			required: true,
 		},
-		methods: {
-			deletePack() {
-				axios
-					.delete(`${this.$root.apiURL}/${this.type}/${this.id}`, this.$root.apiOptions)
-					.then(() => {
-						this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-						this.disableDialog(true);
-					})
-					.catch((error) => {
-						console.error(error);
-						this.$root.showSnackBar(err, "error");
-						this.disableDialog(true);
-					});
-			},
+		id: {
+			type: String,
+			required: true,
 		},
-	};
+		label: {
+			type: String,
+			required: false,
+		},
+		disableDialog: {
+			type: Function,
+			required: true,
+		},
+		type: {
+			type: String,
+			required: true,
+		},
+	},
+	methods: {
+		deletePack() {
+			axios
+				.delete(`${this.$root.apiURL}/${this.type}/${this.id}`, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.disableDialog(true);
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(err, "error");
+					this.disableDialog(true);
+				});
+		},
+	},
+};
 </script>
