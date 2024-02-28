@@ -162,7 +162,7 @@ export default {
 			const data = {
 				name: this.subPathFormData.name || "", // texture relative path
 				use: this.subPathFormData.use || "", // Use ID
-				mcmeta: this.subPathFormData.mcmeta, // is animated
+				mcmeta: this.subPathFormData.mcmeta || false, // is animated
 				versions: this.subPathFormData.versions.sort(this.MinecraftSorter), // ordered minecraft versions
 			};
 
