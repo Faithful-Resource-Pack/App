@@ -80,7 +80,7 @@
 								class="mt-3"
 								v-else
 							>
-								<DropZone
+								<drop-zone
 									:disabled="disabledHeaderInput"
 									v-model="submittedForm.headerFile"
 									accept="image/jpg, image/jpeg, image/png, image/gif"
@@ -93,7 +93,7 @@
 											{{ $root.lang().addons.images.header.labels.drop }}</span
 										>
 									</template>
-								</DropZone>
+								</drop-zone>
 							</v-responsive>
 						</div>
 					</div>
@@ -105,7 +105,7 @@
 
 				<!-- upload field for images -->
 				<div class="py-5">
-					<DropZone
+					<drop-zone
 						multiple
 						v-model="submittedForm.carouselFiles"
 						accept="image/jpg, image/jpeg, image/png, image/gif"
@@ -118,9 +118,9 @@
 								{{ $root.lang().addons.images.carousel.labels.drop }}</span
 							>
 						</template>
-					</DropZone>
+					</drop-zone>
 				</div>
-				<ImagePreviewer
+				<image-previewer
 					:sources="carouselSources"
 					:ids="screenIds"
 					@item-delete="onDeleteCarousel"

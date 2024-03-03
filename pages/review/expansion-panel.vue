@@ -122,7 +122,7 @@
 
 					<template v-if="addonSources.length > 0">
 						<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercased my-2" />
-						<ImagePreviewer :sources="addonSources" :deletable="false" />
+						<image-previewer :sources="addonSources" :deletable="false" />
 					</template>
 
 					<v-list-item-title

@@ -7,7 +7,7 @@
 
 		<deny-popup :reasonPopup="showDenyPopup" :closePopup="closeDenyPopup" />
 
-		<ReviewCategories
+		<review-categories
 			:categories="categories"
 			v-model="status"
 			:activeColor="pageColor"
