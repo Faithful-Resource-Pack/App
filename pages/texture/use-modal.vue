@@ -29,7 +29,6 @@
 						required
 						persistent-hint
 						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
-						required
 						v-model="subFormData.id"
 						:label="$root.lang().database.labels.use_id"
 					></v-text-field>
@@ -47,7 +46,6 @@
 						required
 						:color="color"
 						:item-color="color"
-						required
 						v-model="subFormData.edition"
 						:items="editions"
 						:label="$root.lang().database.labels.use_edition"

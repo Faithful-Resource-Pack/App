@@ -131,7 +131,7 @@
 						:cols="12 / listColumns"
 						xs="1"
 						class="py-0"
-						v-for="(textures_arr, index) in splittedResults"
+						v-for="(textures_arr, index) in splitResults"
 						:key="index"
 					>
 						<v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent">
@@ -259,7 +259,7 @@ export default {
 
 			return columns;
 		},
-		splittedResults() {
+		splitResults() {
 			const res = [];
 
 			const keys = Object.keys(this.textures);

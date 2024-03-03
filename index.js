@@ -640,14 +640,11 @@ axios
 
 					const split = path.split(".");
 
-					while (response !== undefined && split.length > 0) {
-						response = response[split.shift()];
-					}
+					while (response !== undefined && split.length > 0) response = response[split.shift()];
 
 					// warns user if string not found
-					if (response === undefined) {
+					if (response === undefined)
 						console.error(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
-					}
 
 					// if raw we can use the object directly after
 					if (raw) return response;

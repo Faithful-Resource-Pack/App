@@ -173,16 +173,6 @@ import moment from "moment";
 const GalleryModal = () => import("./gallery-modal.vue");
 const GalleryTooltip = () => import("./gallery-tooltip.vue");
 
-const Chain = function (val) {
-	return {
-		value: val,
-		chain(predicate) {
-			if (this.value !== undefined) return Chain(predicate(this.value));
-			return this;
-		},
-	};
-};
-
 const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
@@ -352,7 +342,7 @@ export default {
 			location.hash = newHash;
 		},
 		copyShareLink(id) {
-			let url = this.changeShareURL(id, true);
+			const url = this.changeShareURL(id, true);
 			navigator.clipboard.writeText(url);
 			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
 		},
@@ -372,9 +362,8 @@ export default {
 		},
 		discordIDtoName(d) {
 			return (
-				new Chain(this.loadedContributors[d]).chain(
-					(c) => c.username || this.$root.lang().gallery.error_message.user_anonymous,
-				).value || this.$root.lang().gallery.error_message.user_not_found
+				this.loadedContributors[d].username ||
+				this.$root.lang().gallery.error_message.user_anonymous
 			);
 		},
 		timestampToDate(t) {
@@ -429,11 +418,7 @@ export default {
 				})
 				.catch((e) => {
 					console.error(e);
-					this.error = `${e.statusCode}: ${
-						Chain(e)
-							.chain((e) => e.response)
-							.chain((r) => r.message).value
-					}`;
+					this.error = `${e.statusCode}: ${e.response.value}`;
 				})
 				.finally(() => {
 					this.loading = false;

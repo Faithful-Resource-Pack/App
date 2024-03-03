@@ -68,12 +68,7 @@
 		</div>
 		<v-list rounded v-else-if="users.length" two-line class="main-container">
 			<v-row
-				><v-col
-					:cols="12 / listColumns"
-					xs="1"
-					v-for="(users, index) in splittedUsers"
-					:key="index"
-				>
+				><v-col :cols="12 / listColumns" xs="1" v-for="(users, index) in splitUsers" :key="index">
 					<v-list-item v-for="user in users" :key="user.id">
 						<v-list-item-avatar
 							:style="{
@@ -182,9 +177,9 @@ export default {
 			// /whatever/<role>/<name> => /whatever/<role>/<search>
 			let newPath;
 			if (this.name) {
-				const splitted = this.$route.path.split("/");
-				splitted.pop();
-				newPath = splitted.join("/");
+				const split = this.$route.path.split("/");
+				split.pop();
+				newPath = split.join("/");
 			} else {
 				newPath = this.$route.path;
 			}
@@ -281,7 +276,7 @@ export default {
 
 			return columns;
 		},
-		splittedUsers() {
+		splitUsers() {
 			const res = [];
 
 			const keys = Object.keys(this.users);

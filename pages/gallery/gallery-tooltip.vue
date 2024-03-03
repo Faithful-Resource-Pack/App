@@ -34,16 +34,6 @@
 <script>
 import moment from "moment";
 
-const Chain = function (val) {
-	return {
-		value: val,
-		chain(predicate) {
-			if (this.value !== undefined) return Chain(predicate(this.value));
-			return this;
-		},
-	};
-};
-
 export default {
 	name: "gallery-tooltip",
 	props: {
@@ -70,14 +60,9 @@ export default {
 	},
 	computed: {
 		lastContribution() {
-			const contribs = Chain(this.contributions)
-				.chain((contribs) => contribs[this.pack])
-				.chain((res_contribs) => res_contribs[this.texture.textureID]).value;
-
-			// get best timestamp contrib
-			return contribs
-				? contribs.reduce((a, b) => (a = a.date > b.date ? a : b), contribs[0])
-				: undefined;
+			return this.contributions[this.pack][this.texture.textureID].sort((a, b) =>
+				a.date > b.date ? -1 : 1,
+			)?.[0];
 		},
 		lastContributionNames() {
 			if (this.lastContribution === undefined) return "";

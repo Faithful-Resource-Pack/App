@@ -147,9 +147,9 @@ export default {
 			// add bottom axis
 			const domain = xScale.domain();
 			const totalTicks = 8;
-			const diffVided = Math.round(domain.length / totalTicks);
+			const diff = Math.round(domain.length / totalTicks);
 			const values = domain.filter((el, index) => {
-				return index === 0 || index === domain.length - 1 || index % diffVided === 0;
+				return index === 0 || index === domain.length - 1 || index % diff === 0;
 			});
 			values.pop();
 			const xAxis = d3.axisBottom(xScale).tickValues(values).tickFormat(timeFormat);

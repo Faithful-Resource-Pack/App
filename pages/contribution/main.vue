@@ -157,7 +157,7 @@
 				><v-col
 					:cols="12 / listColumns"
 					xs="1"
-					v-for="(contrib_arr, index) in splittedResults"
+					v-for="(contrib_arr, index) in splitResults"
 					:key="index"
 				>
 					<v-list-item
@@ -317,7 +317,7 @@ export default {
 				.filter((entry) => entry.key !== this.all_packs)
 				.map((entry) => entry.key);
 		},
-		splittedResults() {
+		splitResults() {
 			const res = [];
 			for (let col = 0; col < this.listColumns; ++col) {
 				res.push([]);

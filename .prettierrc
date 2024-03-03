@@ -7,5 +7,7 @@
     "bracketSpacing": true,
     "arrowParens": "always",
     "parser": "typescript",
-    "overrides": [{ "files": "*.vue", "options": { "parser": "vue" } }]
+    "overrides": [
+        { "files": ["*.vue", "*.html"], "options": { "parser": "vue" } }
+    ]
 }

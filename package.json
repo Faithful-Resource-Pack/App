@@ -9,7 +9,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "start": "pm2 start \"node main.js\" --name \"APP\"",
-    "prettier": "prettier \"{,!(node_modules)/**/}*.{js,vue}\" --config .prettierrc --write",
+    "prettier": "prettier \"{,!(node_modules)/**/}*.{js,vue,html}\" --config .prettierrc --write",
     "test:app": "env-cmd -f ./tests/.env.test node main.js",
     "test:mocha": "mocha --recursive tests/**/*.test.js",
     "nodemon:app:test": "nodemon --exec pnpm run test:app",
