@@ -8,7 +8,7 @@ import VueCalendarHeatmap from "vue-calendar-heatmap";
 
 import axios from "axios";
 import moment from "moment";
-import marked from "marked";
+import { marked } from "marked";
 import { createPinia } from "pinia";
 
 import { discordAuthStore } from "./stores/discordAuthStore";
@@ -46,12 +46,12 @@ window.colors = (
 	await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")
 ).default;
 window.colorToHex = (color) => {
-	const color_arr = color.trim().split(" ");
+	const colorArr = color.trim().split(" ");
 
 	try {
-		color_arr[0] = color_arr[0].replace(/-./g, (x) => x[1].toUpperCase());
-		if (color_arr.length > 1) color_arr[1] = color_arr[1].replace("-", "");
-		return colors[color_arr[0]][color_arr.length > 1 ? color_arr[1] : "base"];
+		colorArr[0] = colorArr[0].replace(/-./g, (x) => x[1].toUpperCase());
+		if (colorArr.length > 1) colorArr[1] = colorArr[1].replace("-", "");
+		return colors[colorArr[0]][colorArr.length > 1 ? colorArr[1] : "base"];
 	} catch (error) {
 		return "currentcolor";
 	}
@@ -88,20 +88,20 @@ window.updatePageStyles = (cmp) => {
 
 Object.defineProperty(Object.prototype, "isObject", {
 	/**
+	 * Test if an object is an object
 	 * @param {any} item to be tested
-	 * @returns {Boolean} true if the item is an JS Object
+	 * @returns {Boolean} true if the item is a JS Object
 	 */
-	value: (item) => {
-		return item && typeof item === "object" && !Array.isArray(item);
-	},
+	value: (item) => item && typeof item === "object" && !Array.isArray(item),
 });
 
 Object.defineProperty(Object.prototype, "merge", {
 	/**
+	 * Deep merge two objects
 	 * @param {Object} target
 	 * @param  {...Object} sources
 	 */
-	value: (target, ...sources) => {
+	value(target, ...sources) {
 		if (!sources.length) return target;
 		const source = sources.shift();
 
@@ -129,14 +129,14 @@ const LANGS = {
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
 const _get_lang = () => {
-	const stored_lang = localStorage.getItem(LANG_KEY);
+	const storedLang = localStorage.getItem(LANG_KEY);
 
-	if (stored_lang === null)
+	if (storedLang === null)
 		// no key
 		return LANG_DEFAULT;
-	else if (stored_lang in LANGUAGES.map((e) => e.lang))
+	else if (storedLang in LANGUAGES.map((e) => e.lang))
 		// if trusted input value
-		return stored_lang;
+		return storedLang;
 	else return LANG_DEFAULT;
 };
 
@@ -323,16 +323,16 @@ axios
 
 		Vue.use(pinia);
 
-		let ins = new Vue({
+		const app = new Vue({
 			router,
 			el: "#app",
 			data() {
-				let discordUser = discordUserStore();
+				const discordUser = discordUserStore();
 				discordUser.params(window.env?.DISCORD_USER_URL);
 
 				return {
-					discordAuth: discordAuthStore(),
 					discordUser,
+					discordAuth: discordAuthStore(),
 					appUser: appUserStore(),
 					badges: {},
 					colors: colors,
@@ -406,19 +406,17 @@ axios
 				},
 				theme: {
 					handler(n) {
-						const themes_available = Object.keys(this.themes);
+						const availableThemes = Object.keys(this.themes);
 						if (n == undefined) {
 							let theme = window.localStorage.getItem("THEME");
 
-							if (!themes_available.includes(theme)) {
-								theme = themes_available[0];
-							}
+							if (!availableThemes.includes(theme)) theme = availableThemes[0];
 
 							this.theme = theme;
 							return;
 						} else {
-							if (!themes_available.includes(n)) {
-								this.theme = themes_available[0];
+							if (!availableThemes.includes(n)) {
+								this.theme = availableThemes[0];
 								return;
 							}
 						}
@@ -433,10 +431,8 @@ axios
 				},
 				isDark: {
 					handler(n) {
-						let arr = ["theme--light", "theme--dark"];
-						if (n == true) {
-							arr = arr.reverse();
-						}
+						const arr = ["theme--light", "theme--dark"];
+						if (n) arr.reverse();
 
 						const html = document.querySelector("html");
 
@@ -472,41 +468,28 @@ axios
 					// add all routes with matching roles
 					const subtabs = ALL_TABS.filter((t) => {
 						if (t.roles === undefined) return false;
-
-						let allowed = false;
-						let i = 0;
-						while (i < t.roles.length && !allowed) {
-							allowed = n.includes(t.roles[i]);
-							i++;
-						}
-
-						return allowed;
+						return t.roles.some((role) => n.includes(role));
 					})
 						.map((t) => t.subtabs)
 						.flat(1)
 						.filter((s) => !s.unlogged);
+
 					subtabs.forEach((s) => {
-						if (s.badge) {
-							this.loadBadge(s.badge);
-						}
+						if (s.badge) this.loadBadge(s.badge);
 					});
 
 					subtabs
 						.map((s) => s.routes)
 						.flat(1)
-						.forEach((r) => {
-							router.addRoute(r);
-						});
+						.forEach((r) => router.addRoute(r));
 				},
 			},
 			computed: {
 				user() {
 					return {
 						access_token: this.discordAuth.access_token,
-
 						avatar: this.discordUser.discordAvatar,
 						banner: this.discordUser.discordBanner,
-
 						id: this.appUser.appUserId,
 						username: this.discordUser.discordName,
 						roles: this.appUser.appUserRoles || [],
@@ -593,19 +576,18 @@ axios
 					return this.user.roles;
 				},
 				langBCP47() {
-					return this.lang_to_bcp47(this.selectedLang);
+					return this.langToBCP47(this.selectedLang);
 				},
 				isDark() {
 					return this.$vuetify.theme.dark;
 				},
 			},
 			methods: {
-				lang_to_bcp47(lang) {
-					return LANGUAGES.filter((l) => l.lang === lang)[0]?.bcp47;
+				langToBCP47(lang) {
+					return LANGUAGES.find((l) => l.lang === lang)?.bcp47;
 				},
 				loadLanguage(language) {
-					const lang = this.languages.filter((l) => l.lang === language)[0];
-
+					const lang = this.languages.find((l) => l.lang === language);
 					if (!lang) return;
 
 					moment.locale(lang.bcp47);
@@ -632,13 +614,10 @@ axios
 					axios.get(this.apiURL + url, this.apiOptions).then((r) => {
 						const res = r.data;
 						let val;
-						if (Array.isArray(res) && res.length) {
-							val = res.length;
-						} else if (res.length) {
-							val = res.length;
-						} else {
-							val = 0;
-						}
+						if (Array.isArray(res) && res.length) val = res.length;
+						else if (res.length) val = res.length;
+						else val = 0;
+
 						Vue.set(this.badges, url, val);
 					});
 
@@ -659,7 +638,7 @@ axios
 					// if you didn't request a path then 0
 					if (path === undefined) return response;
 
-					let split = path.split(".");
+					const split = path.split(".");
 
 					while (response !== undefined && split.length > 0) {
 						response = response[split.shift()];
@@ -680,19 +659,19 @@ axios
 					const that = this;
 					return {
 						showSnackBar() {
-							let all_args = [...arguments];
-							if (all_args.length < 2) all_args.push("#222");
-							if (all_args.length < 3) all_args.push(4000);
-							all_args.push(json);
+							let allArgs = [...arguments];
+							if (allArgs.length < 2) allArgs.push("#222");
+							if (allArgs.length < 3) allArgs.push(4000);
+							allArgs.push(json);
 
-							return that.showSnackBar(...all_args);
+							return that.showSnackBar(...allArgs);
 						},
 					};
 				},
 				showSnackBar(message, color = "#222", timeout = 4000, json = undefined) {
 					this.snackbar.submessage = "";
 					if (typeof message === "string") {
-						let newline = message.indexOf("\n");
+						const newline = message.indexOf("\n");
 						if (newline !== -1) {
 							this.snackbar.message = message.substring(0, newline) + ":";
 							this.snackbar.submessage = message.substring(newline + 1);
@@ -703,7 +682,7 @@ axios
 						this.snackbar.message = message?.message;
 
 						if (message.response && message.response.data) {
-							let submessage = message.response.data.error || message.response.data.message;
+							const submessage = message.response.data.error || message.response.data.message;
 							this.snackbar.message += ":";
 							this.snackbar.submessage = submessage;
 						}
@@ -716,8 +695,8 @@ axios
 				},
 				toTitleCase(str) {
 					return str
-						.split("_")
-						.map((v) => v[0].toUpperCase() + v.slice(1))
+						.split(/_| /g)
+						.map((word) => word[0].toUpperCase() + word.slice(1))
 						.join(" ");
 				},
 				logout() {
@@ -732,7 +711,7 @@ axios
 				},
 				compiledMarkdown(rawText) {
 					if (!rawText) return "";
-					return DOMPurify.sanitize(marked(rawText, { sanitize: true }));
+					return DOMPurify.sanitize(marked(rawText));
 				},
 				addToken(data) {
 					data.token = this.user.access_token;
@@ -764,7 +743,7 @@ axios
 				pinia._a = this;
 			},
 			created() {
-				moment.locale(this.lang_to_bcp47(_get_lang()));
+				moment.locale(this.langToBCP47(_get_lang()));
 
 				this.discordAuth.apiURL = window.apiURL;
 				this.discordAuth
@@ -840,6 +819,6 @@ axios
 		});
 
 		if (Vue.config.devtools) {
-			window.v = ins;
+			window.v = app;
 		}
 	});

@@ -22,12 +22,14 @@ export default defineConfig(({ mode }) => {
 		},
 		resolve: {
 			alias: {
+				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
 			},
 		},
 		define: {
 			apiURL: JSON.stringify(env.API_URL),
-			DEV: JSON.stringify(env.DEV),
+			DEV: JSON.stringify(env.DEV || false),
+			VERBOSE: JSON.stringify(env.VERBOSE || false),
 			env: {
 				DISCORD_USER_URL: JSON.stringify(env["DISCORD_USER_URL"] || undefined),
 			},
