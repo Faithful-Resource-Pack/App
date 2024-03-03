@@ -45,7 +45,7 @@ const Chain = function (val) {
 };
 
 export default {
-	name: "texture-tooltip",
+	name: "gallery-tooltip",
 	props: {
 		texture: {
 			type: Object,

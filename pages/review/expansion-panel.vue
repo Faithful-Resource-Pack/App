@@ -203,7 +203,7 @@ const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
 const ImagePreviewer = () => import("../addon/image-previewer.vue");
 
 export default {
-	name: "exp-panel",
+	name: "expansion-panel",
 	components: {
 		ImagePreviewer,
 		FullscreenPreview,

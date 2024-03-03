@@ -33,7 +33,7 @@
 import axios from "axios";
 
 export default {
-	name: "user-remove-confirm",
+	name: "remove-confirm",
 	props: {
 		confirm: {
 			type: Boolean,

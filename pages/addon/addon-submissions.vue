@@ -28,7 +28,7 @@
 								timestamp
 							"
 							:aspect-ratio="16 / 9"
-							v-on:error="
+							@error="
 								() => {
 									failed[addon.id] = true;
 									$forceUpdate();
@@ -91,7 +91,7 @@
 			</v-row>
 		</div>
 
-		<addon-remove-confirm
+		<remove-confirm
 			:confirm="remove.confirm"
 			:disableDialog="
 				() => {
@@ -100,20 +100,19 @@
 				}
 			"
 			:data="remove.data"
-		>
-		</addon-remove-confirm>
+		/>
 	</v-container>
 </template>
 
 <script>
 import axios from "axios";
 
-const AddonRemoveConfirm = () => import("./remove-confirm.vue");
+const RemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {
-	name: "own-addon-page",
+	name: "addon-submissions",
 	components: {
-		AddonRemoveConfirm,
+		RemoveConfirm,
 	},
 	data() {
 		return {

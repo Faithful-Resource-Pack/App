@@ -125,7 +125,7 @@
 import Vue from "vue";
 import axios from "axios";
 
-const UseModal = () => import("./modal_use.vue");
+const UseModal = () => import("./use-modal.vue");
 const RemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {

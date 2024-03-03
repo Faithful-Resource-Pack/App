@@ -136,7 +136,7 @@
 
 <script>
 import Vue from "vue";
-const ContributionForm = () => import("./contributionForm.vue");
+const ContributionForm = () => import("./contribution-form.vue");
 
 export default {
 	name: "contribution-modal",

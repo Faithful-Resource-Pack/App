@@ -11,8 +11,9 @@
 
 <script>
 export default {
-	name: "review-translations-page",
+	name: "translations-page",
 	created() {
+		// redirect
 		window.location.href = "https://translate.faithfulpack.net/";
 	},
 };

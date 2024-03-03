@@ -6,9 +6,9 @@
 			addon-new
 			:screen-sources="screenSources"
 			:screen-ids="screenshotIds"
-			v-on:submit="handleSubmit"
-			v-on:header="handleHeader"
-			v-on:screenshot="handleScreenshot"
+			@submit="handleSubmit"
+			@header="handleHeader"
+			@screenshot="handleScreenshot"
 		/>
 	</div>
 </template>
@@ -17,7 +17,7 @@
 import Vue from "vue";
 import axios from "axios";
 
-const AddonForm = () => import("./addonForm.vue");
+const AddonForm = () => import("./addon-form.vue");
 
 export default {
 	name: "new-addon-form",

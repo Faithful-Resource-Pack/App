@@ -121,7 +121,7 @@ import Vue from "vue";
 import axios from "axios";
 
 export default {
-	name: "submission-creator",
+	name: "submission-modal",
 	props: {
 		color: {
 			type: String,

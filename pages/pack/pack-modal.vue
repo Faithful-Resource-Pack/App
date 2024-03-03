@@ -1,6 +1,6 @@
 <template>
 	<v-dialog v-model="dialog" content-class="colored" max-width="600">
-		<submission-creator
+		<submission-modal
 			:color="color"
 			:dialog="submissionOpen"
 			:disableDialog="disableSubmission"
@@ -8,8 +8,7 @@
 			:add="submissionAdd"
 			:first="add"
 			@submissionFinished="addSubmissionData"
-		>
-		</submission-creator>
+		/>
 		<pack-remove-confirm
 			type="submissions"
 			:confirm="remove.confirm"
@@ -21,9 +20,7 @@
 			"
 			:id="remove.id"
 			:label="remove.label"
-		>
-			>
-		</pack-remove-confirm>
+		/>
 		<v-card>
 			<v-card-title class="headline" v-text="dialogTitle"></v-card-title>
 			<v-card-text>
@@ -146,13 +143,13 @@
 import Vue from "vue";
 import axios from "axios";
 
-const SubmissionCreator = () => import("./submission_creator.vue");
-const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
+const SubmissionModal = () => import("./submission-modal.vue");
+const PackRemoveConfirm = () => import("./pack-remove-confirm.vue");
 
 export default {
-	name: "pack-creator",
+	name: "pack-modal",
 	components: {
-		SubmissionCreator,
+		SubmissionModal,
 		PackRemoveConfirm,
 	},
 	props: {

@@ -117,7 +117,7 @@
 import Vue from "vue";
 import axios from "axios";
 
-const PathModal = () => import("./modal_path.vue");
+const PathModal = () => import("./path-modal.vue");
 const RemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {

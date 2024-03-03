@@ -1,15 +1,14 @@
 <template>
 	<v-container>
 		<div class="styles" v-html="pageStyles"></div>
-		<pack-creator
+		<pack-modal
 			:color="pageColor"
 			:dialog="dialogOpen"
 			:disableDialog="disableDialog"
 			:data="dialogData"
 			:add="dialogDataAdd"
 			:tags="tags"
-		>
-		</pack-creator>
+		/>
 		<pack-remove-confirm
 			type="packs"
 			:confirm="remove.confirm"
@@ -21,8 +20,7 @@
 			"
 			:id="remove.id"
 			:label="remove.label"
-		>
-		</pack-remove-confirm>
+		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
@@ -101,14 +99,14 @@
 <script>
 import axios from "axios";
 
-const PackCreator = () => import("./pack_creator.vue");
-const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
+const PackModal = () => import("./pack-modal.vue");
+const PackRemoveConfirm = () => import("./pack-remove-confirm.vue");
 
 export default {
 	name: "pack-page",
 	components: {
-		"pack-creator": PackCreator,
-		"pack-remove-confirm": PackRemoveConfirm,
+		PackModal,
+		PackRemoveConfirm,
 	},
 	data() {
 		return {

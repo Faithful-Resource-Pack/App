@@ -49,7 +49,7 @@
 import axios from "axios";
 import moment from "moment";
 
-const DashboardCard = () => import("./dashcard.vue");
+const DashboardCard = () => import("./dashboard-card.vue");
 
 export default {
 	name: "contribution-card",
@@ -74,12 +74,10 @@ export default {
 	data() {
 		return {
 			data: undefined,
+			url: "/contributions/stats",
 		};
 	},
 	computed: {
-		url() {
-			return "/contributions/stats";
-		},
 		totals() {
 			if (!this.data) return [, , ,];
 			return Object.keys(this.data)

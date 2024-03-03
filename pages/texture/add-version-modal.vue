@@ -56,7 +56,7 @@ import Vue from "vue";
 import axios from "axios";
 
 export default {
-	name: "use-modal",
+	name: "add-version-modal",
 	props: {
 		dialog: {
 			type: Boolean,

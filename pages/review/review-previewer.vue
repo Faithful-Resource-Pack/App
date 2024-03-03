@@ -10,13 +10,13 @@
 			</div>
 		</template>
 		<template v-else>
-			<ReviewPreview :addonId="addonId" />
+			<review-preview :addonId="addonId" />
 		</template>
 	</div>
 </template>
 
 <script>
-const ReviewPreview = () => import("./review_preview.vue");
+const ReviewPreview = () => import("./review-preview.vue");
 
 export default {
 	name: "review-previewer",

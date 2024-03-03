@@ -49,7 +49,7 @@
 </template>
 
 <script>
-const DashboardCard = () => import("./dashcard.vue");
+const DashboardCard = () => import("./dashboard-card.vue");
 
 export default {
 	name: "contribution-stats-card",

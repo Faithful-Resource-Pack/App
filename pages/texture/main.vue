@@ -9,20 +9,21 @@
 			:add="Object.keys(dialogData).length == 0"
 			:data="dialogData"
 			:tags="tags"
-		>
-		</texture-modal>
-		<version-modal :color="pageColor" :MCDialog="MCDialogOpen" :disableMCDialog="disableMCDialog">
-		</version-modal>
-		<add-multiple-texture
+		/>
+		<new-texture-modal
 			:textColor="textColorOnPage"
 			:color="pageColor"
 			v-model="addMultiple"
 			:tags="tags"
 			:editions="editions"
 			:versions="versions"
-		>
-		</add-multiple-texture>
-		<add-minecraft-version
+		/>
+		<modify-version-modal
+			:color="pageColor"
+			:MCDialog="MCDialogOpen"
+			:disableMCDialog="disableMCDialog"
+		/>
+		<add-version-modal
 			:color="pageColor"
 			:dialog="newVersionModal"
 			:disableDialog="
@@ -32,8 +33,7 @@
 			"
 			:editions="editions"
 			:versions="versions"
-		>
-		</add-minecraft-version>
+		/>
 		<remove-confirm
 			type="texture"
 			:confirm="remove.confirm"
@@ -44,8 +44,7 @@
 				}
 			"
 			:on-submit="removeTexture"
-		>
-		</remove-confirm>
+		/>
 
 		<div class="text-h4 py-4">
 			{{ $root.lang().database.titles.textures }}
@@ -75,7 +74,7 @@
 			:item-color="pageColor"
 			filled
 			v-model="selectTextureTag"
-		></v-select>
+		/>
 		<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
 		<div class="my-2">
 			<v-text-field
@@ -87,18 +86,18 @@
 				:color="pageColor"
 				:placeholder="$root.lang().database.labels.search_texture"
 				type="text"
-				v-on:keyup.enter="startSearch"
+				@keyup.enter="startSearch"
 				@click:append-outer="startSearch"
 				@click:clear="clearSearch"
-			></v-text-field>
+			/>
 		</div>
 
 		<div>
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewMCDialog()"
-						>{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon></v-btn
-					>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewMCDialog()">
+						{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon>
+					</v-btn>
 				</v-col>
 			</v-row>
 			<br />
@@ -192,20 +191,20 @@
 import Vue from "vue";
 import axios from "axios";
 
-const TextureModal = () => import("./modal_texture.vue");
-const MCVersionModal = () => import("./modal_mc_version.vue");
-const TextureModalMultipleAdd = () => import("./modal_texture_multiple_add.vue");
-const ModalVersionAdd = () => import("./modal_version_add.vue");
+const TextureModal = () => import("./texture-modal.vue");
+const NewTextureModal = () => import("./new-texture-modal.vue");
+const ModifyVersionModal = () => import("./modify-version-modal.vue");
+const AddVersionModal = () => import("./add-version-modal.vue");
 const RemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {
 	name: "texture-page",
 	components: {
-		"texture-modal": TextureModal,
-		"version-modal": MCVersionModal,
-		"add-multiple-texture": TextureModalMultipleAdd,
-		"add-minecraft-version": ModalVersionAdd,
-		"remove-confirm": RemoveConfirm,
+		TextureModal,
+		ModifyVersionModal,
+		NewTextureModal,
+		AddVersionModal,
+		RemoveConfirm,
 	},
 	data() {
 		const INCREMENT = 250;

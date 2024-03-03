@@ -84,7 +84,7 @@
 									:disabled="disabledHeaderInput"
 									v-model="submittedForm.headerFile"
 									accept="image/jpg, image/jpeg, image/png, image/gif"
-									v-on:change="headerChange"
+									@change="headerChange"
 									style="height: 100%"
 								>
 									<template v-slot:label>
@@ -109,7 +109,7 @@
 						multiple
 						v-model="submittedForm.carouselFiles"
 						accept="image/jpg, image/jpeg, image/png, image/gif"
-						v-on:change="carouselChange"
+						@change="carouselChange"
 						style="height: 70px"
 					>
 						<template v-slot:label>
@@ -295,7 +295,7 @@
 <script>
 import Vue from "vue";
 
-const UserList = () => import("./userlist.vue");
+const UserList = () => import("./user-list.vue");
 const ImagePreviewer = () => import("./image-previewer.vue");
 const FullscreenPreview = () => import("./fullscreen-preview.vue");
 const DropZone = () => import("../components/drop-zone.vue");

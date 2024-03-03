@@ -45,7 +45,7 @@
 const FullscreenPreview = () => import("./fullscreen-preview.vue");
 
 export default {
-	name: `image-previewer`,
+	name: "image-previewer",
 	components: {
 		FullscreenPreview,
 	},

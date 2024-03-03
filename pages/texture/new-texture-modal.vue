@@ -225,7 +225,7 @@ const emptyTexture = () => ({
 });
 
 export default {
-	name: "add-multiple-texture-modal",
+	name: "new-texture-modal",
 	props: {
 		value: {
 			type: Boolean,

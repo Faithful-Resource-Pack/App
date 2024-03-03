@@ -45,7 +45,7 @@
 					/>
 					<v-btn
 						icon
-						v-on:click="
+						@click="
 							() => {
 								content.texture = String(Number.parseInt(content.texture, 10) + 1);
 							}
@@ -55,7 +55,7 @@
 					</v-btn>
 					<v-btn
 						icon
-						v-on:click="
+						@click="
 							() => {
 								content.texture = String(Math.max(Number.parseInt(content.texture - 1, 10), 0));
 							}
@@ -80,7 +80,7 @@
 </template>
 
 <script>
-const UserSelect = () => import("./userSelect.vue");
+const UserSelect = () => import("./user-select.vue");
 const QuickDatePicker = () => import("../components/quick-date-picker.vue");
 const MultiRangeInput = () => import("../components/multi-range-input.vue");
 

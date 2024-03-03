@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="fullscreen">
 		<v-card>
-			<v-img alt="fullscreen preview" :src="src" :aspect-ratio="aspectRatio" v-on:click="close" />
+			<v-img alt="fullscreen preview" :src="src" :aspect-ratio="aspectRatio" @click="close" />
 		</v-card>
 	</v-dialog>
 </template>

@@ -37,7 +37,7 @@ function deepEqual(x, y) {
 }
 
 export default {
-	name: "json-object-editor",
+	name: "json-array-editor",
 	components: {
 		JSONEditor,
 		JSONAddEditor,

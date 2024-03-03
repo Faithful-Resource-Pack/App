@@ -32,15 +32,15 @@ const ContributorStatsPage = () => import("./pages/contribution-stats/main.vue")
 const TexturePage = () => import("./pages/texture/main.vue");
 const PackPage = () => import("./pages/pack/main.vue");
 const ProfilePage = () => import("./pages/profile/main.vue");
-const AddonNewPage = () => import("./pages/addon/newAddonForm.vue");
-const AddonEditPage = () => import("./pages/addon/editAddonForm.vue");
-const AddonSubmissionsPage = () => import("./pages/addon/submissions.vue");
-const ReviewAddonsPage = () => import("./pages/review/review_addons.vue");
-const ReviewTranslationsPage = () => import("./pages/review/review_translations.vue");
-const GalleryPage = () => import("./pages/gallery/gallery.vue");
-const SettingsPage = () => import("./pages/settings/settingsPage.vue");
-const DashboardPage = () => import("./pages/dashboard/dashboard.vue");
-const ReconnectPage = () => import("./pages/reconnect/reconnect.vue");
+const NewAddonPage = () => import("./pages/addon/new-addon-form.vue");
+const EditAddonPage = () => import("./pages/addon/edit-addon-form.vue");
+const AddonSubmissionsPage = () => import("./pages/addon/addon-submissions.vue");
+const ReviewAddonsPage = () => import("./pages/review/main.vue");
+const ReviewTranslationsPage = () => import("./pages/translation/main.vue");
+const GalleryPage = () => import("./pages/gallery/main.vue");
+const SettingsPage = () => import("./pages/settings/main.vue");
+const DashboardPage = () => import("./pages/dashboard/main.vue");
+const ReconnectPage = () => import("./pages/reconnect/main.vue");
 
 window.colors = (
 	await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")
@@ -211,8 +211,8 @@ const ALL_TABS = [
 				icon: "mdi-upload",
 				label: "upload",
 				routes: [
-					{ path: "/addons/new", component: AddonNewPage },
-					{ path: "/addons/edit/:id", component: AddonEditPage },
+					{ path: "/addons/new", component: NewAddonPage },
+					{ path: "/addons/edit/:id", component: EditAddonPage },
 				],
 			},
 		],

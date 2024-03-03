@@ -25,7 +25,7 @@
 import axios from "axios";
 
 export default {
-	name: "addon-remove-confirm",
+	name: "remove-confirm",
 	props: {
 		confirm: {
 			type: Boolean,

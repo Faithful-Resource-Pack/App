@@ -10,7 +10,7 @@
 					item-value="value"
 					:value="current.pack"
 					:label="$root.lang('gallery.category.pack')"
-					v-on:change="updateRoute($event, 'pack')"
+					@change="updateRoute($event, 'pack')"
 				></v-select>
 			</v-col>
 
@@ -21,7 +21,7 @@
 					item-value="value"
 					:value="current.edition"
 					:label="$root.lang('gallery.category.edition')"
-					v-on:change="updateRoute($event, 'edition')"
+					@change="updateRoute($event, 'edition')"
 				></v-select>
 			</v-col>
 		</v-row>
@@ -32,7 +32,7 @@
 					:items="options.versions"
 					:value="current.version"
 					:label="$root.lang('gallery.category.mc_version')"
-					v-on:change="updateRoute($event, 'version')"
+					@change="updateRoute($event, 'version')"
 				></v-select>
 			</v-col>
 
@@ -43,7 +43,7 @@
 					item-value="value"
 					:value="current.tag"
 					:label="$root.lang('gallery.category.tag')"
-					v-on:change="updateRoute($event, 'tag')"
+					@change="updateRoute($event, 'tag')"
 				></v-select>
 			</v-col>
 		</v-row>
@@ -77,7 +77,7 @@
 			hide-details
 			:placeholder="$root.lang().database.labels.search_texture"
 			type="text"
-			v-on:keyup.enter="startSearch"
+			@keyup.enter="startSearch"
 			@click:append="startSearch"
 			@click:clear="clearSearch"
 		/>
@@ -137,7 +137,7 @@
 							</v-btn>
 						</template>
 
-						<texture-tooltip
+						<gallery-tooltip
 							:mojang="isMojang(current.pack)"
 							:texture="texture"
 							:contributions="loadedContributions"
@@ -170,8 +170,8 @@
 import axios from "axios";
 import moment from "moment";
 
-const GalleryModal = () => import("./modal.vue");
-const TextureTooltip = () => import("./gallery_tooltip.vue");
+const GalleryModal = () => import("./gallery-modal.vue");
+const GalleryTooltip = () => import("./gallery-tooltip.vue");
 
 const Chain = function (val) {
 	return {
@@ -188,10 +188,10 @@ const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
 
 export default {
-	name: "texture-page",
+	name: "gallery-page",
 	components: {
 		GalleryModal,
-		TextureTooltip,
+		GalleryTooltip,
 	},
 	data() {
 		return {

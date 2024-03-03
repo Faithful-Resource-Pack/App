@@ -4,7 +4,7 @@
 			{{ $root.lang().settings.title }}
 		</div>
 		<div class="my-2">
-			<v-btn color="primary" :disabled="jsonIsNotValid" block append-icon v-on:click="save">
+			<v-btn color="primary" :disabled="jsonIsNotValid" block append-icon @click="save">
 				{{ $root.lang().global.btn.save }} <v-icon small>mdi-content-save</v-icon>
 			</v-btn>
 		</div>
@@ -41,7 +41,7 @@
 import axios from "axios";
 import Prism from "prismjs";
 
-const JSONEditor = () => import("./jsonEditor/jsonEditor.vue");
+const JSONEditor = () => import("./json-editor/main.vue");
 
 export default {
 	name: "settings-page",

@@ -52,7 +52,7 @@
 import axios from "axios";
 
 export default {
-	name: "version-modal",
+	name: "modify-version-modal",
 	props: {
 		MCDialog: {
 			type: Boolean,

@@ -33,7 +33,7 @@
 <script>
 import axios from "axios";
 
-const DashboardCard = () => import("./dashcard.vue");
+const DashboardCard = () => import("./dashboard-card.vue");
 const RolesGraph = () => import("./roles-graph.vue");
 
 export default {
@@ -56,6 +56,7 @@ export default {
 	data() {
 		return {
 			data: undefined,
+			url: "/users/stats",
 		};
 	},
 	computed: {
@@ -65,9 +66,6 @@ export default {
 		},
 		chart() {
 			return this.$refs.chart;
-		},
-		url() {
-			return "/users/stats";
 		},
 		series() {
 			return this.data

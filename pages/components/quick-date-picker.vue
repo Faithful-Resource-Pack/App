@@ -18,7 +18,7 @@
 			:value="year"
 			:max="this_year"
 			min="0"
-			v-on:input="(e) => newYear(e)"
+			@input="(e) => newYear(e)"
 		></v-text-field>
 		<div class="font-weight-medium text--secondary my-2" v-text="labels.month" />
 		<v-row class="qd-months" dense>

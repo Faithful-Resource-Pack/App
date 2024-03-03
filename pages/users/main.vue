@@ -8,9 +8,8 @@
 			:add="dialogDataAdd"
 			:data="dialogData"
 			:roles="roles"
-		>
-		</user-modal>
-		<user-remove-confirm
+		/>
+		<remove-confirm
 			:confirm="remove.confirm"
 			:disableDialog="
 				() => {
@@ -19,8 +18,7 @@
 				}
 			"
 			:data="remove.data"
-		>
-		</user-remove-confirm>
+		/>
 
 		<div class="text-h4 py-4">
 			{{ $root.lang().database.titles.users }}
@@ -52,7 +50,7 @@
 				type="text"
 				hide-details
 				:color="pageColor"
-				v-on:keyup.enter="startSearch"
+				@keyup.enter="startSearch"
 				@click:append-outer="startSearch"
 				@click:clear="clearSearch"
 			></v-text-field>
@@ -133,7 +131,7 @@
 import Vue from "vue";
 import axios from "axios";
 
-const UserModal = () => import("./modal.vue");
+const UserModal = () => import("./user-modal.vue");
 const UserRemoveConfirm = () => import("./remove-confirm.vue");
 
 export default {

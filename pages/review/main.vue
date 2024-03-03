@@ -37,7 +37,7 @@ d88   888  888    888 d88   888
 			<template v-if="selectedItems && selectedItems.length > 0">
 				<template v-if="$vuetify.breakpoint.mdAndUp">
 					<div id="review-list">
-						<ReviewList
+						<review-list
 							:items="selectedItems"
 							v-model="selectedAddonId"
 							:activeColor="pageColor"
@@ -45,12 +45,12 @@ d88   888  888    888 d88   888
 						/>
 					</div>
 					<div id="review-previewer">
-						<ReviewPreview :addonId="selectedAddonId" color="#9575cd" />
+						<review-preview :addonId="selectedAddonId" color="#9575cd" />
 					</div>
 				</template>
 				<template v-else>
 					<v-expansion-panels v-if="addons[status].length > 0" style="margin-top: 5px">
-						<exp-panel
+						<expansion-panel
 							v-model="selectedAddonId"
 							:contributors="contributors"
 							:color="pageColor"
@@ -76,11 +76,11 @@ d88   888  888    888 d88   888
 <script>
 import axios from "axios";
 
-const ExpPanel = () => import("./expansion_panel.vue");
-const DenyPopup = () => import("./deny_popup.vue");
-const ReviewCategories = () => import("./review_categories.vue");
-const ReviewList = () => import("./review_list.vue");
-const ReviewPreview = () => import("./review_previewer.vue");
+const ExpansionPanel = () => import("./expansion-panel.vue");
+const DenyPopup = () => import("./deny-popup.vue");
+const ReviewCategories = () => import("./review-categories.vue");
+const ReviewList = () => import("./review-list.vue");
+const ReviewPreview = () => import("./review-previewer.vue");
 
 const searchMixin = {
 	methods: {
@@ -139,7 +139,7 @@ const searchMixin = {
 export default {
 	name: "review-addons-page",
 	components: {
-		ExpPanel,
+		ExpansionPanel,
 		DenyPopup,
 		ReviewCategories,
 		ReviewList,

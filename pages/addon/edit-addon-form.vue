@@ -12,9 +12,9 @@
 			:screen-sources="screenSources"
 			:screen-ids="screenIds"
 			:header-source="headerSource"
-			v-on:submit="handleSubmit"
-			v-on:header="handleHeader"
-			v-on:screenshot="handleScreenshot"
+			@submit="handleSubmit"
+			@header="handleHeader"
+			@screenshot="handleScreenshot"
 		/>
 		<v-dialog v-model="reasonDialog" persistent max-width="600px">
 			<v-card>
@@ -49,7 +49,7 @@
 
 <script>
 import axios from "axios";
-const AddonForm = () => import("./addonForm.vue");
+const AddonForm = () => import("./addon-form.vue");
 
 export default {
 	name: "edit-addon-form",
