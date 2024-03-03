@@ -42,7 +42,7 @@ export default {
 			// 1. Upload
 			let id;
 			axios
-				.post(this.$root.apiURL + "/addons", data, this.$root.apiOptions)
+				.post(`${this.$root.apiURL}/addons`, data, this.$root.apiOptions)
 				.then(async (response) => {
 					const addon = response.data;
 					id = addon.id;
@@ -50,18 +50,12 @@ export default {
 					const promises = [];
 					// 2. Upload header and screenshots
 					let form;
-					if (this.header || this.screenshots.length) {
-						form = new FormData();
-					}
+					if (this.header || this.screenshots.length) form = new FormData();
 
 					if (this.header) {
 						form.set("file", this.header, this.header.name);
 						promises.push(
-							axios.post(
-								this.$root.apiURL + "/addons/" + id + "/header",
-								form,
-								this.$root.apiOptions,
-							),
+							axios.post(`${this.$root.apiURL}/addons/${id}/header`, form, this.$root.apiOptions),
 						);
 					}
 					if (this.screenshots.length) {
@@ -77,11 +71,7 @@ export default {
 							form.set("file", screen, screen.name);
 
 							successful = await axios
-								.post(
-									this.$root.apiURL + "/addons/" + id + "/screenshots",
-									form,
-									this.$root.apiOptions,
-								)
+								.post(`${this.$root.apiURL}/addons/${id}/screenshots`, form, this.$root.apiOptions)
 								.then(() => true)
 								.catch((error) => {
 									err = error;
@@ -108,10 +98,8 @@ export default {
 					// if we have id then we at least successfully created the file
 					if (id)
 						axios
-							.delete(this.$root.apiURL + "/addons/" + id, this.$root.apiOptions)
-							.catch((err) => {
-								this.$root.showSnackBar(err, "error");
-							});
+							.delete(`${this.$root.apiURL}/addons/${id}`, this.$root.apiOptions)
+							.catch((err) => this.$root.showSnackBar(err, "error"));
 				});
 		},
 		handleHeader(file, remove = false) {

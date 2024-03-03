@@ -330,28 +330,26 @@ export default {
 			let index = location.hash.indexOf("?show=");
 			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
 		},
-		changeShareURL(id, dry_run = false) {
+		changeShareURL(id, dryRun = false) {
 			let index = location.hash.indexOf("?show=");
 
-			let new_hash = location.hash;
+			let newHash = location.hash;
 			// we remove it
-			if (index !== -1) new_hash = new_hash.substring(0, index);
-			if (id !== undefined) new_hash += "?show=" + id.toString();
-			if (!dry_run) location.hash = new_hash;
+			if (index !== -1) newHash = newHash.substring(0, index);
+			if (id !== undefined) newHash += `?show=${id}`;
+			if (!dryRun) location.hash = newHash;
 
-			return location.href.replace(location.hash, "") + new_hash;
+			return location.href.replace(location.hash, "") + newHash;
 		},
 		removeShareURL() {
-			let index = location.hash.indexOf("?show=");
+			const index = location.hash.indexOf("?show=");
 
-			let new_hash = location.hash;
+			let newHash = location.hash;
 			// we remove it
-			if (index !== -1) {
-				new_hash = new_hash.substring(0, index);
-			}
+			if (index !== -1) newHash = newHash.substring(0, index);
 
 			// we change it
-			location.hash = new_hash;
+			location.hash = newHash;
 		},
 		copyShareLink(id) {
 			let url = this.changeShareURL(id, true);

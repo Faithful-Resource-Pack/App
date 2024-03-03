@@ -56,7 +56,7 @@ export const discordAuthStore = defineStore("discordAuth", {
 		refreshLogin(auth = undefined) {
 			if (auth === undefined) auth = this.$state;
 
-			return fetch(this.$state.apiURL + "/auth/discord/refresh", {
+			return fetch(`${this.$state.apiURL}/auth/discord/refresh`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

@@ -129,7 +129,7 @@ export default {
 	methods: {
 		activeTag(t) {
 			const result = {};
-			result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
+			result[`v-btn--active ${this.pageColor} ${this.textColorOnPage}`] =
 				(t === "all" && !this.tag) || (t && this.tag && t.toLowerCase() === this.tag.toLowerCase());
 
 			return result;
@@ -152,7 +152,7 @@ export default {
 				.catch((err) => console.error(err));
 		},
 		packURL(tag) {
-			return "/packs/" + tag || "all";
+			return `/packs/${tag || "all"}`;
 		},
 		formatTags(s) {
 			return s

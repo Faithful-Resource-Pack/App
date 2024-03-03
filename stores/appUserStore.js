@@ -8,7 +8,7 @@ export const appUserStore = defineStore("appUser", {
 
 	actions: {
 		getUser(rootApiURL, accessToken) {
-			return fetch(rootApiURL + "/users/profile", {
+			return fetch(`${rootApiURL}/users/profile`, {
 				method: "GET",
 				headers: {
 					discord: accessToken,
@@ -23,7 +23,7 @@ export const appUserStore = defineStore("appUser", {
 			});
 		},
 		getOrCreateUser(rootApiURL, accessToken) {
-			return fetch(rootApiURL + "/users/newprofile", {
+			return fetch(`${rootApiURL}/users/newprofile`, {
 				method: "POST",
 				headers: {
 					discord: accessToken,

@@ -12,7 +12,7 @@ function createServer(port = undefined, username = undefined, callback = undefin
 	/** @type {import('http').Server} */
 	let server;
 	server = global.listen(port, () => {
-		console.log("Mock API server running on port " + port);
+		console.log(`Mock API server running on port ${port}`);
 
 		if (callback && typeof callback === "function") {
 			callback(server);

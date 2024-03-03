@@ -125,13 +125,9 @@ const searchMixin = {
 		 * @param {URLSearchParams} search_params updated params
 		 */
 		_search_update(search_params) {
-			let query_str = "?" + search_params.toString();
-
 			let hash = location.hash;
 			if (hash.indexOf("?") !== -1) hash = hash.substring(0, hash.indexOf("?"));
-			hash += query_str;
-
-			location.hash = hash;
+			location.hash = `${hash}?${search_params.toString()}`;
 		},
 	},
 };

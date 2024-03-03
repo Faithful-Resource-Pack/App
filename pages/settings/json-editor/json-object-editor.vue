@@ -79,7 +79,7 @@ export default {
 
 			this.$nextTick(() => {
 				const width = text.offsetWidth;
-				input.style.width = width + 10 + "px";
+				input.style.width = `${width + 10}px`;
 			});
 		},
 		deleteItem(index) {

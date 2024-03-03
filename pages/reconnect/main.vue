@@ -82,7 +82,7 @@ export default {
 						? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024`
 						: "https://database.faithfulpack.net/images/branding/backgrounds/forest.png";
 				auth.username =
-					json.discriminator != 0 ? json.username + "#" + json.discriminator : json.global_name;
+					json.discriminator != 0 ? `${json.username}#${json.discriminator}` : json.global_name;
 
 				await this.$root.tokenCallback(auth, auth);
 			})

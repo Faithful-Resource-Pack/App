@@ -50,7 +50,7 @@ export default {
 			const addon_id = JSON.parse(JSON.stringify(this.$props.data.id));
 
 			axios
-				.delete(this.$root.apiURL + "/addons/" + addon_id, this.$root.apiOptions)
+				.delete(`${this.$root.apiURL}/addons/${addon_id}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 					this.disableDialog(true);

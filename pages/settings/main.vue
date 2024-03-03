@@ -72,14 +72,12 @@ export default {
 		},
 		save() {
 			axios
-				.post(this.$root.apiURL + "/settings/raw", this.json, {
+				.post(`${this.$root.apiURL}/settings/raw`, this.json, {
 					headers: {
 						discord: this.$root.user.access_token,
 					},
 				})
-				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-				})
+				.then(() => this.$root.showSnackBar(this.$root.lang().global.ends_success, "success"))
 				.catch((err) => {
 					console.error(err);
 					this.$root.showSnackBar(err, "error");
@@ -106,7 +104,7 @@ export default {
 	},
 	created() {
 		axios
-			.get(this.$root.apiURL + "/settings/raw", {
+			.get(`${this.$root.apiURL}/settings/raw`, {
 				headers: {
 					Accept: "application/json",
 					discord: this.$root.user.access_token,

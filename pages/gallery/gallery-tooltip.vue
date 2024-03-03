@@ -24,7 +24,7 @@
 			</div>
 			<div class="texture-tags-container">
 				<span class="encased" v-for="tag in texture.tags">
-					{{ "#" + tag }}
+					{{ `#${tag}` }}
 				</span>
 			</div>
 		</div>
@@ -86,7 +86,9 @@ export default {
 				.join(", ");
 		},
 		icon() {
-			return "icon-people" + (this.lastContribution.contributors.length === 1 ? "" : "s");
+			if (this.lastContribution.contributors.length === 1) return "icon-people";
+			// thank you material icons, very cool
+			return "icon-peoples";
 		},
 		modded() {
 			const somethingWithPath = this.texture.url;

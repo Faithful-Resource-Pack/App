@@ -165,15 +165,15 @@ export default {
 	},
 	methods: {
 		activeRole(t) {
-			let result = {};
-			result["v-btn--active " + this.pageColor + " " + this.textColorOnPage] =
+			const result = {};
+			result[`v-btn--active ${this.pageColor} ${this.textColorOnPage}`] =
 				(t === "all" && !this.role && !!this.name) ||
 				(t && this.role && t.toLowerCase() === this.role.toLowerCase());
 
 			return result;
 		},
 		userURL(t) {
-			return "/users/" + t + "/" + (this.name || "");
+			return `/users/${t}/${this.name || ""}`;
 		},
 		startSearch() {
 			// /whatever/ => /whatever/<search>

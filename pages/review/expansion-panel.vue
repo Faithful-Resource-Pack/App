@@ -284,7 +284,7 @@ export default {
 				this.addonInPanelLoading = false;
 
 				if (header_res.value)
-					this.addonInPanelHeaderURL = header_res.value.data + "?t=" + new Date().getTime();
+					this.addonInPanelHeaderURL = `${header_res.value.data}?t=${new Date().getTime()}`;
 				else this.addonInPanelHeaderURL = null;
 			});
 		},

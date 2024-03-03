@@ -103,8 +103,7 @@
 							>
 								{{
 									$root.lang(
-										"database.subtitles." +
-											(openedFormId ? "clone_contribution" : "add_new_contribution"),
+										`database.subtitles.${openedFormId ? "clone_contribution" : "add_new_contribution"}`,
 									)
 								}}
 							</v-btn>
@@ -254,8 +253,7 @@ export default {
 			const known_names = contributor_names.filter((username) => username);
 
 			if (anonymous_total > 0) {
-				const anonymous_str =
-					"" + anonymous_total + " " + this.$root.lang("database.labels.anonymous");
+				const anonymous_str = `${anonymous_total} ${this.$root.lang("database.labels.anonymous")}`;
 				known_names.splice(0, 0, anonymous_str);
 			}
 

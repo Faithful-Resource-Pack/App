@@ -673,7 +673,7 @@ axios
 					if (typeof message === "string") {
 						const newline = message.indexOf("\n");
 						if (newline !== -1) {
-							this.snackbar.message = message.substring(0, newline) + ":";
+							this.snackbar.message = `${message.substring(0, newline)}:`;
 							this.snackbar.submessage = message.substring(newline + 1);
 						} else {
 							this.snackbar.message = message;

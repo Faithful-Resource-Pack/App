@@ -10,7 +10,7 @@
 					<div>
 						<h2 class="h6" style="line-height: 24px">
 							{{ addonInPanel.name }}
-							<span class="text--secondary font-weight-regular">{{ "#" + addonInPanel.id }}</span>
+							<span class="text--secondary font-weight-regular">{{ `#${addonInPanel.id}` }}</span>
 						</h2>
 						<div class="text--secondary subtitle-2 mt-1" style="line-height: 14px">
 							{{ ([...addonInPanel.options.tags] || []).sort().join(" | ") }}
@@ -142,9 +142,7 @@
 				<div class="mr-auto">
 					<div v-if="addonInPanel.approval.status === 'approved'">
 						{{
-							$root.lang().review.addon.labels.approved_by +
-							" " +
-							getUsername(addonInPanel.approval.author)
+							`${$root.lang().review.addon.labels.approved_by} ${getUsername(addonInPanel.approval.author)}`
 						}}
 					</div>
 					<div
@@ -155,10 +153,7 @@
 					>
 						<div>
 							{{
-								$root.lang().review.addon.labels.denied_by +
-								" " +
-								getUsername(addonInPanel.approval.author) +
-								":"
+								`${$root.lang().review.addon.labels.denied_by} ${getUsername(addonInPanel.approval.author)}:`
 							}}
 						</div>
 						<div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
@@ -264,7 +259,7 @@ export default {
 				this.addonInPanelLoading = false;
 
 				if (header_res.value)
-					this.addonInPanelHeaderURL = header_res.value.data + "?t=" + new Date().getTime();
+					this.addonInPanelHeaderURL = `${header_res.value.data}?t=${new Date().getTime()}`;
 				else this.addonInPanelHeaderURL = null;
 			});
 		},

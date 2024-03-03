@@ -19,7 +19,7 @@
 							<span :class="['v-card__title pa-0 d-inline', status_color[status]]">{{
 								data[status] || 0
 							}}</span>
-							{{ $root.lang("review.titles." + status) }}
+							{{ $root.lang(`review.titles.${status}`) }}
 						</p>
 					</v-col>
 				</template>
@@ -49,8 +49,10 @@
 					class="d-flex align-stretch"
 				>
 					<p class="mb-0 rounded-lg pa-2">
-						<span class="v-card__title pa-0 d-inline text--primary">{{ number }}</span
-						>{{ " " + tag }}
+						<span class="v-card__title pa-0 d-inline text--primary">
+							{{ number }}
+						</span>
+						{{ " " + tag }}
 					</p>
 				</v-col>
 			</v-row>
@@ -124,7 +126,8 @@ export default {
 			return this.$root.user.roles.length;
 		},
 		url() {
-			return "/addons/stats" + (this.admin ? "-admin" : "");
+			if (this.admin) return "/addons/stats-admin";
+			return "/addons/stats";
 		},
 	},
 	methods: {

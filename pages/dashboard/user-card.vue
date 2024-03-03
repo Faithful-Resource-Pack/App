@@ -9,7 +9,7 @@
 				<v-col v-for="info in ['total_anonymous', 'total_roles']" :key="info" cols="12" sm="6">
 					<p v-if="data[info] !== undefined" class="mb-0 rounded-lg pa-3">
 						<span class="v-card__title pa-0 d-inline text--primary">{{ data[info] || 0 }}</span>
-						{{ $root.lang("dashboard.users." + info) }}
+						{{ $root.lang(`dashboard.users.${info}`) }}
 					</p>
 				</v-col>
 			</v-row>

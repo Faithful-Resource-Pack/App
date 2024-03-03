@@ -279,14 +279,13 @@ export default {
 	},
 	methods: {
 		activeTag(t) {
-			let res = {};
-			if (
+			const result = {};
+
+			result[`v-btn--active ${this.pageColor} ${this.textColorOnPage}`] =
 				(t === "all" && !this.tag && !!this.name) ||
-				(t && this.tag && t.toLowerCase() === this.tag.toLowerCase())
-			) {
-				res["v-btn--active " + this.pageColor + " " + this.textColorOnPage] = true;
-			}
-			return res;
+				(t && this.tag && t.toLowerCase() === this.tag.toLowerCase());
+
+			return result;
 		},
 		textureURL(t, name = undefined) {
 			return this.name || name

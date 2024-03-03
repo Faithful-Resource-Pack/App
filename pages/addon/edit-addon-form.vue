@@ -122,7 +122,7 @@ export default {
 				this.reason = "";
 			}
 			let prom = axios
-				.patch(this.$root.apiURL + "/addons/" + this.id, data, this.$root.apiOptions)
+				.patch(`${this.$root.apiURL}/addons/${this.id}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar("Saved", "success");
 				});
@@ -131,10 +131,10 @@ export default {
 				prom = prom
 					.then(() => {
 						return axios.put(
-							this.$root.apiURL + "/addons/" + this.id + "/review",
+							`${this.$root.apiURL}/addons/${this.id}/review`,
 							{
 								status: "approved",
-								reason: "Admin edit",
+								reason: "Manager edit",
 							},
 							this.$root.apiOptions,
 						);
@@ -154,14 +154,14 @@ export default {
 			let promise;
 			if (remove) {
 				promise = axios.delete(
-					this.$root.apiURL + "/addons/" + this.id + "/header",
+					`${this.$root.apiURL}/addons/${this.id}/header`,
 					this.$root.apiOptions,
 				);
 			} else {
 				const form = new FormData();
 				form.set("file", file, file.name);
 				promise = axios.post(
-					this.$root.apiURL + "/addons/" + this.id + "/header",
+					`${this.$root.apiURL}/addons/${this.id}/header`,
 					form,
 					this.$root.apiOptions,
 				);
@@ -184,14 +184,10 @@ export default {
 				});
 		},
 		getHeader() {
-			axios({
-				method: "GET",
-				url: this.$root.apiURL + "/addons/" + this.id + "/files/header",
-				...this.$root.apiOptions,
-			})
+			axios
+				.get(`${this.$root.apiURL}/addons/${this.id}/files/header`, this.$root.apiOptions)
 				.then((res) => {
-					const url = res.data + "?t=" + new Date().getTime();
-					this.headerSource = url;
+					this.headerSource = `${res.data}?t=${new Date().getTime()}`;
 				})
 				.catch(() => {
 					this.headerSource = undefined;
@@ -204,12 +200,12 @@ export default {
 			if (remove) {
 				if (id !== undefined) {
 					promise = axios.delete(
-						this.$root.apiURL + "/addons/" + this.id + "/screenshots/" + id,
+						`${this.$root.apiURL}/addons/${this.id}/screenshots/${id}`,
 						this.$root.apiOptions,
 					);
 				} else {
 					promise = axios.delete(
-						this.$root.apiURL + "/addons/" + this.id + "/screenshots/" + index,
+						`${this.$root.apiURL}/addons/${this.id}/screenshots/${index}`,
 						this.$root.apiOptions,
 					);
 				}
@@ -225,11 +221,7 @@ export default {
 					form.set("file", screen, screen.name);
 
 					successful = await axios
-						.post(
-							this.$root.apiURL + "/addons/" + this.id + "/screenshots",
-							form,
-							this.$root.apiOptions,
-						)
+						.post(`${this.$root.apiURL}/addons/${this.id}/screenshots`, form, this.$root.apiOptions)
 						.then(() => true)
 						.catch((error) => {
 							err = error;
@@ -258,10 +250,7 @@ export default {
 		getScreens() {
 			axios
 				.get(
-					this.$root.apiURL +
-						"/addons/" +
-						(this.id || this.$route.params.id) +
-						"/files/screenshots",
+					`${this.$root.apiURL}/addons/${this.id || this.$route.params.id}/files/screenshots`,
 					this.$root.apiOptions,
 				)
 				.then((res) => {
@@ -269,10 +258,7 @@ export default {
 				});
 			axios
 				.get(
-					this.$root.apiURL +
-						"/addons/" +
-						(this.id || this.$route.params.id) +
-						"/files/screenshots-ids",
+					`${this.root.apiURL}/addons/${this.id || this.$route.params.id}/files/screenshots-ids`,
 					this.$root.apiOptions,
 				)
 				.then((res) => {
@@ -284,9 +270,9 @@ export default {
 		this.getHeader();
 		this.getScreens();
 		Promise.all([
-			axios.get(this.$root.apiURL + "/addons/" + this.$route.params.id, this.$root.apiOptions),
+			axios.get(`${this.$root.apiURL}/addons/${this.$route.params.id}`, this.$root.apiOptions),
 			axios.get(
-				this.$root.apiURL + "/addons/" + this.$route.params.id + "/files/downloads",
+				`${this.$root.apiURL}/addons/${this.$route.params.id}/files/downloads`,
 				this.$root.apiOptions,
 			),
 		]).then((res) => {

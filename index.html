@@ -36,7 +36,6 @@
       app
       v-model="drawer"
     >
-
       <v-card id="banner-card" class="rounded-t-0">
         <v-img height="128" :src="user.banner">
           <v-card-title class="banner-btn pl-2" v-if="isUserLogged">
@@ -47,7 +46,7 @@
                 :alt="user.username.charAt(0)"
                 :src="user.avatar"
               />
-              <span  class="text-center primary font-weight-bold" v-else>{{ user.username.charAt(0) }}</span>
+              <span class="text-center primary font-weight-bold" v-else>{{ user.username.charAt(0) }}</span>
             </v-avatar>
             <span class="white--text">{{ user.username }}</span>
           </v-card-title>

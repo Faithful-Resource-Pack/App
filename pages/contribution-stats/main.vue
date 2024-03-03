@@ -37,7 +37,6 @@ import moment from "moment";
 
 export default {
 	name: "contributor-page",
-	components: {},
 	data() {
 		return {
 			texturesCount: 0,
@@ -140,7 +139,7 @@ export default {
 				.attr("width", width)
 				.attr("height", height)
 				.append("g")
-				.attr("transform", "translate(" + spacing + "," + spacing / 4 + ")");
+				.attr("transform", `translate(${spacing}, ${spacing / 4})`);
 
 			// create default time format
 			const timeFormat = d3.timeFormat("%b %d %Y");
@@ -157,7 +156,7 @@ export default {
 
 			svg
 				.append("g")
-				.attr("transform", "translate(0, " + (height - spacing) + ")")
+				.attr("transform", `translate(0, ${height - spacing})`)
 				.call(xAxis)
 				.selectAll("text")
 				.style("text-anchor", "end")
@@ -210,8 +209,7 @@ export default {
 				.attr("width", xScale.bandwidth())
 				.attr("y", (d) => yScale(d[1]))
 				.attr("height", (d) => height - spacing - yScale(d[1] - d[0]))
-				.on("mouseover", (...args) => {
-					const [event, d] = args;
+				.on("mouseover", (event, d) => {
 					div.transition().duration(200).style("opacity", 0.9);
 					div
 						.html(
@@ -222,15 +220,13 @@ export default {
 								(d[1] - d[0]) +
 								"</span>",
 						)
-						.style("left", event.pageX + "px")
-						.style("top", event.pageY + "px");
+						.style("left", `${event.pageX}px`)
+						.style("top", `${event.pageY}px`);
 				})
-				.on("mousemove", (event) => {
-					div.style("left", event.pageX + "px").style("top", event.pageY + "px");
-				})
-				.on("mouseout", () => {
-					div.transition().duration(500).style("opacity", 0);
-				});
+				.on("mousemove", (event) =>
+					div.style("left", `${event.pageX}px`).style("top", `${event.pageY}px`),
+				)
+				.on("mouseout", () => div.transition().duration(500).style("opacity", 0));
 
 			const reverseColors = colors.reverse(); // To show categories in the same order as they are used
 			const reverseKeys = allPack.reverse();
@@ -243,7 +239,7 @@ export default {
 			const legend = svg
 				.append("g")
 				.attr("transform-origin", "top right")
-				.attr("transform", "translate(" + (width - 150) + ", 20)");
+				.attr("transform", `translate(${width - 150}, 20)`);
 
 			// For each color, we add a square always at the same position on the X axis
 			// and moved depending on the square size & the index of color used in the Y axis
@@ -252,8 +248,8 @@ export default {
 				.data(reverseColors)
 				.enter()
 				.append("rect")
-				.attr("height", legendCellSize + "px")
-				.attr("width", legendCellSize + "px")
+				.attr("height", `${legendCellSize}px`)
+				.attr("width", `${legendCellSize}px`)
 				.attr("x", -25)
 				.attr("y", (d, i) => i * legendCellSize)
 				.style("fill", (d) => d);
@@ -267,11 +263,7 @@ export default {
 				.attr(
 					"transform",
 					(d, i) =>
-						"translate(" +
-						(legendCellSize - 20) +
-						", " +
-						(i * legendCellSize + (legendCellSize - 13) / 2) +
-						")",
+						`translate(${legendCellSize - 20}, ${i * legendCellSize + (legendCellSize - 13) / 2})`,
 				)
 				.attr("dy", legendCellSize / 1.6) // To center the text vertically to squares
 				.style("font-size", "13px")

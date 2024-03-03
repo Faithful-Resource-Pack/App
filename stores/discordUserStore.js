@@ -58,7 +58,7 @@ export const discordUserStore = defineStore("discordUser", {
 									: "https://database.faithfulpack.net/images/branding/backgrounds/forest.png",
 							discordName:
 								json.discriminator != 0
-									? json.username + "#" + json.discriminator
+									? `${json.username}#${json.discriminator}`
 									: json.global_name,
 						});
 						// console.log(this.$state)
