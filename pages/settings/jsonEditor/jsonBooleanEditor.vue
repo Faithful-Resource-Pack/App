@@ -5,8 +5,8 @@
 </template>
 
 <script>
-const jsonEditor = () => import("./jsonObjectEditor.vue");
-const jsonAddEditor = () => import("./jsonAddEditor.vue");
+const JSONEditor = () => import("./jsonObjectEditor.vue");
+const JSONAddEditor = () => import("./jsonAddEditor.vue");
 
 function deepEqual(x, y) {
 	if (x === y) {
@@ -27,8 +27,8 @@ function deepEqual(x, y) {
 export default {
 	name: "json-boolean-editor",
 	components: {
-		jsonEditor,
-		jsonAddEditor,
+		JSONEditor,
+		JSONAddEditor,
 	},
 	props: {
 		value: {

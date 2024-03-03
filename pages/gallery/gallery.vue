@@ -170,8 +170,8 @@
 import axios from "axios";
 import moment from "moment";
 
-const galleryModal = () => import("./modal.vue");
-const textureTooltip = () => import("./gallery_tooltip.vue");
+const GalleryModal = () => import("./modal.vue");
+const TextureTooltip = () => import("./gallery_tooltip.vue");
 
 const Chain = function (val) {
 	return {
@@ -190,8 +190,8 @@ const STRETCHED_KEY = "gallery_stretched";
 export default {
 	name: "texture-page",
 	components: {
-		galleryModal,
-		textureTooltip,
+		GalleryModal,
+		TextureTooltip,
 	},
 	data() {
 		return {

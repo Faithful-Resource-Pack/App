@@ -26,8 +26,8 @@
 </template>
 
 <script>
-const jsonEditor = () => import("./jsonEditor.vue");
-const jsonAddEditor = () => import("./jsonAddEditor.vue");
+const JSONEditor = () => import("./jsonEditor.vue");
+const JSONAddEditor = () => import("./jsonAddEditor.vue");
 
 function deepEqual(x, y) {
 	if (x === y) {
@@ -48,8 +48,8 @@ function deepEqual(x, y) {
 export default {
 	name: "json-object-editor",
 	components: {
-		jsonEditor,
-		jsonAddEditor,
+		JSONEditor,
+		JSONAddEditor,
 	},
 	props: {
 		value: {

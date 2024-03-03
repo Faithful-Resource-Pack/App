@@ -17,12 +17,12 @@
 import Vue from "vue";
 import axios from "axios";
 
-const addonForm = () => import("./addonForm.vue");
+const AddonForm = () => import("./addonForm.vue");
 
 export default {
 	name: "new-addon-form",
 	components: {
-		"addon-form": addonForm,
+		AddonForm,
 	},
 	data() {
 		return {

@@ -241,11 +241,11 @@ import Vue from "vue";
 import axios from "axios";
 import moment from "moment";
 
-const contributionModal = () => import("./contributionModal.vue");
+const ContributionModal = () => import("./contributionModal.vue");
 
 export default {
 	components: {
-		contributionModal,
+		ContributionModal,
 	},
 	name: "contribution-page",
 	data() {

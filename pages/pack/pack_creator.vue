@@ -146,14 +146,14 @@
 import Vue from "vue";
 import axios from "axios";
 
-const submissionCreator = () => import("./submission_creator.vue");
-const packRemoveConfirm = () => import("./pack_remove_confirm.vue");
+const SubmissionCreator = () => import("./submission_creator.vue");
+const PackRemoveConfirm = () => import("./pack_remove_confirm.vue");
 
 export default {
 	name: "pack-creator",
 	components: {
-		submissionCreator,
-		packRemoveConfirm,
+		SubmissionCreator,
+		PackRemoveConfirm,
 	},
 	props: {
 		dialog: {

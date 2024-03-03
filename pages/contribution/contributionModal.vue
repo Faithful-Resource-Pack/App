@@ -136,12 +136,12 @@
 
 <script>
 import Vue from "vue";
-const contributionForm = () => import("./contributionForm.vue");
+const ContributionForm = () => import("./contributionForm.vue");
 
 export default {
 	name: "contribution-modal",
 	components: {
-		contributionForm,
+		ContributionForm,
 	},
 	props: {
 		contributors: {
