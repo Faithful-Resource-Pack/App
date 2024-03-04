@@ -232,8 +232,8 @@ export default {
 			const reverseKeys = allPack.reverse();
 
 			const reverseKeysTitle = {
-				faithful_32x: "faithful_32x",
-				faithful_64x: "faithful_64x",
+				faithful_32x: "Faithful 32x",
+				faithful_64x: "Faithful 64x",
 			};
 
 			const legend = svg

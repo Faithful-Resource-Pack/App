@@ -60,9 +60,10 @@ export default {
 	},
 	computed: {
 		lastContribution() {
-			return this.contributions[this.pack][this.texture.textureID].sort((a, b) =>
-				a.date > b.date ? -1 : 1,
-			)?.[0];
+			const contributions = this.contributions[this.pack]?.[this.texture.textureID];
+
+			if (contributions !== undefined)
+				return contributions.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
 		},
 		lastContributionNames() {
 			if (this.lastContribution === undefined) return "";

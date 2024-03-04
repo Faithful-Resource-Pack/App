@@ -92,7 +92,7 @@
 				</template>
 				<template v-if="!loading && displayedTextures.length === 0">
 					<div class="text-h6 my-2">
-						{{ error ? error : $root.lang().global.no_results }}
+						{{ error || $root.lang().global.no_results }}
 					</div>
 				</template>
 			</div>
@@ -108,24 +108,13 @@
 				>
 					<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 						<template v-slot:trigger>
-							<img
-								class="gallery-texture-image"
-								onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
-								:src="texture.url"
-								:style="styles.cell"
-								lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
-							/>
-
-							<div class="not-done" style="display: none">
-								<span></span>
-								<div>
-									<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
-									<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
-									<p :style="styles.not_done.message">
-										{{ $root.lang().gallery.error_message.texture_not_done }}
-									</p>
-								</div>
-							</div>
+							<gallery-image :src="texture.url">
+								<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
+								<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
+								<p :style="styles.not_done.message">
+									{{ $root.lang().gallery.error_message.texture_not_done }}
+								</p>
+							</gallery-image>
 							<v-btn
 								@click.stop="() => copyShareLink(texture.textureID)"
 								class="ma-2 gallery-share"
@@ -172,6 +161,7 @@ import moment from "moment";
 
 const GalleryModal = () => import("./gallery-modal.vue");
 const GalleryTooltip = () => import("./gallery-tooltip.vue");
+const GalleryImage = () => import("./gallery-image.vue");
 
 const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";
@@ -182,6 +172,7 @@ export default {
 	components: {
 		GalleryModal,
 		GalleryTooltip,
+		GalleryImage,
 	},
 	data() {
 		return {
@@ -317,11 +308,11 @@ export default {
 			}
 		},
 		shareID() {
-			let index = location.hash.indexOf("?show=");
+			const index = location.hash.indexOf("?show=");
 			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
 		},
 		changeShareURL(id, dryRun = false) {
-			let index = location.hash.indexOf("?show=");
+			const index = location.hash.indexOf("?show=");
 
 			let newHash = location.hash;
 			// we remove it
@@ -362,7 +353,7 @@ export default {
 		},
 		discordIDtoName(d) {
 			return (
-				this.loadedContributors[d].username ||
+				this.loadedContributors[d]?.username ||
 				this.$root.lang().gallery.error_message.user_anonymous
 			);
 		},
@@ -450,15 +441,12 @@ export default {
 			});
 		},
 		computeGrid() {
-			let breakpoints = this.$root.$vuetify.breakpoint;
+			const breakpoints = this.$root.$vuetify.breakpoint;
 			let gap;
 			let number;
 
-			let base_columns = this.columns;
-
-			if (breakpoints.smAndDown) {
-				base_columns = breakpoints.smOnly ? 2 : 1;
-			}
+			let baseColumns = this.columns;
+			if (breakpoints.smAndDown) baseColumns = breakpoints.smOnly ? 2 : 1;
 
 			// constants
 			const MIN_WIDTH = 110;
@@ -467,7 +455,7 @@ export default {
 			// real content width
 			const width = this.$el.clientWidth - MARGIN * 2;
 
-			if (base_columns != 1) {
+			if (baseColumns != 1) {
 				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
 				// * where A = 200 / (1.5 * n)
 				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
@@ -476,24 +464,24 @@ export default {
 				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
 				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
 				// * solve that and keep positive value
-				let a = MIN_WIDTH;
-				let b = 200 / 1.5 - width;
-				let c = -200 / 1.5;
-				let delta = b * b - 4 * a * c;
-				let n = (-b + Math.sqrt(delta)) / (2 * a);
+				const a = MIN_WIDTH;
+				const b = 200 / 1.5 - width;
+				const c = -200 / 1.5;
+				const delta = b * b - 4 * a * c;
+				const n = (-b + Math.sqrt(delta)) / (2 * a);
 				gap = 200 / (n * 1.5);
-				number = Math.min(base_columns, Math.floor(n));
+				number = Math.min(baseColumns, Math.floor(n));
 			} else {
 				gap = 8;
 				number = 1;
 			}
 
-			const font_size = width / number / 20;
+			const fontSize = width / number / 20;
 
 			this.styles.not_done = {
-				texture_id: { "font-size": `${font_size * 4}px` },
-				texture_name: { "font-size": `${font_size * 2}px` },
-				message: { "font-size": `${font_size * 1.2}px` },
+				texture_id: { "font-size": `${fontSize * 4}px` },
+				texture_name: { "font-size": `${fontSize * 2}px` },
+				message: { "font-size": `${fontSize * 1.2}px` },
 			};
 
 			this.styles.grid = {

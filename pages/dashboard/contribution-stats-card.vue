@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		id="contribution-stats-card"
-		:title="$root.lang('global.tabs.database.subtabs.contributions') || ''"
+		:title="$root.lang('dashboard.titles.contributions')"
 		go_to="/contributions"
 		:can_go_to="admin"
 		class="d-flex flex-column"

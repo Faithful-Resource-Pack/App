@@ -1,9 +1,5 @@
 <template>
-	<dashboard-card
-		:title="$root.lang('global.tabs.database.subtabs.users') || ''"
-		go_to="/users"
-		:can_go_to="admin"
-	>
+	<dashboard-card :title="$root.lang('dashboard.titles.users')" go_to="/users" :can_go_to="admin">
 		<v-card-text class="pb-3">
 			<v-row class="py-0 my-0" v-if="data" dense>
 				<v-col v-for="info in ['total_anonymous', 'total_roles']" :key="info" cols="12" sm="6">

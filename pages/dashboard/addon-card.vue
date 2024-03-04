@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		id="addon-card"
-		:title="$root.lang('global.tabs.addons.title') || ''"
+		:title="$root.lang('dashboard.titles.addons')"
 		go_to="/review/addons"
 		:can_go_to="admin"
 		class="d-flex flex-column justify-space-between"
@@ -77,9 +77,15 @@
 		<v-card-actions class="d-flex mt-0 px-4 pt-1">
 			<v-row dense
 				><v-col>
-					<v-btn block text color="primary" :to="'/addons/submissions'"> Submissions </v-btn></v-col
+					<v-btn block text color="primary" :to="'/addons/submissions'">{{
+						$root.lang().dashboard.addons.submissions
+					}}</v-btn></v-col
 				>
-				<v-col><v-btn block text color="primary" :to="'/addons/new'"> Upload </v-btn></v-col>
+				<v-col
+					><v-btn block text color="primary" :to="'/addons/new'">{{
+						$root.lang().dashboard.addons.upload
+					}}</v-btn></v-col
+				>
 			</v-row>
 		</v-card-actions>
 	</dashboard-card>

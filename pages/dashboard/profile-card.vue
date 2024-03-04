@@ -1,6 +1,6 @@
 <template>
 	<dashboard-card
-		:title="$root.lang('global.tabs.user.subtabs.profile') || ''"
+		:title="$root.lang('dashboard.titles.profile')"
 		go_to="/profile"
 		:can_go_to="true"
 		class="d-flex flex-column"

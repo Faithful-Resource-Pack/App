@@ -470,7 +470,7 @@ export default {
 		title: "Gallery",
 		loading_message: "Loading…",
 		error_message: {
-			texture_not_done: "Texture is missing or blacklisted!",
+			texture_not_done: "This texture is missing!",
 			user_anonymous: "Anonymous",
 			user_not_found: "Unknown User",
 			contribution_not_found: "No contributions found in database!",
@@ -567,7 +567,17 @@ export default {
 			last_week: "contributions last week",
 			last_month: "contributions last month",
 		},
+		titles: {
+			users: "Users",
+			addons: "Add-ons",
+			contributions: "Contributions",
+			profile: "Profile",
+		},
 		activity: "%s activity",
+		addons: {
+			submissions: "Submissions",
+			upload: "Upload",
+		},
 		users: {
 			total: "users",
 			total_anonymous: "anonymous",

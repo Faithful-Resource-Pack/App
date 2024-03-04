@@ -36,20 +36,9 @@
 							>
 								<template v-for="(url, j) in group">
 									<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="i + '-' + j">
-										<div class="gallery-dialog-texture">
-											<img
-												class="gallery-texture-image"
-												onerror="this.style.display='none'; this.nextElementSibling.style.display='block'; this.parentElement.style.background='rgba(0,0,0,0.3)';this.parentElement.classList.add('rounded')"
-												:src="url[1]"
-												lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
-											/>
-											<div class="not-done" style="display: none">
-												<span></span>
-												<div>
-													<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
-												</div>
-											</div>
-										</div>
+										<gallery-image :src="url[1]" modal="true">
+											<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+										</gallery-image>
 										<h2>{{ packToName[url[0]] }}</h2>
 									</div>
 								</template>
@@ -110,8 +99,13 @@
 <script>
 import moment from "moment";
 
+const GalleryImage = () => import("./gallery-image.vue");
+
 export default {
 	name: "gallery-modal",
+	components: {
+		GalleryImage,
+	},
 	props: {
 		value: {
 			type: Boolean,
