@@ -159,9 +159,9 @@
 import axios from "axios";
 import moment from "moment";
 
-const GalleryModal = () => import("./gallery-modal.vue");
-const GalleryTooltip = () => import("./gallery-tooltip.vue");
-const GalleryImage = () => import("./gallery-image.vue");
+import GalleryModal from "./gallery-modal.vue";
+import GalleryTooltip from "./gallery-tooltip.vue";
+import GalleryImage from "./gallery-image.vue";
 
 const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";

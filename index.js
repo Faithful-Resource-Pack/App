@@ -26,21 +26,21 @@ Vue.component("tippy", TippyComponent);
 Vue.component("prism-editor", PrismEditor);
 
 // pages used in navbar
-const ContributionPage = () => import("./pages/contribution/main.vue");
-const UsersPage = () => import("./pages/users/main.vue");
-const ContributorStatsPage = () => import("./pages/contribution-stats/main.vue");
-const TexturePage = () => import("./pages/texture/main.vue");
-const PackPage = () => import("./pages/pack/main.vue");
-const ProfilePage = () => import("./pages/profile/main.vue");
-const NewAddonPage = () => import("./pages/addon/new-addon-form.vue");
-const EditAddonPage = () => import("./pages/addon/edit-addon-form.vue");
-const AddonSubmissionsPage = () => import("./pages/addon/addon-submissions.vue");
-const ReviewAddonsPage = () => import("./pages/review/main.vue");
-const ReviewTranslationsPage = () => import("./pages/translation/main.vue");
-const GalleryPage = () => import("./pages/gallery/main.vue");
-const SettingsPage = () => import("./pages/settings/main.vue");
-const DashboardPage = () => import("./pages/dashboard/main.vue");
-const ReconnectPage = () => import("./pages/reconnect/main.vue");
+import ContributionPage from "./pages/contribution/main.vue";
+import UsersPage from "./pages/users/main.vue";
+import ContributorStatsPage from "./pages/contribution-stats/main.vue";
+import TexturePage from "./pages/texture/main.vue";
+import PackPage from "./pages/pack/main.vue";
+import ProfilePage from "./pages/profile/main.vue";
+import NewAddonPage from "./pages/addon/new-addon-form.vue";
+import EditAddonPage from "./pages/addon/edit-addon-form.vue";
+import AddonSubmissionsPage from "./pages/addon/addon-submissions.vue";
+import ReviewAddonsPage from "./pages/review/main.vue";
+import ReviewTranslationsPage from "./pages/translation/main.vue";
+import GalleryPage from "./pages/gallery/main.vue";
+import SettingsPage from "./pages/settings/main.vue";
+import DashboardPage from "./pages/dashboard/main.vue";
+import ReconnectPage from "./pages/reconnect/main.vue";
 
 window.colors = (
 	await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")

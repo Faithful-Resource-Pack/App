@@ -20,12 +20,12 @@
 </template>
 
 <script>
-const JSONObjectEditor = () => import("./json-object-editor.vue");
-const JSONStringEditor = () => import("./json-string-editor.vue");
-const JSONNumberEditor = () => import("./json-number-editor.vue");
-const JSONBooleanEditor = () => import("./json-boolean-editor.vue");
-const JSONNullEditor = () => import("./json-null-editor.vue");
-const JSONArrayEditor = () => import("./json-array-editor.vue");
+import JSONObjectEditor from "./json-object-editor.vue";
+import JSONStringEditor from "./json-string-editor.vue";
+import JSONNumberEditor from "./json-number-editor.vue";
+import JSONBooleanEditor from "./json-boolean-editor.vue";
+import JSONNullEditor from "./json-null-editor.vue";
+import JSONArrayEditor from "./json-array-editor.vue";
 
 function deepEqual(x, y) {
 	if (x === y) return true;

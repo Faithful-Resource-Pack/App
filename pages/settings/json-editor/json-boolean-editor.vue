@@ -5,8 +5,8 @@
 </template>
 
 <script>
-const JSONEditor = () => import("./jsonObjectEditor.vue");
-const JSONAddEditor = () => import("./jsonAddEditor.vue");
+import JSONEditor from "./json-object-editor.vue";
+import JSONAddEditor from "./json-add-editor.vue";
 
 function deepEqual(x, y) {
 	if (x === y) return true;

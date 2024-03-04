@@ -125,8 +125,8 @@
 import Vue from "vue";
 import axios from "axios";
 
-const UseModal = () => import("./use-modal.vue");
-const RemoveConfirm = () => import("./remove-confirm.vue");
+import UseModal from "./use-modal.vue";
+import RemoveConfirm from "./remove-confirm.vue";
 
 export default {
 	name: "texture-modal",

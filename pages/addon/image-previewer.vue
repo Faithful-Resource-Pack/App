@@ -42,7 +42,7 @@
 </template>
 
 <script>
-const FullscreenPreview = () => import("./fullscreen-preview.vue");
+import FullscreenPreview from "./fullscreen-preview.vue";
 
 export default {
 	name: "image-previewer",

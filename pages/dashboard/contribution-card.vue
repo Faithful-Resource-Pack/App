@@ -50,7 +50,7 @@
 import axios from "axios";
 import moment from "moment";
 
-const DashboardCard = () => import("./dashboard-card.vue");
+import DashboardCard from "./dashboard-card.vue";
 
 export default {
 	name: "contribution-card",

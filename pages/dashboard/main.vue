@@ -38,12 +38,12 @@
 </template>
 
 <script>
-const AddonCard = () => import("./addon-card.vue");
-const ProfileCard = () => import("./profile-card.vue");
-const UserCard = () => import("./user-card.vue");
-const ContributionCard = () => import("./contribution-card.vue");
-const ContributionStatsCard = () => import("./contribution-stats-card.vue");
-const FaithfulCard = () => import("./faithful-card.vue");
+import AddonCard from "./addon-card.vue";
+import ProfileCard from "./profile-card.vue";
+import UserCard from "./user-card.vue";
+import ContributionCard from "./contribution-card.vue";
+import ContributionStatsCard from "./contribution-stats-card.vue";
+import FaithfulCard from "./faithful-card.vue";
 
 export default {
 	name: "dashboardPage",

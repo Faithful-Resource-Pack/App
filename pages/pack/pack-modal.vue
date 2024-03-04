@@ -143,8 +143,8 @@
 import Vue from "vue";
 import axios from "axios";
 
-const SubmissionModal = () => import("./submission-modal.vue");
-const PackRemoveConfirm = () => import("./pack-remove-confirm.vue");
+import SubmissionModal from "./submission-modal.vue";
+import PackRemoveConfirm from "./pack-remove-confirm.vue";
 
 export default {
 	name: "pack-modal",

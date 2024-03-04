@@ -49,7 +49,7 @@
 
 <script>
 import axios from "axios";
-const AddonForm = () => import("./addon-form.vue");
+import AddonForm from "./addon-form.vue";
 
 export default {
 	name: "edit-addon-form",

@@ -38,7 +38,7 @@
 </template>
 
 <script>
-const DashboardCard = () => import("./dashboard-card.vue");
+import DashboardCard from "./dashboard-card.vue";
 
 export default {
 	name: "faithful-card",

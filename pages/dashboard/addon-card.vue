@@ -93,7 +93,7 @@
 
 <script>
 import axios from "axios";
-const DashboardCard = () => import("./dashboard-card.vue");
+import DashboardCard from "./dashboard-card.vue";
 
 export default {
 	name: "addon-card",

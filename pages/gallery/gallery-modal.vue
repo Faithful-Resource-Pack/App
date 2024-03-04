@@ -99,7 +99,7 @@
 <script>
 import moment from "moment";
 
-const GalleryImage = () => import("./gallery-image.vue");
+import GalleryImage from "./gallery-image.vue";
 
 export default {
 	name: "gallery-modal",

@@ -199,8 +199,8 @@
 <script>
 import axios from "axios";
 
-const FullscreenPreview = () => import("../addon/fullscreen-preview.vue");
-const ImagePreviewer = () => import("../addon/image-previewer.vue");
+import FullscreenPreview from "../addon/fullscreen-preview.vue";
+import ImagePreviewer from "../addon/image-previewer.vue";
 
 export default {
 	name: "expansion-panel",

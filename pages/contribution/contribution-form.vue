@@ -80,9 +80,9 @@
 </template>
 
 <script>
-const UserSelect = () => import("./user-select.vue");
-const QuickDatePicker = () => import("../components/quick-date-picker.vue");
-const MultiRangeInput = () => import("../components/multi-range-input.vue");
+import UserSelect from "./user-select.vue";
+import QuickDatePicker from "../components/quick-date-picker.vue";
+import MultiRangeInput from "../components/multi-range-input.vue";
 
 export default {
 	name: "contribution-form",

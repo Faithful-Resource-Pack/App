@@ -29,8 +29,8 @@
 <script>
 import axios from "axios";
 
-const DashboardCard = () => import("./dashboard-card.vue");
-const RolesGraph = () => import("./roles-graph.vue");
+import DashboardCard from "./dashboard-card.vue";
+import RolesGraph from "./roles-graph.vue";
 
 export default {
 	name: "user-card",

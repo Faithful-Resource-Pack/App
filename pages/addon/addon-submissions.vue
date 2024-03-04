@@ -107,7 +107,7 @@
 <script>
 import axios from "axios";
 
-const RemoveConfirm = () => import("./remove-confirm.vue");
+import RemoveConfirm from "./remove-confirm.vue";
 
 export default {
 	name: "addon-submissions",

@@ -191,11 +191,11 @@
 import Vue from "vue";
 import axios from "axios";
 
-const TextureModal = () => import("./texture-modal.vue");
-const NewTextureModal = () => import("./new-texture-modal.vue");
-const ModifyVersionModal = () => import("./modify-version-modal.vue");
-const AddVersionModal = () => import("./add-version-modal.vue");
-const RemoveConfirm = () => import("./remove-confirm.vue");
+import TextureModal from "./texture-modal.vue";
+import NewTextureModal from "./new-texture-modal.vue";
+import ModifyVersionModal from "./modify-version-modal.vue";
+import AddVersionModal from "./add-version-modal.vue";
+import RemoveConfirm from "./remove-confirm.vue";
 
 export default {
 	name: "texture-page",

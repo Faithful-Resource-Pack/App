@@ -295,10 +295,10 @@
 <script>
 import Vue from "vue";
 
-const UserList = () => import("./user-list.vue");
-const ImagePreviewer = () => import("./image-previewer.vue");
-const FullscreenPreview = () => import("./fullscreen-preview.vue");
-const DropZone = () => import("../components/drop-zone.vue");
+import UserList from "./user-list.vue";
+import ImagePreviewer from "./image-previewer.vue";
+import FullscreenPreview from "./fullscreen-preview.vue";
+import DropZone from "../components/drop-zone.vue";
 
 export default {
 	name: "addon-form",

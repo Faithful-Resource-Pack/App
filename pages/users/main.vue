@@ -126,8 +126,8 @@
 import Vue from "vue";
 import axios from "axios";
 
-const UserModal = () => import("./user-modal.vue");
-const UserRemoveConfirm = () => import("./remove-confirm.vue");
+import UserModal from "./user-modal.vue";
+import UserRemoveConfirm from "./remove-confirm.vue";
 
 export default {
 	name: "users-page",

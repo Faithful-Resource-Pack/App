@@ -41,7 +41,7 @@
 import axios from "axios";
 import Prism from "prismjs";
 
-const JSONEditor = () => import("./json-editor/main.vue");
+import JSONEditor from "./json-editor/main.vue";
 
 export default {
 	name: "settings-page",

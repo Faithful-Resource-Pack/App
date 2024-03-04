@@ -16,7 +16,7 @@
 </template>
 
 <script>
-const ReviewPreview = () => import("./review-preview.vue");
+import ReviewPreview from "./review-preview.vue";
 
 export default {
 	name: "review-previewer",

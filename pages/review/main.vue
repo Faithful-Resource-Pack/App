@@ -76,11 +76,11 @@ d88   888  888    888 d88   888
 <script>
 import axios from "axios";
 
-const ExpansionPanel = () => import("./expansion-panel.vue");
-const DenyPopup = () => import("./deny-popup.vue");
-const ReviewCategories = () => import("./review-categories.vue");
-const ReviewList = () => import("./review-list.vue");
-const ReviewPreview = () => import("./review-previewer.vue");
+import ExpansionPanel from "./expansion-panel.vue";
+import DenyPopup from "./deny-popup.vue";
+import ReviewCategories from "./review-categories.vue";
+import ReviewList from "./review-list.vue";
+import ReviewPreview from "./review-previewer.vue";
 
 const searchMixin = {
 	methods: {

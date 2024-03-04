@@ -99,8 +99,8 @@
 <script>
 import axios from "axios";
 
-const PackModal = () => import("./pack-modal.vue");
-const PackRemoveConfirm = () => import("./pack-remove-confirm.vue");
+import PackModal from "./pack-modal.vue";
+import PackRemoveConfirm from "./pack-remove-confirm.vue";
 
 export default {
 	name: "pack-page",

@@ -26,8 +26,9 @@
 </template>
 
 <script>
-const JSONEditor = () => import("./jsonEditor.vue");
-const JSONAddEditor = () => import("./jsonAddEditor.vue");
+// fixes circular dependency error
+const JSONEditor = () => import("./main.vue");
+import JSONAddEditor from "./json-add-editor.vue";
 
 function deepEqual(x, y) {
 	if (x === y) return true;
