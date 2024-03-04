@@ -3,6 +3,7 @@ import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
+	/** @type{import('vite').UserConfig}*/
 	return {
 		plugins: [vue()],
 		// custom port instead of 5173 always
@@ -24,14 +25,6 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
-			},
-		},
-		define: {
-			apiURL: JSON.stringify(env.API_URL),
-			DEV: JSON.stringify(env.DEV || false),
-			VERBOSE: JSON.stringify(env.VERBOSE || false),
-			env: {
-				DISCORD_USER_URL: JSON.stringify(env["DISCORD_USER_URL"] || undefined),
 			},
 		},
 	};

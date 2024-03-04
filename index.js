@@ -15,8 +15,7 @@ import { discordAuthStore } from "./stores/discordAuthStore";
 import { discordUserStore } from "./stores/discordUserStore";
 import { appUserStore } from "./stores/appUserStore";
 
-// import vue dependencies
-Vue.config.devtools = ["localhost", "127.0.0.1"].includes(location.hostname) === "localhost";
+Vue.config.devtools = import.meta.env.MODE === 'development';
 Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(VueGraph);
@@ -122,19 +121,30 @@ Object.defineProperty(Object.prototype, "merge", {
 import enUS from "./resources/strings/en_US.js";
 import DOMPurify from "dompurify";
 
+// https://www.techonthenet.com/js/language_tags.php
+/** @type {Record<string, () => Promise<Record<string,unknown>>} */
+const LANGUAGES_MODULES_MAP = import.meta.glob("/resources/strings/*.js");
+const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e,action]) => {
+	const name = e.split("/").pop().split(".")[0];
+	return {
+		lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
+		action,
+		bcp47: name.replace("_", "-"),
+		file: e,
+	};
+});
+
 const LANGS = {
 	en: enUS,
 };
-
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
 const _get_lang = () => {
 	const storedLang = localStorage.getItem(LANG_KEY);
-
 	if (storedLang === null)
 		// no key
 		return LANG_DEFAULT;
-	else if (storedLang in LANGUAGES.map((e) => e.lang))
+	else if (LANGUAGES.map((e) => e.lang).includes(storedLang))
 		// if trusted input value
 		return storedLang;
 	else return LANG_DEFAULT;
@@ -300,18 +310,7 @@ ALL_TABS.filter((t) => t.roles === undefined)
 	.flat(1)
 	.forEach((r) => router.addRoute(r));
 
-// https://www.techonthenet.com/js/language_tags.php
-/** @type {Record<String, () => Promise<any>>} */
-const LANGUAGES_MODULES_MAP = import.meta.glob("/resources/strings/*.js");
-const LANGUAGES = Object.keys(LANGUAGES_MODULES_MAP).map((e) => {
-	const name = e.split("/").pop().split(".")[0];
-	return {
-		lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
-		bcp47: name.replace("_", "-"),
-		file: e,
-	};
-});
-
+window.apiURL = import.meta.env.VITE_API_URL;
 window.v = undefined;
 axios
 	.get(`${window.apiURL}/settings/raw`)
@@ -328,9 +327,10 @@ axios
 			el: "#app",
 			data() {
 				const discordUser = discordUserStore();
-				discordUser.params(window.env?.DISCORD_USER_URL);
+				discordUser.params(import.meta.env.DISCORD_USER_URL || undefined);
 
 				return {
+					refreshKey: 0,
 					discordUser,
 					discordAuth: discordAuthStore(),
 					appUser: appUserStore(),
@@ -381,7 +381,9 @@ axios
 						if (Object.keys(this.langs).includes(newValue)) {
 							if (Object.keys(this.langs).includes(oldValue)) {
 								moment.locale(this.langBCP47);
-								this.$forceUpdate();
+
+								// the next line would force this.lang to update
+								this.refreshKey++;
 							}
 						} else {
 							this.loadLanguage(newValue);
@@ -578,6 +580,35 @@ axios
 				langBCP47() {
 					return this.langToBCP47(this.selectedLang);
 				},
+				lang() {
+					// just mentioning refreshKey
+					this.refreshKey;
+
+					// rest of the function that actualy do the calculations and returns a value
+					return (path, raw = false) => {
+						let response = this.langs[this.selectedLang];
+
+						// fallback to default when loading new language
+						if (response === undefined) response = this.langs[Object.keys(this.langs)[0]];
+
+						// if you didn't request a path then 0
+						if (path === undefined) return response;
+
+						const split = path.split(".");
+
+						while (response !== undefined && split.length > 0) response = response[split.shift()];
+
+						// warns user if string not found
+						if (response === undefined)
+							console.error(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
+
+						// if raw we can use the object directly after
+						if (raw) return response;
+
+						// Shall send string to be chained with other string operations
+						return String(response); // enforce string to ensure string methods used after
+					}
+				},
 				isDark() {
 					return this.$vuetify.theme.dark;
 				},
@@ -596,14 +627,14 @@ axios
 						return; // everything will update
 					}
 
-					import(/* @vite-ignore */ lang.file)
+					lang.action()
 						.then((r) => {
 							r = r.default;
 							this.langs[lang.lang] = Object.merge({}, enUS, r);
 							// we need to wait for this.langs to be updated
 							this.$nextTick(() => {
-								// then we have to force update because this.lang is a method
-								this.$forceUpdate();
+								// the next line would force this.lang to update
+								this.refreshKey++;
 							});
 						})
 						.catch((e) => {
@@ -628,29 +659,6 @@ axios
 							}
 						}, 15000);
 					}
-				},
-				lang(path, raw = false) {
-					let response = this.langs[this.selectedLang];
-
-					// fallback to default when loading new language
-					if (response === undefined) response = this.langs[Object.keys(this.langs)[0]];
-
-					// if you didn't request a path then 0
-					if (path === undefined) return response;
-
-					const split = path.split(".");
-
-					while (response !== undefined && split.length > 0) response = response[split.shift()];
-
-					// warns user if string not found
-					if (response === undefined)
-						console.error(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
-
-					// if raw we can use the object directly after
-					if (raw) return response;
-
-					// Shall send string to be chained with other string operations
-					return String(response); // enforce string to ensure string methods used after
 				},
 				jsonSnackBar(json = undefined) {
 					const that = this;
