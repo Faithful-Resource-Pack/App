@@ -36,7 +36,7 @@
 							>
 								<template v-for="(url, j) in group">
 									<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="i + '-' + j">
-										<gallery-image :src="url[1]" modal="true">
+										<gallery-image modal :src="url[1]">
 											<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
 										</gallery-image>
 										<h2>{{ packToName[url[0]] }}</h2>
@@ -48,7 +48,7 @@
 
 					<div class="pl-sm-7">
 						<v-tabs id="infos-tabs" v-model="tab" :show-arrows="false">
-							<v-tabs-slider></v-tabs-slider>
+							<v-tabs-slider />
 
 							<v-tab v-for="item in items" :key="item" style="text-transform: uppercase">
 								{{ item }}

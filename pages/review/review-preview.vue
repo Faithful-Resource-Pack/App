@@ -73,13 +73,13 @@
 					><v-col cols="12" sm="5">
 						<v-list-item-title
 							v-text="$root.lang().review.addon.titles.authors"
-							class="uppercased"
+							class="uppercase"
 						/>
 						<div class="text--secondary" style="margin-bottom: 10px">
 							{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
 						</div>
 
-						<v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercased" />
+						<v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercase" />
 						<div class="text--secondary" style="margin-bottom: 10px">
 							<ul v-for="file in addonInPanel.files.filter((f) => f.use === 'download')">
 								<li>
@@ -94,7 +94,7 @@
 
 						<v-list-item-title
 							v-text="$root.lang().review.addon.titles.options"
-							class="uppercased"
+							class="uppercase"
 						/>
 						<div>
 							<!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->
@@ -113,13 +113,13 @@
 				</v-row>
 
 				<template v-if="addonSources.length > 0">
-					<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercased my-2" />
+					<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercase my-2" />
 					<image-previewer :sources="addonSources" :deletable="false" />
 				</template>
 
 				<v-list-item-title
 					v-text="$root.lang().review.addon.titles.description"
-					class="uppercased py-2"
+					class="uppercase py-2"
 				/>
 				<v-container
 					class="markdown"
@@ -131,7 +131,7 @@
 		<div v-if="addonInPanel.approval.status === 'pending'" class="mt-2 rounded-lg pa-2">
 			<v-list-item-title
 				v-text="$root.lang().addons.general.reason.title"
-				class="uppercased pb-1"
+				class="uppercase pb-1"
 			/>
 			<div>
 				{{ addonInPanel.approval.reason }}

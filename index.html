@@ -46,7 +46,7 @@
 	</head>
 	<body>
 		<v-app id="app" ref="app" :dark="dark" :light="!dark">
-			<v-app-bar flat dense bar app v-if="true" class="small-appbar">
+			<v-app-bar flat dense bar app v-if="true" class="small-app-bar">
 				<span class="mr-2 d-flex noselect">
 					<v-app-bar-nav-icon small @click="drawer = !drawer"></v-app-bar-nav-icon>
 				</span>
@@ -132,7 +132,7 @@
 						"
 					>
 						<v-list-item>
-							<v-list-item-title class="uppercased-unsized">
+							<v-list-item-title class="uppercase-unsized">
 								{{ tab.labelText }}
 							</v-list-item-title>
 						</v-list-item>
@@ -144,12 +144,12 @@
 							:key="subtabIndex"
 							:to="subtab.to"
 							:disabled="!subtab.enabled"
-							class="uppercased-unsized"
+							class="uppercase-unsized"
 						>
 							<v-list-item-icon v-if="subtab.icon" style="margin-right: 5px">
 								<v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title v-text="subtab.labelText" class="uppercased"></v-list-item-title>
+							<v-list-item-title v-text="subtab.labelText" class="uppercase"></v-list-item-title>
 
 							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
 								<span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
@@ -161,12 +161,12 @@
 							v-if="tab.to"
 							:to="tab.to"
 							:disabled="!tab.enabled"
-							class="uppercased-unsized"
+							class="uppercase-unsized"
 						>
 							<v-list-item-icon v-if="tab.icon" style="margin-right: 5px">
 								<v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title v-text="tab.labelText" class="uppercased"></v-list-item-title>
+							<v-list-item-title v-text="tab.labelText" class="uppercase"></v-list-item-title>
 
 							<v-list-item-action class="nav-badge" v-if="tab.badge && badges[tab.badge]">
 								<span class="nav-badge-inner error">{{ badges[tab.badge] }}</span>
@@ -186,13 +186,13 @@
 
 				<v-list dense nav>
 					<v-list-item>
-						<v-list-item-title class="uppercased-unsized">{{
+						<v-list-item-title class="uppercase-unsized">{{
 							$root.lang().global.tabs.review.subtabs.translations
 						}}</v-list-item-title>
 					</v-list-item>
 					<v-radio-group class="px-2 pb-2" row v-model="selectedLang" hide-details>
 						<v-radio
-							class="uppercased pb-1"
+							class="uppercase pb-1"
 							v-for="language in languages"
 							:key="language.bcp47"
 							:label="language.lang"

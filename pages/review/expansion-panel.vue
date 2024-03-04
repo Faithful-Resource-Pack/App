@@ -18,10 +18,10 @@
 				style="height: auto !important"
 			>
 				<v-row no-gutters>
-					<v-col cols="12" class="uppercased addon-name">
+					<v-col cols="12" class="uppercase addon-name">
 						{{ addon.name }}
 					</v-col>
-					<v-col cols="12" class="uppercased addon-tags" style="margin-top: 2.5px">
+					<v-col cols="12" class="uppercase addon-tags" style="margin-top: 2.5px">
 						{{ addon.options.tags.join(" | ") }}
 					</v-col>
 				</v-row>
@@ -83,7 +83,7 @@
 
 					<v-list-item-title
 						v-text="$root.lang().review.addon.titles.authors"
-						class="uppercased mt-2"
+						class="uppercase mt-2"
 					/>
 					<div class="text--secondary mb-2">
 						{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
@@ -91,7 +91,7 @@
 
 					<v-list-item-title
 						v-text="$root.lang().review.addon.titles.links"
-						class="uppercased mt-2"
+						class="uppercase mt-2"
 					/>
 					<div class="text--secondary mb-2">
 						<ul v-for="file in addonInPanel.files.filter((f) => f.use === 'download')">
@@ -105,7 +105,7 @@
 						</ul>
 					</div>
 
-					<v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercased" />
+					<v-list-item-title v-text="$root.lang().review.addon.titles.options" class="uppercase" />
 					<div>
 						<!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->
 						<!-- <br> -->
@@ -121,13 +121,13 @@
 					</div>
 
 					<template v-if="addonSources.length > 0">
-						<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercased my-2" />
+						<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercase my-2" />
 						<image-previewer :sources="addonSources" :deletable="false" />
 					</template>
 
 					<v-list-item-title
 						v-text="$root.lang().review.addon.titles.description"
-						class="uppercased my-2"
+						class="uppercase my-2"
 					/>
 					<v-container
 						class="markdown"
@@ -140,7 +140,7 @@
 					<div v-if="addonInPanel.approval.status === 'approved'" class="my-2">
 						<v-list-item-title
 							v-text="$root.lang().review.addon.labels.approved_by"
-							class="uppercased"
+							class="uppercase"
 						/>
 						<p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
 					</div>
@@ -154,12 +154,12 @@
 					>
 						<v-list-item-title
 							v-text="$root.lang().review.addon.labels.denied_by"
-							class="uppercased"
+							class="uppercase"
 						/>
 						<div class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</div>
 						<v-list-item-title
 							v-text="$root.lang().review.addon.labels.reason"
-							class="uppercased"
+							class="uppercase"
 						/>
 						<div class="text--secondary">{{ addon.approval.reason }}</div>
 					</div>

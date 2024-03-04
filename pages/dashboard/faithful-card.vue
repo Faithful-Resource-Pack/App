@@ -17,7 +17,7 @@
 			</div>
 
 			<div class="mt-2 mx-auto" id="connect-title">
-				<h2 class="faithful-font uppercased-unsized text-center text--primary">
+				<h2 class="faithful-font uppercase-unsized text-center text--primary">
 					{{ $root.lang("global.name") }}
 				</h2>
 
