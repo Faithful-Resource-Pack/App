@@ -131,8 +131,11 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 	};
 });
 
+// merged with other languages to make fallback
+const enUS = await import("./resources/strings/en_US.js").then((res) => res.default);
+
 const LANGS = {
-	en: await import("./resources/strings/en_US.js").then((res) => res.default),
+	en: enUS,
 };
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
