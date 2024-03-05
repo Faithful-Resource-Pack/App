@@ -54,15 +54,12 @@ export default {
 	},
 	methods: {
 		textureNotFound() {
-			if (this.ignoreList.some((el) => this.src.includes(el))) {
+			if (this.ignoreList.some((el) => this.src.includes(el)))
 				// fall back to default if ignored (simulates default behavior)
-				axios
-					.get(`${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`)
-					.then((res) => {
-						this.imageURL = res.request.responseURL;
-					});
-				// if not ignored, texture hasn't been made
-			} else this.exists = false;
+				this.imageURL = `${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`;
+
+			// if not ignored, texture hasn't been made
+			else this.exists = false;
 		},
 	},
 	created() {

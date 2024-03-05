@@ -21,5 +21,6 @@ jobs:
           cd /var/www/html/webapp.faithfulpack.net/
           git stash
           git pull
-          pnpm install --save
+          pnpm install
+          pnpm build
           pm2 restart "APP"
