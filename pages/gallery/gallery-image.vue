@@ -21,8 +21,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 // separate component to track state more easily
 export default {
 	name: "gallery-image",
