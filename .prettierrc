@@ -1,13 +1,13 @@
 {
-    "semi": true,
-    "trailingComma": "all",
-    "singleQuote": false,
-    "printWidth": 100,
-    "useTabs": true,
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "parser": "typescript",
-    "overrides": [
-        { "files": ["*.vue", "*.html"], "options": { "parser": "vue" } }
-    ]
+	"semi": true,
+	"trailingComma": "all",
+	"singleQuote": false,
+	"printWidth": 100,
+	"useTabs": true,
+	"bracketSpacing": true,
+	"arrowParens": "always",
+	"parser": "typescript",
+	"overrides": [
+		{ "files": ["*.vue", "*.html"], "options": { "parser": "vue" } }
+	]
 }

@@ -63,27 +63,28 @@ window.updatePageStyles = (cmp) => {
 	const pageId = cmp.$el.id;
 	const hex = colorToHex(cmp.pageColor);
 
-	cmp.pageStyles = `<style>
-  html.theme--light,
-  html.theme--light .colored,
-  html.theme--light .colored *,
-  html.theme--light .v-menu__content,
-  html.theme--light .v-menu__content *,
-  html.theme--light #${pageId},
-  html.theme--light #${pageId} * {
-    scrollbar-color: ${hex} #ffffffbb !important;
-  }
+	cmp.pageStyles = `
+	<style>
+		html.theme--light,
+		html.theme--light .colored,
+		html.theme--light .colored *,
+		html.theme--light .v-menu__content,
+		html.theme--light .v-menu__content *,
+		html.theme--light #${pageId},
+		html.theme--light #${pageId} * {
+			scrollbar-color: ${hex} #ffffffbb !important;
+		}
 
-  html.theme--dark,
-  html.theme--dark .colored,
-  html.theme--dark .colored *,
-  html.theme--dark .v-menu__content,
-  html.theme--dark .v-menu__content *,
-  html.theme--dark #${pageId},
-  html.theme--dark #${pageId} * {
-    scrollbar-color: ${hex} #000000bb;
-  }
-  </style>`;
+		html.theme--dark,
+		html.theme--dark .colored,
+		html.theme--dark .colored *,
+		html.theme--dark .v-menu__content,
+		html.theme--dark .v-menu__content *,
+		html.theme--dark #${pageId},
+		html.theme--dark #${pageId} * {
+			scrollbar-color: ${hex} #000000bb;
+		}
+	</style>`;
 };
 
 Object.defineProperty(Object.prototype, "isObject", {
@@ -99,7 +100,7 @@ Object.defineProperty(Object.prototype, "merge", {
 	/**
 	 * Deep merge two objects
 	 * @param {Object} target
-	 * @param  {...Object} sources
+	 * @param {...Object} sources
 	 */
 	value(target, ...sources) {
 		if (!sources.length) return target;

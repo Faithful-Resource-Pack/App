@@ -1,7 +1,7 @@
 /**
  * French translation
  * - Translated by:
- *   - @author Juknum // GitHub: https://github.com/Juknum
+ * - @author Juknum // GitHub: https://github.com/Juknum
  */
 
 export default {
@@ -424,7 +424,7 @@ export default {
 					rules: {
 						name_required: "Une valeur est requise",
 						name_too_big: "L'ID du parent du fichier doit faire moins de %s caractères.",
-						name_too_small: "L'ID   du parent du fichier doit faire plus de %s caractères.",
+						name_too_small: "L'ID du parent du fichier doit faire plus de %s caractères.",
 					},
 				},
 			},

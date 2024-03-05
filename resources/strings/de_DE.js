@@ -1,7 +1,7 @@
 /**
  * German translation
  * - Translated by:
- *   - @author RobertR11 // GitHub: https://github.com/RobertRR11
+ * - @author RobertR11 // GitHub: https://github.com/RobertRR11
  */
 
 export default {
@@ -144,7 +144,7 @@ export default {
 			use_id: "Das Ändern der Verwendungs-ID kann alles kaputt machen",
 			path_id: "Das Ändern der Dateipfad-ID kann alles kaputt machen",
 			warning_path:
-				"Die Verwendung muss erstellt werden, bevor Dateipfade hinzugefügt werden können (derzeit nicht gut unterstützt und  etwas fehlerhaft), das Hinzufügen von Dateipfaden vor dem Erstellen der Verwendung ist geplant.",
+				"Die Verwendung muss erstellt werden, bevor Dateipfade hinzugefügt werden können (derzeit nicht gut unterstützt und etwas fehlerhaft), das Hinzufügen von Dateipfaden vor dem Erstellen der Verwendung ist geplant.",
 			path: "Der Dateipfad sollte mit dem Stammverzeichnis beginnen (Bsp.: assets/…)",
 			example_scenario:
 				"Ändert alle Instanzen einer Minecraft-Version in der Datenbank in eine andere Version. (Bsp. 1.17 → 1.17.1)",

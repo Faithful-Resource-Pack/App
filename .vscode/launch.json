@@ -1,35 +1,35 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch App",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": [
-        "--experimental-modules",
-        "--trace-warnings"
-      ],
-      "program": "${workspaceFolder}\\main.js"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "Launch test App",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": [
-        "--experimental-modules",
-        "--trace-warnings"
-      ],
-      "envFile": "${workspaceFolder}/tests/.env.test",
-      "program": "${workspaceFolder}\\main.js"
-    }
-  ]
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch App",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"runtimeArgs": [
+				"--experimental-modules",
+				"--trace-warnings"
+			],
+			"program": "${workspaceFolder}\\main.js"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch test App",
+			"skipFiles": [
+				"<node_internals>/**"
+			],
+			"runtimeArgs": [
+				"--experimental-modules",
+				"--trace-warnings"
+			],
+			"envFile": "${workspaceFolder}/tests/.env.test",
+			"program": "${workspaceFolder}\\main.js"
+		}
+	]
 }

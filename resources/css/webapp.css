@@ -622,7 +622,7 @@ code {
 	opacity: 0.7;
 	transition: opacity 250ms ease;
 }
-.drop-zone.enabled:hover .dropzone-border, .drop-zone.enabled:hover .label  {
+.drop-zone.enabled:hover .dropzone-border, .drop-zone.enabled:hover .label {
 	opacity: 1;
 }
 .drop-zone .hidden-input {
@@ -632,7 +632,7 @@ code {
 	width: 1px;
 	height: 1px;
 }
-.drop-zone .label  {
+.drop-zone .label {
 	font-size: 16px;
 	display: block;
 }
@@ -1032,7 +1032,7 @@ body .texture-avatar {
 	background-image: url(/resources/transparency-light.png);
 }
 
-.addon-expansion-panel .addon-name, .addon-expansion-panel .addon-tags  {
+.addon-expansion-panel .addon-name, .addon-expansion-panel .addon-tags {
 	color: white;
 }
 
