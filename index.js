@@ -9,13 +9,14 @@ import VueCalendarHeatmap from "vue-calendar-heatmap";
 import axios from "axios";
 import moment from "moment";
 import { marked } from "marked";
+import DOMPurify from "dompurify";
 import { createPinia } from "pinia";
 
 import { discordAuthStore } from "./stores/discordAuthStore";
 import { discordUserStore } from "./stores/discordUserStore";
 import { appUserStore } from "./stores/appUserStore";
 
-Vue.config.devtools = import.meta.env.MODE === 'development';
+Vue.config.devtools = import.meta.env.MODE === "development";
 Vue.use(Vuetify);
 Vue.use(VueRouter);
 Vue.use(VueGraph);
@@ -117,14 +118,10 @@ Object.defineProperty(Object.prototype, "merge", {
 	},
 });
 
-// languages section
-import enUS from "./resources/strings/en_US.js";
-import DOMPurify from "dompurify";
-
 // https://www.techonthenet.com/js/language_tags.php
 /** @type {Record<string, () => Promise<Record<string,unknown>>} */
 const LANGUAGES_MODULES_MAP = import.meta.glob("/resources/strings/*.js");
-const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e,action]) => {
+const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 	const name = e.split("/").pop().split(".")[0];
 	return {
 		lang: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
@@ -135,7 +132,7 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e,action]) => {
 });
 
 const LANGS = {
-	en: enUS,
+	en: await import("./resources/strings/en_US.js").then((res) => res.default),
 };
 const LANG_KEY = "lang";
 const LANG_DEFAULT = "en";
@@ -144,10 +141,10 @@ const _get_lang = () => {
 	if (storedLang === null)
 		// no key
 		return LANG_DEFAULT;
-	else if (LANGUAGES.map((e) => e.lang).includes(storedLang))
+	if (LANGUAGES.some((e) => storedLang === e.lang))
 		// if trusted input value
 		return storedLang;
-	else return LANG_DEFAULT;
+	return LANG_DEFAULT;
 };
 
 const _set_lang = (val) => {
@@ -416,11 +413,10 @@ axios
 
 							this.theme = theme;
 							return;
-						} else {
-							if (!availableThemes.includes(n)) {
-								this.theme = availableThemes[0];
-								return;
-							}
+						}
+						if (!availableThemes.includes(n)) {
+							this.theme = availableThemes[0];
+							return;
 						}
 
 						window.localStorage.setItem("THEME", String(n));
@@ -607,7 +603,7 @@ axios
 
 						// Shall send string to be chained with other string operations
 						return String(response); // enforce string to ensure string methods used after
-					}
+					};
 				},
 				isDark() {
 					return this.$vuetify.theme.dark;
@@ -627,7 +623,8 @@ axios
 						return; // everything will update
 					}
 
-					lang.action()
+					lang
+						.action()
 						.then((r) => {
 							r = r.default;
 							this.langs[lang.lang] = Object.merge({}, enUS, r);

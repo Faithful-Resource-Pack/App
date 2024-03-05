@@ -14,8 +14,8 @@
 					</li>
 					<li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
 					<li v-else-if="lastContribution !== undefined">
-						<p><i :class="icon"></i> {{ lastContributionNames }}</p>
-						<p><i class="icon-time"></i> {{ timestampToDate(lastContribution.date) }}</p>
+						<p><v-icon small>{{ icon }}</v-icon> {{ lastContributionNames }}</p>
+						<p><v-icon small>mdi-clock-outline</v-icon> {{ timestampToDate(lastContribution.date) }}</p>
 					</li>
 					<li v-else>
 						{{ $root.lang("gallery.error_message.contribution_not_found") }}
@@ -72,9 +72,8 @@ export default {
 				.join(", ");
 		},
 		icon() {
-			if (this.lastContribution.contributors.length === 1) return "icon-people";
-			// thank you material icons, very cool
-			return "icon-peoples";
+			if (this.lastContribution.contributors.length === 1) return "mdi-account";
+			return "mdi-account-multiple";
 		},
 		modded() {
 			const somethingWithPath = this.texture.url;

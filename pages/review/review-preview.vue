@@ -129,10 +129,7 @@
 			</template>
 		</v-card>
 		<div v-if="addonInPanel.approval.status === 'pending'" class="mt-2 rounded-lg pa-2">
-			<v-list-item-title
-				v-text="$root.lang().addons.general.reason.title"
-				class="uppercase pb-1"
-			/>
+			<v-list-item-title v-text="$root.lang().addons.general.reason.title" class="uppercase pb-1" />
 			<div>
 				{{ addonInPanel.approval.reason }}
 			</div>

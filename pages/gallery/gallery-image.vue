@@ -57,7 +57,6 @@ export default {
 			if (this.ignoreList.some((el) => this.src.includes(el)))
 				// fall back to default if ignored (simulates default behavior)
 				this.imageURL = `${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`;
-
 			// if not ignored, texture hasn't been made
 			else this.exists = false;
 		},

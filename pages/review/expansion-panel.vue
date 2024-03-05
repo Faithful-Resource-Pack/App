@@ -157,10 +157,7 @@
 							class="uppercase"
 						/>
 						<div class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</div>
-						<v-list-item-title
-							v-text="$root.lang().review.addon.labels.reason"
-							class="uppercase"
-						/>
+						<v-list-item-title v-text="$root.lang().review.addon.labels.reason" class="uppercase" />
 						<div class="text--secondary">{{ addon.approval.reason }}</div>
 					</div>
 

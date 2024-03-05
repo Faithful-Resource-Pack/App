@@ -41,7 +41,8 @@
 import axios from "axios";
 import Prism from "prismjs";
 
-import JSONEditor from "./json-editor/main.vue";
+// fixes circular dependency error
+const JSONEditor = () => import("./json-editor/main.vue");
 
 export default {
 	name: "settings-page",
