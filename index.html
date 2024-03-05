@@ -48,7 +48,7 @@
 		<v-app id="app" ref="app" :dark="dark" :light="!dark">
 			<v-app-bar flat dense bar app v-if="true" class="small-app-bar">
 				<span class="mr-2 d-flex noselect">
-					<v-app-bar-nav-icon small @click="drawer = !drawer"></v-app-bar-nav-icon>
+					<v-app-bar-nav-icon small @click="drawer = !drawer" />
 				</span>
 
 				<v-spacer></v-spacer>
@@ -149,7 +149,7 @@
 							<v-list-item-icon v-if="subtab.icon" style="margin-right: 5px">
 								<v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title v-text="subtab.labelText" class="uppercase"></v-list-item-title>
+							<v-list-item-title class="uppercase">{{ subtab.labelText }}</v-list-item-title>
 
 							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
 								<span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
@@ -166,7 +166,7 @@
 							<v-list-item-icon v-if="tab.icon" style="margin-right: 5px">
 								<v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title v-text="tab.labelText" class="uppercase"></v-list-item-title>
+							<v-list-item-title class="uppercase">{{ tab.labelText }}</v-list-item-title>
 
 							<v-list-item-action class="nav-badge" v-if="tab.badge && badges[tab.badge]">
 								<span class="nav-badge-inner error">{{ badges[tab.badge] }}</span>
@@ -226,9 +226,6 @@
 				<pre v-if="snackbar.json" class="mt-2">{{ JSON.stringify(snackbar.json, null, 2) }}</pre>
 			</v-snackbar>
 		</v-app>
-
-		<!-- Pinia -->
-		<script src="https://cdn.jsdelivr.net/npm/@vue/composition-api@1.7.1"></script>
 
 		<!-- Dashboard -->
 		<script>

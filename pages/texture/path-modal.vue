@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="amOpened" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline" v-text="subPathDialogTitle"></v-card-title>
+			<v-card-title class="headline">{{ subPathDialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-row>
 					<v-col class="col-12" :sm="12">
@@ -51,7 +51,7 @@
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="onCancel">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

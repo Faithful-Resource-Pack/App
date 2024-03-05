@@ -14,7 +14,7 @@
 				<template v-if="Object.keys(textureObj).length > 0">
 					<v-toolbar-title>[#{{ textureID }}] {{ textureObj.texture.name }}</v-toolbar-title>
 
-					<v-spacer></v-spacer>
+					<v-spacer />
 
 					<v-btn icon @click="() => $parent.copyShareLink(textureID)">
 						<v-icon>mdi-share-variant</v-icon>
@@ -73,7 +73,7 @@
 												class="elevation-1"
 												style="margin-top: 10px"
 												hide-default-footer
-											></v-data-table>
+											/>
 										</div>
 									</template>
 								</template>
@@ -88,7 +88,7 @@
 												class="elevation-1"
 												style="margin-top: 10px"
 												hide-default-footer
-											></v-data-table>
+											/>
 										</div>
 									</template>
 								</div>

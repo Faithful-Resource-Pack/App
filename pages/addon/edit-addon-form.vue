@@ -33,7 +33,7 @@
 						/>
 					</v-card-text>
 					<v-card-actions>
-						<v-spacer></v-spacer>
+						<v-spacer />
 						<v-btn color="gray" text @click="() => handleReasonDialog(false)">
 							{{ $root.lang("global.btn.cancel") }}
 						</v-btn>

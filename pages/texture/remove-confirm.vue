@@ -16,9 +16,9 @@
 						<v-list-item v-for="(path, index) in data.paths" :key="index">
 							<v-list-item-title>
 								{{ path.name }}
-								<v-list-item-subtitle
-									v-text="'#' + path.id + ' — ' + path.versions.join(', ')"
-								></v-list-item-subtitle>
+								<v-list-item-subtitle>{{
+									`#${path.id} — ${path.versions.join(", ")}`
+								}}</v-list-item-subtitle>
 							</v-list-item-title>
 						</v-list-item>
 					</blockquote>
@@ -32,7 +32,7 @@
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="darken-1" text @click="disableDialog"> Cancel </v-btn>
 				<v-btn color="error darken-1" @click="deleteData"> Yes </v-btn>
 			</v-card-actions>

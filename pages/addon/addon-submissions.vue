@@ -48,8 +48,8 @@
 								</v-row>
 							</template>
 						</v-img>
-						<v-card-title v-text="addon.name" />
-						<v-card-subtitle v-text="addon.options.tags.join(', ')" />
+						<v-card-title>{{ addon.name }}</v-card-title>
+						<v-card-subtitle>{{ addon.options.tags.join(", ") }}</v-card-subtitle>
 						<v-card-text style="height: 60px">
 							<v-badge
 								dot

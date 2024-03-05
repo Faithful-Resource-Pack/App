@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="dialog" content-class="colored" max-width="800">
 		<v-card>
-			<v-card-title class="headline" v-text="submissionTitle"></v-card-title>
+			<v-card-title class="headline">{{ submissionTitle }}</v-card-title>
 			<v-card-text>
 				<v-form ref="form" v-model="formValid" lazy-validation>
 					<v-row>
@@ -104,7 +104,7 @@
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

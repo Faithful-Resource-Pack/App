@@ -1,10 +1,7 @@
 <template>
 	<v-dialog v-model="modalOpened" width="800">
 		<v-card>
-			<v-card-title
-				class="headline"
-				v-text="$root.lang().database.titles.contributions"
-			></v-card-title>
+			<v-card-title class="headline">{{ $root.lang().database.titles.contributions }}</v-card-title>
 			<v-card-text class="pb-0">
 				<template v-if="multiple">
 					<v-row dense>
@@ -26,8 +23,8 @@
 									? 'flex-grow-0 flex-shrink-1 px-4'
 									: 'flex-grow-1 flex-shrink-0 py-4',
 							]"
-							><v-divider :vertical="$vuetify.breakpoint.mdAndUp"
-						/></v-col>
+							><v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
+						</v-col>
 						<v-col
 							class="flex-grow-1 flex-shrink-0 d-flex flex-column"
 							:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
@@ -41,7 +38,8 @@
 								flat
 								style="min-height: 300px"
 								class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
-								><div>
+							>
+								<div>
 									<template v-for="(form, form_index) in formRecordsList">
 										<v-list-item
 											:key="'item-' + form.formId"
@@ -51,12 +49,11 @@
 											<v-list-item-content
 												:class="[openedFormId === form.formId ? 'primary--text' : '']"
 											>
-												<v-list-item-title v-text="panelLabels[form.formId]"></v-list-item-title>
+												<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
 												<v-list-item-subtitle class="text-truncate">
-													<span
-														v-if="form.authors.length"
-														v-text="contributorsFromIds(form.authors)"
-													/>
+													<span v-if="form.authors.length">{{
+														contributorsFromIds(form.authors)
+													}}</span>
 													<i v-else>{{ $root.lang("database.subtitles.no_contributor_yet") }}</i>
 												</v-list-item-subtitle>
 												<v-list-item-subtitle v-if="form.texture && form.texture.length">
@@ -72,10 +69,9 @@
 															'+' +
 															range_i
 														"
-														v-text="
-															'#' + (Array.isArray(range) ? range.join(' → #') : String(range))
-														"
-													/>
+													>
+														{{ "#" + (Array.isArray(range) ? range.join(" → #") : String(range)) }}
+													</v-chip>
 												</v-list-item-subtitle>
 											</v-list-item-content>
 
@@ -92,9 +88,10 @@
 										<v-divider
 											:key="'divider-' + form.formId"
 											v-if="form_index < formRecordsLength - 1"
-										></v-divider>
-									</template></div
-							></v-list>
+										/>
+									</template>
+								</div>
+							</v-list>
 							<v-btn
 								class="flex-grow-0 flex-shrink-1"
 								elevation="0"
@@ -121,7 +118,7 @@
 				</template>
 			</v-card-text>
 			<v-card-actions class="pt-4">
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="closeAndCancel">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

@@ -1,8 +1,8 @@
 <template>
 	<div :class="['json-object-editor', { 'json-editor-bordered': !root, 'json-editor-root': root }]">
 		<div class="json-editor-header" @click="toggled = !toggled">
-			<span v-if="!root" class="json-editor-toggle" v-text="toggled ? '-' : '+'"></span
-			><span v-if="!root" class="json-editor-title">object</span>
+			<span v-if="!root" class="json-editor-toggle">{{ toggled ? "-" : "+" }}</span>
+			<span v-if="!root" class="json-editor-title">object</span>
 		</div>
 		<div v-show="toggled" class="json-editor-content">
 			<div v-for="(val, index) in values" :key="val + index" class="d-flex">
@@ -16,7 +16,7 @@
 						@keydown="resize(index)"
 						:ref="'input' + index"
 					/>
-					<div :ref="'hide' + index" class="json-editor-hide" v-text="keys[index]"></div>
+					<div :ref="'hide' + index" class="json-editor-hide">{{ keys[index] }}</div>
 				</div>
 				<json-editor class="flex-grow-1" v-model="values[index]" :parent="value" />
 			</div>

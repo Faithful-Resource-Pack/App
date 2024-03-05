@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<div class="styles" v-html="pageStyles"></div>
+		<div class="styles" v-html="pageStyles" />
 		<user-modal
 			:color="pageColor"
 			:dialog="dialogOpen"
@@ -53,7 +53,7 @@
 				@keyup.enter="startSearch"
 				@click:append-outer="startSearch"
 				@click:clear="clearSearch"
-			></v-text-field>
+			/>
 		</div>
 
 		<!-- main buttons -->
@@ -64,7 +64,7 @@
 		<!-- results -->
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.user_result }}</div>
 		<div v-if="loading" class="text-center">
-			<v-progress-circular indeterminate :color="pageColor"></v-progress-circular>
+			<v-progress-circular indeterminate :color="pageColor" />
 		</div>
 		<v-list rounded v-else-if="users.length" two-line class="main-container">
 			<v-row
@@ -83,9 +83,9 @@
 						</v-list-item-avatar>
 
 						<v-list-item-content>
-							<v-list-item-title v-text="user.username"></v-list-item-title>
+							<v-list-item-title>{{ user.username }}</v-list-item-title>
 
-							<v-list-item-subtitle v-text="(user.roles || []).join(', ')"></v-list-item-subtitle>
+							<v-list-item-subtitle>{{ (user.roles || []).join(", ") }}</v-list-item-subtitle>
 						</v-list-item-content>
 
 						<!-- action buttons -->
@@ -98,8 +98,8 @@
 							</v-btn>
 						</v-list-item-action>
 					</v-list-item>
-				</v-col></v-row
-			>
+				</v-col>
+			</v-row>
 
 			<v-btn
 				:style="{ margin: 'auto', 'min-width': '250px !important' }"

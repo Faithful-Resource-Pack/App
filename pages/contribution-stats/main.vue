@@ -5,7 +5,7 @@
 		</div>
 
 		<div class="text-center mb-4">
-			<div id="graph"></div>
+			<div id="graph" />
 		</div>
 
 		<v-card>

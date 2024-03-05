@@ -1,6 +1,6 @@
 <template>
 	<v-container id="review-addons">
-		<div class="styles" v-html="pageStyles"></div>
+		<div class="styles" v-html="pageStyles" />
 		<div class="text-h4 py-4">
 			{{ $root.lang().review.titles.addons }}
 		</div>
@@ -61,12 +61,12 @@ d88   888  888    888 d88   888
 							:status="status"
 						/>
 					</v-expansion-panels>
-					<template v-else-if="loading[status] === true"
-						><v-container>{{ $root.lang().global.loading }}</v-container></template
-					>
-					<template v-else
-						><v-container>{{ $root.lang().review.labels[status] }}</v-container></template
-					>
+					<template v-else-if="loading[status] === true">
+						<v-container>{{ $root.lang().global.loading }}</v-container>
+					</template>
+					<template v-else>
+						<v-container>{{ $root.lang().review.labels[status] }}</v-container>
+					</template>
 				</template>
 			</template>
 		</div>

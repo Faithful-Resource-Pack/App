@@ -47,16 +47,13 @@
 			<template
 				v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'"
 			>
-				<v-list-item-content v-text="data.item" />
+				<v-list-item-content>{{ data.item }}</v-list-item-content>
 			</template>
 			<template v-else>
 				<v-list-item-content>
-					<v-list-item-title
-						v-text="
-							data.item.username ||
-							$root.lang().database.labels.anonymous + ' (' + data.item.id + ')'
-						"
-					/>
+					<v-list-item-title>{{
+						data.item.username || $root.lang().database.labels.anonymous + ` (${data.item.id})`
+					}}</v-list-item-title>
 				</v-list-item-content>
 				<v-list-item-avatar :style="{ background: data.item.uuid ? 'transparent' : '#4e4e4e' }">
 					<template v-if="data.item.uuid">

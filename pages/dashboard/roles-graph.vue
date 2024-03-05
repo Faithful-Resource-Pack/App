@@ -16,7 +16,7 @@
 				:colors="shade"
 				:values="values"
 			>
-				<tooltip :position="'top'"></tooltip>
+				<tooltip :position="'top'" />
 			</graph-treemap>
 		</v-col>
 		<v-col cols="12" sm="6">
@@ -49,7 +49,7 @@
 							<span
 								class="mr-1 rounded d-inline-block"
 								:style="{ 'background-color': shade[index], height: '10px', width: '10px' }"
-							></span>
+							/>
 							<span class="font-weight-medium text--primary">{{ value }}</span> {{ key }}
 						</p>
 					</v-col>

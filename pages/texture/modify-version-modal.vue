@@ -24,19 +24,19 @@
 								required
 								v-model="form.actual"
 								:label="$root.lang().database.labels.actual_mc_version"
-							></v-text-field>
+							/>
 							<v-text-field
 								:color="color"
 								required
 								v-model="form.new"
 								:label="$root.lang().database.labels.new_mc_version"
-							></v-text-field>
+							/>
 						</v-form>
 					</v-col>
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="darken-1" text @click="disableMCDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

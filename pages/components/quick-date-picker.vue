@@ -7,7 +7,7 @@
 		:class="['qd-datepicker', flat ? '' : 'pt-2 px-4 pb-4']"
 		:style="style"
 	>
-		<div class="font-weight-medium text--secondary mb-2" v-text="labels.year" />
+		<div class="font-weight-medium text--secondary mb-2">{{ labels.year }}</div>
 		<v-text-field
 			class="mt-0"
 			placeholder="Regular"
@@ -19,8 +19,8 @@
 			:max="this_year"
 			min="0"
 			@input="(e) => newYear(e)"
-		></v-text-field>
-		<div class="font-weight-medium text--secondary my-2" v-text="labels.month" />
+		/>
+		<div class="font-weight-medium text--secondary my-2">{{ labels.month }}</div>
 		<v-row class="qd-months" dense>
 			<v-col cols="2" v-for="i in 12" :key="'qd-month-col' + i">
 				<v-btn
@@ -37,7 +37,7 @@
 				</v-btn>
 			</v-col>
 		</v-row>
-		<div class="font-weight-medium text--secondary my-2" v-text="labels.day" />
+		<div class="font-weight-medium text--secondary my-2">{{ labels.day }}</div>
 		<div class="qd-days">
 			<v-btn
 				v-for="i in 31"

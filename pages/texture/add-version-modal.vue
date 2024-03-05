@@ -15,31 +15,27 @@
 								:items="editions"
 								v-model="form.edition"
 								:placeholder="$root.lang().database.labels.new_mc_version_edition"
-							></v-select
-						></v-col>
-						<v-col
-							><v-select
+							/>
+							<v-select
 								:color="color"
 								:item-color="color"
 								class="mb-0"
 								:items="versions"
 								v-model="form.version"
 								:placeholder="$root.lang().database.labels.new_mc_version_path"
-							></v-select
-						></v-col>
-						<v-col
-							><v-text-field
+							/>
+							<v-text-field
 								class="mb-0"
 								:color="color"
 								v-model="form.newVersion"
 								:placeholder="$root.lang().database.labels.new_mc_version_name"
-							></v-text-field
-						></v-col>
+							/>
+						</v-col>
 					</v-row>
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

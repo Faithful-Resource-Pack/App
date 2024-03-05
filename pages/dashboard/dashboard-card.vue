@@ -8,7 +8,7 @@
 			</v-btn>
 		</v-card-title>
 
-		<slot></slot>
+		<slot />
 	</v-card>
 </template>
 

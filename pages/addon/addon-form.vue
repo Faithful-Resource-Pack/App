@@ -3,8 +3,8 @@
 		<fullscreen-preview ref="headerPreview" :src="header" />
 
 		<div class="text-center" v-if="loading">
-			<h2 v-text="$root.lang().addons.general.loading_addon" class="mb-3"></h2>
-			<v-progress-circular :size="70" :width="7" color="blue" indeterminate></v-progress-circular>
+			<h2 class="mb-3">{{ $root.lang().addons.general.loading_addon }}</h2>
+			<v-progress-circular :size="70" :width="7" color="blue" indeterminate />
 		</div>
 		<v-list
 			v-else
@@ -18,11 +18,12 @@
 						href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
 						style="color: inherit; text-decoration: underline"
 						target="_blank"
-						>{{ $root.lang("addons.general.rules") }}</a
 					>
-					<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
-						><v-icon small>mdi-open-in-new</v-icon></a
-					>
+						{{ $root.lang("addons.general.rules") }}
+					</a>
+					<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules">
+						<v-icon small>mdi-open-in-new</v-icon>
+					</a>
 				</v-alert>
 				<div class="row">
 					<!-- LEFT PART : INPUT -->
@@ -228,7 +229,7 @@
 								:label="$root.lang().addons.downloads.name.label"
 								v-model="obj.key"
 								:rules="downloadTitleRules"
-							></v-text-field>
+							/>
 						</v-col>
 						<v-col cols="9">
 							<v-row
@@ -246,7 +247,7 @@
 										:label="$root.lang().addons.downloads.link.label"
 										v-model="obj.links[indexLinks]"
 										:rules="downloadLinkRules"
-									></v-text-field>
+									/>
 								</v-col>
 								<v-col v-if="indexLinks == 0" class="flex-grow-0 flex-shrink-0">
 									<v-btn icon @click="linkAdd(index)">
@@ -648,16 +649,7 @@ export default {
 			if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio);
 		},
 		validURL(str) {
-			const pattern = new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
-				"i",
-			); // fragment locator
-			return !!pattern.test(str);
+			return this.$root.urlRegex.test(str);
 		},
 		verifyImage(file, validateImage) {
 			if (validateImage === undefined) validateImage = this.validateRatio;

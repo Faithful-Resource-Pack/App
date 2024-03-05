@@ -1,6 +1,6 @@
 <template>
 	<v-container id="texturePage">
-		<div class="styles" v-html="pageStyles"></div>
+		<div class="styles" v-html="pageStyles" />
 		<texture-modal
 			:color="pageColor"
 			:textColor="textColorOnPage"
@@ -112,15 +112,14 @@
 								newVersionModal = true;
 							}
 						"
-						>{{ $root.lang().database.labels.add_mc_version }}
-						<v-icon right>mdi-plus</v-icon></v-btn
 					>
+						{{ $root.lang().database.labels.add_mc_version }}<v-icon right>mdi-plus</v-icon>
+					</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openModifyMCDialog()"
-						>{{ $root.lang().database.labels.edit_mc_version
-						}}<v-icon right>mdi-plus</v-icon></v-btn
-					>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openModifyMCDialog()">
+						{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon>
+					</v-btn>
 				</v-col>
 			</v-row>
 
@@ -137,19 +136,14 @@
 						<v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent">
 							<v-list-item v-for="texture in textures_arr" class="my-4" :key="texture.id">
 								<a :href="'/gallery?show=' + texture.id">
-									<v-list-item-avatar
-										tile
-										class="texture-avatar my-0 white--text"
-										v-text="texture.id"
-									>
+									<v-list-item-avatar tile class="texture-avatar my-0 white--text">
+										{{ texture.id }}
 									</v-list-item-avatar>
 								</a>
 
 								<v-list-item-content class="py-0">
-									<v-list-item-title v-text="texture.name"></v-list-item-title>
-									<v-list-item-subtitle
-										v-text="(texture.tags || []).join(', ')"
-									></v-list-item-subtitle>
+									<v-list-item-title>{{ texture.name }}</v-list-item-title>
+									<v-list-item-subtitle>{{ (texture.tags || []).join(", ") }}</v-list-item-subtitle>
 								</v-list-item-content>
 
 								<v-list-item-action class="merged">
@@ -162,8 +156,8 @@
 								</v-list-item-action>
 							</v-list-item>
 						</v-list>
-					</v-col></v-row
-				>
+					</v-col>
+				</v-row>
 
 				<v-btn
 					:style="{ margin: 'auto', 'min-width': '250px !important' }"
@@ -174,8 +168,9 @@
 					@click="showMore()"
 					:v-if="displayedResults < Object.keys(textures).length"
 					elevation="2"
-					>{{ $root.lang().global.btn.load_more }}</v-btn
 				>
+					{{ $root.lang().global.btn.load_more }}
+				</v-btn>
 			</div>
 			<div v-else>
 				<br />

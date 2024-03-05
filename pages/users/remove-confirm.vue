@@ -17,7 +17,7 @@
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

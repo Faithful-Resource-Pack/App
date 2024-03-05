@@ -71,17 +71,21 @@
 							</v-icon>
 						</v-card> </v-col
 					><v-col cols="12" sm="5">
-						<v-list-item-title
-							v-text="$root.lang().review.addon.titles.authors"
-							class="uppercase"
-						/>
+						<v-list-item-title class="uppercase">{{
+							$root.lang().review.addon.titles.authors
+						}}</v-list-item-title>
 						<div class="text--secondary" style="margin-bottom: 10px">
 							{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
 						</div>
 
-						<v-list-item-title v-text="$root.lang().review.addon.titles.links" class="uppercase" />
+						<v-list-item-title class="uppercase">{{
+							$root.lang().review.addon.titles.links
+						}}</v-list-item-title>
 						<div class="text--secondary" style="margin-bottom: 10px">
-							<ul v-for="file in addonInPanel.files.filter((f) => f.use === 'download')">
+							<ul
+								v-for="file in addonInPanel.files.filter((f) => f.use === 'download')"
+								:key="file.id"
+							>
 								<li>
 									{{ file.name }} -
 									<a :href="file.source" class="text--secondary"
@@ -92,35 +96,30 @@
 							</ul>
 						</div>
 
-						<v-list-item-title
-							v-text="$root.lang().review.addon.titles.options"
-							class="uppercase"
-						/>
+						<v-list-item-title class="uppercase">{{
+							$root.lang().review.addon.titles.options
+						}}</v-list-item-title>
 						<div>
-							<!-- <v-icon small v-text="addonInPanel.options.comments ? 'mdi-checkbox-marked-outline' : 'mdi-checkbox-blank-outline'"/> {{ $root.lang().review.addon.labels.comments }} -->
-							<!-- <br> -->
-							<v-icon
-								small
-								v-text="
-									addonInPanel.options.optifine
-										? 'mdi-checkbox-marked-outline'
-										: 'mdi-checkbox-blank-outline'
-								"
-							/>
+							<v-icon small>{{
+								addonInPanel.options.optifine
+									? "mdi-checkbox-marked-outline"
+									: "mdi-checkbox-blank-outline"
+							}}</v-icon>
 							{{ $root.lang().review.addon.labels.optifine }}
 						</div>
 					</v-col>
 				</v-row>
 
 				<template v-if="addonSources.length > 0">
-					<v-list-item-title v-text="$root.lang().addons.images.title" class="uppercase my-2" />
+					<v-list-item-title class="uppercase my-2">{{
+						$root.lang().addons.images.title
+					}}</v-list-item-title>
 					<image-previewer :sources="addonSources" :deletable="false" />
 				</template>
 
-				<v-list-item-title
-					v-text="$root.lang().review.addon.titles.description"
-					class="uppercase py-2"
-				/>
+				<v-list-item-title class="uppercase py-2">{{
+					$root.lang().review.addon.titles.description
+				}}</v-list-item-title>
 				<v-container
 					class="markdown"
 					:style="{ 'background-color': 'rgba(0,0,0, ' + String($root.isDark ? 0.2 : 0.05) + ')' }"
@@ -129,7 +128,9 @@
 			</template>
 		</v-card>
 		<div v-if="addonInPanel.approval.status === 'pending'" class="mt-2 rounded-lg pa-2">
-			<v-list-item-title v-text="$root.lang().addons.general.reason.title" class="uppercase pb-1" />
+			<v-list-item-title class="uppercase pb-1">{{
+				$root.lang().addons.general.reason.title
+			}}</v-list-item-title>
 			<div>
 				{{ addonInPanel.approval.reason }}
 			</div>

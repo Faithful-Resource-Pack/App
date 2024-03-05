@@ -2,12 +2,7 @@
 	<table class="json-add-editor">
 		<tr>
 			<td>Add:</td>
-			<td
-				v-for="type in Object.keys(types)"
-				:key="type"
-				@click="send(types[type])"
-				v-text="type"
-			></td>
+			<td v-for="type in Object.keys(types)" :key="type" @click="send(types[type])">{{ type }}</td>
 		</tr>
 	</table>
 </template>

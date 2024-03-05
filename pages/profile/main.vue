@@ -12,10 +12,14 @@
 					</v-list-item-avatar>
 
 					<v-list-item-content>
-						<v-list-item-title v-text="$root.user.username" />
-						<v-list-item-subtitle style="font-size: 0.7rem; opacity: 0.8" v-text="$root.user.id" />
+						<v-list-item-title>{{ $root.user.username }}</v-list-item-title>
+						<v-list-item-subtitle style="font-size: 0.7rem; opacity: 0.8">{{
+							$root.user.id
+						}}</v-list-item-subtitle>
 						<div>
-							<v-list-item-subtitle v-text="($root.user.roles || []).join(' | ')" />
+							<v-list-item-subtitle>{{
+								($root.user.roles || []).join(" | ")
+							}}</v-list-item-subtitle>
 						</div>
 					</v-list-item-content>
 				</v-list-item>
@@ -76,7 +80,7 @@
 											v-model="localUser.uuid"
 											:label="$root.lang().profile.general.uuid.label"
 											:hint="$root.lang().profile.general.uuid.hint"
-										></v-text-field>
+										/>
 									</v-col>
 								</v-row>
 								<v-row>
@@ -89,7 +93,7 @@
 											v-model="localUser.username"
 											:label="$root.lang().profile.general.username.label"
 											:hint="$root.lang().profile.general.username.hint"
-										></v-text-field>
+										/>
 									</v-col>
 								</v-row>
 							</v-form>
@@ -190,7 +194,7 @@
 													v-model="newMedia.type"
 													hide-details
 													solo
-												></v-select>
+												/>
 											</v-col>
 											<v-col class="flex-grow-0 flex-shrink-0">
 												<v-btn
@@ -207,8 +211,8 @@
 									</v-col>
 								</v-row>
 							</v-form>
-						</v-col></v-row
-					>
+						</v-col>
+					</v-row>
 				</v-list-item>
 
 				<div :style="{ display: 'flex', 'justify-content': 'center' }">
@@ -267,16 +271,7 @@ export default {
 			return true;
 		},
 		validURL(str) {
-			const pattern = new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
-				"i",
-			); // fragment locator
-			return !!pattern.test(str);
+			return this.$root.urlRegex.test(str);
 		},
 		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);

@@ -19,7 +19,7 @@
 		</remove-confirm>
 
 		<v-card>
-			<v-card-title class="headline" v-text="dialogTitle"></v-card-title>
+			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-form ref="form">
 					<v-text-field
@@ -31,14 +31,14 @@
 						:readonly="add == false"
 						v-model="formData.id"
 						:label="$root.lang().database.labels.texture_id"
-					></v-text-field>
+					/>
 					<v-text-field
 						:color="color"
 						required
 						clearable
 						v-model="formData.name"
 						:label="$root.lang().database.labels.texture_name"
-					></v-text-field>
+					/>
 					<v-combobox
 						:color="color"
 						:item-color="color"
@@ -49,7 +49,7 @@
 						v-model="formData.tags"
 						:items="tags"
 						:label="$root.lang().database.labels.texture_tags"
-					></v-combobox>
+					/>
 
 					<h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
 					<v-list
@@ -76,14 +76,13 @@
 								<v-list-item-title>
 									<v-list-item style="display: inline; padding: 0 0 0 5px">
 										<template v-if="use.name">{{ use.name }}</template>
-										<template v-else
-											><i>{{ $root.lang().database.labels.nameless }}</i></template
-										>
+										<template v-else>
+											<i>{{ $root.lang().database.labels.nameless }}</i>
+										</template>
 									</v-list-item>
-									<v-list-item-subtitle
-										style="display: block; padding: 0 0 0 5px"
-										v-text="use.edition"
-									></v-list-item-subtitle>
+									<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">{{
+										use.edition
+									}}</v-list-item-subtitle>
 								</v-list-item-title>
 							</v-list-item-content>
 
@@ -104,12 +103,14 @@
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
 						@click="openSubDialog(null, true)"
-						>{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon></v-btn
 					>
+						{{ $root.lang().database.labels.add_new_use }}
+						<v-icon right>mdi-plus</v-icon>
+					</v-btn>
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="onCancel">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

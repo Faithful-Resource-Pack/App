@@ -22,7 +22,7 @@
 					required
 					:items="content.packs"
 					v-model="content.pack"
-				></v-select>
+				/>
 				<div class="font-weight-medium text--secondary my-2">
 					{{ $root.lang("database.labels.texture_id") }}
 				</div>
@@ -73,7 +73,7 @@
 					v-model="content.authors"
 					class="my-0"
 					:limit="3"
-				></user-select>
+				/>
 			</v-col>
 		</v-row>
 	</v-form>

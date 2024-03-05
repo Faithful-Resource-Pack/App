@@ -8,18 +8,18 @@
 						<v-form ref="form">
 							<v-expansion-panels flat v-model="panel">
 								<v-expansion-panel>
-									<v-expansion-panel-header class="px-0 py-0"
-										><h2 class="title">
+									<v-expansion-panel-header class="px-0 py-0">
+										<h2 class="title">
 											{{ $root.lang().database.subtitles.import_json_data }}
-										</h2></v-expansion-panel-header
-									>
+										</h2>
+									</v-expansion-panel-header>
 									<v-expansion-panel-content class="mx-n6">
 										<prism-editor
 											class="ma-0 my-editor fixed-height mb-2"
 											v-model="formData.importJSON"
 											:highlight="highlighter"
 											line-numbers
-										></prism-editor>
+										/>
 										<v-btn block @click="parseJSON" :color="color" :class="[textColor]">{{
 											$root.lang().database.labels.parse_json
 										}}</v-btn>
@@ -143,7 +143,7 @@
 																	:color="color"
 																	:item-color="color"
 																	class="mb-0"
-																	:items="versions_sorted"
+																	:items="sortedVersions"
 																	v-model="path.versions"
 																	:placeholder="$root.lang().database.labels.versions"
 																	multiple
@@ -159,7 +159,7 @@
 																	v-model="path.mcmeta"
 																	hide-details
 																	label="MCMETA"
-																></v-checkbox>
+																/>
 															</v-col>
 															<v-col class="flex-grow-0 flex-shrink-0">
 																<v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)"
@@ -182,14 +182,14 @@
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<div class="pb-1 pr-4">
 					<v-checkbox
 						:color="color"
 						v-model="closeOnSubmit"
 						hide-details
 						:label="$root.lang('database.labels.close_on_submit')"
-					></v-checkbox>
+					/>
 				</div>
 				<v-btn color="red darken-1" text @click="onCancel">
 					{{ $root.lang().global.btn.cancel }}
@@ -204,6 +204,7 @@
 
 <script>
 import axios from "axios";
+import Vue from "vue";
 import Prism from "prismjs";
 
 const emptyPath = () => ({
@@ -275,7 +276,7 @@ export default {
 		};
 	},
 	computed: {
-		versions_sorted() {
+		sortedVersions() {
 			return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b));
 		},
 	},
@@ -306,7 +307,8 @@ export default {
 			const aSplit = a.split(".").map((s) => parseInt(s));
 			const bSplit = b.split(".").map((s) => parseInt(s));
 
-			if (aSplit.includes(NaN) || bSplit.includes(NaN)) return String(a).localeCompare(String(b)); // compare as strings
+			// compare as strings
+			if (aSplit.includes(NaN) || bSplit.includes(NaN)) return String(a).localeCompare(String(b));
 
 			const upper = Math.min(aSplit.length, bSplit.length);
 			let i = 0;
@@ -352,14 +354,11 @@ export default {
 		onEditionChange(edition, use, texture) {
 			if (!use.paths) use.paths = [emptyPath()];
 			use.paths.forEach((path) => {
-				// if version is empty
-				if (path.versions.length == 0) {
-					path.versions.push(settings.versions[edition][0]);
-				}
+				// add latest version if nothing added yet
+				if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 			});
-			if (!texture.tags.includes(this.$root.toTitleCase(edition))) {
+			if (!texture.tags.includes(this.$root.toTitleCase(edition)))
 				texture.tags = this.sortTags([this.$root.toTitleCase(edition), ...texture.tags]);
-			}
 		},
 		pathAdded(el, path, use, texture) {
 			// windows fix

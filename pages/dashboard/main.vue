@@ -1,6 +1,6 @@
 <template>
 	<div id="dashboard-page" class="pa-2 py-sm-4 px-sm-6">
-		<div class="title text-h4 py-4">
+		<div class="text-h4 py-4">
 			{{
 				$root.user.username
 					? $root.lang("dashboard.welcome_user").replace("%USER%", $root.user.username)

@@ -7,11 +7,11 @@
 		:style="{ display: show ? 'inherit' : 'none !important' }"
 	>
 		<v-card-text v-if="user" class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
-			<div v-if="user.roles.length === 0"></div>
+			<div v-if="user.roles.length === 0" />
 
 			<div class="text-center">
 				<v-list-item-avatar tile class="rounded-lg my-3 mr-0 primary" size="80">
-					<v-img :src="user.avatar" v-if="user.avatar"></v-img>
+					<v-img :src="user.avatar" v-if="user.avatar" />
 					<div class="text-h5 text-center text--primary font-weight-medium" v-else>
 						{{ user.username.charAt(0) }}
 					</div>
@@ -32,9 +32,9 @@
 				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0"
 				v-if="user.roles.length"
 			>
-				<span v-html="user.roles.join('<br>')"></span>
+				<span v-html="user.roles.join('<br>')" />
 			</p>
-			<div v-else></div>
+			<div v-else />
 		</v-card-text>
 	</dashboard-card>
 </template>

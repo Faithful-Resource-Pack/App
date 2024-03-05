@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="reasonPopup" max-width="600">
 		<v-card>
-			<v-card-title class="headline" v-text="''" />
+			<v-card-title class="headline">{{ $root.lang().review.deny_window.title }}</v-card-title>
 
 			<v-card-text>
 				<v-text-field
@@ -9,11 +9,11 @@
 					v-model="denyReason"
 					:label="$root.lang().review.deny_window.label"
 					:rules="reasonRules"
-				></v-text-field>
+				/>
 			</v-card-text>
 
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="darken-1" text @click="closePopup(false, denyReason)">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

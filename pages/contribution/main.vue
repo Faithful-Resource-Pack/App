@@ -5,7 +5,7 @@
 			:contributors="contributors"
 			:onSubmit="onModalSubmit"
 			:multiple="multiple"
-		></contribution-modal>
+		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
@@ -14,12 +14,9 @@
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
-				<v-btn
-					block
-					color="primary"
-					@click="() => openAdd()"
-					v-text="$root.lang('database.subtitles.add_manually')"
-				/>
+				<v-btn block color="primary" @click="() => openAdd()">
+					{{ $root.lang("database.subtitles.add_manually") }}
+				</v-btn>
 			</v-col>
 		</v-row>
 
@@ -38,7 +35,7 @@
 					hide-details
 					class="ma-0 pt-0"
 					@change="(val) => onPackChange(val, packs_obj.key)"
-				></v-checkbox>
+				/>
 			</v-card>
 		</div>
 
@@ -93,16 +90,14 @@
 						<template
 							v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'"
 						>
-							<v-list-item-content v-text="data.item"></v-list-item-content>
+							<v-list-item-content>{{ data.item }}</v-list-item-content>
 						</template>
 						<template v-else>
 							<v-list-item-content>
-								<v-list-item-title
-									v-text="
-										data.item.username ||
-										$root.lang().database.labels.anonymous + ' (' + data.item.id + ')'
-									"
-								></v-list-item-title>
+								<v-list-item-title>{{
+									data.item.username ||
+									$root.lang().database.labels.anonymous + ` (${data.item.id})`
+								}}</v-list-item-title>
 								<v-list-item-subtitle
 									v-if="data.item.contributions"
 									v-html="
@@ -145,10 +140,10 @@
 		</v-row>
 
 		<!-- Search button -->
-		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5"
-			>{{ $root.lang().database.labels.search_contributions
-			}}<v-icon right dark>mdi-magnify</v-icon></v-btn
-		>
+		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">
+			{{ $root.lang().database.labels.search_contributions }}
+			<v-icon right dark>mdi-magnify</v-icon>
+		</v-btn>
 
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
 
@@ -180,27 +175,24 @@
 						</v-list-item-avatar>
 
 						<v-list-item-content>
-							<v-list-item-title
-								v-text="
-									parseDate(new Date(contrib.date)).format('ll') +
-									' ' +
-									(!!contrib.name ? ' - ' + contrib.name : '')
-								"
-							></v-list-item-title>
-							<v-list-item-subtitle
-								v-text="
-									(contrib.authors || [])
-										.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
-										.join(', ')
-								"
-							></v-list-item-subtitle>
+							<v-list-item-title>{{
+								parseDate(new Date(contrib.date)).format("ll") +
+								" " +
+								(!!contrib.name ? " - " + contrib.name : "")
+							}}</v-list-item-title>
+							<v-list-item-subtitle>{{
+								(contrib.authors || [])
+									.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
+									.join(", ")
+							}}</v-list-item-subtitle>
 
 							<div>
-								<v-chip label x-small class="mr-1"> {{ packToCode[contrib.pack] }} </v-chip
-								><a :href="'/gallery?show=' + contrib.texture" target="_blank"
-									><v-chip style="cursor: pointer" label x-small class="mr-1">
-										#{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1"></span> </v-chip
-								></a>
+								<v-chip label x-small class="mr-1"> {{ packToCode[contrib.pack] }} </v-chip>
+								<a :href="'/gallery?show=' + contrib.texture" target="_blank">
+									<v-chip style="cursor: pointer" label x-small class="mr-1">
+										#{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1" />
+									</v-chip>
+								</a>
 							</div>
 						</v-list-item-content>
 
@@ -213,8 +205,8 @@
 							</v-btn>
 						</v-list-item-action>
 					</v-list-item>
-				</v-col></v-row
-			>
+				</v-col>
+			</v-row>
 
 			<v-btn
 				:style="{ margin: 'auto', 'min-width': '250px !important' }"

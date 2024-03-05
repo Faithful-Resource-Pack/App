@@ -18,13 +18,7 @@
 			/>
 			<h2 class="faithful-font uppercase-unsized">{{ $root.lang("reconnect.reconnecting") }}</h2>
 
-			<v-progress-circular
-				class="my-4"
-				:size="70"
-				:width="7"
-				indeterminate
-				color="primary"
-			></v-progress-circular>
+			<v-progress-circular class="my-4" :size="70" :width="7" indeterminate color="primary" />
 
 			<div id="reconnect-steps">
 				<div v-for="step in reconnect_steps" :key="step">{{ step }}</div>

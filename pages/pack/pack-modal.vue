@@ -22,7 +22,7 @@
 			:label="remove.label"
 		/>
 		<v-card>
-			<v-card-title class="headline" v-text="dialogTitle"></v-card-title>
+			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-form ref="form" lazy-validation>
 					<v-text-field
@@ -42,7 +42,7 @@
 						clearable
 						v-model="formData.name"
 						:label="$root.lang().database.labels.pack_name"
-					></v-text-field>
+					/>
 					<v-combobox
 						:color="color"
 						:item-color="color"
@@ -61,14 +61,14 @@
 						type="number"
 						v-model="formData.resolution"
 						:label="$root.lang().database.labels.pack_resolution"
-					></v-text-field>
+					/>
 					<v-text-field
 						:color="color"
 						:rules="downloadLinkRules"
 						clearable
 						v-model="formData.logo"
 						:label="$root.lang().database.labels.pack_logo"
-					></v-text-field>
+					/>
 					<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
 					<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
 					<div v-for="(edition, index) in editions" :key="index">
@@ -127,7 +127,7 @@
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
@@ -245,16 +245,7 @@ export default {
 			this.remove.confirm = true;
 		},
 		validURL(str) {
-			const pattern = new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
-				"i",
-			); // fragment locator
-			return pattern.test(str);
+			return this.$root.urlRegex.test(str);
 		},
 		addSubmissionData(data) {
 			if (!this.submissionAdd) return;

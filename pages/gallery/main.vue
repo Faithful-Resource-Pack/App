@@ -11,7 +11,7 @@
 					:value="current.pack"
 					:label="$root.lang('gallery.category.pack')"
 					@change="updateRoute($event, 'pack')"
-				></v-select>
+				/>
 			</v-col>
 
 			<v-col cols="12" sm="6">
@@ -22,7 +22,7 @@
 					:value="current.edition"
 					:label="$root.lang('gallery.category.edition')"
 					@change="updateRoute($event, 'edition')"
-				></v-select>
+				/>
 			</v-col>
 		</v-row>
 
@@ -33,7 +33,7 @@
 					:value="current.version"
 					:label="$root.lang('gallery.category.mc_version')"
 					@change="updateRoute($event, 'version')"
-				></v-select>
+				/>
 			</v-col>
 
 			<v-col cols="12" sm="6">
@@ -44,7 +44,7 @@
 					:value="current.tag"
 					:label="$root.lang('gallery.category.tag')"
 					@change="updateRoute($event, 'tag')"
-				></v-select>
+				/>
 			</v-col>
 		</v-row>
 
@@ -60,10 +60,10 @@
 					hide-details
 					min="1"
 					max="16"
-				></v-slider>
+				/>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<v-switch :label="$root.lang('gallery.stretched_switcher')" v-model="stretched"></v-switch>
+				<v-switch :label="$root.lang('gallery.stretched_switcher')" v-model="stretched" />
 			</v-col>
 		</v-row>
 
@@ -141,7 +141,7 @@
 				</div>
 			</div>
 		</v-list>
-		<div class="bottomElement"></div>
+		<div class="bottomElement" />
 
 		<gallery-modal
 			v-model="modalOpen"
@@ -151,7 +151,7 @@
 			:packToName="packToName"
 			:ignoreList="ignoredTextures[current.edition]"
 			:onClose="() => changeShareURL()"
-		></gallery-modal>
+		/>
 
 		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
 			<v-icon> mdi-arrow-up </v-icon>
@@ -424,7 +424,7 @@ export default {
 		scroll() {
 			window.onscroll = () => {
 				this.scrollY = document.firstElementChild.scrollTop;
-				let scrolledTo = document.querySelector(".bottomElement");
+				const scrolledTo = document.querySelector(".bottomElement");
 
 				if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
 					this.displayedResults += this.columns * MIN_ROW_DISPLAYED;

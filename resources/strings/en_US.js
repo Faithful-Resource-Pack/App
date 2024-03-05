@@ -158,7 +158,7 @@ export default {
 				"If checked, the user's name will be displayed as \"Anonymous\" and their skin won't show up. Can only be changed by managers!",
 			mcmeta: "Animated texture",
 			new_mc_version_edition: "Edition to add the version to",
-			new_mc_version_path: "Path version to add the version to",
+			new_mc_version_path: "Path version to add the new version to",
 			new_mc_version_name: "New version name",
 			nameless: "Nameless",
 			add_textures_success: "Added texture(s) successfully",
@@ -258,6 +258,7 @@ export default {
 			archived: "Archived",
 		},
 		deny_window: {
+			title: "Deny add-on",
 			label: "Write a reason…",
 			rule: "Any reason can be given",
 		},
@@ -424,7 +425,7 @@ export default {
 			},
 			username: {
 				label: "Username",
-				hint: "Your username will be displayed and used on the Website for contributions, add-ons etc.",
+				hint: "Your username will be displayed on Faithful services for contributions, add-ons, etc.",
 			},
 		},
 		social: {

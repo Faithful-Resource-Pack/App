@@ -7,23 +7,23 @@
 			:add="Object.keys(subPathDialogData).length == 0"
 			:use="subFormData.id"
 			:pathData="subPathDialogData"
-		></path-modal>
+		/>
 		<remove-confirm
 			type="path"
 			:confirm="remove.confirm"
 			:disableDialog="closeAndUpdate"
 			:data="remove.data"
-		></remove-confirm>
+		/>
 
 		<v-card>
-			<v-card-title class="headline" v-text="subDialogTitle"></v-card-title>
+			<v-card-title class="headline">{{ subDialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-form ref="form" v-model="formValid">
 					<v-text-field
 						:color="color"
 						v-model="subFormData.name"
 						:label="$root.lang().database.labels.use_name"
-					></v-text-field>
+					/>
 					<v-text-field
 						:color="color"
 						required
@@ -31,7 +31,7 @@
 						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
 						v-model="subFormData.id"
 						:label="$root.lang().database.labels.use_id"
-					></v-text-field>
+					/>
 					<v-text-field
 						:color="color"
 						v-if="add == false"
@@ -41,7 +41,7 @@
 						clearable
 						v-model="subFormData.texture"
 						:label="$root.lang().database.labels.texture_id"
-					></v-text-field>
+					/>
 					<v-select
 						required
 						:color="color"
@@ -49,7 +49,7 @@
 						v-model="subFormData.edition"
 						:items="editions"
 						:label="$root.lang().database.labels.use_edition"
-					></v-select>
+					/>
 					<h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
 					<p v-if="add" align="center" style="color: red">
 						⚠️<br /><strong>{{ $root.lang().database.hints.warning_path }}</strong>
@@ -64,11 +64,10 @@
 							:key="index"
 						>
 							<v-list-item-content>
-								<v-list-item-title :title="path.name" v-text="path.name" />
-								<v-list-item-subtitle
-									:title="(path.versions || []).join(', ')"
-									v-text="(path.versions || []).join(', ')"
-								></v-list-item-subtitle>
+								<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
+								<v-list-item-subtitle :title="(path.versions || []).join(', ')">{{
+									(path.versions || []).join(", ")
+								}}</v-list-item-subtitle>
 							</v-list-item-content>
 
 							<v-list-item-action class="merged">
@@ -94,12 +93,13 @@
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
 						@click="openSubPathDialog()"
-						>{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon></v-btn
 					>
+						{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
+					</v-btn>
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="disableSubDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

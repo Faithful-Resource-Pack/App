@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="dialog" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline" v-text="dialogTitle"></v-card-title>
+			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-row>
 					<v-col v-if="formData.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2">
@@ -13,8 +13,9 @@
 									? 'https://visage.surgeplay.com/full/256/'
 									: 'https://visage.surgeplay.com/head/128/') + formData.uuid
 							"
-						/> </v-col
-					><v-col
+						/>
+					</v-col>
+					<v-col
 						:class="'col-' + formData.uuid ? '10' : '12'"
 						:sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12"
 					>
@@ -25,14 +26,14 @@
 								:readonly="add == false"
 								v-model="formData.id"
 								:label="$root.lang().database.labels.discord_id"
-							></v-text-field>
+							/>
 							<v-text-field
 								:color="color"
 								required
 								clearable
 								v-model="formData.username"
 								:label="$root.lang().database.labels.username"
-							></v-text-field>
+							/>
 							<v-select
 								:color="color"
 								:item-color="color"
@@ -42,20 +43,20 @@
 								v-model="formData.roles"
 								:items="roles"
 								:label="$root.lang().database.labels.user_role"
-							></v-select>
+							/>
 							<v-text-field
 								:color="color"
 								clearable
 								v-model="formData.uuid"
 								:label="$root.lang().database.labels.uuid"
-							></v-text-field>
+							/>
 							<v-checkbox
 								:color="color"
 								required
 								clearable
 								v-model="formData.anonymous"
 								:label="$root.lang().database.labels.anonymous"
-							></v-checkbox>
+							/>
 							<v-text v-if="formData.anonymous">{{
 								$root.lang().database.labels.anonymous_explain
 							}}</v-text>
@@ -64,7 +65,7 @@
 				</v-row>
 			</v-card-text>
 			<v-card-actions>
-				<v-spacer></v-spacer>
+				<v-spacer />
 				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>

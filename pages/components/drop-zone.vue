@@ -9,7 +9,7 @@
 			@dragleave.stop="dragleave"
 			@drop.stop="drop"
 			@click.stop="click"
-		></div>
+		/>
 		<input
 			type="file"
 			:multiple="multiple"
@@ -23,7 +23,9 @@
 
 		<label for="fileInput" class="label">
 			<div v-if="isDragging">Release to drop files here.</div>
-			<div v-else><slot name="label"></slot></div>
+			<div v-else>
+				<slot name="label" />
+			</div>
 		</label>
 	</div>
 </template>

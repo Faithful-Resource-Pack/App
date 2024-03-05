@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<div class="styles" v-html="pageStyles"></div>
+		<div class="styles" v-html="pageStyles" />
 		<pack-modal
 			:color="pageColor"
 			:dialog="dialogOpen"
@@ -52,13 +52,7 @@
 		<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
 		<v-list rounded v-if="packs.length" two-line class="main-container">
 			<v-row class="mb-1 mt-0"
-				><v-col
-					:cols="12 / listColumns"
-					xs="1"
-					class="py-0"
-					v-for="(pack, index) in packs"
-					:key="pack.id"
-				>
+				><v-col :cols="12 / listColumns" xs="1" class="py-0" v-for="pack in packs" :key="pack.id">
 					<v-list-item>
 						<v-list-item-avatar
 							:style="{
@@ -71,10 +65,10 @@
 							<v-img :src="pack.logo" />
 						</v-list-item-avatar>
 						<v-list-item-content>
-							<v-list-item-title v-text="pack.name"></v-list-item-title>
-							<v-list-item-subtitle
-								v-text="(pack.tags.map(formatTags) || []).join(', ')"
-							></v-list-item-subtitle>
+							<v-list-item-title>{{ pack.name }}</v-list-item-title>
+							<v-list-item-subtitle>{{
+								(pack.tags.map(formatTags) || []).join(", ")
+							}}</v-list-item-subtitle>
 						</v-list-item-content>
 
 						<!-- action buttons -->
@@ -87,11 +81,11 @@
 							</v-btn>
 						</v-list-item-action>
 					</v-list-item>
-				</v-col></v-row
-			>
+				</v-col>
+			</v-row>
 		</v-list>
 		<div v-else class="text-center">
-			<v-progress-circular indeterminate :color="pageColor"></v-progress-circular>
+			<v-progress-circular indeterminate :color="pageColor" />
 		</div>
 	</v-container>
 </template>
