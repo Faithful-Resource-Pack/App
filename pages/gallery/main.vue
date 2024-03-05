@@ -108,7 +108,11 @@
 				>
 					<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 						<template v-slot:trigger>
-							<gallery-image :src="texture.url">
+							<gallery-image
+								:src="texture.url"
+								:textureID="texture.textureID"
+								:ignoreList="ignoredTextures[current.edition]"
+							>
 								<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
 								<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
 								<p :style="styles.not_done.message">
@@ -145,6 +149,7 @@
 			:textureObj="modalTextureObj"
 			:contributors="loadedContributors"
 			:packToName="packToName"
+			:ignoreList="ignoredTextures[current.edition]"
 			:onClose="() => changeShareURL()"
 		></gallery-modal>
 
@@ -215,6 +220,7 @@ export default {
 			// whether modal is opened
 			modalOpen: false,
 			packToName: {},
+			ignoredTextures: {},
 			// styles
 			styles: {
 				// gallery cell styles
@@ -495,6 +501,14 @@ export default {
 			this.checkShare(this.shareID());
 		});
 		this.checkShare(this.shareID());
+
+		axios
+			.get(
+				"https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json",
+			)
+			.then((res) => {
+				this.ignoredTextures = res.data;
+			});
 
 		axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
 			this.options.tags = [...this.options.tags, ...res.data];

@@ -36,7 +36,12 @@
 							>
 								<template v-for="(url, j) in group">
 									<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="i + '-' + j">
-										<gallery-image modal :src="url[1]">
+										<gallery-image
+											modal
+											:src="url[1]"
+											:textureID="textureID"
+											:ignoreList="ignoreList"
+										>
 											<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
 										</gallery-image>
 										<h2>{{ packToName[url[0]] }}</h2>
@@ -126,6 +131,10 @@ export default {
 		packToName: {
 			type: Object,
 			required: true,
+		},
+		// ignore list provided (already filtered by edition)
+		ignoreList: {
+			type: Array,
 		},
 		onClose: {
 			type: Function,
