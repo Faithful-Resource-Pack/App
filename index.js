@@ -12,6 +12,9 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { createPinia } from "pinia";
 
+// dynamic import because vite, used for fallback translation
+const { default: en_US } = await import("./resources/strings/en_US.js");
+
 import { discordAuthStore } from "./stores/discordAuthStore.js";
 import { discordUserStore } from "./stores/discordUserStore.js";
 import { appUserStore } from "./stores/appUserStore.js";
@@ -144,11 +147,8 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 	};
 });
 
-// merged with other languages to make fallback
-const enUS = await import("./resources/strings/en_US.js").then((res) => res.default);
-
 const LANGS = {
-	en: enUS,
+	en: en_US,
 };
 
 const LANG_KEY = "lang";
@@ -559,9 +559,9 @@ const app = new Vue({
 					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
 					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
 					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$",
+					"(\\#[-a-z\\d_]*)?$", // fragment locator
 				"i",
-			); // fragment locator
+			);
 		},
 		year() {
 			return new Date().getFullYear();
@@ -651,7 +651,7 @@ const app = new Vue({
 				.action()
 				.then((r) => {
 					r = r.default;
-					this.langs[lang.lang] = Object.merge({}, enUS, r);
+					this.langs[lang.lang] = Object.merge({}, en_US, r);
 					// we need to wait for this.langs to be updated
 					this.$nextTick(() => {
 						// the next line would force this.lang to update

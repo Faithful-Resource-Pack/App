@@ -1,5 +1,5 @@
 /**
- * This file would be used as base for all languages
+ * This file is the template for all other languages
  */
 
 export default {
