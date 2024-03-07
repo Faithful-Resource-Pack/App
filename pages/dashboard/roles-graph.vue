@@ -106,8 +106,8 @@ export default {
 				.map((e, i) => [i, ...e]);
 		},
 		shade() {
-			let start = this.GColor(this.colors[this.colors.length - 1]);
-			let end = this.GColor(this.colors[0]);
+			const start = this.GColor(this.colors[this.colors.length - 1]);
+			const end = this.GColor(this.colors[0]);
 
 			return this.createColorRange(start, end, this.labels.length).map((c) => this.toRGB(c));
 		},
@@ -128,7 +128,7 @@ export default {
 			return `rgb(${gColor.r}, ${gColor.g}, ${gColor.b})`;
 		},
 		forceRerender() {
-			// Remove my-component from the DOM
+			// Remove component from the DOM
 			this.renderComponent = false;
 
 			this.$nextTick(() => {
@@ -137,10 +137,10 @@ export default {
 			});
 		},
 		createColorRange(c1, c2, n = 255) {
-			var colorList = [],
-				tmpColor,
-				variance;
-			for (var i = 0; i < n; i++) {
+			const colorList = [];
+			let tmpColor;
+			let variance;
+			for (let i = 0; i < n; i++) {
 				tmpColor = this.GColor();
 				// i E [[0;n[[
 				// i * 255 E [[0; 255*n [[
@@ -155,9 +155,8 @@ export default {
 		},
 	},
 	created() {
-		if (this.series.length !== this.labels.length) {
+		if (this.series.length !== this.labels.length)
 			throw new Error("Failed to parse series and labels");
-		}
 	},
 	watch: {
 		theme() {
