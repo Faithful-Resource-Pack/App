@@ -53,6 +53,11 @@
 											v-model="texture.tags"
 											:items="tags"
 											:placeholder="$root.lang().database.labels.texture_tags"
+											@change="
+												() => {
+													texture.tags = sortTags(texture.tags);
+												}
+											"
 											multiple
 											hide-details
 											dense

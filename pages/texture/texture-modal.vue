@@ -46,6 +46,11 @@
 						multiple
 						deletable-chips
 						small-chips
+						@change="
+							() => {
+								formData.tags = sortTags(formData.tags);
+							}
+						"
 						v-model="formData.tags"
 						:items="tags"
 						:label="$root.lang().database.labels.texture_tags"
@@ -202,14 +207,14 @@ export default {
 			this.subDialogAdd = add;
 
 			if (add) {
-				let texture_id = String(this.formData.id);
-				let use_ids = Object.keys(this.formData.uses);
-				let use_letters = use_ids.map((uid) => uid.replace(texture_id, "")[0]);
-				let max_letter = use_letters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
-				let next_letter = String.fromCharCode(max_letter.charCodeAt(0) + 1);
-				let next_id = texture_id + next_letter;
+				const textureID = String(this.formData.id);
+				const useIDs = Object.keys(this.formData.uses);
+				const useLetters = useIDs.map((uid) => uid.replace(textureID, "")[0]);
+				const maxLetter = useLetters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
+				const nextLetter = String.fromCharCode(maxLetter.charCodeAt(0) + 1);
+				const nextID = textureID + nextLetter;
 				// Autofill use id
-				this.subDialogData = { id: next_id };
+				this.subDialogData = { id: nextID };
 			} else {
 				this.subDialogData = data;
 			}
@@ -266,11 +271,10 @@ export default {
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
 					const temp = res.data;
-					this.formData.uses = {};
-
-					for (let i = 0; i < temp.length; i++) {
-						this.formData.uses[temp[i].id] = temp[i];
-					}
+					this.formData.uses = Object.values(temp).reduce((acc, cur) => ({
+						...acc,
+						[cur.id]: cur,
+					}));
 				})
 				.catch((err) => {
 					console.error(err);
