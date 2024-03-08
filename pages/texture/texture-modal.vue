@@ -274,7 +274,7 @@ export default {
 					this.formData.uses = Object.values(temp).reduce((acc, cur) => ({
 						...acc,
 						[cur.id]: cur,
-					}));
+					}), {});
 				})
 				.catch((err) => {
 					console.error(err);
