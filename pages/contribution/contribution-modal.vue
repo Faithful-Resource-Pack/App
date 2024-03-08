@@ -132,6 +132,8 @@
 
 <script>
 import Vue from "vue";
+import moment from "moment";
+
 import ContributionForm from "./contribution-form.vue";
 
 export default {
@@ -192,7 +194,7 @@ export default {
 					form_id,
 					`${form.pack} | ${moment(new Date(form.date)).format("ll")}`,
 				])
-				.reduce((acc, [form_id, form_label]) => ({ ...acc, [form_id]: form_label }), {});
+				.reduce((acc, [formID, formLabel]) => ({ ...acc, [formID]: formLabel }), {});
 		},
 	},
 	methods: {
@@ -217,29 +219,27 @@ export default {
 			// make the opened form our created form
 			this.openedFormId = new_form_id;
 		},
-		open(input_data_obj = undefined, input_packs_list, close_on_submit = true) {
-			this.packsList = input_packs_list;
+		open(input_data_obj = undefined, inputPacksList, closeOnSubmit = true) {
+			this.packsList = inputPacksList;
 			this.modalOpened = true;
 			this.openedFormId = undefined;
 
 			let created_form_obj;
 			if (input_data_obj !== undefined) {
-				created_form_obj = Object.assign({}, this.defaultValue(input_packs_list), input_data_obj);
+				created_form_obj = Object.assign({}, this.defaultValue(inputPacksList), input_data_obj);
 			} else {
 				// get one empty form
-				created_form_obj = this.defaultValue(input_packs_list);
+				created_form_obj = this.defaultValue(inputPacksList);
 			}
 
 			Vue.set(this, "formRecords", {
 				[created_form_obj.formId]: created_form_obj,
 			});
 			this.openedFormId = created_form_obj.formId;
-			this.closeOnSubmit = !!close_on_submit;
+			this.closeOnSubmit = !!closeOnSubmit;
 		},
 		contributorsFromIds(author_ids) {
-			if (!author_ids || author_ids.length === 0) {
-				return "";
-			}
+			if (!author_ids || author_ids.length === 0) return "";
 
 			const contributor_names = this.contributors
 				.filter((c) => author_ids.indexOf(c.id) !== -1)
@@ -285,11 +285,11 @@ export default {
 
 			if (this.closeOnSubmit) this.modalOpened = false;
 		},
-		defaultValue(packs_list) {
+		defaultValue(packList) {
 			return {
 				date: new Date(new Date().setHours(0, 0, 0, 0)),
-				packs: packs_list,
-				pack: packs_list ? packs_list[0] : null,
+				packs: packList,
+				pack: packList ? packList[0] : null,
 				texture: this.multiple ? [] : 0,
 				authors: [],
 				formId: this.getNewFormId(),

@@ -174,9 +174,7 @@ const AUTH_STORAGE_KEY = "auth";
 const MENU_KEY = "menu_key";
 const MENU_DEFAULT = false;
 
-const ALL_ROUTES = [
-	{ path: "/reconnect", component: ReconnectPage },
-];
+const ALL_ROUTES = [{ path: "/reconnect", component: ReconnectPage }];
 
 const router = new VueRouter({
 	routes: ALL_ROUTES,
@@ -187,7 +185,7 @@ router.beforeEach((to, from, next) => {
 	// redirect to dashboard if base url
 	if (to.fullPath === "/") {
 		next("/dashboard");
-		return
+		return;
 	}
 
 	// replace query params (legacy urls) with history routing

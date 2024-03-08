@@ -136,7 +136,7 @@ export default {
 			add_new_contribution: "Add a new contribution",
 			clone_contribution: "Clone the contribution",
 			no_contributor_yet: "No contributor yet",
-			pack: "Resource Packs",
+			pack: "Resource Pack",
 			submissions: "Submission information",
 			github: "GitHub",
 			resource_packs: "Filter by pack",

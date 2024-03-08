@@ -80,6 +80,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 import UserSelect from "./user-select.vue";
 import QuickDatePicker from "../components/quick-date-picker.vue";
 import MultiRangeInput from "../components/multi-range-input.vue";
