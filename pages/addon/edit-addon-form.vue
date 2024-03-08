@@ -258,7 +258,7 @@ export default {
 				});
 			axios
 				.get(
-					`${this.root.apiURL}/addons/${this.id || this.$route.params.id}/files/screenshots-ids`,
+					`${this.$root.apiURL}/addons/${this.id || this.$route.params.id}/files/screenshots-ids`,
 					this.$root.apiOptions,
 				)
 				.then((res) => {
