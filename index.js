@@ -175,12 +175,28 @@ const MENU_KEY = "menu_key";
 const MENU_DEFAULT = false;
 
 const ALL_ROUTES = [
-	{ path: "/", redirect: "/dashboard" },
 	{ path: "/reconnect", component: ReconnectPage },
 ];
 
 const router = new VueRouter({
 	routes: ALL_ROUTES,
+	mode: "history",
+});
+
+router.beforeEach((to, from, next) => {
+	// redirect to dashboard if base url
+	if (to.fullPath === "/") {
+		next("/dashboard");
+		return
+	}
+
+	// replace query params (legacy urls) with history routing
+	if (to.fullPath.slice(0, 2) === "/#") {
+		const path = to.fullPath.slice(2);
+		next(path);
+		return;
+	}
+	next();
 });
 
 // `to` field in subtab will be the first route path
