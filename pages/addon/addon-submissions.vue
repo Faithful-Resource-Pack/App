@@ -79,7 +79,7 @@
 						</v-card-text>
 
 						<v-card-actions style="justify-content: flex-end">
-							<v-btn text :href="'/addons/edit/' + addon.id">
+							<v-btn text :href="'/#/addons/edit/' + addon.id">
 								{{ $root.lang().global.btn.edit }}
 							</v-btn>
 							<v-btn color="red" text @click="deleteAddon(addon)">

@@ -161,7 +161,7 @@
 						v-if="i < displayedResults"
 					>
 						<v-list-item-avatar tile class="texture-preview">
-							<a :href="'/gallery?show=' + contrib.texture">
+							<a :href="'/#/gallery?show=' + contrib.texture">
 								<v-img
 									class="texture-img"
 									:src="contrib.url"
@@ -188,7 +188,7 @@
 
 							<div>
 								<v-chip label x-small class="mr-1"> {{ packToCode[contrib.pack] }} </v-chip>
-								<a :href="'/gallery?show=' + contrib.texture" target="_blank">
+								<a :href="'/#/gallery?show=' + contrib.texture" target="_blank">
 									<v-chip style="cursor: pointer" label x-small class="mr-1">
 										#{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1" />
 									</v-chip>
