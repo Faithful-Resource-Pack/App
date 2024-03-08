@@ -1,228 +1,261 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="EN">
-<head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.6.14/dist/vuetify.min.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <meta name="theme-color" content="#272727">
-  <link rel="icon" type="image/png" sizes="32x32"   href="https://faithfulpack.net/image/pwa/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="https://faithfulpack.net/image/pwa/app-192x192.png">
-  <link rel="icon" type="image/png" sizes="16x16"   href="https://faithfulpack.net/image/pwa/favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="https://faithfulpack.net/image/pwa/apple-touch-180x180.png">
-  <link rel="stylesheet" href="./resources/css/webapp.css">
-  <title>Faithful Web Application</title>
-</head>
-<body>
-  <v-app id="app" ref="app" :dark="dark" :light="!dark">
-    <v-app-bar flat dense bar app v-if="true" class="small-appbar">
-      <span class="mr-2 d-flex noselect">
-        <v-app-bar-nav-icon small @click="drawer = !drawer"></v-app-bar-nav-icon>
-      </span>
+	<head>
+		<link
+			href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/@mdi/font@6.9.96/css/materialdesignicons.min.css"
+			rel="stylesheet"
+		/>
+		<link
+			href="https://cdn.jsdelivr.net/npm/vuetify@2.6.14/dist/vuetify.min.css"
+			rel="stylesheet"
+		/>
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
+		/>
+		<meta name="theme-color" content="#272727" />
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="32x32"
+			href="https://faithfulpack.net/image/pwa/favicon-32x32.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="192x192"
+			href="https://faithfulpack.net/image/pwa/app-192x192.png"
+		/>
+		<link
+			rel="icon"
+			type="image/png"
+			sizes="16x16"
+			href="https://faithfulpack.net/image/pwa/favicon-16x16.png"
+		/>
+		<link
+			rel="apple-touch-icon"
+			sizes="180x180"
+			href="https://faithfulpack.net/image/pwa/apple-touch-180x180.png"
+		/>
+		<link rel="stylesheet" href="./resources/css/webapp.css" />
+		<title>Faithful Web Application</title>
+	</head>
+	<body>
+		<v-app id="app" ref="app" :dark="dark" :light="!dark">
+			<v-app-bar flat dense bar app v-if="true" class="small-app-bar">
+				<span class="mr-2 d-flex noselect">
+					<v-app-bar-nav-icon small @click="drawer = !drawer" />
+				</span>
 
-      <v-spacer></v-spacer>
+				<v-spacer></v-spacer>
 
-      <span class="monochrome-logo mr-2 d-flex noselect">
-        <a href="https://faithfulpack.net">
-          <img src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png?w=60" width="30"
-            alt="logo" />
-        </a>
-      </span>
-    </v-app-bar>
+				<span class="monochrome-logo mr-2 d-flex noselect">
+					<a href="https://faithfulpack.net">
+						<img
+							src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png?w=60"
+							width="30"
+							alt="logo"
+						/>
+					</a>
+				</span>
+			</v-app-bar>
 
-    <v-navigation-drawer
-      width="320"
-      fixed
-      app
-      v-model="drawer"
-    >
+			<v-navigation-drawer width="320" fixed app v-model="drawer">
+				<v-card id="banner-card" class="rounded-t-0">
+					<v-img height="128" :src="user.banner">
+						<v-card-title class="banner-btn pl-2" v-if="isUserLogged">
+							<v-avatar size="48" style="margin-right: 10px">
+								<img
+									v-if="user.avatar"
+									style="line-height: 48px"
+									:alt="user.username.charAt(0)"
+									:src="user.avatar"
+								/>
+								<span class="text-center primary font-weight-bold" v-else>{{
+									user.username.charAt(0)
+								}}</span>
+							</v-avatar>
+							<span class="white--text">{{ user.username }}</span>
+						</v-card-title>
+						<div class="px-2 py-5" v-else>
+							<v-btn
+								block
+								class="blurple"
+								:href="$root.discordAuth.discordAuthURL"
+								:style="{
+									color: '#FFF',
+								}"
+							>
+								{{ $root.lang().global.login }}
+							</v-btn>
+						</div>
+						<v-card-actions style="align-items: flex-end" class="mt-n2">
+							<v-card
+								id="theme"
+								style="display: flex; justify-content: center; align-items: center"
+							>
+								<v-btn
+									icon
+									v-for="(icon, key) in themes"
+									:key="key"
+									elevation="0"
+									:class="['rounded d-inline-block', { 'active primary': theme === key }]"
+									@click="theme = key"
+								>
+									<v-icon class="theme-icon">
+										{{ icon }}
+									</v-icon>
+								</v-btn>
+							</v-card>
 
-      <v-card id="banner-card" class="rounded-t-0">
-        <v-img height="128" :src="user.banner">
-          <v-card-title class="banner-btn pl-2" v-if="isUserLogged">
-            <v-avatar size="48" style="margin-right: 10px">
-              <img
-                v-if="user.avatar"
-                style="line-height: 48px;"
-                :alt="user.username.charAt(0)"
-                :src="user.avatar"
-              />
-              <span  class="text-center primary font-weight-bold" v-else>{{ user.username.charAt(0) }}</span>
-            </v-avatar>
-            <span class="white--text">{{ user.username }}</span>
-          </v-card-title>
-          <div class="px-2 py-5" v-else>
-            <v-btn
-              block
-              class="blurple"
-              href="/api/discord/login"
-              :style="{
-                'color': '#FFF'
-              }"
-            >
-              {{ $root.lang().global.login }}
-            </v-btn>
-          </div>
-          <v-card-actions style="align-items: flex-end" class="mt-n2">
-            <v-card id="theme" style="display: flex; justify-content: center; align-items: center">
-              <v-btn
-                icon
-                v-for="(icon, key) in themes"
-                :key="key"
-                elevation="0"
-                :class="['rounded d-inline-block', { 'active primary': theme === key }]"
-                @click="theme = key"
-              >
-                <v-icon class="theme-icon">
-                  {{ icon }}
-                </v-icon>
-              </v-btn>
-            </v-card>
+							<v-spacer></v-spacer>
 
-            <v-spacer></v-spacer>
+							<v-btn small color="red white--text" @click="logout" v-if="isUserLogged">
+								{{ $root.lang().global.logout }}
+							</v-btn>
+						</v-card-actions>
+					</v-img>
+				</v-card>
 
-            <v-btn small color="red white--text" @click="logout" v-if="isUserLogged">
-              {{ $root.lang().global.logout }}
-            </v-btn>
-          </v-card-actions>
-        </v-img>
-      </v-card>
+				<template v-for="(tab, tabIndex) in availableTabs">
+					<v-list
+						:key="'item-' + tabIndex"
+						dense
+						nav
+						v-if="
+							isUserLogged ||
+							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0
+						"
+					>
+						<v-list-item>
+							<v-list-item-title class="uppercase-unsized">
+								{{ tab.labelText }}
+							</v-list-item-title>
+						</v-list-item>
 
-      <template
-        v-for="(tab, tabIndex) in availableTabs"
-      >
-        <v-list
-          :key="'item-' + tabIndex"
-          dense
-          nav
-          v-if="isUserLogged || (tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0"
-        >
-          <v-list-item>
-            <v-list-item-title class="uppercased-unsized">
-              {{ tab.labelText }}
-            </v-list-item-title>
-          </v-list-item>
+						<v-list-item
+							link
+							v-if="tab.subtabs && (isUserLogged || subtab.unlogged)"
+							v-for="(subtab, subtabIndex) in tab.subtabs"
+							:key="subtabIndex"
+							:to="subtab.to"
+							:disabled="!subtab.enabled"
+							class="uppercase-unsized"
+						>
+							<v-list-item-icon v-if="subtab.icon" style="margin-right: 5px">
+								<v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title class="uppercase">{{ subtab.labelText }}</v-list-item-title>
 
-          <v-list-item link v-if="tab.subtabs && (isUserLogged || subtab.unlogged)" v-for="(subtab, subtabIndex) in tab.subtabs" :key="subtabIndex" :to="subtab.to" :disabled="!subtab.enabled" class="uppercased-unsized">
-            <v-list-item-icon v-if="subtab.icon" style="margin-right: 5px;">
-              <v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title v-text="subtab.labelText" class="uppercased"></v-list-item-title>
+							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
+								<span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
+							</v-list-item-action>
+						</v-list-item>
 
-            <v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
-              <span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
-            </v-list-item-action>
-          </v-list-item>
+						<v-list-item
+							link
+							v-if="tab.to"
+							:to="tab.to"
+							:disabled="!tab.enabled"
+							class="uppercase-unsized"
+						>
+							<v-list-item-icon v-if="tab.icon" style="margin-right: 5px">
+								<v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title class="uppercase">{{ tab.labelText }}</v-list-item-title>
 
-          <v-list-item link v-if="tab.to" :to="tab.to" :disabled="!tab.enabled" class="uppercased-unsized">
-            <v-list-item-icon v-if="tab.icon" style="margin-right: 5px;">
-              <v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title v-text="tab.labelText" class="uppercased"></v-list-item-title>
+							<v-list-item-action class="nav-badge" v-if="tab.badge && badges[tab.badge]">
+								<span class="nav-badge-inner error">{{ badges[tab.badge] }}</span>
+							</v-list-item-action>
+						</v-list-item>
+					</v-list>
+					<v-divider
+						:key="'divider-' + tabIndex"
+						style="margin-bottom: 10px"
+						v-if="
+							isUserLogged ||
+							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0
+						"
+					>
+					</v-divider>
+				</template>
 
-            <v-list-item-action class="nav-badge" v-if="tab.badge && badges[tab.badge]">
-              <span class="nav-badge-inner error">{{ badges[tab.badge] }}</span>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list>
-        <v-divider
-          :key="'divider-' + tabIndex"
-          style="margin-bottom: 10px"
-          v-if="isUserLogged || (tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0"
-        />
-      </template>
+				<v-list dense nav>
+					<v-list-item>
+						<v-list-item-title class="uppercase-unsized">{{
+							$root.lang().global.tabs.review.subtabs.translations
+						}}</v-list-item-title>
+					</v-list-item>
+					<v-radio-group class="px-2 pb-2" row v-model="selectedLang" hide-details>
+						<v-radio
+							class="uppercase pb-1"
+							v-for="language in languages"
+							:key="language.bcp47"
+							:label="language.lang"
+							:value="language.lang"
+							hide-details
+						/>
+					</v-radio-group>
+				</v-list>
 
-      <v-list dense nav>
-        <v-list-item>
-          <v-list-item-title class="uppercased-unsized">{{ $root.lang().global.tabs.review.subtabs.translations }}</v-list-item-title>
-        </v-list-item>
-        <v-radio-group class="px-2 pb-2" row v-model="selectedLang" hide-details>
-          <v-radio class="uppercased pb-1" v-for="language in languages" :key="language.bcp47" :label="language.lang" :value="language.lang" hide-details />
-        </v-radio-group>
-      </v-list>
+				<!-- Correct problem on firefox on mobile where bar disappears and elements fixed are hidden -->
+				<div class="py-8" v-if="!isDesktop"></div>
+			</v-navigation-drawer>
 
-      <!-- Correct problem on firefox on mobile where bar disappears and elements fixed are hidden -->
-      <div class="py-8" v-if="!isDesktop"></div>
-    </v-navigation-drawer>
+			<v-main>
+				<router-view></router-view>
+				<v-bottom-navigation id="bottom" style="box-shadow: none" height="auto" class="mb-2">
+					<span> &copy; {{ year }} Faithful Resource Pack </span>
+				</v-bottom-navigation>
+			</v-main>
 
-    <v-main>
-      <router-view></router-view>
-    </v-main>
+			<v-snackbar
+				v-model="snackbar.show"
+				:timeout="snackbar.timeout"
+				:color="snackbar.color"
+				multi-line
+				bottom
+				right
+			>
+				<div>{{ snackbar.message }}</div>
+				<div>{{ snackbar.submessage }}</div>
+				<pre v-if="snackbar.json" class="mt-2">{{ JSON.stringify(snackbar.json, null, 2) }}</pre>
+			</v-snackbar>
+		</v-app>
 
-    <v-bottom-navigation id="bottom" style="box-shadow: none" height="auto" class="mb-2">
-      <span>
-        &copy; {{ year }} Faithful Resource Pack
-      </span>
-    </v-bottom-navigation>
+		<!-- Dashboard -->
+		<script>
+			window.Promise ||
+				document.write(
+					'<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>',
+				);
+			window.Promise ||
+				document.write(
+					'<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>',
+				);
+			window.Promise ||
+				document.write(
+					'<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>',
+				);
+		</script>
 
-    <v-snackbar
-      v-model="snackbar.show"
-      :timeout="snackbar.timeout"
-      :color="snackbar.color"
-      multi-line
-      bottom
-      right
-    >
-      <div>{{ snackbar.message }}</div>
-      <div>{{ snackbar.submessage }}</div>
-      <pre v-if="snackbar.json" class="mt-2">{{JSON.stringify(snackbar.json, null, 2)}}</pre>
-    </v-snackbar>
-  </v-app>
-
-  <script src="https://cdn.jsdelivr.net/npm/vue@2.6/dist/vue.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-router@3.5.3/dist/vue-router.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/twin-bcrypt@2.1.1/twin-bcrypt.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.6.14/dist/vuetify.min.js"></script>
-
-  <!-- Pinia -->
-  <script src="https://cdn.jsdelivr.net/npm/@vue/composition-api@1.7.1"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-demi@0.11.4/lib/index.iife.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/pinia@2.0.33/dist/pinia.iife.min.js"></script>
-
-  <!-- Dashboard -->
-  <script>
-    window.Promise ||
-      document.write(
-        '<script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.min.js"><\/script>'
-      )
-    window.Promise ||
-      document.write(
-        '<script src="https://cdn.jsdelivr.net/npm/eligrey-classlist-js-polyfill@1.2.20171210/classList.min.js"><\/script>'
-      )
-    window.Promise ||
-      document.write(
-        '<script src="https://cdn.jsdelivr.net/npm/findindex_polyfill_mdn"><\/script>'
-      )
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-calendar-heatmap@0.8.4/dist/vue-calendar-heatmap.browser.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-calendar-heatmap@0.8.4/dist/vue-calendar-heatmap.min.css" />
-  <script src="https://rawgit.com/juijs/vue-graph/master/dist/vue-graph.js"></script>
-
-
-  <!--
-  marked should probably be updated to the newest version sometime (4.0.x)
-  but would need another package for sanitization, because they removed the functionality in version 0.7.0
-  DO NOT IGNORE THIS WARNING ROLF!!!!!!!!!! @TheRolfFR @TheRolfFR
-  -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@0.6.3/marked.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/prism.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vue-prism-editor@1.3.0/dist/prismeditor.umd.production.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7.3.0/dist/d3.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/combine/npm/moment@2.29.1/locale/cs.min.js,npm/moment@2.29.1/locale/pt-br.min.js,npm/moment@2.29.1/locale/de.min.js,npm/moment@2.29.1/locale/fr.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/vue-tippy/dist/vue-tippy.min.js"></script>
-
-<!-- stores -->
-<script src="./stores/discordAuthStore.js"></script>
-<script src="./stores/discordUserStore.js"></script>
-<script src="./stores/appUserStore.js"></script>
-
-<!-- main script -->
-  <script src="./webapp.js" type="module"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue-prism-editor@1.3.0/dist/prismeditor.min.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism-tomorrow.min.css" />
-</body>
+		<!-- main script -->
+		<script src="./index.js" type="module"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/vue-prism-editor@1.3.0/dist/prismeditor.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/prismjs@1.27.0/themes/prism-tomorrow.min.css"
+		/>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/vue-calendar-heatmap@0.8.4/dist/vue-calendar-heatmap.min.css"
+		/>
+	</body>
 </html>

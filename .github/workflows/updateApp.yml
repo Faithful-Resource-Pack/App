@@ -17,9 +17,10 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSH }}
+        script_stop: true
         script: |
           cd /var/www/html/webapp.faithfulpack.net/
           git stash
           git pull
-          pnpm install --save
-          pm2 restart "APP"
+          pnpm install
+          pnpm build
