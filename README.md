@@ -25,3 +25,11 @@ pnpm install
 ```bash
 pnpm dev
 ```
+
+## Building
+
+```bash
+pnpm build
+```
+
+You can preview the production build with `pnpm preview`.
