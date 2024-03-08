@@ -2,21 +2,19 @@
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<use-modal
 			:color="color"
-			:subDialog="subDialogOpen"
-			:disableSubDialog="disableSubDialog"
-			:add="subDialogAdd"
+			:modalOpened="useModalOpen"
+			:disableDialog="closeUseModal"
+			:add="useModalAdd"
 			:textureID="formData.id"
 			:usesLength="Object.keys(formData.uses).length"
-			:data="subDialogData"
-		>
-		</use-modal>
+			:data="useModalData"
+		/>
 		<remove-confirm
 			type="use"
 			:confirm="remove.confirm"
 			:disableDialog="closeAndUpdate"
 			:data="remove.data"
-		>
-		</remove-confirm>
+		/>
 
 		<v-card>
 			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
@@ -185,9 +183,9 @@ export default {
 				id: "",
 				uses: {},
 			},
-			subDialogOpen: false,
-			subDialogData: {},
-			subDialogAdd: false,
+			useModalOpen: false,
+			useModalData: {},
+			useModalAdd: false,
 			remove: {
 				confirm: false,
 				data: {},
@@ -203,8 +201,8 @@ export default {
 	},
 	methods: {
 		openSubDialog(data, add) {
-			this.subDialogOpen = true;
-			this.subDialogAdd = add;
+			this.useModalOpen = true;
+			this.useModalAdd = add;
 
 			if (add) {
 				const textureID = String(this.formData.id);
@@ -214,13 +212,11 @@ export default {
 				const nextLetter = String.fromCharCode(maxLetter.charCodeAt(0) + 1);
 				const nextID = textureID + nextLetter;
 				// Autofill use id
-				this.subDialogData = { id: nextID };
-			} else {
-				this.subDialogData = data;
-			}
+				this.useModalData = { id: nextID };
+			} else this.useModalData = data;
 		},
-		disableSubDialog() {
-			this.subDialogOpen = false;
+		closeUseModal() {
+			this.useModalOpen = false;
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
@@ -271,14 +267,15 @@ export default {
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
 					const temp = res.data;
-					this.formData.uses = Object.values(temp).reduce((acc, cur) => ({
-						...acc,
-						[cur.id]: cur,
-					}), {});
+					this.formData.uses = Object.values(temp).reduce(
+						(acc, cur) => ({
+							...acc,
+							[cur.id]: cur,
+						}),
+						{},
+					);
 				})
-				.catch((err) => {
-					console.error(err);
-				});
+				.catch((err) => console.error(err));
 		},
 		askRemoveUse(data) {
 			this.remove.data = data;

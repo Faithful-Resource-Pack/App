@@ -5,7 +5,7 @@
 			:color="pageColor"
 			:textColor="textColorOnPage"
 			v-model="dialogOpen"
-			:disableDialog="disableDialog"
+			:disableDialog="closeTextureModal"
 			:add="Object.keys(dialogData).length == 0"
 			:data="dialogData"
 			:tags="tags"
@@ -288,15 +288,12 @@ export default {
 				: `/textures/${t}`;
 		},
 		startSearch() {
-			let newPath = this.textureURL(this.tag, this.search);
+			const newPath = this.textureURL(this.tag, this.search);
 
-			// DO NOT CHANGE ROUTE IF SAME PATH
-			if (newPath !== this.$route.path) {
-				this.$router.push(newPath);
-			} else {
-				// else get textures manually
-				this.getTextures();
-			}
+			// don't change route if same path
+			if (newPath !== this.$route.path) this.$router.push(newPath);
+			// else get textures manually
+			else this.getTextures();
 		},
 		clearSearch() {
 			this.search = "";
@@ -306,7 +303,7 @@ export default {
 			this.dialogOpen = true;
 			this.dialogData = data;
 		},
-		disableDialog(refresh = false) {
+		closeTextureModal(refresh = false) {
 			this.dialogOpen = false;
 			if (refresh) {
 				this.getTags();

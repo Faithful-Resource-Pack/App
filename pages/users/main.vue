@@ -127,13 +127,13 @@ import Vue from "vue";
 import axios from "axios";
 
 import UserModal from "./user-modal.vue";
-import UserRemoveConfirm from "./remove-confirm.vue";
+import RemoveConfirm from "./remove-confirm.vue";
 
 export default {
 	name: "users-page",
 	components: {
 		UserModal,
-		UserRemoveConfirm,
+		RemoveConfirm,
 	},
 	data() {
 		const INCREMENT = 250;

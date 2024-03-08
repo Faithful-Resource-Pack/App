@@ -1,12 +1,12 @@
 <template>
-	<v-dialog v-model="subDialog" content-class="colored" max-width="800">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="800">
 		<path-modal
 			:color="color"
-			v-model="subPathDialogOpen"
-			:disableSubPathDialog="disableSubPathDialog"
-			:add="Object.keys(subPathDialogData).length == 0"
-			:use="subFormData.id"
-			:pathData="subPathDialogData"
+			v-model="pathModalOpen"
+			:disableDialog="closePathModal"
+			:add="Object.keys(pathModalData).length == 0"
+			:useID="formData.id"
+			:data="pathModalData"
 		/>
 		<remove-confirm
 			type="path"
@@ -16,12 +16,12 @@
 		/>
 
 		<v-card>
-			<v-card-title class="headline">{{ subDialogTitle }}</v-card-title>
+			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-form ref="form" v-model="formValid">
 					<v-text-field
 						:color="color"
-						v-model="subFormData.name"
+						v-model="formData.name"
 						:label="$root.lang().database.labels.use_name"
 					/>
 					<v-text-field
@@ -29,7 +29,7 @@
 						required
 						persistent-hint
 						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
-						v-model="subFormData.id"
+						v-model="formData.id"
 						:label="$root.lang().database.labels.use_id"
 					/>
 					<v-text-field
@@ -39,14 +39,14 @@
 						:hint="'⚠️ ' + $root.lang().database.hints.texture_id"
 						required
 						clearable
-						v-model="subFormData.texture"
+						v-model="formData.texture"
 						:label="$root.lang().database.labels.texture_id"
 					/>
 					<v-select
 						required
 						:color="color"
 						:item-color="color"
-						v-model="subFormData.edition"
+						v-model="formData.edition"
 						:items="editions"
 						:label="$root.lang().database.labels.use_edition"
 					/>
@@ -54,13 +54,10 @@
 					<p v-if="add" align="center" style="color: red">
 						⚠️<br /><strong>{{ $root.lang().database.hints.warning_path }}</strong>
 					</p>
-					<v-list
-						v-if="Object.keys(subFormData.paths).length && add == false"
-						label="Texture Paths"
-					>
+					<v-list v-if="Object.keys(formData.paths).length && add == false" label="Texture Paths">
 						<v-list-item
 							class="list-item-inline"
-							v-for="(path, index) in subFormData.paths"
+							v-for="(path, index) in formData.paths"
 							:key="index"
 						>
 							<v-list-item-content>
@@ -100,7 +97,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="disableSubDialog">
+				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send" :disabled="!formValid">
@@ -125,11 +122,11 @@ export default {
 		RemoveConfirm,
 	},
 	props: {
-		subDialog: {
+		modalOpened: {
 			type: Boolean,
 			required: true,
 		},
-		disableSubDialog: {
+		disableDialog: {
 			type: Function,
 			required: true,
 		},
@@ -166,15 +163,15 @@ export default {
 	data() {
 		return {
 			formValid: false,
-			subFormData: {
+			formData: {
 				edition: "",
 				id: "",
 				texture: "",
 				name: "",
 				paths: {},
 			},
-			subPathDialogOpen: false,
-			subPathDialogData: {},
+			pathModalOpen: false,
+			pathModalData: {},
 			remove: {
 				confirm: false,
 				data: {},
@@ -182,7 +179,7 @@ export default {
 		};
 	},
 	computed: {
-		subDialogTitle() {
+		dialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_use
 				: this.$root.lang().database.titles.change_use;
@@ -190,17 +187,17 @@ export default {
 	},
 	methods: {
 		openSubPathDialog(data = {}) {
-			this.subPathDialogOpen = true;
-			this.subPathDialogData = data;
+			this.pathModalOpen = true;
+			this.pathModalData = data;
 		},
-		disableSubPathDialog() {
-			this.subPathDialogOpen = false;
-			this.getPaths(this.subFormData.id);
+		closePathModal() {
+			this.pathModalOpen = false;
+			this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
 		closeAndUpdate() {
 			this.remove.confirm = false;
-			this.getPaths(this.subFormData.id);
+			this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
 		MinecraftSorter(a, b) {
@@ -226,7 +223,7 @@ export default {
 			return result;
 		},
 		send() {
-			const formData = this.subFormData;
+			const formData = this.formData;
 			const data = {
 				name: formData.name || "",
 				texture: formData.texture,
@@ -246,7 +243,7 @@ export default {
 			axios[method](`${this.$root.apiURL}/uses/${useId}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableSubDialog(true);
+					this.disableDialog(true);
 				})
 				.catch((err) => {
 					console.error(err);
@@ -258,11 +255,11 @@ export default {
 				.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
 				.then((res) => {
 					const temp = res.data;
-					this.subFormData.paths = {};
+					this.formData.paths = {};
 
 					for (let i = 0; i < temp.length; i++) {
 						temp[i].versions.sort(this.MinecraftSorter);
-						this.subFormData.paths[temp[i].id] = {
+						this.formData.paths[temp[i].id] = {
 							...temp[i],
 							use: temp[i].use || useId,
 						};
@@ -278,24 +275,22 @@ export default {
 		},
 	},
 	watch: {
-		subDialog(n, o) {
+		modalOpened(n, o) {
 			Vue.nextTick(() => {
 				if (!this.add) {
-					this.subFormData.edition = this.data.edition;
-					this.subFormData.id = this.data.id;
-					this.subFormData.name = this.data.name;
-					this.subFormData.texture = this.data.texture;
+					this.formData.edition = this.data.edition;
+					this.formData.id = this.data.id;
+					this.formData.name = this.data.name;
+					this.formData.texture = this.data.texture;
 					this.getPaths(this.data.id);
 				} else {
 					this.$refs.form.reset();
-					if ("id" in this.data) this.subFormData.id = this.data.id;
-					this.subFormData.paths = {};
+					if ("id" in this.data) this.formData.id = this.data.id;
+					this.formData.paths = {};
 				}
 			});
 
-			if (!n) {
-				this.disableSubDialog();
-			}
+			if (!n) this.disableDialog();
 		},
 	},
 };

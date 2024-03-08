@@ -1,7 +1,7 @@
 <template>
-	<v-dialog v-model="amOpened" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline">{{ subPathDialogTitle }}</v-card-title>
+			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
 				<v-row>
 					<v-col class="col-12" :sm="12">
@@ -10,7 +10,7 @@
 								:color="color"
 								v-if="add == false"
 								:hint="'⚠️' + $root.lang().database.hints.path_id"
-								v-model="subPathFormData.id"
+								v-model="formData.id"
 								:label="$root.lang().database.labels.path_id"
 							>
 							</v-text-field>
@@ -18,14 +18,14 @@
 								:color="color"
 								v-if="add == false"
 								:hint="'⚠️' + $root.lang().database.hints.use_id"
-								v-model="subPathFormData.use"
+								v-model="formData.use"
 								:label="$root.lang().database.labels.use_id"
 							>
 							</v-text-field>
 							<v-text-field
 								:color="color"
 								:hint="$root.lang().database.hints.path"
-								v-model="subPathFormData.name"
+								v-model="formData.name"
 								@change="(e) => formatPath(e)"
 								:label="$root.lang().database.labels.path"
 							>
@@ -36,14 +36,14 @@
 								required
 								multiple
 								small-chips
-								v-model="subPathFormData.versions"
+								v-model="formData.versions"
 								:items="sortedVersions"
 								:label="$root.lang().database.labels.versions"
 							>
 							</v-select>
 							<v-checkbox
 								:color="color"
-								v-model="subPathFormData.mcmeta"
+								v-model="formData.mcmeta"
 								:label="$root.lang().database.labels.mcmeta"
 							/>
 						</v-form>
@@ -74,7 +74,7 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		disableSubPathDialog: {
+		disableDialog: {
 			type: Function,
 			required: true,
 		},
@@ -83,7 +83,7 @@ export default {
 			required: false,
 			default: false,
 		},
-		pathData: {
+		data: {
 			type: Object,
 			required: true,
 		},
@@ -94,7 +94,7 @@ export default {
 				return [...settings.versions.java, ...settings.versions.bedrock];
 			},
 		},
-		use: {
+		useID: {
 			type: String,
 			required: true,
 		},
@@ -106,8 +106,8 @@ export default {
 	},
 	data() {
 		return {
-			amOpened: false,
-			subPathFormData: {
+			modalOpened: false,
+			formData: {
 				id: "",
 				use: "",
 				name: "",
@@ -117,7 +117,7 @@ export default {
 		};
 	},
 	computed: {
-		subPathDialogTitle() {
+		dialogTitle() {
 			return this.add
 				? this.$root.lang().database.titles.add_path
 				: this.$root.lang().database.titles.change_path;
@@ -128,14 +128,14 @@ export default {
 	},
 	methods: {
 		onCancel() {
-			this.amOpened = false;
-			this.disableSubPathDialog();
+			this.modalOpened = false;
+			this.disableDialog();
 		},
 		formatPath(e) {
 			// windows fix
-			this.subPathFormData.name = e.replace(/\\/g, "/").trim();
+			this.formData.name = e.replace(/\\/g, "/").trim();
 			// infer png extension if not present
-			if (!e.includes(".")) this.subPathFormData.name += ".png";
+			if (!e.includes(".")) this.formData.name += ".png";
 		},
 		MinecraftSorter(a, b) {
 			const aSplit = a.split(".").map((s) => parseInt(s));
@@ -161,25 +161,25 @@ export default {
 		},
 		send() {
 			const data = {
-				name: this.subPathFormData.name || "", // texture relative path
-				use: this.subPathFormData.use || "", // Use ID
-				mcmeta: this.subPathFormData.mcmeta || false, // is animated
-				versions: this.subPathFormData.versions.sort(this.MinecraftSorter), // ordered minecraft versions
+				name: this.formData.name || "", // texture relative path
+				use: this.formData.use || "", // Use ID
+				mcmeta: this.formData.mcmeta || false, // is animated
+				versions: this.formData.versions.sort(this.MinecraftSorter), // ordered minecraft versions
 			};
 
 			let method = "put";
 			let pathId = "";
 			if (this.add) {
-				data.use = this.use;
+				data.use = this.useID;
 				method = "post";
 			} else {
-				pathId = this.subPathFormData.id;
+				pathId = this.formData.id;
 			}
 
 			axios[method](`${this.$root.apiURL}/paths/${pathId}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableSubPathDialog(true);
+					this.disableDialog(true);
 				})
 				.catch((err) => {
 					console.error(err);
@@ -189,16 +189,16 @@ export default {
 	},
 	watch: {
 		value(newValue) {
-			this.amOpened = newValue;
+			this.modalOpened = newValue;
 		},
-		amOpened(newValue) {
+		modalOpened(newValue) {
 			Vue.nextTick(() => {
 				if (!this.add) {
-					this.subPathFormData.versions = this.pathData.versions.sort(this.MinecraftSorter);
-					this.subPathFormData.id = this.pathData.id;
-					this.subPathFormData.name = this.pathData.name;
-					this.subPathFormData.use = this.pathData.use;
-					this.subPathFormData.mcmeta = this.pathData.mcmeta;
+					this.formData.versions = this.data.versions.sort(this.MinecraftSorter);
+					this.formData.id = this.data.id;
+					this.formData.name = this.data.name;
+					this.formData.use = this.data.use;
+					this.formData.mcmeta = this.data.mcmeta;
 				} else this.$refs.form.reset();
 			});
 			this.$emit("input", newValue);
