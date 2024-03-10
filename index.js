@@ -187,6 +187,17 @@ router.beforeEach((to, from, next) => {
 		next("/dashboard");
 		return;
 	}
+	// replace query params (legacy urls) with history routing
+	if (to.fullPath.slice(0, 2) === "/#") {
+		const path = to.fullPath.slice(2);
+		next(path);
+		return;
+	}
+	if (to.fullPath.slice(0, 3) === "/?#") {
+		const path = to.fullPath.slice(3);
+		next(path);
+		return;
+	}
 
 	next();
 });
