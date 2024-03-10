@@ -794,9 +794,9 @@ const app = new Vue({
 		this.discordAuth
 			.begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
 			.then(() => {
-				if (window.location.search !== "")
-					// avoid redirect loop
-					window.location.search = "";
+				if (window.location.search.startsWith("?access_token="))
+					// avoid persistent query parameters
+					window.location.search = undefined;
 			})
 			.catch((err) => {
 				if (!err.message.includes("auth method")) this.showSnackBar(err, "error", 3000);

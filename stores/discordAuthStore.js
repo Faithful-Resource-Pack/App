@@ -86,9 +86,8 @@ export const discordAuthStore = defineStore("discordAuth", {
 			let [hasAuthQueryParams, auth] = this.verifySearchParams(search);
 			let expired = false;
 
-			if (!hasAuthQueryParams) {
+			if (!hasAuthQueryParams)
 				[hasAuthQueryParams, expired, auth] = this.verifyLocalStorage(storedAuth);
-			}
 
 			if (!hasAuthQueryParams) return Promise.reject(new Error("No auth method provided"));
 
