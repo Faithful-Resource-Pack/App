@@ -209,7 +209,6 @@
 
 <script>
 import axios from "axios";
-import Vue from "vue";
 import Prism from "prismjs";
 
 const emptyPath = () => ({
@@ -460,7 +459,7 @@ export default {
 		},
 		value(newValue, oldValue) {
 			if (oldValue !== newValue && newValue === true) {
-				Vue.nextTick(() => {
+				this.$nextTick(() => {
 					this.textures = [emptyTexture()];
 					this.$refs.form.reset();
 				});

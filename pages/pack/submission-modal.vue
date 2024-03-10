@@ -117,7 +117,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 export default {
@@ -225,7 +224,7 @@ export default {
 	watch: {
 		dialog(newValue) {
 			if (newValue === true) {
-				Vue.nextTick(() => {
+				this.$nextTick(() => {
 					if (!this.first) {
 						for (const [k, v] of Object.entries(this.data)) {
 							if (this.formData[k] === undefined) continue;

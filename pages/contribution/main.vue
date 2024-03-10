@@ -371,7 +371,7 @@ export default {
 		},
 		openAdd() {
 			this.newSubmit = true;
-			Vue.nextTick(() => {
+			this.$nextTick(() => {
 				this.$refs.mod.open(undefined, this.packsToChoose, true);
 			});
 		},

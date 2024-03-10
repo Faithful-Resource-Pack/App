@@ -5,7 +5,5 @@ node_modules
 # puppeteer
 .cache/
 
-# Vue build folder
+# vite build folder
 dist/
-
-settings.json

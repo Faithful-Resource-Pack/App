@@ -140,7 +140,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import SubmissionModal from "./submission-modal.vue";
@@ -319,7 +318,7 @@ export default {
 	watch: {
 		dialog(newValue) {
 			if (newValue === true) {
-				Vue.nextTick(() => {
+				this.$nextTick(() => {
 					if (this.add) this.$refs.form.reset();
 
 					if (!this.add) {

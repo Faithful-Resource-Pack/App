@@ -126,7 +126,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import UseModal from "./use-modal.vue";
@@ -292,7 +291,7 @@ export default {
 		},
 		modalOpened(newValue) {
 			if (newValue === true) {
-				Vue.nextTick(() => {
+				this.$nextTick(() => {
 					if (this.add) this.$refs.form.reset();
 
 					if (!this.add) {

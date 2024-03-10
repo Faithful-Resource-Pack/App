@@ -183,7 +183,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import TextureModal from "./texture-modal.vue";
@@ -335,7 +334,7 @@ export default {
 					console.error(err);
 				})
 				.finally(() => {
-					Vue.nextTick(() => {
+					this.$nextTick(() => {
 						this.search = this.name;
 					});
 				});

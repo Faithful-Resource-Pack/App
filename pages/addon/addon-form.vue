@@ -294,8 +294,6 @@
 </template>
 
 <script>
-import Vue from "vue";
-
 import UserList from "./user-list.vue";
 import ImagePreviewer from "./image-previewer.vue";
 import FullscreenPreview from "./fullscreen-preview.vue";
@@ -634,7 +632,7 @@ export default {
 			this.carouselDoNotVerify = true;
 			this.submittedForm.carouselFiles.splice(index, 1);
 			this.$emit("screenshot", undefined, index, true, id);
-			Vue.nextTick(() => {
+			this.$nextTick(() => {
 				this.carouselDoNotVerify = false;
 			});
 		},

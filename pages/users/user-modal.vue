@@ -78,7 +78,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 export default {
@@ -159,7 +158,7 @@ export default {
 	},
 	watch: {
 		dialog() {
-			Vue.nextTick(() => {
+			this.$nextTick(() => {
 				if (!this.add)
 					Object.keys(this.data).forEach((key) => {
 						this.formData[key] = this.data[key];

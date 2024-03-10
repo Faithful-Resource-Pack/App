@@ -109,7 +109,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import PathModal from "./path-modal.vue";
@@ -276,7 +275,7 @@ export default {
 	},
 	watch: {
 		modalOpened(n, o) {
-			Vue.nextTick(() => {
+			this.$nextTick(() => {
 				if (!this.add) {
 					this.formData.edition = this.data.edition;
 					this.formData.id = this.data.id;

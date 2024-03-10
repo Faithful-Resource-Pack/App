@@ -64,7 +64,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 export default {
@@ -192,7 +191,7 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			Vue.nextTick(() => {
+			this.$nextTick(() => {
 				if (!this.add) {
 					this.formData.versions = this.data.versions.sort(this.MinecraftSorter);
 					this.formData.id = this.data.id;

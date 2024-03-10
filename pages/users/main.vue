@@ -123,7 +123,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import UserModal from "./user-modal.vue";
@@ -201,7 +200,7 @@ export default {
 					console.error(error);
 				})
 				.finally(() => {
-					Vue.nextTick(() => {
+					this.$nextTick(() => {
 						this.search = this.name;
 					});
 				});

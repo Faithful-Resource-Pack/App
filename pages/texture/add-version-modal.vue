@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 export default {
@@ -107,7 +106,7 @@ export default {
 	watch: {
 		dialog(newValue, oldValue) {
 			if (oldValue !== newValue && newValue === true) {
-				Vue.nextTick(() => {
+				this.$nextTick(() => {
 					this.$refs.form.reset();
 				});
 			}
