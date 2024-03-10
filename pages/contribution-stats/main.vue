@@ -88,9 +88,7 @@ export default {
 					this.contrib.sort((a, b) => a.date - b.date);
 					this.buildGraph();
 				})
-				.catch((error) => {
-					this.$root.showSnackBar(err, "error");
-				});
+				.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
 		buildGraph() {
 			const width = 800;

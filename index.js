@@ -532,7 +532,7 @@ const app = new Vue({
 				this.vapiURL.includes("localhost") &&
 				window.location.host !== "localhost"
 			)
-				return this.vapiURL.replace("localhost", window.location.host);
+				return this.vapiURL.replace("localhost", window.location.host.split(":")[0]);
 			return this.vapiURL;
 		},
 		apiOptions() {
@@ -796,7 +796,7 @@ const app = new Vue({
 			.then(() => {
 				if (window.location.search.startsWith("?access_token="))
 					// avoid persistent query parameters
-					window.location.search = undefined;
+					window.location.search = "";
 			})
 			.catch((err) => {
 				if (!err.message.includes("auth method")) this.showSnackBar(err, "error", 3000);
