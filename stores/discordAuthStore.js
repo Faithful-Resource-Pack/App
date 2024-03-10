@@ -83,20 +83,16 @@ export const discordAuthStore = defineStore("discordAuth", {
 			});
 		},
 		begin(search, storedAuth) {
-			const res = this.verifySearchParams(search);
-			let has_auth_query_params = res[0];
-			let auth = res[1];
+			let [hasAuthQueryParams, auth] = this.verifySearchParams(search);
 			let expired = false;
 
-			if (!has_auth_query_params) {
-				[has_auth_query_params, expired, auth] = this.verifyLocalStorage(storedAuth);
+			if (!hasAuthQueryParams) {
+				[hasAuthQueryParams, expired, auth] = this.verifyLocalStorage(storedAuth);
 			}
 
-			if (!has_auth_query_params) {
-				return Promise.reject(new Error("No auth method provided"));
-			}
+			if (!hasAuthQueryParams) return Promise.reject(new Error("No auth method provided"));
 
-			let lastLogin = expired ? this.refreshLogin(auth) : Promise.resolve(auth);
+			const lastLogin = expired ? this.refreshLogin(auth) : Promise.resolve(auth);
 
 			return lastLogin.then((auth) => {
 				this.$patch({

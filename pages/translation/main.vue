@@ -14,7 +14,7 @@ export default {
 	name: "translations-page",
 	created() {
 		// redirect
-		window.location.href = "https://translate.faithfulpack.net/";
+		location.href = "https://translate.faithfulpack.net/";
 	},
 };
 </script>

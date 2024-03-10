@@ -265,11 +265,12 @@ export default {
 	},
 	watch: {
 		"$route.params": {
-			handler(params, old_params) {
-				// if hash changed but not params
-				if (JSON.stringify(params) === JSON.stringify(old_params)) return;
+			handler(params, prev) {
+				console.log(params);
+				// if query changed but not params
+				if (JSON.stringify(params) === JSON.stringify(prev)) return;
 
-				// convert legacy urls to modern format
+				// convert legacy urls to modern format if needed
 				this.current.pack = ["16x", "32x", "64x"].includes(params.pack)
 					? this.resToPackID(params.pack)
 					: params.pack;
@@ -284,6 +285,13 @@ export default {
 				this.updateSearch();
 			},
 			deep: true,
+			immediate: true,
+		},
+		"$route.query.show": {
+			handler(params, prev) {
+				if (!params || JSON.stringify(params) === JSON.stringify(prev)) return;
+				this.openModal(params);
+			},
 			immediate: true,
 		},
 		columns(n) {
@@ -313,40 +321,25 @@ export default {
 					return "faithful_64x";
 			}
 		},
-		shareID() {
-			const index = location.hash.indexOf("?show=");
-			return index !== -1 ? Number.parseInt(location.hash.substring(index + 6), 10) : undefined;
-		},
-		changeShareURL(id, dryRun = false) {
-			const index = location.hash.indexOf("?show=");
+		changeShareURL(id, copyURL = false) {
+			if (!copyURL && id !== undefined) this.$router.push({ query: { show: id } });
 
-			let newHash = location.hash;
-			// we remove it
-			if (index !== -1) newHash = newHash.substring(0, index);
-			if (id !== undefined) newHash += `?show=${id}`;
-			if (!dryRun) location.hash = newHash;
-
-			return location.href.replace(location.hash, "") + newHash;
+			// need location api to get base url to share
+			const showIndex = location.href.indexOf("?show=");
+			let changedURL = location.href;
+			// trim off show portion if already exists
+			if (showIndex !== -1 && id !== undefined) changedURL = changedURL.slice(0, showIndex);
+			// add new url
+			if (id !== undefined) changedURL += `?show=${id}`;
+			return changedURL;
 		},
 		removeShareURL() {
-			const index = location.hash.indexOf("?show=");
-
-			let newHash = location.hash;
-			// we remove it
-			if (index !== -1) newHash = newHash.substring(0, index);
-
-			// we change it
-			location.hash = newHash;
+			this.$router.push({ query: null });
 		},
 		copyShareLink(id) {
 			const url = this.changeShareURL(id, true);
 			navigator.clipboard.writeText(url);
 			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
-		},
-		checkShare(n) {
-			if (n === undefined) return;
-
-			this.openModal(n);
 		},
 		openModal(id) {
 			this.modalTextureID = id;
@@ -384,11 +377,12 @@ export default {
 
 			if (!settings.versions[this.current.edition].includes(this.current.version)) {
 				this.current.version = settings.versions[this.current.edition][0];
+				// set options to ensure proper data shows up in the selection
 				this.options.versions = settings.versions[this.current.edition];
 			}
 
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
-			route += !this.current.search ? "" : `/${this.current.search}`;
+			if (this.current.search) route += `/${this.current.search}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
 			return this.$router.push(route);
@@ -433,12 +427,10 @@ export default {
 			};
 		},
 		isScrolledIntoView(el, margin = 0) {
-			let rect = el.getBoundingClientRect();
-			let elemTop = rect.top;
-			let elemBottom = rect.bottom;
-
-			let isVisible = elemTop < window.innerHeight + margin && elemBottom >= 0;
-			return isVisible;
+			const rect = el.getBoundingClientRect();
+			const elemTop = rect.top;
+			const elemBottom = rect.bottom;
+			return elemTop < window.innerHeight + margin && elemBottom >= 0;
 		},
 		toTop() {
 			window.scrollTo({
@@ -497,11 +489,6 @@ export default {
 		},
 	},
 	created() {
-		window.addEventListener("hashchange", () => {
-			this.checkShare(this.shareID());
-		});
-		this.checkShare(this.shareID());
-
 		axios
 			.get(
 				"https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json",

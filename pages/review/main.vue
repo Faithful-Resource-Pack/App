@@ -85,20 +85,12 @@ import ReviewPreview from "./review-previewer.vue";
 const searchMixin = {
 	methods: {
 		/**
-		 * Loads all search params
-		 * @returns {URLSearchParams}
-		 */
-		search_load() {
-			const query_str = location.hash.split("?")[1] || "";
-			return new URLSearchParams(query_str);
-		},
-		/**
 		 * Gets a specific param
 		 * @param {string} name Search param name
 		 * @returns {String|null} param value
 		 */
 		search_get(name) {
-			return this.load().get(name);
+			return this.$route.query[name];
 		},
 		/**
 		 * Updates search param with new
@@ -106,28 +98,13 @@ const searchMixin = {
 		 * @param {any} value given value
 		 */
 		search_set(name, value) {
-			const str_val = String(value);
-
-			const loaded = this.search_load();
-			loaded.set(name, str_val);
-
-			this._search_update(loaded);
+			if (this.$route.query[name] === value) return;
+			this.$router.push({ query: { ...this.$route.query, [name]: String(value) } });
 		},
 		search_delete(name) {
-			const loaded = this.search_load();
-
-			loaded.delete(name);
-
-			this._search_update(loaded);
-		},
-		/**
-		 * update hash search
-		 * @param {URLSearchParams} search_params updated params
-		 */
-		_search_update(search_params) {
-			let hash = location.hash;
-			if (hash.indexOf("?") !== -1) hash = hash.substring(0, hash.indexOf("?"));
-			location.hash = `${hash}?${search_params.toString()}`;
+			const query = { ...this.$route.query };
+			delete query[name];
+			this.$router.push({ query });
 		},
 	},
 };
@@ -142,7 +119,6 @@ export default {
 		ReviewPreview,
 	},
 	mixins: [searchMixin],
-
 	data() {
 		return {
 			pageColor: "deep-purple lighten-2",
@@ -184,6 +160,14 @@ export default {
 		selectedAddonId(n) {
 			if (n !== undefined) this.search_set("id", n);
 			else this.search_delete("id");
+		},
+		"$route.query": {
+			handler(params, prev) {
+				if (JSON.stringify(params) === JSON.stringify(prev)) return;
+				this.search_update();
+			},
+			deep: true,
+			immediate: true,
 		},
 	},
 	computed: {
@@ -299,22 +283,14 @@ export default {
 				});
 		},
 		search_update(updateId = false) {
-			const params = this.search_load();
-			this.status = params.get("status") || this.status;
+			this.status = this.search_get("status") || this.status;
 			this.$nextTick(() => {
-				this.selectedAddonId = params.get("id") || this.selectedAddonId;
+				this.selectedAddonId = this.search_get("id") || this.selectedAddonId;
 			});
 		},
 	},
 	created() {
 		this.search_update();
-		window.addEventListener(
-			"hashchange",
-			() => {
-				this.search_update();
-			},
-			false,
-		);
 	},
 	mounted() {
 		this.update();

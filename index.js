@@ -188,12 +188,6 @@ router.beforeEach((to, from, next) => {
 		return;
 	}
 
-	// replace query params (legacy urls) with history routing
-	if (to.fullPath.slice(0, 2) === "/#") {
-		const path = to.fullPath.slice(2);
-		next(path);
-		return;
-	}
 	next();
 });
 

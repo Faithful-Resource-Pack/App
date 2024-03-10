@@ -264,9 +264,7 @@ export default {
 	},
 	computed: {
 		queryToIds() {
-			if (this.$route.query.ids) {
-				return this.$route.query.ids.split("-");
-			}
+			if (this.$route.query.ids) return this.$route.query.ids.split("-");
 
 			// use the logged user as default selected contributor
 			return [];
