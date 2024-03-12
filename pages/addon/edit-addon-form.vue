@@ -25,7 +25,7 @@
 					<v-card-text>
 						<p>{{ this.$root.lang("addons.general.reason.text") }}</p>
 						<v-text-field
-							:label="this.$root.lang('addons.general.reason.title')"
+							:label="$root.lang('addons.general.reason.title')"
 							required
 							:rules="reasonRules"
 							v-model="reason"
@@ -100,11 +100,8 @@ export default {
 			if (!valid) return;
 
 			this.reasonDialog = false;
-			if (submitted) {
-				this.confirmSubmit(this.reasonData, false);
-			} else {
-				this.reason = "";
-			}
+			if (submitted) this.confirmSubmit(this.reasonData, false);
+			else this.reason = "";
 		},
 		handleSubmit(data, approve) {
 			if (!approve) {
@@ -129,24 +126,20 @@ export default {
 
 			if (approve === true) {
 				prom = prom
-					.then(() => {
-						return axios.put(
+					.then(() =>
+						axios.put(
 							`${this.$root.apiURL}/addons/${this.id}/review`,
 							{
 								status: "approved",
 								reason: "Manager edit",
 							},
 							this.$root.apiOptions,
-						);
-					})
-					.then(() => {
-						this.$root.showSnackBar("Approved", "success");
-					});
+						),
+					)
+					.then(() => this.$root.showSnackBar("Approved", "success"));
 			}
 
-			prom.catch((err) => {
-				this.$root.showSnackBar(err, "error");
-			});
+			prom.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
 		handleHeader(file, remove = false) {
 			this.hidisabled = true;
@@ -275,17 +268,17 @@ export default {
 				`${this.$root.apiURL}/addons/${this.$route.params.id}/files/downloads`,
 				this.$root.apiOptions,
 			),
-		]).then((res) => {
-			let addon_loaded = {
-				...res[0].data,
-				downloads: res[1].data,
+		]).then(([addon, downloads]) => {
+			const loadedAddon = {
+				...addon,
+				downloads,
 			};
-			delete addon_loaded.last_updated;
-			delete addon_loaded.slug;
-			delete addon_loaded.approval;
-			delete addon_loaded.id;
+			delete loadedAddon.last_updated;
+			delete loadedAddon.slug;
+			delete loadedAddon.approval;
+			delete loadedAddon.id;
 
-			this.addonData = addon_loaded;
+			this.addonData = loadedAddon;
 		});
 	},
 };

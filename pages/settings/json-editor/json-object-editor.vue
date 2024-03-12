@@ -14,9 +14,9 @@
 						v-model="keys[index]"
 						placeholder="key"
 						@keydown="resize(index)"
-						:ref="'input' + index"
+						:ref="`input-${index}`"
 					/>
-					<div :ref="'hide' + index" class="json-editor-hide">{{ keys[index] }}</div>
+					<div :ref="`hide-${index}`" class="json-editor-hide">{{ keys[index] }}</div>
 				</div>
 				<json-editor class="flex-grow-1" v-model="values[index]" :parent="value" />
 			</div>
@@ -74,8 +74,8 @@ export default {
 	},
 	methods: {
 		resize(index) {
-			const input = this.$refs["input" + index][0];
-			const text = this.$refs["hide" + index][0];
+			const [input] = this.$refs[`input-${index}`];
+			const [text] = this.$refs[`hide-${index}`];
 
 			this.$nextTick(() => {
 				const width = text.offsetWidth;
@@ -117,9 +117,7 @@ export default {
 				if (deepEqual(n, o)) return;
 				// console.log('object value', n, o, this.keys, this.values, this.value);
 
-				if (typeof n === "object") {
-					this.extractKeysAndValues();
-				}
+				if (typeof n === "object") this.extractKeysAndValues();
 			},
 			immediate: true,
 			deep: true,

@@ -52,6 +52,8 @@ import ReconnectPage from "./pages/reconnect/main.vue";
 window.colors = (
 	await import("https://cdn.jsdelivr.net/npm/vuetify@2.6.4/lib/util/colors.min.js")
 ).default;
+
+/** @param {string} color */
 window.colorToHex = (color) => {
 	const colorArr = color.trim().split(" ");
 
@@ -63,6 +65,8 @@ window.colorToHex = (color) => {
 		return "currentcolor";
 	}
 };
+
+/** @param {Vue} cmp */
 window.updatePageStyles = (cmp) => {
 	if (!cmp.$el) return;
 	if (!cmp.$el.id) cmp.$el.id = cmp.name;
@@ -109,9 +113,9 @@ Object.defineProperty(Object.prototype, "isObject", {
 
 Object.defineProperty(Object.prototype, "merge", {
 	/**
-	 * Deep merge two objects
+	 * Deep merge two objects (used for lang)
 	 * @param {Object} target
-	 * @param {...Object} sources
+	 * @param {Object[]} sources
 	 */
 	value(target, ...sources) {
 		if (!sources.length) return target;
@@ -127,6 +131,15 @@ Object.defineProperty(Object.prototype, "merge", {
 		}
 
 		return Object.merge(target, ...sources);
+	},
+});
+
+Object.defineProperty(String.prototype, "toTitleCase", {
+	/** Converts all words in a string to title case. */
+	value() {
+		return this.split(/_| /g)
+			.map((word) => word[0].toUpperCase() + word.slice(1))
+			.join(" ");
 	},
 });
 
@@ -366,7 +379,7 @@ const app = new Vue({
 			discordAuth: discordAuthStore(),
 			appUser: appUserStore(),
 			badges: {},
-			colors: colors,
+			colors,
 			dark: undefined,
 			vapiURL: window.apiURL,
 			selectedLang: _get_lang(),
@@ -582,9 +595,6 @@ const app = new Vue({
 				"i",
 			);
 		},
-		year() {
-			return new Date().getFullYear();
-		},
 		isDesktop() {
 			return this.$vuetify.breakpoint.lgAndUp;
 		},
@@ -639,7 +649,7 @@ const app = new Vue({
 
 				// warns user if string not found
 				if (response === undefined)
-					console.error(`Cannot find ${raw ? "data" : "string"} for "` + path + '"');
+					console.warn(`Cannot find ${raw ? "data" : "string"} for "${path}"`);
 
 				// if raw we can use the object directly after
 				if (raw) return response;
@@ -738,18 +748,10 @@ const app = new Vue({
 			this.snackbar.timeout = timeout;
 			this.snackbar.show = true;
 		},
-		toTitleCase(str) {
-			return str
-				.split(/_| /g)
-				.map((word) => word[0].toUpperCase() + word.slice(1))
-				.join(" ");
-		},
 		logout() {
 			this.discordAuth.logout();
 		},
-		/**
-		 * Use this function in sub-components to check perms
-		 */
+		/** For debugging in sub-components */
 		checkPermissions() {
 			console.log(this.$route);
 			console.log(this.$router.options.routes);

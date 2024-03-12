@@ -32,7 +32,7 @@
 							cols="12"
 							sm="6"
 							v-for="i in 4"
-							:key="'skeleton' + i"
+							:key="`skeleton-${i}`"
 							class="d-flex align-stretch"
 						>
 							<p class="mb-0 rounded-lg pa-2">

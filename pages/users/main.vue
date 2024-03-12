@@ -78,7 +78,7 @@
 								'border-radius': '10px',
 							}"
 						>
-							<v-img v-if="user.uuid" :src="'https://visage.surgeplay.com/head/48/' + user.uuid" />
+							<v-img v-if="user.uuid" :src="`https://visage.surgeplay.com/head/48/${user.uuid}`" />
 							<v-icon large v-else style="background: rgba(39, 39, 39, 0.8)">mdi-account</v-icon>
 						</v-list-item-avatar>
 

@@ -72,7 +72,7 @@
 					<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
 					<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
 					<div v-for="(edition, index) in editions" :key="index">
-						<p class="text-body-1">{{ $root.toTitleCase(edition) }}</p>
+						<p class="text-body-1">{{ edition.toTitleCase() }}</p>
 						<v-row>
 							<v-col>
 								<v-text-field

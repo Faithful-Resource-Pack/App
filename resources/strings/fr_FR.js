@@ -460,10 +460,10 @@ export default {
 						animated: "animée",
 						model: "3D",
 					},
-					infos: {
-						texture: "texture",
-						uses: "utilisation(s)",
-						paths: "chemin(s)",
+					info: {
+						texture: "Texture",
+						uses: "Utilisations",
+						paths: "Chemins",
 					},
 					tabs: {
 						date: "Date",

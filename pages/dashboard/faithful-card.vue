@@ -1,6 +1,5 @@
 <template>
 	<dashboard-card
-		:title="''"
 		id="faithful-card"
 		class="d-flex flex-column"
 		:style="{ display: show ? 'inherit' : 'none !important' }"
@@ -29,7 +28,7 @@
 			<v-btn
 				id="login-button"
 				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-2 blurple"
-				:href="this.$root.discordAuth.discordAuthURL"
+				:href="$root.discordAuth.discordAuthURL"
 			>
 				{{ $root.lang().global.login }}
 			</v-btn>

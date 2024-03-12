@@ -767,11 +767,11 @@ code {
 	width: 196px;
 }
 
-#infos-tabs .v-slide-group__prev {
+#info-tabs .v-slide-group__prev {
 	display: none;
 }
 
-.gallery-dialog-container .infos-table .infos {
+.gallery-dialog-container .info-table .gallery-info {
 	padding: 15px 0;
 }
 

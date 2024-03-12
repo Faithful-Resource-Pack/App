@@ -446,10 +446,10 @@ export default {
 					name_too_small: "URL zdroje souboru musí být alespoň %s znaků dlouhé.",
 				},
 			},
-			infos: {
-				texture: "textura",
-				uses: "využití",
-				paths: "cesty",
+			info: {
+				texture: "Textura",
+				uses: "Využití",
+				paths: "Cesty",
 			},
 			tabs: {
 				date: "Datum",

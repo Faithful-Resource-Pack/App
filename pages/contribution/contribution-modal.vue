@@ -42,7 +42,7 @@
 								<div>
 									<template v-for="(form, form_index) in formRecordsList">
 										<v-list-item
-											:key="'item-' + form.formId"
+											:key="`item-${form.formId}`"
 											class="pl-0"
 											@click.stop.prevent="() => changeOpenedForm(form.formId)"
 										>
@@ -86,7 +86,7 @@
 										</v-list-item>
 
 										<v-divider
-											:key="'divider-' + form.formId"
+											:key="`divider-${form.formId}`"
 											v-if="form_index < formRecordsLength - 1"
 										/>
 									</template>

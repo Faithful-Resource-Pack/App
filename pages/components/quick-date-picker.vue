@@ -22,9 +22,9 @@
 		/>
 		<div class="font-weight-medium text--secondary my-2">{{ labels.month }}</div>
 		<v-row class="qd-months" dense>
-			<v-col cols="2" v-for="i in 12" :key="'qd-month-col' + i">
+			<v-col cols="2" v-for="i in 12" :key="`qd-month-col-${i}`">
 				<v-btn
-					:key="'qd-month-' + i"
+					:key="`qd-month-${i}`"
 					class="qd-month pa-0"
 					block
 					:color="i - 1 == month ? 'primary' : ''"
@@ -41,7 +41,7 @@
 		<div class="qd-days">
 			<v-btn
 				v-for="i in 31"
-				:key="'qd-day-' + i"
+				:key="`qd-day-${i}`"
 				class="qd-day px-0"
 				:color="i == day ? 'primary' : ''"
 				rounded

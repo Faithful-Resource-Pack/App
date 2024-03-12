@@ -16,7 +16,7 @@
 						/>
 					</v-col>
 					<v-col
-						:class="'col-' + formData.uuid ? '10' : '12'"
+						:class="`col-${formData.uuid ? '10' : '12'}`"
 						:sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12"
 					>
 						<v-form ref="form" lazy-validation>

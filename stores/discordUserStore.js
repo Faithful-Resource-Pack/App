@@ -6,7 +6,7 @@ export const discordUserStore = defineStore("discordUser", {
 		discordId: undefined,
 		discordAvatar: undefined,
 		discordBanner: undefined,
-		discordName: undefined || "",
+		discordName: "",
 	}),
 
 	actions: {

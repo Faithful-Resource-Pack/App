@@ -371,10 +371,10 @@ export default {
 				animated: "animadas",
 				model: "3D",
 			},
-			infos: {
-				texture: "textura",
-				uses: "uso(s)",
-				paths: "caminho(s)",
+			info: {
+				texture: "Textura",
+				uses: "Usos",
+				paths: "Caminhos",
 			},
 			tabs: {
 				date: "Data",

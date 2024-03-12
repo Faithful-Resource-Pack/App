@@ -529,10 +529,10 @@ export default {
 					name_too_small: "File URL must be at least %s characters long.",
 				},
 			},
-			infos: {
-				texture: "texture",
-				uses: "uses",
-				paths: "paths",
+			info: {
+				texture: "Texture",
+				uses: "Uses",
+				paths: "Paths",
 			},
 			tabs: {
 				date: "Date",

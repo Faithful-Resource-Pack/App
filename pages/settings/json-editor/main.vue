@@ -81,7 +81,7 @@ export default {
 		newValue: {
 			handler(n, o) {
 				if (deepEqual(n, o)) return;
-				console.info(this.newValue);
+				console.log(this.newValue);
 				this.$forceUpdate();
 				this.$emit("input", n);
 			},

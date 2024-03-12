@@ -66,7 +66,7 @@
 							<v-btn
 								v-if="addon.approval.status == 'approved'"
 								color="blue"
-								:href="'https://www.faithfulpack.net/addons/' + addon.slug"
+								:href="`https://www.faithfulpack.net/addons/${addon.slug}`"
 								target="_blank"
 								icon
 								small
@@ -79,7 +79,7 @@
 						</v-card-text>
 
 						<v-card-actions style="justify-content: flex-end">
-							<v-btn text :href="'/#/addons/edit/' + addon.id">
+							<v-btn text :href="`/addons/edit/${addon.id}`">
 								{{ $root.lang().global.btn.edit }}
 							</v-btn>
 							<v-btn color="red" text @click="deleteAddon(addon)">

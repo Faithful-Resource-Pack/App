@@ -183,7 +183,7 @@
 							@click="openDenyPopup(addonInPanel, 'archive')"
 						>
 							{{ $root.lang().global.btn.archive }} </v-btn
-						><v-btn text color="yellow" :href="'/#/addons/edit/' + addonInPanel.id">
+						><v-btn text color="yellow" :href="`/addons/edit/${addonInPanel.id}`">
 							{{ $root.lang().global.btn.edit }}
 						</v-btn>
 					</div>

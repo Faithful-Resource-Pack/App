@@ -31,7 +31,7 @@
 								fluid
 								class="pa-0"
 								v-for="(texture, t_i) in textures"
-								:key="'tex-' + t_i"
+								:key="`tex-${t_i}`"
 							>
 								<v-row dense>
 									<v-col>
@@ -81,7 +81,7 @@
 											fluid
 											class="pa-0"
 											v-for="(use, u_i) in texture.uses"
-											:key="'tex-' + t_i + '-use-' + u_i"
+											:key="`tex-${t_i}-use-${u_i}`"
 										>
 											<v-row dense>
 												<v-col>
@@ -127,7 +127,7 @@
 														class="pa-0"
 														fluid
 														v-for="(path, p_i) in use.paths"
-														:key="'tex-' + t_i + '-use-' + u_i + '-p_i-' + p_i"
+														:key="`tex-${t_i}-use-${u_i}-p_i-${p_i}`"
 													>
 														<v-row dense>
 															<v-col>
@@ -361,8 +361,8 @@ export default {
 				// add latest version if nothing added yet
 				if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 			});
-			if (!texture.tags.includes(this.$root.toTitleCase(edition)))
-				texture.tags = this.sortTags([this.$root.toTitleCase(edition), ...texture.tags]);
+			if (!texture.tags.includes(edition.toTitleCase()))
+				texture.tags = this.sortTags([edition.toTitleCase(), ...texture.tags]);
 		},
 		pathAdded(el, path, use, texture) {
 			// windows fix
@@ -393,7 +393,7 @@ export default {
 			texture.tags = this.sortTags(
 				[
 					...texture.tags,
-					this.$root.toTitleCase(textureFolderIndex == -1 ? null : split[textureFolderIndex + 1]),
+					textureFolderIndex == -1 ? null : split[textureFolderIndex + 1]?.toTitleCase(),
 				].map(this.formatTag),
 			);
 		},

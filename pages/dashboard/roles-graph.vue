@@ -16,7 +16,7 @@
 				:colors="shade"
 				:values="values"
 			>
-				<tooltip :position="'top'" />
+				<tooltip position="top" />
 			</graph-treemap>
 		</v-col>
 		<v-col cols="12" sm="6">
@@ -24,7 +24,7 @@
 				<template v-if="loading">
 					<v-col
 						v-for="i in 14"
-						:key="'list-contributor-skeleton-' + i"
+						:key="`list-contributor-skeleton-${i}`"
 						cols="12"
 						sm="6"
 						class="d-flex align-stretch"
@@ -40,7 +40,7 @@
 				<template v-else>
 					<v-col
 						v-for="(value, key, index) in types"
-						:key="'list-contributor-' + key"
+						:key="`list-contributor-${key}`"
 						cols="12"
 						sm="6"
 						class="d-flex align-stretch"

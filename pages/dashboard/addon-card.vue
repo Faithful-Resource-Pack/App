@@ -27,7 +27,7 @@
 			<v-row v-else dense id="status-loader" class="d-flex align-stretch">
 				<v-col
 					v-for="i in loading_for"
-					:key="'skeleton-status-' + i"
+					:key="`skeleton-status-${i}`"
 					cols="12"
 					:class="['d-flex align-end', loading_for > 1 ? 'col-sm-3' : '']"
 				>
@@ -59,7 +59,7 @@
 			<v-row class="mt-1 py-0 my-0 align-self-stretch" v-else dense id="stats-loader">
 				<v-col
 					v-for="i in 4"
-					:key="'skeleton-stats-' + i"
+					:key="`skeleton-stats-${i}`"
 					cols="12"
 					sm="3"
 					class="d-flex align-stretch"
@@ -77,12 +77,12 @@
 		<v-card-actions class="d-flex mt-0 px-4 pt-1">
 			<v-row dense>
 				<v-col>
-					<v-btn block text color="primary" :to="'/addons/submissions'">{{
+					<v-btn block text color="primary" to="/addons/submissions">{{
 						$root.lang().dashboard.addons.submissions
 					}}</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn block text color="primary" :to="'/addons/new'">{{
+					<v-btn block text color="primary" to="/addons/new">{{
 						$root.lang().dashboard.addons.upload
 					}}</v-btn>
 				</v-col>

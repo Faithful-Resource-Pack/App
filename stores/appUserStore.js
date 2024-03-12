@@ -53,10 +53,10 @@ export const appUserStore = defineStore("appUser", {
 				}
 
 				return this.getOrCreateUser(rootApiURL, auth.access_token)
-					.then((infos) => {
+					.then((data) => {
 						this.$patch({
-							appUserId: infos.id,
-							appUserRoles: infos.roles,
+							appUserId: data.id,
+							appUserRoles: data.roles,
 						});
 						// console.log(this.$state)
 						return; // void

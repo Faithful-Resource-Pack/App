@@ -32,10 +32,10 @@
 						<template v-for="(group, i) in grouped">
 							<div
 								class="gallery-dialog-intern d-flex flex-row pb-2 pb-sm-0"
-								:key="'dialog-intern-' + i"
+								:key="`dialog-intern-${i}`"
 							>
 								<template v-for="(url, j) in group">
-									<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="i + '-' + j">
+									<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="`${i}-${j}`">
 										<gallery-image
 											modal
 											:src="url[1]"
@@ -52,7 +52,7 @@
 					</div>
 
 					<div class="pl-sm-7">
-						<v-tabs id="infos-tabs" v-model="tab" :show-arrows="false">
+						<v-tabs id="info-tabs" v-model="tab" :show-arrows="false">
 							<v-tabs-slider />
 
 							<v-tab v-for="item in items" :key="item" style="text-transform: uppercase">
@@ -60,12 +60,12 @@
 							</v-tab>
 						</v-tabs>
 
-						<v-tabs-items v-model="tab" class="infos-table">
+						<v-tabs-items v-model="tab" class="info-table">
 							<v-tab-item v-for="item in items" :key="item">
 								<template v-if="item === items[0]">
-									<template v-for="i in infos">
-										<div class="infos">
-											<h2>{{ infosText[i] }}</h2>
+									<template v-for="i in info">
+										<div class="gallery-info">
+											<h2>{{ $root.lang().gallery.modal.info[i] }}</h2>
 											<v-data-table
 												dense
 												:headers="getHeaders(i)"
@@ -148,7 +148,7 @@ export default {
 				this.$root.lang().gallery.modal.items.information,
 				this.$root.lang().gallery.modal.items.authors,
 			],
-			infos: ["texture", "uses", "paths"],
+			info: ["texture", "uses", "paths"],
 			authors: ["32x", "64x"],
 			opened: false,
 		};
@@ -193,17 +193,17 @@ export default {
 							pack: this.packToName[el.pack],
 							contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
 						}));
-				case this.infos[0]:
+				case this.info[0]:
 					return [
 						{
 							...this.textureObj[item],
 							tags: this.textureObj[item].tags.join(", "),
 						},
 					];
-				case this.infos[1]:
+				case this.info[1]:
 					return Object.values(this.textureObj[item]);
 
-				case this.infos[2]:
+				case this.info[2]:
 					this.textureObj[item].forEach((path) => {
 						output.push({
 							...path,
@@ -232,7 +232,7 @@ export default {
 							value: "contributors",
 						},
 					];
-				case this.infos[0]:
+				case this.info[0]:
 					return [
 						{
 							text: this.$root.lang().gallery.modal.tabs.id,
@@ -250,7 +250,7 @@ export default {
 							sortable: false,
 						},
 					];
-				case this.infos[1]:
+				case this.info[1]:
 					return [
 						{
 							text: this.$root.lang().gallery.modal.tabs.use_id,
@@ -270,7 +270,7 @@ export default {
 						},
 					];
 
-				case this.infos[2]:
+				case this.info[2]:
 					return [
 						{
 							text: this.$root.lang().gallery.modal.tabs.path_id,
@@ -293,11 +293,11 @@ export default {
 		},
 	},
 	computed: {
-		infosText() {
+		infoText() {
 			return {
-				texture: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.texture),
-				uses: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.uses),
-				paths: this.$root.toTitleCase(this.$root.lang().gallery.modal.infos.paths),
+				texture: this.$root.lang().gallery.modal.info.texture,
+				uses: this.$root.lang().gallery.modal.info.uses,
+				paths: this.$root.lang().gallery.modal.info.paths,
 			};
 		},
 		grouped() {

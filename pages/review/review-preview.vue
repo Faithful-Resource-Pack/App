@@ -16,7 +16,7 @@
 							{{ ([...addonInPanel.options.tags] || []).sort().join(" | ") }}
 						</div>
 					</div>
-					<v-btn id="edit-btn" icon class="ml-auto" :href="'/#/addons/edit/' + addonInPanel.id">
+					<v-btn id="edit-btn" icon class="ml-auto" :href="`/addons/edit/${addonInPanel.id}`">
 						<v-icon>mdi-pencil</v-icon>
 					</v-btn>
 				</div>
