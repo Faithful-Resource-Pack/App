@@ -64,9 +64,7 @@ export default {
 		},
 		onSubmit: {
 			type: Function,
-			default() {
-				return Promise.resolve();
-			},
+			default: () => Promise.resolve(),
 		},
 	},
 	data() {
@@ -108,7 +106,7 @@ export default {
 							this.disableDialog(true);
 						});
 				case "path":
-					let pathId = this.data.id;
+					const pathId = this.data.id;
 					return axios
 						.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
 						.then(() => {

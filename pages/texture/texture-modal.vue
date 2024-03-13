@@ -224,6 +224,7 @@ export default {
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
+
 		sortTags(input) {
 			// remove duplicates/null items and alphabetically sort
 			let arr = [...new Set(input.filter((i) => i))].sort();
@@ -265,14 +266,18 @@ export default {
 			axios
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
-					const temp = res.data;
-					this.formData.uses = Object.values(temp).reduce(
-						(acc, cur) => ({
-							...acc,
-							[cur.id]: cur,
-						}),
-						{},
+					// dynamic edition tags
+					const editionlessTags = (this.formData.tags || []).filter(
+						(r) => !["Java", "Bedrock"].includes(r),
 					);
+					this.formData.tags = this.sortTags([
+						...Object.values(res.data).map((v) => v.edition.toTitleCase()),
+						...editionlessTags,
+					]);
+					this.formData.uses = Object.values(res.data).reduce((acc, cur) => {
+						acc[cur.id] = cur;
+						return acc;
+					}, {});
 				})
 				.catch((err) => console.error(err));
 		},
