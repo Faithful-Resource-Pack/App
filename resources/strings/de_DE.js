@@ -27,8 +27,7 @@ export default {
 			load_more: "Mehr laden",
 		},
 		tabs: {
-			user: {
-				title: "Benutzer",
+			general: {
 				subtabs: {
 					profile: "Profil",
 					statistics: "Statistik",

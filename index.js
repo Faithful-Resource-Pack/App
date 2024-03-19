@@ -200,14 +200,9 @@ router.beforeEach((to, from, next) => {
 		next("/dashboard");
 		return;
 	}
-	// replace query params (legacy urls) with history routing
-	if (to.fullPath.slice(0, 2) === "/#") {
-		const path = to.fullPath.slice(2);
-		next(path);
-		return;
-	}
-	if (to.fullPath.slice(0, 3) === "/?#") {
-		const path = to.fullPath.slice(3);
+	// replace hash router (legacy urls) with history router
+	if (["/#", "/?#"].some((v) => to.fullPath.startsWith(v))) {
+		const path = to.fullPath.replace("/#", "").replace("/?#", "");
 		next(path);
 		return;
 	}
@@ -218,7 +213,7 @@ router.beforeEach((to, from, next) => {
 // `to` field in subtab will be the first route path
 const ALL_TABS = [
 	{
-		label: "user",
+		label: "general",
 		subtabs: [
 			{
 				enabled: true,

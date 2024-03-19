@@ -274,10 +274,13 @@ export default {
 						...Object.values(res.data).map((v) => v.edition.toTitleCase()),
 						...editionlessTags,
 					]);
-					this.formData.uses = Object.values(res.data).reduce((acc, cur) => {
-						acc[cur.id] = cur;
-						return acc;
-					}, {});
+					this.formData.uses = Object.values(res.data).reduce(
+						(acc, cur) => ({
+							...acc,
+							[cur.id]: cur,
+						}),
+						{},
+					);
 				})
 				.catch((err) => console.error(err));
 		},

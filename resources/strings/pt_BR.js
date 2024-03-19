@@ -29,8 +29,7 @@ export default {
 			load_more: "Carregar mais",
 		},
 		tabs: {
-			user: {
-				title: "usuário",
+			general: {
 				subtabs: {
 					profile: "perfil",
 					statistics: "estatísticas",

@@ -190,8 +190,8 @@ export default {
 		},
 		panelLabels() {
 			return Object.entries(this.formRecords)
-				.map(([form_id, form]) => [
-					form_id,
+				.map(([formID, form]) => [
+					formID,
 					`${form.pack} | ${moment(new Date(form.date)).format("ll")}`,
 				])
 				.reduce((acc, [formID, formLabel]) => ({ ...acc, [formID]: formLabel }), {});

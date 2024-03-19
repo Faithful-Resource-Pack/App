@@ -36,8 +36,8 @@ export default {
 			load_more: "Load More",
 		},
 		tabs: {
-			user: {
-				title: "user",
+			general: {
+				title: "general",
 				subtabs: {
 					dashboard: "dashboard",
 					profile: "profile",

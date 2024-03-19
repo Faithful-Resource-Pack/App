@@ -38,8 +38,7 @@ export default {
 			load_more: "Charger plus",
 		},
 		tabs: {
-			user: {
-				title: "utilisateur",
+			general: {
 				subtabs: {
 					dashboard: "dashboard",
 					profile: "profil",

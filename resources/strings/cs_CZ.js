@@ -30,8 +30,7 @@ export default {
 			load_more: "Načíst více",
 		},
 		tabs: {
-			user: {
-				title: "uživatel",
+			general: {
 				subtabs: {
 					dashboard: "nástěnka",
 					profile: "profil",
