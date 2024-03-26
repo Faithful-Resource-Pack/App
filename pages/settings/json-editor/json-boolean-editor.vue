@@ -54,8 +54,6 @@ export default {
 				if (o === undefined) return;
 				if (deepEqual(n, o)) return;
 				if (this.keys.length !== this.values.length) return;
-				// console.log('values', n, o, this.keys, this.values, this.value);
-
 				this.$emit("input", this.construct());
 			},
 			deep: true,

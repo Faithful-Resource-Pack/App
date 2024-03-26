@@ -399,9 +399,7 @@ export default {
 			this.selectTextureTag = n;
 		},
 		selectTextureTag(n) {
-			if (n) {
-				this.$router.push(this.textureURL(n)).catch(() => {});
-			}
+			if (n) this.$router.push(this.textureURL(n)).catch(() => {});
 		},
 	},
 	mounted() {

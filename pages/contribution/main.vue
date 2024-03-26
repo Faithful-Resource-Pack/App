@@ -305,7 +305,8 @@ export default {
 		packsToChoose() {
 			return this.form.packs
 				.filter((entry) => entry.key !== this.all_packs)
-				.map((entry) => entry.key);
+				// format into list-suitable format
+				.map((v) => ({ label: v.value, value: v.key }));
 		},
 		splitResults() {
 			const res = [];
@@ -332,7 +333,7 @@ export default {
 		showMore() {
 			this.displayedResults += 100;
 		},
-		getRes() {
+		getPacks() {
 			axios.get(`${this.$root.apiURL}/packs/search?type=submission`).then((res) => {
 				Object.values(res.data).forEach((r) => {
 					this.addPack(r.id, r.name);
@@ -568,7 +569,7 @@ export default {
 		});
 	},
 	mounted() {
-		this.getRes();
+		this.getPacks();
 		this.getAuthors();
 	},
 	watch: {

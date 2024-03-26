@@ -21,6 +21,8 @@
 					hide-details
 					required
 					:items="content.packs"
+					item-text="label"
+					item-value="value"
 					v-model="content.pack"
 				/>
 				<div class="font-weight-medium text--secondary my-2">

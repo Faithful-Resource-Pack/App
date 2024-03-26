@@ -115,8 +115,6 @@ export default {
 			handler(n, o) {
 				if (o === undefined) return;
 				if (deepEqual(n, o)) return;
-				// console.log('object value', n, o, this.keys, this.values, this.value);
-
 				if (typeof n === "object") this.extractKeysAndValues();
 			},
 			immediate: true,
@@ -133,8 +131,6 @@ export default {
 				if (o === undefined) return;
 				if (deepEqual(n, o)) return;
 				if (this.keys.length !== this.values.length) return;
-				// console.log('keys', n, o, this.keys, this.values, this.value);
-
 				this.$emit("input", this.construct());
 			},
 			deep: true,
@@ -144,8 +140,6 @@ export default {
 				if (o === undefined) return;
 				if (deepEqual(n, o)) return;
 				if (this.keys.length !== this.values.length) return;
-				// console.log('values', n, o, this.keys, this.values, this.value);
-
 				this.$emit("input", this.construct());
 			},
 			deep: true,

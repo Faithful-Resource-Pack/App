@@ -266,7 +266,6 @@ export default {
 	watch: {
 		"$route.params": {
 			handler(params, prev) {
-				console.log(params);
 				// if query changed but not params
 				if (JSON.stringify(params) === JSON.stringify(prev)) return;
 
