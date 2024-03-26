@@ -377,55 +377,24 @@ export default {
 		},
 		startSearch() {
 			this.search.searching = true;
-			axios
-				.get(
+			Promise.all([
+				axios.get(
 					`${this.$root.apiURL}/contributions/search
-?packs=${this.packsSelected.map((r) => r.key).join("-")}
-&users=${this.contributors_selected.join("-")}
-&search=${this.textureSearch}`,
-				)
-				.then((res) => {
-					res.data.sort((a, b) => b.date - a.date);
-					this.search.search_results = res.data.map((c) => {
-						return {
+	?packs=${this.packsSelected.map((r) => r.key).join("-")}
+	&users=${this.contributors_selected.join("-")}
+	&search=${this.textureSearch}`,
+				),
+				axios.get(`${this.$root.apiURL}/textures/raw`),
+			])
+				.then(([contributions, textures]) => {
+					this.search.search_results = contributions.data
+						.sort((a, b) => b.date - a.date)
+						.map((c) => ({
 							...c,
 							url: `${this.$root.apiURL}/textures/${c.texture}/url/${c.pack}/latest`,
-						};
-					});
+							name: textures.data[c.texture]?.name || "",
+						}));
 				})
-
-				// fetch contribution textures names
-				.then(() => this.search.search_results.map((c) => c.texture))
-				.then((all_ids) => {
-					// split request in groups
-					return Promise.all(
-						all_ids
-							.reduce((acc, cur, index) => {
-								if (index % 30 === 0) {
-									acc.push([]);
-								}
-								acc[acc.length - 1].push(cur);
-								return acc;
-							}, [])
-							.map((ids) => {
-								// optimize array search by deleting double
-								return axios.get(
-									`${this.$root.apiURL}/textures/${ids
-										.filter((v, i, a) => a.indexOf(v) === i)
-										.join(",")}`,
-								);
-							}),
-					);
-				})
-				.then((results) => {
-					const texturesFromIds = results.map((r) => r.data).flat(); // merge results
-
-					this.search.search_results.forEach((contrib) => {
-						const found_texture = texturesFromIds.find((t) => t.id === contrib.texture);
-						contrib.name = found_texture ? found_texture.name : ""; // find texture with null string fallback (sometimes we get a 404)
-					});
-				})
-
 				.finally(() => (this.search.searching = false))
 				.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
