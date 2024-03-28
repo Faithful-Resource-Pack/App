@@ -1,9 +1,9 @@
 <template>
 	<dashboard-card
 		id="contribution-card"
-		:title="$root.lang('dashboard.titles.contributions')"
-		go_to="/contributions"
-		:can_go_to="admin"
+		:title="$root.lang('dashboard.titles.contribution_activity')"
+		href="/contributions"
+		:clickable="$root.isAdmin"
 		class="d-flex flex-column"
 	>
 		<v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
@@ -15,8 +15,8 @@
 					v-for="(values, activity) in data.activity"
 					:key="activity"
 				>
-					<div class="title text-h6 text--primary">
-						{{ $root.lang("dashboard.activity").replace("%s", activity.replace(/_/g, " ")) }}
+					<div class="title text-button text--secondary">
+						{{ packToName[activity] }}
 					</div>
 					<div class="heatmap-wrapper">
 						<calendar-heatmap
@@ -58,11 +58,6 @@ export default {
 		DashboardCard,
 	},
 	props: {
-		admin: {
-			required: true,
-			type: Boolean,
-			default: false,
-		},
 		colors: {
 			required: true,
 			type: Array,
@@ -75,7 +70,7 @@ export default {
 	data() {
 		return {
 			data: undefined,
-			url: "/contributions/stats",
+			packToName: {},
 		};
 	},
 	computed: {
@@ -101,15 +96,19 @@ export default {
 			};
 		},
 	},
-	methods: {
-		get() {
-			axios.get(this.$root.apiURL + this.url, this.$root.apiOptions).then((res) => {
-				this.data = res.data;
-			});
-		},
-	},
 	created() {
-		this.get();
+		axios.get(`${this.$root.apiURL}/contributions/stats`, this.$root.apiOptions).then((res) => {
+			this.data = res.data;
+		});
+		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
+			this.packToName = Object.values(res.data).reduce(
+				(acc, cur) => ({
+					...acc,
+					[cur.id]: cur.name,
+				}),
+				{},
+			);
+		});
 	},
 	watch: {
 		totals(n, o) {

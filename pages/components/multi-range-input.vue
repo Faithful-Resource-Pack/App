@@ -44,14 +44,14 @@ export default {
 		};
 	},
 	computed: {
-		valid_ranges() {
+		validRanges() {
 			return this.ranges.filter((r) => this.checkRules([r]) === true);
 		},
-		styled_ranges() {
-			return this.transformToStyled(this.valid_ranges);
+		styledRanges() {
+			return this.transformToStyled(this.validRanges);
 		},
-		generated_values() {
-			return this.transformToGeneratedRange(this.styled_ranges);
+		generatedValues() {
+			return this.transformToGeneratedRange(this.styledRanges);
 		},
 	},
 	methods: {
@@ -155,7 +155,7 @@ export default {
 			immediate: true,
 			deep: true,
 		},
-		styled_ranges: {
+		styledRanges: {
 			handler(n, o) {
 				const sent = this.multiple ? n : n.flat()[0];
 				this.$emit("input", sent);
@@ -163,14 +163,14 @@ export default {
 			immediate: true,
 			deep: true,
 		},
-		valid_ranges: {
+		validRanges: {
 			handler(n) {
 				this.$emit("valid-ranges", n);
 			},
 			immediate: true,
 			deep: true,
 		},
-		generated_values: {
+		generatedValues: {
 			handler(n) {
 				this.$emit("generated-values", n);
 			},

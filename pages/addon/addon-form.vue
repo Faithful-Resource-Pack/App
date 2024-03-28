@@ -13,18 +13,15 @@
 			two-line
 		>
 			<v-form lazy-validation v-model="validForm" ref="form">
-				<v-alert type="warning" class="pb-4" color="orange darken-3">
-					<a
-						href="https://docs.faithfulpack.net/pages/manuals/add-on-rules"
-						style="color: inherit; text-decoration: underline"
-						target="_blank"
-					>
-						{{ $root.lang("addons.general.rules") }}
-					</a>
-					<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules">
+				<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules" target="_blank">
+					<v-alert type="warning" class="pb-4" color="orange darken-3">
+						<span style="color: inherit; text-decoration: underline">
+							{{ $root.lang("addons.general.rules") }}
+						</span>
 						<v-icon small>mdi-open-in-new</v-icon>
-					</a>
-				</v-alert>
+					</v-alert>
+				</a>
+
 				<div class="row">
 					<!-- LEFT PART : INPUT -->
 					<div class="col pb-0">
@@ -312,18 +309,17 @@ export default {
 			type: Boolean,
 			required: true,
 		},
+		addonData: {
+			required: true,
+		},
 		loading: {
 			type: Boolean,
 			required: false,
-			default: () => false,
-		},
-		addonData: {
-			required: false,
-			default: () => undefined,
+			default: false,
 		},
 		headerSource: {
 			required: false,
-			default: () => undefined,
+			default: undefined,
 		},
 		screenSources: {
 			required: false,
@@ -336,7 +332,7 @@ export default {
 		disabledHeaderInput: {
 			required: false,
 			type: Boolean,
-			default: () => false,
+			default: false,
 		},
 	},
 	data() {
@@ -619,16 +615,16 @@ export default {
 		downloadAdd() {
 			this.submittedForm.downloads.push({ key: "", links: [""] });
 		},
-		downloadRemove(download_index) {
-			this.submittedForm.downloads.splice(download_index, 1);
+		downloadRemove(downloadIndex) {
+			this.submittedForm.downloads.splice(downloadIndex, 1);
 		},
-		linkAdd(download_index) {
-			this.submittedForm.downloads[download_index].links.push("");
+		linkAdd(downloadIndex) {
+			this.submittedForm.downloads[downloadIndex].links.push("");
 		},
-		linkRemove(download_index, link_index) {
-			this.submittedForm.downloads[download_index].links.splice(link_index, 1);
+		linkRemove(downloadIndex, linkIndex) {
+			this.submittedForm.downloads[downloadIndex].links.splice(linkIndex, 1);
 		},
-		onDeleteCarousel(item, index, id) {
+		onDeleteCarousel(_item, index, id) {
 			this.carouselDoNotVerify = true;
 			this.submittedForm.carouselFiles.splice(index, 1);
 			this.$emit("screenshot", undefined, index, true, id);

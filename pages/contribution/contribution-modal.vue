@@ -192,7 +192,7 @@ export default {
 			return Object.entries(this.formRecords)
 				.map(([formID, form]) => [
 					formID,
-					`${this.formatPack(form.pack)} | ${moment(new Date(form.date)).format("ll")}`,
+					`${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`,
 				])
 				.reduce((acc, [formID, formLabel]) => ({ ...acc, [formID]: formLabel }), {});
 		},
@@ -257,9 +257,7 @@ export default {
 				knownNames.splice(0, 0, anonymousStr);
 			}
 
-			const knownStr = knownNames.join(" | ");
-			const totalStr = `[${total}]: `;
-			return totalStr + knownStr;
+			return `[${total}]: ${knownNames.join(", ")}`;
 		},
 		changeOpenedForm(formId) {
 			if (this.openedFormId === formId) this.openedFormId = undefined;

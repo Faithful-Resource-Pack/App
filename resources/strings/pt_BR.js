@@ -162,7 +162,7 @@ export default {
 			versions: "Versões",
 			no_path_found: "Nenhum caminho encontrado para esse uso.",
 			no_use_found: "Nenhum uso encontrado para essa textura.",
-			actual_mc_version: "Versão atual do Minecraft",
+			current_mc_version: "Versão atual do Minecraft",
 			new_mc_version: "Nova versão do Minecraft",
 		},
 		hints: {

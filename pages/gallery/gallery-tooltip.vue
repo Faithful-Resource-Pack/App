@@ -75,11 +75,7 @@ export default {
 			return "mdi-account-multiple";
 		},
 		modded() {
-			const somethingWithPath = this.texture.url;
-
-			return ["assets/forge", "assets/fml", "assets/fabric", "assets/modmenu"].some((path) =>
-				somethingWithPath.includes(path),
-			);
+			return this.texture.tags.includes("Modded");
 		},
 	},
 	methods: {

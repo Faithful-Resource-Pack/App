@@ -1,5 +1,9 @@
 <template>
-	<dashboard-card :title="$root.lang('dashboard.titles.users')" go_to="/users" :can_go_to="admin">
+	<dashboard-card
+		:title="$root.lang('dashboard.titles.users')"
+		href="/users"
+		:clickable="$root.isAdmin"
+	>
 		<v-card-text class="pb-3">
 			<v-row class="py-0 my-0" v-if="data" dense>
 				<v-col v-for="info in ['total_anonymous', 'total_roles']" :key="info" cols="12" sm="6">
@@ -39,11 +43,6 @@ export default {
 		RolesGraph,
 	},
 	props: {
-		admin: {
-			required: true,
-			type: Boolean,
-			default: false,
-		},
 		colors: {
 			required: true,
 			type: Array,

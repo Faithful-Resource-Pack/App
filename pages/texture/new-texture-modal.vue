@@ -418,7 +418,7 @@ export default {
 		},
 		send() {
 			const data = JSON.parse(JSON.stringify(this.textures));
-			const api_data = data.map((e) => ({
+			const apiData = data.map((e) => ({
 				name: e.name,
 				tags: this.sortTags(e.tags),
 				uses: e.uses.map((u) => ({
@@ -432,7 +432,7 @@ export default {
 				})),
 			}));
 			axios
-				.post(`${this.$root.apiURL}/textures/multiple`, api_data, this.$root.apiOptions)
+				.post(`${this.$root.apiURL}/textures/multiple`, apiData, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(
 						this.$root.lang().database.labels.add_textures_success,

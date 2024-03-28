@@ -187,7 +187,7 @@ export default {
 			// add left axis
 			svg.append("g").call(d3.axisLeft(yScale));
 
-			const colors = ["#cccccc", "#333333"];
+			const colors = ["#cccccc", "#666666"];
 			const groups = svg
 				.selectAll("g.series")
 				.data(series)

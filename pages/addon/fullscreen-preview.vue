@@ -13,7 +13,7 @@ export default {
 		aspectRatio: {
 			required: false,
 			type: Number,
-			default: () => 16 / 9,
+			default: 16 / 9,
 		},
 		src: {
 			required: true,

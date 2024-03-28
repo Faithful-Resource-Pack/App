@@ -1,7 +1,4 @@
-@font-face {
-	font-family: Faithful;
-	src: url("../fonts/Faithful.ttf") format("truetype");
-}
+@import url(https://database.faithfulpack.net/fonts/FaithfulFont/stylesheet.css);
 
 @font-face {
 	font-family: "icons";
@@ -351,11 +348,8 @@ img.texture-img {
 }
 
 #app .faithful-font {
-	font-family: Faithful;
-}
-
-h2.faithful-font {
-	font-weight: 600;
+	font-family: "Faithful 32x";
+	font-weight: normal;
 }
 
 .blurple {

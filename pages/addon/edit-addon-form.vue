@@ -268,18 +268,23 @@ export default {
 				`${this.$root.apiURL}/addons/${this.$route.params.id}/files/downloads`,
 				this.$root.apiOptions,
 			),
-		]).then(([addon, downloads]) => {
-			const loadedAddon = {
-				...addon,
-				downloads,
-			};
-			delete loadedAddon.last_updated;
-			delete loadedAddon.slug;
-			delete loadedAddon.approval;
-			delete loadedAddon.id;
+		])
+			.then(([addon, downloads]) => {
+				const loadedAddon = {
+					...addon,
+					downloads,
+				};
+				delete loadedAddon.last_updated;
+				delete loadedAddon.slug;
+				delete loadedAddon.approval;
+				delete loadedAddon.id;
 
-			this.addonData = loadedAddon;
-		});
+				this.addonData = loadedAddon;
+			})
+			.catch((err) => {
+				console.error(err);
+				this.$root.showSnackBar(err, "error");
+			});
 	},
 };
 </script>

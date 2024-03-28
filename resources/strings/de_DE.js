@@ -135,7 +135,7 @@ export default {
 			versions: "Versionen",
 			no_path_found: "Keine Dateipfade für diese Verwendung gefunden.",
 			no_use_found: "Keine Verwendungen für diese Textur gefunden.",
-			actual_mc_version: "Aktuelle MC-Version",
+			current_mc_version: "Aktuelle MC-Version",
 			new_mc_version: "Neue MC-Version",
 		},
 		hints: {

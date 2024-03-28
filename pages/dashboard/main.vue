@@ -14,17 +14,16 @@
 				<faithful-card :show="!$root.isUserLogged" />
 			</v-col>
 			<v-col cols="12" sm="9">
-				<user-card :admin="admin" :colors="colors" />
+				<user-card :colors="colors" />
 			</v-col>
 			<v-col cols="12" sm="6">
-				<addon-card :admin="admin" />
+				<addon-card />
 			</v-col>
 			<v-col cols="12" sm="6">
-				<contribution-stats-card :admin="admin" ref="cs" />
+				<contribution-stats-card ref="cs" />
 			</v-col>
 			<v-col cols="12" sm="12">
 				<contribution-card
-					:admin="admin"
 					:colors="colors"
 					:statsListener="
 						(t) => {
@@ -56,19 +55,6 @@ export default {
 		FaithfulCard,
 	},
 	computed: {
-		admin() {
-			// if not logged in
-			if (!this.$root.isUserLogged) return false;
-
-			// if user not loaded
-			if (!this.$root.user) return false;
-
-			// check roles
-			return (
-				this.$root.user.roles.includes("Administrator") ||
-				this.$root.user.roles.includes("Developer")
-			);
-		},
 		colors() {
 			// https://colordesigner.io/gradient-generator
 			if (this.$root.isDark)

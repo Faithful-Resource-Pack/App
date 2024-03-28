@@ -16,11 +16,11 @@
 			</div>
 
 			<div class="mt-2 mx-auto" id="connect-title">
-				<h2 class="faithful-font uppercase-unsized text-center text--primary">
+				<h3 class="faithful-font uppercase-unsized text-center text--primary">
 					{{ $root.lang("global.name") }}
-				</h2>
+				</h3>
 
-				<div class="font-weight-light text--secondary text-center">
+				<div class="font-weight-light text--secondary text-center pt-2">
 					<a href="https://twitter.com/faithfulpack" target="href">@FaithfulPack</a>
 				</div>
 			</div>

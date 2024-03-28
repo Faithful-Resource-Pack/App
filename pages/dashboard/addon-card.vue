@@ -2,8 +2,8 @@
 	<dashboard-card
 		id="addon-card"
 		:title="$root.lang('dashboard.titles.addons')"
-		go_to="/review/addons"
-		:can_go_to="admin"
+		href="/review/addons"
+		:clickable="$root.isAdmin"
 		class="d-flex flex-column justify-space-between"
 	>
 		<v-card-text class="pb-0 flex-grow-1 d-flex flex-column">
@@ -100,13 +100,6 @@ export default {
 	components: {
 		DashboardCard,
 	},
-	props: {
-		admin: {
-			required: true,
-			type: Boolean,
-			default: false,
-		},
-	},
 	data() {
 		return {
 			data: undefined,
@@ -118,7 +111,6 @@ export default {
 			},
 			loading: true,
 			loading_for: 1,
-			request_admin: false,
 		};
 	},
 	computed: {
@@ -132,7 +124,7 @@ export default {
 			return this.$root.user.roles.length;
 		},
 		url() {
-			if (this.admin) return "/addons/stats-admin";
+			if (this.$root.isAdmin) return "/addons/stats-admin";
 			return "/addons/stats";
 		},
 	},
@@ -154,7 +146,7 @@ export default {
 	},
 	watch: {
 		roles(n, o) {
-			if (n != o && this.admin) {
+			if (n != o && this.$root.isAdmin) {
 				this.loading = true;
 				this.loading_for = 4;
 				this.get();

@@ -13,7 +13,7 @@
 							<span class="text--secondary font-weight-regular">{{ `#${addonInPanel.id}` }}</span>
 						</h2>
 						<div class="text--secondary subtitle-2 mt-1" style="line-height: 14px">
-							{{ ([...addonInPanel.options.tags] || []).sort().join(" | ") }}
+							{{ ([...addonInPanel.options.tags] || []).sort().join(" • ") }}
 						</div>
 					</div>
 					<v-btn id="edit-btn" icon class="ml-auto" :href="`/addons/edit/${addonInPanel.id}`">
@@ -245,7 +245,7 @@ export default {
 			Promise.allSettled([
 				axios.get(`${this.$root.apiURL}/addons/${id}/all`, this.$root.apiOptions),
 				axios.get(`${this.$root.apiURL}/addons/${id}/files/header`, this.$root.apiOptions),
-			]).then(([res, header_res]) => {
+			]).then(([res, headerRes]) => {
 				// void value if already here (closing tab)
 				if (this.addonInPanel.id === res.value.data.id) {
 					this.addonInPanel = {};
@@ -256,8 +256,8 @@ export default {
 				this.addonInPanel = res.value.data;
 				this.addonInPanelLoading = false;
 
-				if (header_res.value)
-					this.addonInPanelHeaderURL = `${header_res.value.data}?t=${new Date().getTime()}`;
+				if (headerRes.value)
+					this.addonInPanelHeaderURL = `${headerRes.value.data}?t=${new Date().getTime()}`;
 				else this.addonInPanelHeaderURL = null;
 			});
 		},

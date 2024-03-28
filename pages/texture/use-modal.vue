@@ -68,7 +68,7 @@
 							</v-list-item-content>
 
 							<v-list-item-action class="merged">
-								<v-btn icon @click="openSubPathDialog(path)">
+								<v-btn icon @click="openPathModal(path)">
 									<v-icon color="lighten-1">mdi-pencil</v-icon>
 								</v-btn>
 								<v-btn icon @click="askRemovePath(path)">
@@ -89,7 +89,7 @@
 						:disabled="add"
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
-						@click="openSubPathDialog()"
+						@click="openPathModal()"
 					>
 						{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
 					</v-btn>
@@ -185,7 +185,7 @@ export default {
 		},
 	},
 	methods: {
-		openSubPathDialog(data = {}) {
+		openPathModal(data = {}) {
 			this.pathModalOpen = true;
 			this.pathModalData = data;
 		},

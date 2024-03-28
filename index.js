@@ -612,7 +612,7 @@ const app = new Vue({
 			if (!this.user) return false;
 
 			// check roles
-			return this.user.roles.includes("Administrator");
+			return this.user.roles.includes("Administrator") || this.user.roles.includes("Developer");
 		},
 		/**
 		 * Get in real time the roles of a user
@@ -699,9 +699,7 @@ const app = new Vue({
 
 			if (this.isAdmin) {
 				setTimeout(() => {
-					if (this.admin) {
-						this.loadBadge(url);
-					}
+					this.loadBadge(url);
 				}, 15000);
 			}
 		},
@@ -811,13 +809,11 @@ const app = new Vue({
 				window.localStorage.removeItem(AUTH_STORAGE_KEY);
 				this.emitConnected();
 			} else {
-				if (Vue.config.devtools) console.log(this.discordAuth.access_token);
+				if (Vue.config.devtools) console.log(`Discord Token: ${this.discordAuth.access_token}`);
 				// persist
 				window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state));
 				setTimeout(
-					() => {
-						this.discordAuth.refresh();
-					},
+					() => this.discordAuth.refresh(),
 					new Date(this.discordAuth.expires_at).getTime() - new Date().getTime(),
 				);
 			}

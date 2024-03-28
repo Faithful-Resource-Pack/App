@@ -184,7 +184,7 @@ export default {
 			versions: "Versions",
 			no_path_found: "Aucun chemin trouvé pour cette utilisation",
 			no_use_found: "Aucune utilisation trouvée pour cette texture.",
-			actual_mc_version: "Version MC actuelle",
+			current_mc_version: "Version MC actuelle",
 			new_mc_version: "Nouvelle version MC",
 			id_field_errors: {
 				one_required: "Au moins un ID ou une plage d'IDs de textures requis",

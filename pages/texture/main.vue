@@ -4,7 +4,7 @@
 		<texture-modal
 			:color="pageColor"
 			:textColor="textColorOnPage"
-			v-model="dialogOpen"
+			v-model="textureModalOpen"
 			:disableDialog="closeTextureModal"
 			:add="Object.keys(dialogData).length == 0"
 			:data="dialogData"
@@ -13,22 +13,26 @@
 		<new-texture-modal
 			:textColor="textColorOnPage"
 			:color="pageColor"
-			v-model="addMultiple"
+			v-model="newTextureModalOpen"
 			:tags="tags"
 			:editions="editions"
 			:versions="versions"
 		/>
 		<modify-version-modal
 			:color="pageColor"
-			:MCDialog="MCDialogOpen"
-			:disableMCDialog="disableMCDialog"
+			:dialog="modifyVersionModalOpen"
+			:disableDialog="
+				() => {
+					modifyVersionModalOpen = false;
+				}
+			"
 		/>
 		<add-version-modal
 			:color="pageColor"
-			:dialog="newVersionModal"
+			:dialog="addVersionModalOpen"
 			:disableDialog="
 				() => {
-					newVersionModal = false;
+					addVersionModalOpen = false;
 				}
 			"
 			:editions="editions"
@@ -57,8 +61,9 @@
 				:class="['my-1 mr-2', activeTag(t)]"
 				:to="textureURL(t)"
 				:exact="t == 'all'"
-				>{{ t }}</v-btn
 			>
+				{{ t }}
+			</v-btn>
 		</div>
 		<v-select
 			id="selectTextureTag"
@@ -95,7 +100,7 @@
 		<div>
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewMCDialog()">
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
 						{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
@@ -109,7 +114,7 @@
 						:class="[textColorOnPage]"
 						@click="
 							() => {
-								newVersionModal = true;
+								addVersionModalOpen = true;
 							}
 						"
 					>
@@ -117,7 +122,12 @@
 					</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openModifyMCDialog()">
+					<v-btn
+						block
+						:color="pageColor"
+						:class="[textColorOnPage]"
+						@click="openModifyVersionModal()"
+					>
 						{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
@@ -125,8 +135,8 @@
 
 			<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
 			<div v-if="Object.keys(textures).length" class="main-container pb-4 rounded">
-				<v-row class="mb-1 mt-0"
-					><v-col
+				<v-row class="mb-1 mt-0">
+					<v-col
 						:cols="12 / listColumns"
 						xs="1"
 						class="py-0"
@@ -147,7 +157,7 @@
 								</v-list-item-content>
 
 								<v-list-item-action class="merged">
-									<v-btn icon @click="openDialog(texture)">
+									<v-btn icon @click="openTextureModal(texture)">
 										<v-icon color="lighten-1">mdi-pencil</v-icon>
 									</v-btn>
 									<v-btn icon @click="askRemove(texture)">
@@ -207,16 +217,16 @@ export default {
 			pageColor: "blue darken-1",
 			pageStyles: "",
 			textColorOnPage: "white--text",
-			newVersionModal: false,
-			addMultiple: false,
+			addVersionModalOpen: false,
+			newTextureModalOpen: false,
 			recompute: false,
 			tags: [],
 			editions: [],
 			versions: [],
 			textures: {},
 			search: "",
-			dialogOpen: false,
-			MCDialogOpen: false,
+			textureModalOpen: false,
+			modifyVersionModalOpen: false,
 			dialogData: {},
 			remove: {
 				confirm: false,
@@ -298,12 +308,12 @@ export default {
 			this.search = "";
 			this.startSearch();
 		},
-		openDialog(data = {}) {
-			this.dialogOpen = true;
+		openTextureModal(data = {}) {
+			this.textureModalOpen = true;
 			this.dialogData = data;
 		},
 		closeTextureModal(refresh = false) {
-			this.dialogOpen = false;
+			this.textureModalOpen = false;
 			if (refresh) {
 				this.getTags();
 				this.getEditions();
@@ -311,14 +321,11 @@ export default {
 				this.getVersions();
 			}
 		},
-		openModifyMCDialog() {
-			this.MCDialogOpen = true;
+		openModifyVersionModal() {
+			this.modifyVersionModalOpen = true;
 		},
-		disableMCDialog() {
-			this.MCDialogOpen = false;
-		},
-		openNewMCDialog() {
-			this.addMultiple = true;
+		openNewTextureModal() {
+			this.newTextureModalOpen = true;
 		},
 		askRemove(data) {
 			this.remove.data = data;

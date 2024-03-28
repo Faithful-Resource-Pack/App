@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="MCDialog" content-class="colored" max-width="600">
+	<v-dialog v-model="dialog" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{
 				$root.lang().database.titles.change_mc_version
@@ -23,7 +23,7 @@
 								:color="color"
 								required
 								v-model="form.actual"
-								:label="$root.lang().database.labels.actual_mc_version"
+								:label="$root.lang().database.labels.current_mc_version"
 							/>
 							<v-text-field
 								:color="color"
@@ -37,7 +37,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="disableMCDialog">
+				<v-btn color="darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="error darken-1" @click="send">
@@ -54,11 +54,11 @@ import axios from "axios";
 export default {
 	name: "modify-version-modal",
 	props: {
-		MCDialog: {
+		dialog: {
 			type: Boolean,
 			required: true,
 		},
-		disableMCDialog: {
+		disableDialog: {
 			type: Function,
 			required: true,
 		},
@@ -87,7 +87,7 @@ export default {
 				.put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableMCDialog(true);
+					this.disableDialog(true);
 				})
 				.catch((err) => {
 					console.error(err);

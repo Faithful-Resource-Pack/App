@@ -90,7 +90,7 @@
 							</v-list-item-content>
 
 							<v-list-item-action class="merged">
-								<v-btn icon @click="openSubDialog(use, false)">
+								<v-btn icon @click="openUseModal(use, false)">
 									<v-icon color="lighten-1">mdi-pencil</v-icon>
 								</v-btn>
 								<v-btn icon @click="askRemoveUse(use)">
@@ -105,7 +105,7 @@
 						block
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
-						@click="openSubDialog(null, true)"
+						@click="openUseModal(null, true)"
 					>
 						{{ $root.lang().database.labels.add_new_use }}
 						<v-icon right>mdi-plus</v-icon>
@@ -199,7 +199,7 @@ export default {
 		},
 	},
 	methods: {
-		openSubDialog(data, add) {
+		openUseModal(data, add) {
 			this.useModalOpen = true;
 			this.useModalAdd = add;
 

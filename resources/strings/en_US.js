@@ -219,7 +219,7 @@ export default {
 			versions: "Versions",
 			no_path_found: "No paths found for this use.",
 			no_use_found: "No uses found for this texture.",
-			actual_mc_version: "Current MC Version",
+			current_mc_version: "Current MC Version",
 			new_mc_version: "New MC Version",
 			id_field_errors: {
 				one_required: "At least one texture ID or an ID range is required",
@@ -571,10 +571,10 @@ export default {
 		titles: {
 			users: "Users",
 			addons: "Add-ons",
-			contributions: "Contributions",
+			contribution_activity: "Contribution Activity",
+			contribution_stats: "Contributions",
 			profile: "Profile",
 		},
-		activity: "%s activity",
 		addons: {
 			submissions: "Submissions",
 			upload: "Upload",

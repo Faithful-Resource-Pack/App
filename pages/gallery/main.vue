@@ -355,9 +355,6 @@ export default {
 				this.$root.lang().gallery.error_message.user_anonymous
 			);
 		},
-		timestampToDate(t) {
-			return moment(new Date(t)).format("ll");
-		},
 		startSearch() {
 			this.updateRoute(null, null, true);
 		},

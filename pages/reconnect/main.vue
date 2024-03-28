@@ -16,7 +16,7 @@
 					'image-rendering': 'pixelated',
 				}"
 			/>
-			<h2 class="faithful-font uppercase-unsized">{{ $root.lang("reconnect.reconnecting") }}</h2>
+			<h3 class="faithful-font uppercase-unsized">{{ $root.lang("reconnect.reconnecting") }}</h3>
 
 			<v-progress-circular class="my-4" :size="70" :width="7" indeterminate color="primary" />
 

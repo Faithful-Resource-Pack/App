@@ -1,8 +1,8 @@
 <template>
 	<dashboard-card
 		:title="$root.lang('dashboard.titles.profile')"
-		go_to="/profile"
-		:can_go_to="true"
+		href="/profile"
+		:clickable="true"
 		class="d-flex flex-column"
 		:style="{ display: show ? 'inherit' : 'none !important' }"
 	>

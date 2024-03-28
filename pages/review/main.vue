@@ -89,7 +89,7 @@ const searchMixin = {
 		 * @param {string} name Search param name
 		 * @returns {String|null} param value
 		 */
-		search_get(name) {
+		searchGet(name) {
 			return this.$route.query[name];
 		},
 		/**
@@ -97,11 +97,11 @@ const searchMixin = {
 		 * @param {string} name Search param name
 		 * @param {any} value given value
 		 */
-		search_set(name, value) {
+		searchSet(name, value) {
 			if (this.$route.query[name] === value) return;
 			this.$router.push({ query: { ...this.$route.query, [name]: String(value) } });
 		},
-		search_delete(name) {
+		searchDelete(name) {
 			const query = { ...this.$route.query };
 			delete query[name];
 			this.$router.push({ query });
@@ -154,17 +154,17 @@ export default {
 	watch: {
 		status(n) {
 			// select first if not empty
-			this.search_set("status", n);
+			this.searchSet("status", n);
 			this.selectedAddonId = this.addons[n].length > 0 ? this.addons[n][0].id : undefined;
 		},
 		selectedAddonId(n) {
-			if (n !== undefined) this.search_set("id", n);
-			else this.search_delete("id");
+			if (n !== undefined) this.searchSet("id", n);
+			else this.searchDelete("id");
 		},
 		"$route.query": {
 			handler(params, prev) {
 				if (JSON.stringify(params) === JSON.stringify(prev)) return;
-				this.search_update();
+				this.searchUpdate();
 			},
 			deep: true,
 			immediate: true,
@@ -193,7 +193,7 @@ export default {
 							return {
 								key: String(addon.id),
 								primary: addon.name,
-								secondary: addon.options.tags.join(" | "),
+								secondary: addon.options.tags.join(", "),
 							};
 						}),
 					};
@@ -282,15 +282,15 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		search_update(updateId = false) {
-			this.status = this.search_get("status") || this.status;
+		searchUpdate() {
+			this.status = this.searchGet("status") || this.status;
 			this.$nextTick(() => {
-				this.selectedAddonId = this.search_get("id") || this.selectedAddonId;
+				this.selectedAddonId = this.searchGet("id") || this.selectedAddonId;
 			});
 		},
 	},
 	created() {
-		this.search_update();
+		this.searchUpdate();
 	},
 	mounted() {
 		this.update();

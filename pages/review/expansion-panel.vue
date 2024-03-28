@@ -22,7 +22,7 @@
 						{{ addon.name }}
 					</v-col>
 					<v-col cols="12" class="uppercase addon-tags" style="margin-top: 2.5px">
-						{{ addon.options.tags.join(" | ") }}
+						{{ addon.options.tags.join(" • ") }}
 					</v-col>
 				</v-row>
 			</v-expansion-panel-header>

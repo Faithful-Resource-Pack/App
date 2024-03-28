@@ -175,11 +175,11 @@
 						</v-list-item-avatar>
 
 						<v-list-item-content>
-							<v-list-item-title>{{
-								parseDate(new Date(contrib.date)).format("ll") +
-								" " +
-								(!!contrib.name ? " - " + contrib.name : "")
-							}}</v-list-item-title>
+							<v-list-item-title>
+								{{
+									`${contrib.name || "Unknown texture"} • ${moment(new Date(contrib.date)).format("ll")}`
+								}}
+							</v-list-item-title>
 							<v-list-item-subtitle>{{
 								(contrib.authors || [])
 									.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
@@ -303,10 +303,12 @@ export default {
 			return this.form.packs.filter((entry) => entry.selected);
 		},
 		packsToChoose() {
-			return this.form.packs
-				.filter((entry) => entry.key !== this.all_packs)
-				// format into list-suitable format
-				.map((v) => ({ label: v.value, value: v.key }));
+			return (
+				this.form.packs
+					.filter((entry) => entry.key !== this.all_packs)
+					// format into list-suitable format
+					.map((v) => ({ label: v.value, value: v.key }))
+			);
 		},
 		splitResults() {
 			const res = [];
@@ -327,9 +329,8 @@ export default {
 		},
 	},
 	methods: {
-		parseDate(...args) {
-			return moment(...args);
-		},
+		// expose for inline use
+		moment,
 		showMore() {
 			this.displayedResults += 100;
 		},

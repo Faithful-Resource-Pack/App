@@ -172,7 +172,7 @@ export default {
 			versions: "Verze",
 			no_path_found: "Pro toto využití nebyly nalezeny žádné cesty.",
 			no_use_found: "Pro tuto texturu nebyla nalezena žádná využití.",
-			actual_mc_version: "Aktuální verze Minecraftu",
+			current_mc_version: "Aktuální verze Minecraftu",
 			new_mc_version: "Nová verze Minecraftu",
 		},
 		hints: {
