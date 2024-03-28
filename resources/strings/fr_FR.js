@@ -516,13 +516,6 @@ export default {
 			more: "Plus",
 		},
 	},
-	reconnect: {
-		reconnecting: "Reconnexion…",
-		refreshing_discord_token: "Mise à jour du token Discord…",
-		dummy_step: "Téléchargement de RAM…",
-		updating_profile_information: "Mise à jour des informations du profil…",
-		failed_to_reconnect: "Impossible de se reconnecter",
-	},
 	datepicker: {
 		year: "Année",
 		month: "Mois",

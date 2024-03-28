@@ -43,7 +43,7 @@ import ReviewTranslationsPage from "./pages/translation/main.vue";
 import GalleryPage from "./pages/gallery/main.vue";
 import SettingsPage from "./pages/settings/main.vue";
 import DashboardPage from "./pages/dashboard/main.vue";
-import ReconnectPage from "./pages/reconnect/main.vue";
+import MissingPage from "./pages/404/main.vue";
 
 /**
  * PAGE STYLE DEFINITIONS
@@ -187,14 +187,14 @@ const AUTH_STORAGE_KEY = "auth";
 const MENU_KEY = "menu_key";
 const MENU_DEFAULT = false;
 
-const ALL_ROUTES = [{ path: "/reconnect", component: ReconnectPage }];
+/** @type {import("vue-router").RouteConfig[]} */
+const missingRoute = { path: "*", name: "missing-route", component: MissingPage };
 
 const router = new VueRouter({
-	routes: ALL_ROUTES,
 	mode: "history",
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
 	// redirect to dashboard if base url
 	if (to.fullPath === "/") {
 		next("/dashboard");
@@ -350,6 +350,9 @@ ALL_TABS.filter((t) => t.roles === undefined)
 	.flat(1)
 	.forEach((r) => router.addRoute(r));
 
+// add missing route last (prevents some weird fallback shenanigans)
+router.addRoute(missingRoute);
+
 window.apiURL = import.meta.env.VITE_API_URL;
 // set as global
 window.settings = await axios.get(`${window.apiURL}/settings/raw`).then((res) => res.data);
@@ -495,6 +498,9 @@ const app = new Vue({
 				.map((s) => s.routes)
 				.flat(1)
 				.forEach((r) => router.addRoute(r));
+
+			// add missing route last (prevents some weird fallback shenanigans)
+			router.addRoute(missingRoute);
 		},
 		userRoles(n, o) {
 			if (o === undefined || o.length === undefined) return;
@@ -520,6 +526,9 @@ const app = new Vue({
 				.map((s) => s.routes)
 				.flat(1)
 				.forEach((r) => router.addRoute(r));
+
+			// add missing route last (prevents some weird fallback shenanigans)
+			router.addRoute(missingRoute);
 		},
 	},
 	computed: {

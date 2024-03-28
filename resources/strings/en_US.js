@@ -590,12 +590,11 @@ export default {
 			more: "More",
 		},
 	},
-	reconnect: {
-		reconnecting: "Reconnecting…",
-		refreshing_discord_token: "Refreshing Discord token…",
-		dummy_step: "Downloading RAM…",
-		updating_profile_information: "Updating profile information…",
-		failed_to_reconnect: "Failed to reconnect",
+	missing_page: {
+		title: "Are you lost in The End?",
+		description: "Unfortunately, the page you requested doesn't exist!",
+		main_page:
+			"Try checking your spelling or going to the %main page% to find what you were looking for.",
 	},
 	datepicker: {
 		year: "Year",
