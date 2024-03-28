@@ -18,13 +18,14 @@ declare module "vue/types/vue" {
 
 	// inject methods being used
 	interface Vue {
-		apiURL: string;
-		apiOptions: AxiosRequestConfig;
-		user: DiscordUser;
-		urlRegex: RegExp;
-		isUserLogged: boolean;
-		isAdmin: boolean;
-		isDark: boolean;
+		readonly selectedLang: string;
+		readonly apiURL: string;
+		readonly apiOptions: AxiosRequestConfig;
+		readonly user: DiscordUser;
+		readonly urlRegex: RegExp;
+		readonly isUserLogged: boolean;
+		readonly isAdmin: boolean;
+		readonly isDark: boolean;
 
 		lang(): typeof strings;
 		lang(key: string): string;
@@ -56,11 +57,11 @@ declare global {
 		eventBus: Vue;
 
 		// aliases
-		colors: typeof colors;
+		readonly colors: typeof colors;
 		colorToHex: typeof colorToHex;
 		updatePageStyles: typeof updatePageStyles;
-		settings: typeof settings;
-		apiURL: typeof apiURL;
+		readonly settings: typeof settings;
+		readonly apiURL: typeof apiURL;
 	}
 
 	interface String {

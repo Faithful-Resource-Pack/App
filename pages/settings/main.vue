@@ -3,37 +3,17 @@
 		<div class="text-h4 py-4">
 			{{ $root.lang().settings.title }}
 		</div>
-		<div class="my-2">
-			<v-btn color="primary" :disabled="jsonIsNotValid" block append-icon @click="save">
-				{{ $root.lang().global.btn.save }} <v-icon small>mdi-content-save</v-icon>
-			</v-btn>
-		</div>
-		<v-card class="mb-2">
-			<v-expansion-panels flat v-model="panels">
-				<v-expansion-panel disabled>
-					<v-expansion-panel-header>
-						{{ $root.lang().settings.label.edit_editor }}
-					</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<json-editor v-model="json" root />
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-				<v-expansion-panel>
-					<v-expansion-panel-header>
-						{{ $root.lang().settings.label.edit_raw }}
-					</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<prism-editor
-							style="max-height: 600px"
-							class="ma-0 my-editor mb-2"
-							v-model="jsonText"
-							:highlight="highlighter"
-							line-numbers
-						/>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-			</v-expansion-panels>
-		</v-card>
+		<v-btn color="primary mt-2" :disabled="jsonIsNotValid" block append-icon @click="save">
+			{{ $root.lang().global.btn.save }} <v-icon right>mdi-content-save</v-icon>
+		</v-btn>
+		<div class="my-5 text-h5">{{ $root.lang().settings.label.edit_raw }}</div>
+		<prism-editor
+			style="max-height: 600px"
+			class="ma-0 my-editor mb-2"
+			v-model="jsonText"
+			:highlight="highlighter"
+			line-numbers
+		/>
 	</v-container>
 </template>
 
@@ -41,14 +21,8 @@
 import axios from "axios";
 import Prism from "prismjs";
 
-// fixes circular dependency error
-const JSONEditor = () => import("./json-editor/main.vue");
-
 export default {
 	name: "settings-page",
-	components: {
-		JSONEditor,
-	},
 	data() {
 		return {
 			panels: 1,

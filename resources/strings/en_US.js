@@ -250,8 +250,8 @@ export default {
 	},
 	review: {
 		titles: {
-			addons: "Review Add-ons",
-			translation: "Review Translations",
+			addons: "Review add-ons",
+			translation: "Review translations",
 			pending: "Pending Approval",
 			denied: "Denied",
 			approved: "Approved",
@@ -293,7 +293,7 @@ export default {
 		titles: {
 			submit: "Submit a new add-on",
 			edit: "Edit add-on",
-			submissions: "Submissions",
+			submissions: "Add-on submissions",
 			details: "Details",
 		},
 		remove: {
