@@ -621,7 +621,7 @@ const app = new Vue({
 			if (!this.user) return false;
 
 			// check roles
-			return this.user.roles.includes("Administrator") || this.user.roles.includes("Developer");
+			return this.user.roles.includes("Administrator");
 		},
 		/**
 		 * Get in real time the roles of a user
