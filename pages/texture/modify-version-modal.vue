@@ -1,39 +1,41 @@
 <template>
-	<v-dialog v-model="dialog" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{
 				$root.lang().database.titles.change_mc_version
 			}}</v-card-title>
-			<v-card-text>
-				<v-row>
-					<v-col class="col-12" sm="12">
-						<p align="justify">
-							{{ $root.lang().database.hints.example_scenario }}
-							<br /><br />
-							<strong style="color: red">{{
-								$root.lang().database.hints.example_scenario_warn
-							}}</strong>
-						</p>
-					</v-col>
-				</v-row>
-				<v-row>
-					<v-col class="col-12" sm="12">
-						<v-form ref="form">
-							<v-text-field
-								:color="color"
-								required
-								v-model="form.actual"
-								:label="$root.lang().database.labels.current_mc_version"
-							/>
-							<v-text-field
-								:color="color"
-								required
-								v-model="form.new"
-								:label="$root.lang().database.labels.new_mc_version"
-							/>
-						</v-form>
-					</v-col>
-				</v-row>
+			<v-card-text class="mb-0">
+				<v-form ref="form">
+					<v-row>
+						<v-col class="col-12" sm="12">
+							<p align="justify">
+								{{ $root.lang().database.hints.example_scenario }}
+								<br /><br />
+								<strong style="color: red">{{
+									$root.lang().database.hints.example_scenario_warn
+								}}</strong>
+							</p>
+						</v-col>
+					</v-row>
+					<v-row>
+						<v-col class="col-12" sm="12">
+							<v-form ref="form">
+								<v-text-field
+									:color="color"
+									required
+									v-model="form.old"
+									:label="$root.lang().database.labels.current_mc_version"
+								/>
+								<v-text-field
+									:color="color"
+									required
+									v-model="form.new"
+									:label="$root.lang().database.labels.new_mc_version"
+								/>
+							</v-form>
+						</v-col>
+					</v-row>
+				</v-form>
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
@@ -54,7 +56,7 @@ import axios from "axios";
 export default {
 	name: "modify-version-modal",
 	props: {
-		dialog: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -70,8 +72,9 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			form: {
-				actual: settings.versions.java[0],
+				old: settings.versions.java[0],
 				new: settings.versions.java[0],
 			},
 		};
@@ -81,7 +84,7 @@ export default {
 			const data = JSON.parse(JSON.stringify(this.form));
 			data.token = this.$root.user.access_token;
 
-			const old_version = this.form.actual;
+			const old_version = this.form.old;
 			const new_version = this.form.new;
 			axios
 				.put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
@@ -93,6 +96,15 @@ export default {
 					console.error(err);
 					this.$root.showSnackBar(err, "error");
 				});
+		},
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$nextTick(() => this.$refs.form.reset());
+			this.$emit("input", newValue);
 		},
 	},
 };

@@ -2,16 +2,16 @@
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<use-modal
 			:color="color"
-			:modalOpened="useModalOpen"
+			v-model="useModalOpen"
 			:disableDialog="closeUseModal"
 			:add="useModalAdd"
 			:textureID="formData.id"
 			:usesLength="Object.keys(formData.uses).length"
 			:data="useModalData"
 		/>
-		<remove-confirm
+		<texture-remove-confirm
 			type="use"
-			:confirm="remove.confirm"
+			v-model="remove.confirm"
 			:disableDialog="closeAndUpdate"
 			:data="remove.data"
 		/>
@@ -129,13 +129,13 @@
 import axios from "axios";
 
 import UseModal from "./use-modal.vue";
-import RemoveConfirm from "./remove-confirm.vue";
+import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
 export default {
 	name: "texture-modal",
 	components: {
 		UseModal,
-		RemoveConfirm,
+		TextureRemoveConfirm,
 	},
 	props: {
 		value: {
@@ -298,21 +298,16 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			if (newValue === true) {
-				this.$nextTick(() => {
-					if (this.add) this.$refs.form.reset();
+			this.$nextTick(() => {
+				if (this.add) this.$refs.form.reset();
 
-					if (!this.add) {
-						this.formData.name = this.data.name;
-						this.formData.tags = this.data.tags;
-						this.formData.id = this.data.id;
-						this.getUses(this.data.id);
-					}
-				});
-			} else {
-				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-				this.disableDialog();
-			}
+				if (!this.add) {
+					this.formData.name = this.data.name;
+					this.formData.tags = this.data.tags;
+					this.formData.id = this.data.id;
+					this.getUses(this.data.id);
+				}
+			});
 			this.$emit("input", newValue);
 		},
 	},

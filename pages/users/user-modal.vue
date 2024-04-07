@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
 			<v-card-text>
@@ -83,7 +83,7 @@ import axios from "axios";
 export default {
 	name: "user-modal",
 	props: {
-		dialog: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -112,6 +112,7 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			formData: {
 				username: "",
 				roles: [],
@@ -157,13 +158,12 @@ export default {
 		},
 	},
 	watch: {
-		dialog() {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
 			this.$nextTick(() => {
-				if (!this.add)
-					Object.keys(this.data).forEach((key) => {
-						this.formData[key] = this.data[key];
-					});
-				else
+				if (this.add)
 					this.formData = {
 						username: "",
 						roles: [],
@@ -171,7 +171,12 @@ export default {
 						anonymous: false,
 						id: "",
 					};
+				else
+					Object.keys(this.data).forEach((key) => {
+						this.formData[key] = this.data[key];
+					});
 			});
+			this.$emit("input", newValue);
 		},
 	},
 };

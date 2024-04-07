@@ -3,14 +3,14 @@
 		<div class="styles" v-html="pageStyles" />
 		<user-modal
 			:color="pageColor"
-			:dialog="dialogOpen"
-			:disableDialog="disableDialog"
+			v-model="dialogOpen"
+			:disableDialog="closeUserModal"
 			:add="dialogDataAdd"
 			:data="dialogData"
 			:roles="roles"
 		/>
-		<remove-confirm
-			:confirm="remove.confirm"
+		<user-remove-confirm
+			v-model="remove.confirm"
 			:disableDialog="
 				() => {
 					remove.confirm = false;
@@ -126,13 +126,13 @@
 import axios from "axios";
 
 import UserModal from "./user-modal.vue";
-import RemoveConfirm from "./remove-confirm.vue";
+import UserRemoveConfirm from "./user-remove-confirm.vue";
 
 export default {
 	name: "users-page",
 	components: {
 		UserModal,
-		RemoveConfirm,
+		UserRemoveConfirm,
 	},
 	data() {
 		const INCREMENT = 250;
@@ -238,7 +238,7 @@ export default {
 			this.dialogDataAdd = data === undefined;
 			this.dialogOpen = true;
 		},
-		disableDialog(refresh = false) {
+		closeUserModal(refresh = false) {
 			this.dialogOpen = false;
 			this.dialogData = {};
 			this.dialogDataAdd = false;

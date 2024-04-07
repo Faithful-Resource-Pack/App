@@ -91,8 +91,8 @@
 			</v-row>
 		</div>
 
-		<remove-confirm
-			:confirm="remove.confirm"
+		<addon-remove-confirm
+			v-model="remove.confirm"
 			:disableDialog="
 				() => {
 					remove.confirm = false;
@@ -107,12 +107,12 @@
 <script>
 import axios from "axios";
 
-import RemoveConfirm from "./remove-confirm.vue";
+import AddonRemoveConfirm from "./addon-remove-confirm.vue";
 
 export default {
 	name: "addon-submissions",
 	components: {
-		RemoveConfirm,
+		AddonRemoveConfirm,
 	},
 	data() {
 		return {

@@ -542,7 +542,7 @@ export default {
 				.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.startSearch(); // actualize shown data
+					this.startSearch(); // reset shown data
 				})
 				.catch((err) => {
 					this.$root.showSnackBar(err, "error");

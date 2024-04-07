@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="confirm" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{
 				$root.lang().database.titles.confirm_deletion
@@ -33,9 +33,9 @@
 import axios from "axios";
 
 export default {
-	name: "remove-confirm",
+	name: "user-remove-confirm",
 	props: {
-		confirm: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -50,6 +50,7 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			formData: {},
 		};
 	},
@@ -74,6 +75,14 @@ export default {
 					this.$root.showSnackBar(err, "error");
 					this.disableDialog(true);
 				});
+		},
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$emit("input", newValue);
 		},
 	},
 };

@@ -8,9 +8,9 @@
 			:useID="formData.id"
 			:data="pathModalData"
 		/>
-		<remove-confirm
+		<texture-remove-confirm
 			type="path"
-			:confirm="remove.confirm"
+			v-model="remove.confirm"
 			:disableDialog="closeAndUpdate"
 			:data="remove.data"
 		/>
@@ -112,16 +112,16 @@
 import axios from "axios";
 
 import PathModal from "./path-modal.vue";
-import RemoveConfirm from "./remove-confirm.vue";
+import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
 export default {
 	name: "use-modal",
 	components: {
 		PathModal,
-		RemoveConfirm,
+		TextureRemoveConfirm,
 	},
 	props: {
-		modalOpened: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -161,6 +161,7 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			formValid: false,
 			formData: {
 				edition: "",
@@ -274,22 +275,24 @@ export default {
 		},
 	},
 	watch: {
-		modalOpened(n, o) {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
 			this.$nextTick(() => {
-				if (!this.add) {
+				if (this.add) {
+					this.$refs.form.reset();
+					if ("id" in this.data) this.formData.id = this.data.id;
+					this.formData.paths = {};
+				} else {
 					this.formData.edition = this.data.edition;
 					this.formData.id = this.data.id;
 					this.formData.name = this.data.name;
 					this.formData.texture = this.data.texture;
 					this.getPaths(this.data.id);
-				} else {
-					this.$refs.form.reset();
-					if ("id" in this.data) this.formData.id = this.data.id;
-					this.formData.paths = {};
 				}
 			});
-
-			if (!n) this.disableDialog();
+			this.$emit("input", newValue);
 		},
 	},
 };

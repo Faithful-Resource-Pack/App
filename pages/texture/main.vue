@@ -20,7 +20,7 @@
 		/>
 		<modify-version-modal
 			:color="pageColor"
-			:dialog="modifyVersionModalOpen"
+			v-model="modifyVersionModalOpen"
 			:disableDialog="
 				() => {
 					modifyVersionModalOpen = false;
@@ -29,7 +29,7 @@
 		/>
 		<add-version-modal
 			:color="pageColor"
-			:dialog="addVersionModalOpen"
+			v-model="addVersionModalOpen"
 			:disableDialog="
 				() => {
 					addVersionModalOpen = false;
@@ -38,9 +38,9 @@
 			:editions="editions"
 			:versions="versions"
 		/>
-		<remove-confirm
+		<texture-remove-confirm
 			type="texture"
-			:confirm="remove.confirm"
+			v-model="remove.confirm"
 			:data="remove.data"
 			:disableDialog="
 				() => {
@@ -199,7 +199,7 @@ import TextureModal from "./texture-modal.vue";
 import NewTextureModal from "./new-texture-modal.vue";
 import ModifyVersionModal from "./modify-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
-import RemoveConfirm from "./remove-confirm.vue";
+import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
 export default {
 	name: "texture-page",
@@ -208,7 +208,7 @@ export default {
 		ModifyVersionModal,
 		NewTextureModal,
 		AddVersionModal,
-		RemoveConfirm,
+		TextureRemoveConfirm,
 	},
 	data() {
 		const INCREMENT = 250;

@@ -637,7 +637,7 @@ const app = new Vue({
 			// just mentioning refreshKey
 			this.refreshKey;
 
-			// rest of the function that actualy do the calculations and returns a value
+			// rest of the function that actually does the calculations and returns a value
 			return (path, raw = false) => {
 				let response = this.langs[this.selectedLang];
 

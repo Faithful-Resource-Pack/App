@@ -3,7 +3,7 @@
 		<div class="styles" v-html="pageStyles" />
 		<pack-modal
 			:color="pageColor"
-			:dialog="dialogOpen"
+			v-model="dialogOpen"
 			:disableDialog="disableDialog"
 			:data="dialogData"
 			:add="dialogDataAdd"
@@ -11,7 +11,7 @@
 		/>
 		<pack-remove-confirm
 			type="packs"
-			:confirm="remove.confirm"
+			v-model="remove.confirm"
 			:disableDialog="
 				() => {
 					remove.confirm = false;

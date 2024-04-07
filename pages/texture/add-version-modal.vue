@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="dialog" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{
 				$root.lang().database.titles.add_mc_version
@@ -53,7 +53,7 @@ import axios from "axios";
 export default {
 	name: "add-version-modal",
 	props: {
-		dialog: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -83,6 +83,7 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			form: {
 				edition: "",
 				version: "",
@@ -104,12 +105,12 @@ export default {
 		},
 	},
 	watch: {
-		dialog(newValue, oldValue) {
-			if (oldValue !== newValue && newValue === true) {
-				this.$nextTick(() => {
-					this.$refs.form.reset();
-				});
-			}
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$nextTick(() => this.$refs.form.reset());
+			this.$emit("input", newValue);
 		},
 	},
 };

@@ -1,9 +1,9 @@
 <template>
-	<v-dialog v-model="confirm" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
 			<v-card-title class="headline">Confirm deletion</v-card-title>
 			<v-card-text>
-				<v-form ref="form" lazy-validation>
+				<v-form lazy-validation>
 					<p>Do you want to delete this {{ type }}?</p>
 					<v-alert v-if="type == 'use'" type="warning" class="px-2" outlined dense>
 						{{ $root.lang("database.messages.deleting_use_will_delete_paths") }}
@@ -25,7 +25,7 @@
 					<ul v-else>
 						<template v-for="(key, index) in Object.keys(data).sort()">
 							<li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="index">
-								{{ key }} : {{ Array.isArray(data[key]) ? JSON.stringify(data[key]) : data[key] }}
+								{{ key }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
 							</li>
 						</template>
 					</ul>
@@ -33,8 +33,12 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog"> Cancel </v-btn>
-				<v-btn color="error darken-1" @click="deleteData"> Yes </v-btn>
+				<v-btn color="darken-1" text @click="disableDialog">
+					{{ $root.lang().global.btn.cancel }}
+				</v-btn>
+				<v-btn color="error darken-1" @click="deleteData">
+					{{ $root.lang().global.btn.yes }}
+				</v-btn>
 			</v-card-actions>
 		</v-card>
 	</v-dialog>
@@ -44,9 +48,9 @@
 import axios from "axios";
 
 export default {
-	name: "remove-confirm",
+	name: "texture-remove-confirm",
 	props: {
-		confirm: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -69,6 +73,7 @@ export default {
 	},
 	data() {
 		return {
+			modalOpened: false,
 			formData: {},
 			deletePaths: true,
 			paths: {},
@@ -126,6 +131,14 @@ export default {
 							this.$root.showSnackBar(err, "error");
 						});
 			}
+		},
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$emit("input", newValue);
 		},
 	},
 };

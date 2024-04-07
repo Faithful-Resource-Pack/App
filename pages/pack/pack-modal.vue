@@ -1,8 +1,8 @@
 <template>
-	<v-dialog v-model="dialog" content-class="colored" max-width="600">
+	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<submission-modal
 			:color="color"
-			:dialog="submissionOpen"
+			v-model="submissionOpen"
 			:disableDialog="disableSubmission"
 			:data="submissionData"
 			:add="submissionAdd"
@@ -11,7 +11,7 @@
 		/>
 		<pack-remove-confirm
 			type="submissions"
-			:confirm="remove.confirm"
+			v-model="remove.confirm"
 			:disableDialog="
 				() => {
 					remove.confirm = false;
@@ -152,7 +152,7 @@ export default {
 		PackRemoveConfirm,
 	},
 	props: {
-		dialog: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
@@ -316,23 +316,21 @@ export default {
 		},
 	},
 	watch: {
-		dialog(newValue) {
-			if (newValue === true) {
-				this.$nextTick(() => {
-					if (this.add) this.$refs.form.reset();
-
-					if (!this.add) {
-						for (const [k, v] of Object.entries(this.data)) {
-							if (this.formData[k] === undefined) continue;
-							this.formData[k] = v;
-						}
-						this.getSubmission(this.data.id);
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$nextTick(() => {
+				if (this.add) this.$refs.form.reset();
+				else {
+					for (const [k, v] of Object.entries(this.data)) {
+						if (this.formData[k] === undefined) continue;
+						this.formData[k] = v;
 					}
-				});
-			} else {
-				// Fixes bug where click outside changes dialog to false but not dialogOpen to false
-				this.disableDialog();
-			}
+					this.getSubmission(this.data.id);
+				}
+			});
+
 			this.$emit("input", newValue);
 		},
 	},
