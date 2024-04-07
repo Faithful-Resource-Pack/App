@@ -27,21 +27,6 @@ import JSONBooleanEditor from "./json-boolean-editor.vue";
 import JSONNullEditor from "./json-null-editor.vue";
 import JSONArrayEditor from "./json-array-editor.vue";
 
-function deepEqual(x, y) {
-	if (x === y) return true;
-	if (typeof x == "object" && x != null && typeof y == "object" && y != null) {
-		if (Object.keys(x).length != Object.keys(y).length) return false;
-
-		for (const prop in x) {
-			if (y.hasOwnProperty(prop)) {
-				if (!deepEqual(x[prop], y[prop])) return false;
-			} else return false;
-		}
-		return true;
-	}
-	return false;
-}
-
 export default {
 	name: "json-editor",
 	components: {
@@ -80,7 +65,7 @@ export default {
 	watch: {
 		newValue: {
 			handler(n, o) {
-				if (deepEqual(n, o)) return;
+				if (Object.equals(n, o)) return;
 				this.$forceUpdate();
 				this.$emit("input", n);
 			},
@@ -88,7 +73,7 @@ export default {
 		},
 		value: {
 			handler(n, o) {
-				if (deepEqual(n, o)) return;
+				if (Object.equals(n, o)) return;
 				this.newValue = n;
 			},
 			deep: true,

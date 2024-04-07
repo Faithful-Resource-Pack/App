@@ -22,7 +22,6 @@ declare module "vue/types/vue" {
 		readonly apiURL: string;
 		readonly apiOptions: AxiosRequestConfig;
 		readonly user: DiscordUser;
-		readonly urlRegex: RegExp;
 		readonly isUserLogged: boolean;
 		readonly isAdmin: boolean;
 		readonly isDark: boolean;
@@ -65,11 +64,19 @@ declare global {
 	}
 
 	interface String {
+		/** Converts all words in a string to title case. */
 		toTitleCase(): string;
+	}
+
+	interface StringConstructor {
+		readonly urlRegex: RegExp;
 	}
 
 	interface ObjectConstructor {
 		isObject(arg: any): arg is Object;
+		/** Deep merge two objects (used for lang) */
 		merge(target: Object, ...sources: Object[]): Object;
+		/** Check if two objects are exactly equal */
+		equals(x: Object, y: Object): boolean;
 	}
 }

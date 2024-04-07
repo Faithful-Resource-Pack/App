@@ -244,7 +244,7 @@ export default {
 			this.remove.confirm = true;
 		},
 		validURL(str) {
-			return this.$root.urlRegex.test(str);
+			return String.urlRegex.test(str);
 		},
 		addSubmissionData(data) {
 			if (!this.submissionAdd) return;

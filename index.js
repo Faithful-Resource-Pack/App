@@ -102,46 +102,57 @@ window.updatePageStyles = (cmp) => {
  * ADDED METHODS
  */
 
-Object.defineProperty(Object.prototype, "isObject", {
-	/**
-	 * Test if an object is an object
-	 * @param {any} item to be tested
-	 * @returns {Boolean} true if the item is a JS Object
-	 */
-	value: (item) => item && typeof item === "object" && !Array.isArray(item),
-});
+Object.isObject = (item) => item && typeof item === "object" && !Array.isArray(item);
 
-Object.defineProperty(Object.prototype, "merge", {
-	/**
-	 * Deep merge two objects (used for lang)
-	 * @param {Object} target
-	 * @param {Object[]} sources
-	 */
-	value(target, ...sources) {
-		if (!sources.length) return target;
-		const source = sources.shift();
+Object.merge = (target, ...sources) => {
+	if (!sources.length) return target;
+	const source = sources.shift();
 
-		if (Object.isObject(target) && Object.isObject(source)) {
-			for (const key in source) {
-				if (Object.isObject(source[key])) {
-					if (!target[key]) Object.assign(target, { [key]: {} });
-					Object.merge(target[key], source[key]);
-				} else Object.assign(target, { [key]: source[key] });
-			}
+	if (Object.isObject(target) && Object.isObject(source)) {
+		for (const key in source) {
+			if (Object.isObject(source[key])) {
+				if (!target[key]) Object.assign(target, { [key]: {} });
+				Object.merge(target[key], source[key]);
+			} else Object.assign(target, { [key]: source[key] });
 		}
+	}
 
-		return Object.merge(target, ...sources);
-	},
-});
+	return Object.merge(target, ...sources);
+};
 
-Object.defineProperty(String.prototype, "toTitleCase", {
-	/** Converts all words in a string to title case. */
-	value() {
-		return this.split(/_| /g)
-			.map((word) => word[0].toUpperCase() + word.slice(1))
-			.join(" ");
-	},
-});
+Object.equals = (x, y) => {
+	// primitives
+	if (x === y) return true;
+
+	// if one is an object and one is an array they can't be equal
+	if (!(Object.isObject(x) && Object.isObject(y)) && !(Array.isArray(x) && Array.isArray(y)))
+		return false;
+
+	// objects have to be same length
+	if (Object.keys(x).length != Object.keys(y).length) return false;
+
+	// if any property doesn't exist or isn't deep equal itself it can't be the same
+	if (Object.values(x).some((prop) => !y.hasOwnProperty(prop) || !Object.equals(x[prop], y[prop])))
+		return false;
+
+	return true;
+};
+
+String.prototype.toTitleCase = function () {
+	return this.split(/-|_| /g)
+		.map((word) => word[0].toUpperCase() + word.slice(1))
+		.join(" ");
+};
+
+String.urlRegex = new RegExp(
+	"^(https?:\\/\\/)?" + // protocol
+		"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+		"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+		"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
+		"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+		"(\\#[-a-z\\d_]*)?$", // fragment locator
+	"i",
+);
 
 /**
  * LANGUAGES
@@ -368,12 +379,9 @@ const app = new Vue({
 	router,
 	el: "#app",
 	data() {
-		const discordUser = discordUserStore();
-		discordUser.params(import.meta.env.DISCORD_USER_URL || undefined);
-
 		return {
 			refreshKey: 0,
-			discordUser,
+			discordUser: discordUserStore(),
 			discordAuth: discordAuthStore(),
 			appUser: appUserStore(),
 			badges: {},
@@ -388,13 +396,13 @@ const app = new Vue({
 				width: window.innerWidth,
 				height: window.innerHeight,
 			},
-			tabs: ALL_TABS.map((t) => {
-				t.subtabs = t.subtabs.map((s) => {
+			tabs: ALL_TABS.map((tab) => ({
+				...tab,
+				subtabs: tab.subtabs.map((s) => {
 					s.to = s.routes[0].path;
 					return s;
-				});
-				return t;
-			}),
+				}),
+			})),
 			bg: "transparent",
 			snackbar: {
 				show: false,
@@ -586,18 +594,6 @@ const app = new Vue({
 			}
 
 			return res;
-		},
-		// url validation is used often enough that having it global makes sense
-		urlRegex() {
-			return new RegExp(
-				"^(https?:\\/\\/)?" + // protocol
-					"((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-					"((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-					"(\\:\\d+)?(\\/[-a-z\\d%_.~+@]*)*" + // port and path
-					"(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-					"(\\#[-a-z\\d_]*)?$", // fragment locator
-				"i",
-			);
 		},
 		isDesktop() {
 			return this.$vuetify.breakpoint.lgAndUp;

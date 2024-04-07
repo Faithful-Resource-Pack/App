@@ -269,7 +269,7 @@ export default {
 			return true;
 		},
 		validURL(str) {
-			return this.$root.urlRegex.test(str);
+			return String.urlRegex.test(str);
 		},
 		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);

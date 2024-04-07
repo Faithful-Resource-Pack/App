@@ -643,7 +643,7 @@ export default {
 			if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio);
 		},
 		validURL(str) {
-			return this.$root.urlRegex.test(str);
+			return String.urlRegex.test(str);
 		},
 		verifyImage(file, validateImage) {
 			if (validateImage === undefined) validateImage = this.validateRatio;
