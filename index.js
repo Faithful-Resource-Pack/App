@@ -199,13 +199,17 @@ const MENU_KEY = "menu_key";
 const MENU_DEFAULT = false;
 
 /** @type {import("vue-router").RouteConfig[]} */
-const missingRoute = { path: "*", name: "missing-route", component: MissingPage };
+const missingRoute = { path: "*", name: "404", component: MissingPage };
 
 const router = new VueRouter({
 	mode: "history",
 });
 
 router.beforeEach((to, _from, next) => {
+	Vue.nextTick(() => {
+		if (to.name) document.title = `${to.name} | Faithful Web Application`;
+		else document.title = "Faithful Web Application";
+	});
 	// redirect to dashboard if base url
 	if (to.fullPath === "/") {
 		next("/dashboard");
@@ -231,20 +235,23 @@ const ALL_TABS = [
 				icon: "mdi-view-dashboard",
 				label: "dashboard",
 				unlogged: true,
+				// no name for dashboard (default page)
 				routes: [{ path: "/dashboard", component: DashboardPage }],
 			},
 			{
 				enabled: true,
 				icon: "mdi-account",
 				label: "profile",
-				routes: [{ path: "/profile", component: ProfilePage }],
+				routes: [{ path: "/profile", component: ProfilePage, name: "Profile" }],
 			},
 			{
 				enabled: true,
 				icon: "mdi-chart-timeline-variant",
 				label: "statistics",
 				unlogged: true,
-				routes: [{ path: "/contributions-stats", component: ContributorStatsPage }],
+				routes: [
+					{ path: "/contributions-stats", component: ContributorStatsPage, name: "Statistics" },
+				],
 			},
 			{
 				enabled: true,
@@ -252,8 +259,16 @@ const ALL_TABS = [
 				label: "gallery",
 				unlogged: true,
 				routes: [
-					{ path: "/gallery", redirect: "/gallery/java/faithful_32x/latest/all/" },
-					{ path: "/gallery/:edition/:pack/:version/:tag/:search*", component: GalleryPage },
+					{
+						path: "/gallery",
+						redirect: "/gallery/java/faithful_32x/latest/all/",
+						name: "Gallery",
+					},
+					{
+						path: "/gallery/:edition/:pack/:version/:tag/:search*",
+						component: GalleryPage,
+						name: "Gallery",
+					},
 				],
 			},
 		],
@@ -265,15 +280,21 @@ const ALL_TABS = [
 				enabled: true,
 				icon: "mdi-folder-multiple",
 				label: "submissions",
-				routes: [{ path: "/addons/submissions", component: AddonSubmissionsPage }],
+				routes: [
+					{
+						path: "/addons/submissions",
+						component: AddonSubmissionsPage,
+						name: "Add-on Submissions",
+					},
+				],
 			},
 			{
 				enabled: true,
 				icon: "mdi-upload",
 				label: "upload",
 				routes: [
-					{ path: "/addons/new", component: NewAddonPage },
-					{ path: "/addons/edit/:id", component: EditAddonPage },
+					{ path: "/addons/new", component: NewAddonPage, name: "New Add-on" },
+					{ path: "/addons/edit/:id", component: EditAddonPage, name: "Edit Add-on" },
 				],
 			},
 		],
@@ -286,7 +307,7 @@ const ALL_TABS = [
 				icon: "mdi-puzzle",
 				label: "addons",
 				badge: "/addons/pending",
-				routes: [{ path: "/review/addons", component: ReviewAddonsPage }],
+				routes: [{ path: "/review/addons", component: ReviewAddonsPage, name: "Add-on Review" }],
 			},
 			{
 				enabled: true,
@@ -296,6 +317,7 @@ const ALL_TABS = [
 					{
 						path: "/review/translations",
 						component: ReviewTranslationsPage,
+						name: "Translations",
 						beforeEnter() {
 							window.location.href = "https://translate.faithfulpack.net/";
 						},
@@ -312,15 +334,15 @@ const ALL_TABS = [
 				enabled: true,
 				icon: "mdi-file-multiple",
 				label: "contributions",
-				routes: [{ path: "/contributions", component: ContributionPage }],
+				routes: [{ path: "/contributions", component: ContributionPage, name: "Contributions" }],
 			},
 			{
 				enabled: true,
 				icon: "mdi-account-multiple",
 				label: "users",
 				routes: [
-					{ path: "/users", redirect: "/users/all" },
-					{ path: "/users/:role?/:name*", component: UsersPage },
+					{ path: "/users", redirect: "/users/all", name: "Users" },
+					{ path: "/users/:role?/:name*", component: UsersPage, name: "Users" },
 				],
 			},
 			{
@@ -328,8 +350,8 @@ const ALL_TABS = [
 				icon: "mdi-texture",
 				label: "textures",
 				routes: [
-					{ path: "/textures", redirect: "/textures/all" },
-					{ path: "/textures/:tag?/:name*", component: TexturePage },
+					{ path: "/textures", redirect: "/textures/all", name: "Textures" },
+					{ path: "/textures/:tag?/:name*", component: TexturePage, name: "Textures" },
 				],
 			},
 			{
@@ -337,15 +359,15 @@ const ALL_TABS = [
 				icon: "mdi-cube",
 				label: "packs",
 				routes: [
-					{ path: "/packs", redirect: "/packs/all" },
-					{ path: "/packs/:tag?/", component: PackPage },
+					{ path: "/packs", redirect: "/packs/all", name: "Packs" },
+					{ path: "/packs/:tag?/", component: PackPage, name: "Packs" },
 				],
 			},
 			{
 				enabled: true,
 				icon: "mdi-cog",
 				label: "settings",
-				routes: [{ path: "/settings", component: SettingsPage }],
+				routes: [{ path: "/settings", component: SettingsPage, name: "Settings" }],
 			},
 		],
 		roles: ["Developer", "Administrator"],
