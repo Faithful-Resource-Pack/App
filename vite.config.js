@@ -20,6 +20,23 @@ export default defineConfig(({ mode }) => {
 		},
 		build: {
 			target: "esnext",
+			chunkSizeWarningLimit: 1000,
+			rollupOptions: {
+				output: {
+					manualChunks: {
+						vue_core: [
+							"vue",
+							"vue-router",
+							"vue-calendar-heatmap",
+							"vue-prism-editor",
+							"vue-tippy",
+						],
+						// biggest dependencies get separate files
+						vue_graph: ["vue-graph"],
+						vuetify: ["vuetify"],
+					},
+				},
+			},
 		},
 		resolve: {
 			alias: {
