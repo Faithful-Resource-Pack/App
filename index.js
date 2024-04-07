@@ -207,7 +207,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, _from, next) => {
 	Vue.nextTick(() => {
-		if (to.name) document.title = `${to.name} | Faithful Web Application`;
+		if (to.name) document.title = `${to.name} - Faithful Web Application`;
 		else document.title = "Faithful Web Application";
 	});
 	// redirect to dashboard if base url
