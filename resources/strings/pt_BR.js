@@ -364,7 +364,7 @@ export default {
 			resolution: "Resolução",
 		},
 		modal: {
-			items: {
+			tabs: {
 				information: "informações",
 				authors: "autores",
 				animated: "animadas",
@@ -375,7 +375,7 @@ export default {
 				uses: "Usos",
 				paths: "Caminhos",
 			},
-			tabs: {
+			data: {
 				date: "Data",
 				authors: "Autor(es)",
 				id: "ID",

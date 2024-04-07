@@ -401,7 +401,7 @@ export default {
 		},
 		all: "vše",
 		modal: {
-			items: {
+			tabs: {
 				information: "informace",
 				authors: "autoři",
 				animated: "animace",
@@ -450,7 +450,7 @@ export default {
 				uses: "Využití",
 				paths: "Cesty",
 			},
-			tabs: {
+			data: {
 				date: "Datum",
 				authors: "Autor/Autoři",
 				id: "ID",
