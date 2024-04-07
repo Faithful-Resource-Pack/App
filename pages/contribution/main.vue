@@ -14,8 +14,8 @@
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
-				<v-btn block color="primary" @click="() => openAdd()">
-					{{ $root.lang("database.subtitles.add_manually") }}
+				<v-btn block color="primary" @click="openAdd()">
+					{{ $root.lang("database.subtitles.add_manually") }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>
