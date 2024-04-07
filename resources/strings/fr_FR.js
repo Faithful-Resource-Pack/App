@@ -477,7 +477,7 @@ export default {
 				tags: "Tags",
 				use_id: "ID de l'utilisation",
 				use_name: "Nom de l'utilisation",
-				editions: "Édition",
+				edition: "Édition",
 				texture_id: "ID de la texture",
 				path_id: "ID du chemin",
 				resource_pack_path: "Chemin dans le Resource Pack",

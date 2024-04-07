@@ -458,7 +458,7 @@ export default {
 				tags: "Kategorie",
 				use_id: "ID využití",
 				use_name: "Jméno využití",
-				editions: "Edice",
+				edition: "Edice",
 				texture_id: "ID textury",
 				path_id: "ID cesty",
 				resource_pack_path: "Cesta v resource packu",

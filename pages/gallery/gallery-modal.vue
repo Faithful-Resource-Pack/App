@@ -60,13 +60,13 @@
 					<v-tabs id="info-tabs" v-model="selectedTab" :show-arrows="false">
 						<v-tabs-slider />
 
-						<v-tab v-for="tab in tabs" :key="item" style="text-transform: uppercase">
+						<v-tab v-for="tab in tabs" :key="tab" style="text-transform: uppercase">
 							{{ tab }}
 						</v-tab>
 					</v-tabs>
 
 					<v-tabs-items v-model="selectedTab" class="info-table">
-						<v-tab-item v-for="tab in tabs" :key="item">
+						<v-tab-item v-for="tab in tabs" :key="tab">
 							<!-- use template for vertical layout -->
 							<template v-if="tab === tabs.information">
 								<template v-for="category in textureCategories">
@@ -83,22 +83,29 @@
 									</div>
 								</template>
 							</template>
-							<!-- use div for horizontal layout -->
-							<div v-if="tab === tabs.authors" class="double_table">
-								<template v-for="category in authorCategories">
-									<div style="padding: 15px">
+							<template v-if="tab === tabs.authors" class="double_table">
+								<template v-for="{ category, packs } in authorCategories">
+									<div class="gallery-info">
 										<h2 style="text-transform: capitalize">{{ category }}</h2>
-										<v-data-table
-											dense
-											:headers="getHeaders(category)"
-											:items="getItems(category)"
-											class="elevation-1"
-											style="margin-top: 10px"
-											hide-default-footer
-										/>
+										<!-- use div for horizontal layout -->
+										<div class="double_table">
+											<div v-for="pack in packs">
+												<div class="title text-button text--secondary">
+													{{ packToName[pack] }}
+												</div>
+												<v-data-table
+													dense
+													:headers="getHeaders(pack)"
+													:items="getItems(pack)"
+													class="elevation-1"
+													style="margin-top: 10px"
+													hide-default-footer
+												/>
+											</div>
+										</div>
 									</div>
 								</template>
-							</div>
+							</template>
 						</v-tab-item>
 					</v-tabs-items>
 				</div>
@@ -152,7 +159,20 @@ export default {
 			selectedTab: null,
 			tabs: this.$root.lang().gallery.modal.tabs,
 			textureCategories: ["texture", "uses", "paths"],
-			authorCategories: ["32x", "64x"], // TODO: switch for pack modal
+			authorCategories: [
+				{
+					category: "faithful",
+					packs: ["faithful_32x", "faithful_64x"],
+				},
+				{
+					category: "classic faithful jappa",
+					packs: ["classic_faithful_32x", "classic_faithful_64x"],
+				},
+				{
+					category: "classic faithful programmer art",
+					packs: ["classic_faithful_32x_progart"],
+				},
+			],
 			opened: false,
 		};
 	},
@@ -174,26 +194,23 @@ export default {
 		},
 		discordIDtoName(d) {
 			return this.contributors[d]
-				? this.contributors[d].username
-					? this.contributors[d].username
-					: this.$root.lang().gallery.error_message.user_anonymous
+				? this.contributors[d].username || this.$root.lang().gallery.error_message.user_anonymous
 				: this.$root.lang().gallery.error_message.user_not_found;
 		},
 		timestampToDate(t) {
 			return moment(new Date(t)).format("ll");
 		},
 		getItems(item) {
+			if (this.packs.includes(item))
+				return this.textureObj.contributions
+					.filter((el) => item === el.pack)
+					.sort((a, b) => b.date - a.date)
+					.map((el) => ({
+						id: el.id,
+						date: this.timestampToDate(el.date),
+						contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
+					}));
 			switch (item) {
-				case this.authorCategories[0]:
-				case this.authorCategories[1]:
-					return this.textureObj.contributions
-						.filter((el) => el.resolution === parseInt(item, 10))
-						.sort((a, b) => b.date - a.date)
-						.map((el) => ({
-							date: this.timestampToDate(el.date),
-							pack: this.packToName[el.pack],
-							contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
-						}));
 				case this.textureCategories[0]:
 					return [
 						{
@@ -203,7 +220,6 @@ export default {
 					];
 				case this.textureCategories[1]:
 					return Object.values(this.textureObj[item]);
-
 				case this.textureCategories[2]:
 					return this.textureObj[item].map((path) => ({
 						...path,
@@ -212,23 +228,22 @@ export default {
 			}
 		},
 		getHeaders(item) {
+			if (this.packs.includes(item))
+				return [
+					{
+						text: this.$root.lang().gallery.modal.data.contribution_id,
+						value: "id",
+					},
+					{
+						text: this.$root.lang().gallery.modal.data.date,
+						value: "date",
+					},
+					{
+						text: this.$root.lang().gallery.modal.data.authors,
+						value: "contributors",
+					},
+				];
 			switch (item) {
-				case this.authorCategories[0]:
-				case this.authorCategories[1]:
-					return [
-						{
-							text: this.$root.lang().gallery.modal.data.date,
-							value: "date",
-						},
-						{
-							text: this.$root.lang().gallery.modal.data.pack,
-							value: "pack",
-						},
-						{
-							text: this.$root.lang().gallery.modal.data.authors,
-							value: "contributors",
-						},
-					];
 				case this.textureCategories[0]:
 					return [
 						{
@@ -258,7 +273,7 @@ export default {
 							value: "name",
 						},
 						{
-							text: this.$root.lang().gallery.modal.data.editions,
+							text: this.$root.lang().gallery.modal.data.edition,
 							value: "edition",
 						},
 						{
@@ -296,6 +311,9 @@ export default {
 				uses: this.$root.lang().gallery.modal.info.uses,
 				paths: this.$root.lang().gallery.modal.info.paths,
 			};
+		},
+		packs() {
+			return this.authorCategories.map((v) => v.packs).flat();
 		},
 		grouped() {
 			const result = [];

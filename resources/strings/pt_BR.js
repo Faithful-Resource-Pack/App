@@ -383,7 +383,7 @@ export default {
 				tags: "Tags/Tipos",
 				use_id: "ID do uso",
 				use_name: "Nome do uso",
-				editions: "Edição",
+				edition: "Edição",
 				texture_id: "ID da textura",
 				path_id: "ID do caminho",
 				resource_pack_path: "Caminho do pacote de recursos",

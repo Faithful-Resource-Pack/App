@@ -777,10 +777,11 @@ code {
 .double_table {
 	display: flex;
 	flex-direction: row;
+	gap: 30px;
 }
 
 .double_table > div {
-	width: 50%;
+	flex-grow: 1;
 }
 
 .go_up_btn {
