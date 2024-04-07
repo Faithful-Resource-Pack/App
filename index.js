@@ -262,7 +262,6 @@ const ALL_TABS = [
 					{
 						path: "/gallery",
 						redirect: "/gallery/java/faithful_32x/latest/all/",
-						name: "Gallery",
 					},
 					{
 						path: "/gallery/:edition/:pack/:version/:tag/:search*",
@@ -341,7 +340,7 @@ const ALL_TABS = [
 				icon: "mdi-account-multiple",
 				label: "users",
 				routes: [
-					{ path: "/users", redirect: "/users/all", name: "Users" },
+					{ path: "/users", redirect: "/users/all" },
 					{ path: "/users/:role?/:name*", component: UsersPage, name: "Users" },
 				],
 			},
@@ -350,7 +349,7 @@ const ALL_TABS = [
 				icon: "mdi-texture",
 				label: "textures",
 				routes: [
-					{ path: "/textures", redirect: "/textures/all", name: "Textures" },
+					{ path: "/textures", redirect: "/textures/all" },
 					{ path: "/textures/:tag?/:name*", component: TexturePage, name: "Textures" },
 				],
 			},
@@ -359,7 +358,7 @@ const ALL_TABS = [
 				icon: "mdi-cube",
 				label: "packs",
 				routes: [
-					{ path: "/packs", redirect: "/packs/all", name: "Packs" },
+					{ path: "/packs", redirect: "/packs/all" },
 					{ path: "/packs/:tag?/", component: PackPage, name: "Packs" },
 				],
 			},
