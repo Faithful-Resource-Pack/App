@@ -33,3 +33,16 @@ pnpm build
 ```
 
 You can preview the production build with `pnpm preview`.
+
+If you're using Apache to serve the site, make sure to set `FallbackResource` to point to `./dist/index.html` so Vue routing works properly.
+
+```xml
+<VirtualHost *:80>
+  DocumentRoot /your/site/path/here/dist
+  FallbackResource /index.html
+</VirtualHost>
+```
+
+## API Reference:
+
+This project is heavily developed around our public API. Check out our API documentation at https://api.faithfulpack.net/docs for more information about endpoints and making requests.
