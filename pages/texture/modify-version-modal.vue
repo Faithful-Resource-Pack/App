@@ -37,10 +37,10 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog">
+				<v-btn color="red darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
-				<v-btn color="error darken-1" @click="send">
+				<v-btn color="darken-1" text @click="send">
 					{{ $root.lang().global.btn.save }}
 				</v-btn>
 			</v-card-actions>
