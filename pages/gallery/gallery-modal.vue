@@ -100,6 +100,7 @@
 													class="elevation-1"
 													style="margin-top: 10px"
 													hide-default-footer
+													:no-data-text="$root.lang().gallery.modal.no_contributions"
 												/>
 											</div>
 										</div>

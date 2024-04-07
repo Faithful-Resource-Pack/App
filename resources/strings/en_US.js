@@ -485,6 +485,7 @@ export default {
 		},
 		all: "All",
 		modal: {
+			no_contributions: "No contributions found",
 			tabs: {
 				information: "information",
 				authors: "authors",
