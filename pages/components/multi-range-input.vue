@@ -118,15 +118,14 @@ export default {
 			return ranges.map((r) => r.split(/\s*-\s*/).map((v) => Number.parseInt(v)));
 		},
 		transformToGeneratedRange(ranges) {
-			let res = [];
+			const res = [];
 			ranges.forEach((range) => {
 				if (range.length === 1) res.push(range[0]);
 				else {
 					const min = Math.min(range[1], range[0]);
-					res = [
-						...res,
+					res.push(
 						...Array.from(new Array(Math.abs(range[1] - range[0]) + 1).keys()).map((n) => n + min),
-					];
+					);
 				}
 			});
 

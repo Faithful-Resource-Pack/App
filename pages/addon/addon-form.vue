@@ -544,7 +544,7 @@ export default {
 			return this.carouselError;
 		},
 		submittedData() {
-			let res = Object.merge({}, this.submittedForm);
+			const res = Object.merge({}, this.submittedForm);
 
 			res.options.tags = [...res.selectedEditions, ...res.selectedRes];
 			delete res.selectedEditions;
