@@ -2,17 +2,13 @@
 	<v-autocomplete
 		v-bind="$attrs"
 		v-model="content"
-		:items="contributorList"
-		:loading="contributors.length == 0 || isSearching"
+		:items="userList"
+		:loading="users.length == 0 || isSearching"
 		:search-input.sync="search"
 		item-text="username"
 		item-value="id"
-		:placeholder="$root.lang().database.labels.one_contributor"
 		multiple
 		:dense="dense"
-		:error-messages="
-			content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')] : []
-		"
 		chips
 	>
 		<!-- SELECTED THINGY -->
@@ -53,9 +49,14 @@
 			</template>
 			<template v-else>
 				<v-list-item-content>
-					<v-list-item-title>{{
-						data.item.username || $root.lang().database.labels.anonymous + ` (${data.item.id})`
-					}}</v-list-item-title>
+					<v-list-item-title>
+						{{
+							data.item.username || $root.lang().database.labels.anonymous + ` (${data.item.id})`
+						}}
+					</v-list-item-title>
+					<v-list-item-subtitle v-if="data.item.contributions">
+						{{ `${data.item.contributions} contribution${data.item.contributions > 1 ? "s" : ""}` }}
+					</v-list-item-subtitle>
 				</v-list-item-content>
 				<v-list-item-avatar :style="{ background: data.item.uuid ? 'transparent' : '#4e4e4e' }">
 					<template v-if="data.item.uuid">
@@ -82,7 +83,7 @@ const SEARCH_DELAY = 300;
 export default {
 	name: "user-select",
 	props: {
-		contributors: {
+		users: {
 			required: true,
 			type: Array,
 		},
@@ -101,8 +102,8 @@ export default {
 		},
 	},
 	computed: {
-		contributorList() {
-			return [...this.contributors, ...Object.values(this.loadedContributors)];
+		userList() {
+			return [...this.users, ...Object.values(this.loadedUsers)];
 		},
 	},
 	data() {
@@ -112,7 +113,7 @@ export default {
 			isSearching: false,
 			searchTimeout: undefined,
 			previousSearches: [],
-			loadedContributors: {},
+			loadedUsers: {},
 		};
 	},
 	watch: {
@@ -141,9 +142,9 @@ export default {
 				this.startSearch(val);
 			}, SEARCH_DELAY);
 		},
-		loadedContributors: {
+		loadedUsers: {
 			handler(n) {
-				window.eventBus.$emit("newContributor", this.contributorList);
+				window.eventBus.$emit("newutor", this.userList);
 			},
 			deep: true,
 		},
@@ -172,17 +173,13 @@ export default {
 			this.isSearching = true;
 
 			axios
-				.get(
-					// we can assume contribution editors are admin
-					`${this.$root.apiURL}/users/role/all/${val}`,
-					this.$root.apiOptions,
-				)
+				.get(`${this.$root.apiURL}/users/role/all/${val}`)
 				.then((res) => {
 					const results = res.data;
 					results.forEach((result) => {
 						// in case some clever guy forgot their username or uuid or whatever
 						Vue.set(
-							this.loadedContributors,
+							this.loadedUsers,
 							result.id,
 							Object.merge(
 								{

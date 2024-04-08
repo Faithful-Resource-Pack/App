@@ -43,84 +43,18 @@
 		<h2 class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</h2>
 		<v-row align="stretch" class="my-0">
 			<v-col cols="12" sm="6" class="pt-0 py-sm-0">
-				<v-autocomplete
-					v-model="contributors_selected"
-					:items="contributors"
-					:loading="contributors.length == 0"
-					item-text="username"
-					item-value="id"
-					outlined
-					:label="$root.lang('database.subtitles.user')"
+				<user-select
 					persistent-placeholder
+					:label="$root.lang('database.subtitles.user')"
+					outlined
+					v-model="selectedContributors"
+					:users="contributors"
 					:placeholder="$root.lang().database.labels.select_user"
-					multiple
 					hide-details
 					class="my-0 pt-0"
 					small-chips
 					clearable
-				>
-					<!-- SELECTED THINGY -->
-					<template v-slot:selection="data">
-						<v-chip
-							:key="data.item.id"
-							v-bind="data.attrs"
-							:input-value="data.selected"
-							:disabled="data.disabled"
-							close
-							@click:close="remove(data.item.id)"
-						>
-							<v-avatar :class="{ accent: data.item.uuid == undefined, 'text--white': true }" left>
-								<template v-if="data.item.uuid != undefined">
-									<v-img
-										eager
-										:src="`https://visage.surgeplay.com/face/24/${data.item.uuid || 'X-Alex'}`"
-										:alt="data.item.username.slice(0, 1).toUpperCase()"
-									/>
-								</template>
-								<template v-else>
-									{{ (data.item.username || "" + data.item.id).slice(0, 1) }}
-								</template>
-							</v-avatar>
-							{{ data.item.username || data.item.id }}
-						</v-chip>
-					</template>
-
-					<!-- LIST ITEM PART -->
-					<template v-slot:item="data">
-						<template
-							v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'"
-						>
-							<v-list-item-content>{{ data.item }}</v-list-item-content>
-						</template>
-						<template v-else>
-							<v-list-item-content>
-								<v-list-item-title>{{
-									data.item.username ||
-									$root.lang().database.labels.anonymous + ` (${data.item.id})`
-								}}</v-list-item-title>
-								<v-list-item-subtitle
-									v-if="data.item.contributions"
-									v-html="
-										data.item.contributions +
-										' contribution' +
-										(data.item.contributions > 1 ? 's' : '')
-									"
-								/>
-							</v-list-item-content>
-							<v-list-item-avatar
-								:style="{ background: data.item.uuid ? 'transparent' : '#4e4e4e' }"
-							>
-								<template v-if="data.item.uuid">
-									<v-img
-										eager
-										:src="`https://visage.surgeplay.com/head/48/${data.item.uuid || 'X-Alex'}`"
-									/>
-								</template>
-								<div v-else>{{ (data.item.username || "" + data.item.id).slice(0, 1) }}</div>
-							</v-list-item-avatar>
-						</template>
-					</template>
-				</v-autocomplete>
+				/>
 			</v-col>
 			<v-col cols="12" sm="6" class="pb-0 py-sm-0">
 				<v-text-field
@@ -234,10 +168,12 @@ import axios from "axios";
 import moment from "moment";
 
 import ContributionModal from "./contribution-modal.vue";
+import UserSelect from "../components/user-select.vue";
 
 export default {
 	components: {
 		ContributionModal,
+		UserSelect,
 	},
 	name: "contribution-page",
 	data() {
@@ -251,7 +187,7 @@ export default {
 			all_packs: "all",
 			all_packs_display: "All",
 			contributors: [],
-			contributors_selected: [],
+			selectedContributors: [],
 			packToCode: {},
 			search: {
 				searching: false,
@@ -271,7 +207,7 @@ export default {
 		},
 		idsToQuery() {
 			return {
-				ids: this.contributors_selected.join("-"),
+				ids: this.selectedContributors.join("-"),
 			};
 		},
 		searchDisabled() {
@@ -281,7 +217,7 @@ export default {
 			const result =
 				this.search.searching ||
 				resSelected ||
-				(this.contributors_selected.length === 0 && invalidTextSearch);
+				(this.selectedContributors.length === 0 && invalidTextSearch);
 			return result;
 		},
 		listColumns() {
@@ -361,8 +297,8 @@ export default {
 				.catch(console.trace);
 		},
 		remove(id) {
-			const index = this.contributors_selected.indexOf(id);
-			if (index >= 0) this.contributors_selected.splice(index, 1);
+			const index = this.selectedContributors.indexOf(id);
+			if (index >= 0) this.selectedContributors.splice(index, 1);
 		},
 		addPack(name, value, selected = false) {
 			this.form.packs.push({
@@ -383,7 +319,7 @@ export default {
 				axios.get(
 					`${this.$root.apiURL}/contributions/search
 	?packs=${this.packsSelected.map((r) => r.key).join("-")}
-	&users=${this.contributors_selected.join("-")}
+	&users=${this.selectedContributors.join("-")}
 	&search=${this.textureSearch}`,
 				),
 				axios.get(`${this.$root.apiURL}/textures/raw`),
@@ -563,7 +499,7 @@ export default {
 				{},
 			);
 		});
-		this.contributors_selected = this.queryToIds;
+		this.selectedContributors = this.queryToIds;
 		this.addPack(this.all_packs, this.all_packs_display, true);
 		window.eventBus.$on("newContributor", (l) => {
 			this.contributors = l;
@@ -578,7 +514,7 @@ export default {
 			handler(contributors) {
 				// FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
 				const contributors_id = contributors.map((c) => c.id);
-				this.contributors_selected = this.contributors_selected.filter((c) =>
+				this.selectedContributors = this.selectedContributors.filter((c) =>
 					contributors_id.includes(c),
 				);
 			},

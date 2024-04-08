@@ -71,10 +71,14 @@
 				</div>
 				<user-select
 					dense
-					:contributors="contributors"
+					:users="contributors"
 					v-model="content.authors"
 					class="my-0"
 					:limit="3"
+					:placeholder="$root.lang().database.labels.one_contributor"
+					:error-messages="
+						content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')] : []
+					"
 				/>
 			</v-col>
 		</v-row>
@@ -84,7 +88,7 @@
 <script>
 import moment from "moment";
 
-import UserSelect from "./user-select.vue";
+import UserSelect from "../components/user-select.vue";
 import QuickDatePicker from "../components/quick-date-picker.vue";
 import MultiRangeInput from "../components/multi-range-input.vue";
 

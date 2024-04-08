@@ -158,7 +158,8 @@
 				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
 
 				<!-- Addon authors selection -->
-				<user-list
+				<user-select
+					:users="users"
 					v-model="submittedForm.authors"
 					:label="$root.lang().addons.general.authors.label"
 					:hint="$root.lang().addons.general.authors.hint"
@@ -291,7 +292,9 @@
 </template>
 
 <script>
-import UserList from "./user-list.vue";
+import axios from "axios";
+
+import UserSelect from "../components/user-select.vue";
 import ImagePreviewer from "./image-previewer.vue";
 import FullscreenPreview from "./fullscreen-preview.vue";
 import DropZone from "../components/drop-zone.vue";
@@ -299,7 +302,7 @@ import DropZone from "../components/drop-zone.vue";
 export default {
 	name: "addon-form",
 	components: {
-		UserList,
+		UserSelect,
 		ImagePreviewer,
 		FullscreenPreview,
 		DropZone,
@@ -498,6 +501,7 @@ export default {
 			validForm: false,
 			editions: ["Java", "Bedrock"],
 			res: ["32x", "64x"],
+			users: [],
 		};
 	},
 	computed: {
@@ -672,6 +676,22 @@ export default {
 				reader.readAsDataURL(file);
 			});
 		},
+		getUsers() {
+			axios
+				.get(`${this.$root.apiURL}/users/names`)
+				.then((res) => {
+					this.users = res.data.sort((a, b) => {
+						if (!a.username && !b.username) return 0;
+						if (!a.username && b.username) return 1;
+						if (a.username && !b.username) return -1;
+
+						return a.username > b.username ? 1 : b.username > a.username ? -1 : 0;
+					});
+				})
+				.catch((err) => {
+					console.trace(err);
+				});
+		},
 	},
 	watch: {
 		addonData: {
@@ -690,6 +710,7 @@ export default {
 		},
 	},
 	beforeMount() {
+		this.getUsers();
 		this.submittedForm.authors = [this.$root.user.id];
 	},
 };
