@@ -5,8 +5,10 @@
 			v-model="pathModalOpen"
 			:disableDialog="closePathModal"
 			:add="Object.keys(pathModalData).length == 0"
+			:first="add"
 			:useID="formData.id"
 			:data="pathModalData"
+			@pathAdded="pathAdded"
 		/>
 		<texture-remove-confirm
 			type="path"
@@ -26,6 +28,7 @@
 					/>
 					<v-text-field
 						:color="color"
+						v-if="add == false"
 						required
 						persistent-hint
 						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
@@ -51,10 +54,7 @@
 						:label="$root.lang().database.labels.use_edition"
 					/>
 					<h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
-					<p v-if="add" align="center" style="color: red">
-						⚠️<br /><strong>{{ $root.lang().database.hints.warning_path }}</strong>
-					</p>
-					<v-list v-if="Object.keys(formData.paths).length && add == false" label="Texture Paths">
+					<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
 						<v-list-item
 							class="list-item-inline"
 							v-for="(path, index) in formData.paths"
@@ -68,10 +68,10 @@
 							</v-list-item-content>
 
 							<v-list-item-action class="merged">
-								<v-btn icon @click="openPathModal(path)">
+								<v-btn icon @click="openPathModal(path, index)">
 									<v-icon color="lighten-1">mdi-pencil</v-icon>
 								</v-btn>
-								<v-btn icon @click="askRemovePath(path)">
+								<v-btn icon @click="askRemovePath(path, index)">
 									<v-icon color="red lighten-1">mdi-delete</v-icon>
 								</v-btn>
 							</v-list-item-action>
@@ -79,18 +79,10 @@
 					</v-list>
 
 					<div v-else>
-						<template v-if="add == false">{{
-							$root.lang().database.labels.no_path_found
-						}}</template>
+						{{ $root.lang().database.labels.no_path_found }}
 					</div>
 
-					<v-btn
-						block
-						:disabled="add"
-						:style="{ 'margin-top': '10px' }"
-						color="secondary"
-						@click="openPathModal()"
-					>
+					<v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openPathModal()">
 						{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-form>
@@ -149,10 +141,6 @@ export default {
 			type: String,
 			required: true,
 		},
-		usesLength: {
-			type: Number,
-			required: true,
-		},
 		color: {
 			type: String,
 			required: false,
@@ -168,13 +156,14 @@ export default {
 				id: "",
 				texture: "",
 				name: "",
-				paths: {},
+				paths: [],
 			},
 			pathModalOpen: false,
 			pathModalData: {},
 			remove: {
 				confirm: false,
 				data: {},
+				index: null,
 			},
 		};
 	},
@@ -186,16 +175,28 @@ export default {
 		},
 	},
 	methods: {
-		openPathModal(data = {}) {
+		openPathModal(data = {}, index = null) {
 			this.pathModalOpen = true;
 			this.pathModalData = data;
+			if (index !== null) this.$delete(this.formData.paths, index);
 		},
 		closePathModal() {
 			this.pathModalOpen = false;
 			this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
+		pathAdded(data) {
+			// won't trigger update otherwise
+			this.$set(this.formData.paths, this.formData.paths.length, data);
+		},
 		closeAndUpdate() {
+			if (this.add && this.remove.index !== null) {
+				this.$delete(this.formData.paths, this.remove.index);
+				this.remove.index = null;
+				this.remove.confirm = false;
+				return;
+			}
+
 			this.remove.confirm = false;
 			this.getPaths(this.formData.id);
 			this.$forceUpdate();
@@ -230,17 +231,13 @@ export default {
 				edition: formData.edition,
 			};
 
-			let method = "put";
-			let useId = "";
-			if (this.add) {
-				data.id = formData.id;
-				data.texture = Number.parseInt(this.$props.textureID, 10);
-				method = "post";
-			} else {
-				useId = formData.id;
-			}
+			if (this.add) data.paths = this.formData.paths || [];
 
-			axios[method](`${this.$root.apiURL}/uses/${useId}`, data, this.$root.apiOptions)
+			const requestPromise = this.add
+				? axios.post(`${this.$root.apiURL}/uses/${formData.texture}`, data, this.$root.apiOptions)
+				: axios.put(`${this.$root.apiURL}/uses/${formData.id}`, data, this.$root.apiOptions);
+
+			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 					this.disableDialog(true);
@@ -251,27 +248,28 @@ export default {
 				});
 		},
 		getPaths(useId) {
+			if (!useId) return;
+
 			axios
 				.get(`${this.$root.apiURL}/uses/${useId}/paths`, this.$root.apiOptions)
 				.then((res) => {
-					const temp = res.data;
-					this.formData.paths = {};
+					const paths = res.data;
 
-					for (let i = 0; i < temp.length; i++) {
-						temp[i].versions.sort(this.MinecraftSorter);
-						this.formData.paths[temp[i].id] = {
-							...temp[i],
-							use: temp[i].use || useId,
-						};
-					}
+					// reset path data
+					this.formData.paths = paths.map((p) => ({
+						...p,
+						use: p.use || useId,
+						versions: p.versions.sort(this.MinecraftSorter),
+					}));
 				})
 				.catch((err) => {
 					console.error(err);
 				});
 		},
-		askRemovePath(data) {
+		askRemovePath(data, index) {
 			this.remove.data = data;
 			this.remove.confirm = true;
+			this.remove.index = index;
 		},
 	},
 	watch: {
@@ -282,8 +280,8 @@ export default {
 			this.$nextTick(() => {
 				if (this.add) {
 					this.$refs.form.reset();
-					if ("id" in this.data) this.formData.id = this.data.id;
-					this.formData.paths = {};
+					this.formData.texture = this.data.texture;
+					this.formData.paths = [];
 				} else {
 					this.formData.edition = this.data.edition;
 					this.formData.id = this.data.id;

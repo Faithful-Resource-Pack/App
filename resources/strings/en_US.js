@@ -237,8 +237,6 @@ export default {
 			use_id: "Changing the use ID can break everything!",
 			path_id: "Changing the path ID can break everything!",
 			path_prefill: "Enter this first to generate most fields!",
-			warning_path:
-				"A use needs to be created before adding paths to it (currently not well supported and a bit buggy). Creating a use and path at the same time is planned.",
 			path: "The path should start from the root directory (ex: assets/…)",
 			example_scenario:
 				"Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)",

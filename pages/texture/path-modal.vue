@@ -82,6 +82,11 @@ export default {
 			required: false,
 			default: false,
 		},
+		first: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 		data: {
 			type: Object,
 			required: true,
@@ -95,7 +100,7 @@ export default {
 		},
 		useID: {
 			type: String,
-			required: true,
+			required: false,
 		},
 		color: {
 			type: String,
@@ -165,6 +170,13 @@ export default {
 				mcmeta: this.formData.mcmeta || false, // is animated
 				versions: this.formData.versions.sort(this.MinecraftSorter), // ordered minecraft versions
 			};
+
+			// all use/path info is added in one big request on creation so we "beam" it back
+			if (this.first) {
+				delete data.use;
+				this.$emit("pathAdded", data);
+				return this.disableDialog();
+			}
 
 			let method = "put";
 			let pathId = "";

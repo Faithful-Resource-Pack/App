@@ -6,7 +6,6 @@
 			:disableDialog="closeUseModal"
 			:add="useModalAdd"
 			:textureID="formData.id"
-			:usesLength="Object.keys(formData.uses).length"
 			:data="useModalData"
 		/>
 		<texture-remove-confirm
@@ -202,20 +201,12 @@ export default {
 		openUseModal(data, add) {
 			this.useModalOpen = true;
 			this.useModalAdd = add;
-
-			if (add) {
-				const textureID = String(this.formData.id);
-				const useIDs = Object.keys(this.formData.uses);
-				const useLetters = useIDs.map((uid) => uid.replace(textureID, "")[0]);
-				const maxLetter = useLetters.reduce((acc, cur) => (acc < cur ? cur : acc), "a");
-				const nextLetter = String.fromCharCode(maxLetter.charCodeAt(0) + 1);
-				const nextID = textureID + nextLetter;
-				// Autofill use id
-				this.useModalData = { id: nextID };
-			} else this.useModalData = data;
+			this.useModalData = data || { texture: this.formData.id };
 		},
 		closeUseModal() {
 			this.useModalOpen = false;
+			// fix for previous modal's paths showing up in blank one
+			this.useModalData = {};
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
