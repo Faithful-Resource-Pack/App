@@ -7,6 +7,7 @@
 			:add="Object.keys(pathModalData).length == 0"
 			:first="add"
 			:useID="formData.id"
+			:edition="data.edition"
 			:data="pathModalData"
 			@pathAdded="pathAdded"
 		/>

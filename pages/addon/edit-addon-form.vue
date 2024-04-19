@@ -186,7 +186,7 @@ export default {
 				});
 		},
 		async handleScreenshot(screenshots, index, remove = false, id) {
-			if (!screenshots.length) return;
+			if (Array.isArray(screenshots) && screenshots.length === 0) return;
 
 			let promise;
 			if (remove) {

@@ -91,12 +91,9 @@ export default {
 			type: Object,
 			required: true,
 		},
-		versions: {
-			type: Array,
+		edition: {
+			type: String,
 			required: false,
-			default() {
-				return [...settings.versions.java, ...settings.versions.bedrock];
-			},
 		},
 		useID: {
 			type: String,
@@ -119,16 +116,6 @@ export default {
 				mcmeta: false,
 			},
 		};
-	},
-	computed: {
-		dialogTitle() {
-			return this.add
-				? this.$root.lang().database.titles.add_path
-				: this.$root.lang().database.titles.change_path;
-		},
-		sortedVersions() {
-			return this.versions.sort(this.MinecraftSorter);
-		},
 	},
 	methods: {
 		onCancel() {
@@ -198,6 +185,18 @@ export default {
 				});
 		},
 	},
+	computed: {
+		dialogTitle() {
+			return this.add
+				? this.$root.lang().database.titles.add_path
+				: this.$root.lang().database.titles.change_path;
+		},
+		sortedVersions() {
+			return (
+				settings.versions[this.edition] || [...settings.versions.java, ...settings.versions.bedrock]
+			).sort(this.MinecraftSorter);
+		},
+	},
 	watch: {
 		value(newValue) {
 			this.modalOpened = newValue;
@@ -210,7 +209,11 @@ export default {
 					this.formData.name = this.data.name;
 					this.formData.use = this.data.use;
 					this.formData.mcmeta = this.data.mcmeta;
-				} else this.$refs.form.reset();
+				} else {
+					this.$refs.form.reset();
+					// autofill bedrock paths
+					if (this.sortedVersions.length === 1) this.formData.versions = this.sortedVersions;
+				}
 			});
 			this.$emit("input", newValue);
 		},
