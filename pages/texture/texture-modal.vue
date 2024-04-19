@@ -82,9 +82,9 @@
 											<i>{{ $root.lang().database.labels.nameless }}</i>
 										</template>
 									</v-list-item>
-									<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">{{
-										use.edition
-									}}</v-list-item-subtitle>
+									<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">
+										{{ use.edition }}
+									</v-list-item-subtitle>
 								</v-list-item-title>
 							</v-list-item-content>
 

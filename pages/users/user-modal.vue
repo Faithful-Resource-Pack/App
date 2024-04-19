@@ -57,9 +57,9 @@
 								v-model="formData.anonymous"
 								:label="$root.lang().database.labels.anonymous"
 							/>
-							<v-text v-if="formData.anonymous">{{
-								$root.lang().database.labels.anonymous_explain
-							}}</v-text>
+							<v-text v-if="formData.anonymous">
+								{{ $root.lang().database.labels.anonymous_explain }}
+							</v-text>
 						</v-form>
 					</v-col>
 				</v-row>

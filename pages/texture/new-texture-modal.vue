@@ -20,9 +20,9 @@
 											:highlight="highlighter"
 											line-numbers
 										/>
-										<v-btn block @click="parseJSON" :color="color" :class="[textColor]">{{
-											$root.lang().database.labels.parse_json
-										}}</v-btn>
+										<v-btn block @click="parseJSON" :color="color" :class="[textColor]">
+											{{ $root.lang().database.labels.parse_json }}
+										</v-btn>
 									</v-expansion-panel-content>
 								</v-expansion-panel>
 							</v-expansion-panels>
@@ -72,9 +72,9 @@
 								<v-row dense class="mb-2">
 									<v-col class="flex-grow-0 flex-shrink-0">
 										<h3 class="ma-0 mt-1">{{ $root.lang().database.subtitles.uses }}</h3>
-										<v-btn x-small @click="() => addNewUse(t_i)">{{
-											$root.lang().global.btn.add
-										}}</v-btn>
+										<v-btn x-small @click="() => addNewUse(t_i)">
+											{{ $root.lang().global.btn.add }}
+										</v-btn>
 									</v-col>
 									<v-col>
 										<v-container
@@ -118,9 +118,9 @@
 											<v-row dense class="mb-2">
 												<v-col class="flex-grow-0 flex-shrink-0">
 													<h3 class="ma-0">{{ $root.lang().database.subtitles.paths }}</h3>
-													<v-btn x-small class="mt-2" @click="() => addNewPath(t_i, u_i)">{{
-														$root.lang().global.btn.add
-													}}</v-btn>
+													<v-btn x-small class="mt-2" @click="() => addNewPath(t_i, u_i)">
+														{{ $root.lang().global.btn.add }}
+													</v-btn>
 												</v-col>
 												<v-col>
 													<v-container
@@ -179,9 +179,9 @@
 									</v-col>
 								</v-row>
 							</v-container>
-							<v-btn x-small @click="addNewTexture">{{
-								$root.lang().database.labels.add_new_texture
-							}}</v-btn>
+							<v-btn x-small @click="addNewTexture">
+								{{ $root.lang().database.labels.add_new_texture }}
+							</v-btn>
 						</v-form>
 					</v-col>
 				</v-row>

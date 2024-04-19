@@ -1,9 +1,9 @@
 <template>
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline">{{
-				$root.lang().database.titles.change_mc_version
-			}}</v-card-title>
+			<v-card-title class="headline">
+				{{ $root.lang().database.titles.change_mc_version }}
+			</v-card-title>
 			<v-card-text class="mb-0">
 				<v-form ref="form">
 					<v-row>
@@ -11,9 +11,9 @@
 							<p align="justify">
 								{{ $root.lang().database.hints.example_scenario }}
 								<br /><br />
-								<strong style="color: red">{{
-									$root.lang().database.hints.example_scenario_warn
-								}}</strong>
+								<strong style="color: red">
+									{{ $root.lang().database.hints.example_scenario_warn }}
+								</strong>
 							</p>
 						</v-col>
 					</v-row>

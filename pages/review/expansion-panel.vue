@@ -81,16 +81,16 @@
 						</v-card>
 					</div>
 
-					<v-list-item-title class="uppercase mt-2">{{
-						$root.lang().review.addon.titles.authors
-					}}</v-list-item-title>
+					<v-list-item-title class="uppercase mt-2">
+						{{ $root.lang().review.addon.titles.authors }}
+					</v-list-item-title>
 					<div class="text--secondary mb-2">
 						{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
 					</div>
 
-					<v-list-item-title class="uppercase mt-2">{{
-						$root.lang().review.addon.titles.links
-					}}</v-list-item-title>
+					<v-list-item-title class="uppercase mt-2">
+						{{ $root.lang().review.addon.titles.links }}
+					</v-list-item-title>
 					<div class="text--secondary mb-2">
 						<ul
 							v-for="file in addonInPanel.files.filter((f) => f.use === 'download')"
@@ -106,28 +106,30 @@
 						</ul>
 					</div>
 
-					<v-list-item-title class="uppercase">{{
-						$root.lang().review.addon.titles.options
-					}}</v-list-item-title>
+					<v-list-item-title class="uppercase">
+						{{ $root.lang().review.addon.titles.options }}
+					</v-list-item-title>
 					<div>
-						<v-icon small>{{
-							addonInPanel.options.optifine
-								? "mdi-checkbox-marked-outline"
-								: "mdi-checkbox-blank-outline"
-						}}</v-icon>
+						<v-icon small>
+							{{
+								addonInPanel.options.optifine
+									? "mdi-checkbox-marked-outline"
+									: "mdi-checkbox-blank-outline"
+							}}
+						</v-icon>
 						{{ $root.lang().review.addon.labels.optifine }}
 					</div>
 
 					<template v-if="addonSources.length > 0">
-						<v-list-item-title class="uppercase my-2">{{
-							$root.lang().addons.images.title
-						}}</v-list-item-title>
+						<v-list-item-title class="uppercase my-2">
+							{{ $root.lang().addons.images.title }}
+						</v-list-item-title>
 						<image-previewer :sources="addonSources" :deletable="false" />
 					</template>
 
-					<v-list-item-title class="uppercase my-2">{{
-						$root.lang().review.addon.titles.description
-					}}</v-list-item-title>
+					<v-list-item-title class="uppercase my-2">
+						{{ $root.lang().review.addon.titles.description }}
+					</v-list-item-title>
 					<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 					<v-container
 						class="markdown"
@@ -138,9 +140,9 @@
 					/>
 
 					<div v-if="addonInPanel.approval.status === 'approved'" class="my-2">
-						<v-list-item-title class="uppercase">{{
-							$root.lang().review.addon.labels.approved_by
-						}}</v-list-item-title>
+						<v-list-item-title class="uppercase">
+							{{ $root.lang().review.addon.labels.approved_by }}
+						</v-list-item-title>
 						<p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
 					</div>
 
@@ -151,13 +153,13 @@
 						"
 						class="my-2"
 					>
-						<v-list-item-title class="uppercase">{{
-							$root.lang().review.addon.labels.denied_by
-						}}</v-list-item-title>
+						<v-list-item-title class="uppercase">
+							{{ $root.lang().review.addon.labels.denied_by }}
+						</v-list-item-title>
 						<div class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</div>
-						<v-list-item-title class="uppercase">{{
-							$root.lang().review.addon.labels.reason
-						}}</v-list-item-title>
+						<v-list-item-title class="uppercase">
+							{{ $root.lang().review.addon.labels.reason }}
+						</v-list-item-title>
 						<div class="text--secondary">{{ addon.approval.reason }}</div>
 					</div>
 

@@ -36,9 +36,9 @@
 				</v-avatar>
 				{{ data.item.username || data.item.id }}
 			</v-chip>
-			<span v-else-if="!limit || data.index == limit">{{
-				"+ " + String(content.length - limit)
-			}}</span>
+			<span v-else-if="!limit || data.index == limit">
+				{{ "+ " + String(content.length - limit) }}
+			</span>
 		</template>
 		<!-- LIST ITEM PART -->
 		<template v-slot:item="data">

@@ -16,9 +16,9 @@
 						<v-list-item v-for="(path, index) in data.paths" :key="index">
 							<v-list-item-title>
 								{{ path.name }}
-								<v-list-item-subtitle>{{
-									`#${path.id} — ${path.versions.join(", ")}`
-								}}</v-list-item-subtitle>
+								<v-list-item-subtitle>
+									{{ `#${path.id} — ${path.versions.join(", ")}` }}
+								</v-list-item-subtitle>
 							</v-list-item-title>
 						</v-list-item>
 					</blockquote>

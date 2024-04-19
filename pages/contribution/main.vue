@@ -114,11 +114,13 @@
 									`${contrib.name || "Unknown texture"} • ${moment(new Date(contrib.date)).format("ll")}`
 								}}
 							</v-list-item-title>
-							<v-list-item-subtitle>{{
-								(contrib.authors || [])
-									.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
-									.join(", ")
-							}}</v-list-item-subtitle>
+							<v-list-item-subtitle>
+								{{
+									(contrib.authors || [])
+										.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
+										.join(", ")
+								}}
+							</v-list-item-subtitle>
 
 							<div>
 								<v-chip label x-small class="mr-1"> {{ packToCode[contrib.pack] }} </v-chip>

@@ -1,9 +1,9 @@
 <template>
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline">{{
-				$root.lang().database.titles.add_mc_version
-			}}</v-card-title>
+			<v-card-title class="headline">
+				{{ $root.lang().database.titles.add_mc_version }}
+			</v-card-title>
 			<v-card-text class="mb-0">
 				<v-form ref="form">
 					<v-row>

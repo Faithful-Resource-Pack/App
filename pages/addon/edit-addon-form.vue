@@ -18,11 +18,11 @@
 		/>
 		<v-dialog v-model="reasonDialog" max-width="600px">
 			<v-card>
-				<v-card-title>
-					<span class="text-h5">{{ this.$root.lang("addons.general.reason.title") }}</span>
+				<v-card-title class="headline">
+					{{ this.$root.lang("addons.general.reason.title") }}
 				</v-card-title>
-				<v-form lazy-validation v-model="validForm" ref="reasonForm">
-					<v-card-text>
+				<v-card-text>
+					<v-form lazy-validation v-model="validForm" ref="reasonForm">
 						<p>{{ this.$root.lang("addons.general.reason.text") }}</p>
 						<v-text-field
 							:label="$root.lang('addons.general.reason.title')"
@@ -31,17 +31,17 @@
 							v-model="reason"
 							:counter="reasonCounter.max"
 						/>
-					</v-card-text>
-					<v-card-actions>
-						<v-spacer />
-						<v-btn color="gray" text @click="() => handleReasonDialog(false)">
-							{{ $root.lang("global.btn.cancel") }}
-						</v-btn>
-						<v-btn color="primary" text @click="() => handleReasonDialog(true)">
-							{{ $root.lang("global.btn.submit") }}
-						</v-btn>
-					</v-card-actions>
-				</v-form>
+						<v-card-actions>
+							<v-spacer />
+							<v-btn color="red darken-1" text @click="() => handleReasonDialog(false)">
+								{{ $root.lang("global.btn.cancel") }}
+							</v-btn>
+							<v-btn color="darken-1" text @click="() => handleReasonDialog(true)">
+								{{ $root.lang("global.btn.submit") }}
+							</v-btn>
+						</v-card-actions>
+					</v-form>
+				</v-card-text>
 			</v-card>
 		</v-dialog>
 	</div>

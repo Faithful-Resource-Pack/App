@@ -63,9 +63,9 @@
 						>
 							<v-list-item-content>
 								<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
-								<v-list-item-subtitle :title="(path.versions || []).join(', ')">{{
-									(path.versions || []).join(", ")
-								}}</v-list-item-subtitle>
+								<v-list-item-subtitle :title="(path.versions || []).join(', ')">
+									{{ (path.versions || []).join(", ") }}
+								</v-list-item-subtitle>
 							</v-list-item-content>
 
 							<v-list-item-action class="merged">

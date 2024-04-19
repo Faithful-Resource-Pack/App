@@ -51,9 +51,9 @@
 											>
 												<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
 												<v-list-item-subtitle class="text-truncate">
-													<span v-if="form.authors.length">{{
-														contributorsFromIds(form.authors)
-													}}</span>
+													<span v-if="form.authors.length">
+														{{ contributorsFromIds(form.authors) }}
+													</span>
 													<i v-else>{{ $root.lang("database.subtitles.no_contributor_yet") }}</i>
 												</v-list-item-subtitle>
 												<v-list-item-subtitle v-if="form.texture && form.texture.length">

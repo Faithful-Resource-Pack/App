@@ -1,9 +1,9 @@
 <template>
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
 		<v-card>
-			<v-card-title class="headline">{{
-				$root.lang().database.titles.confirm_deletion
-			}}</v-card-title>
+			<v-card-title class="headline">
+				{{ $root.lang().database.titles.confirm_deletion }}</v-card-title
+			>
 			<v-card-text>
 				<v-form ref="form" lazy-validation>
 					<p>

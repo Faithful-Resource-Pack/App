@@ -16,9 +16,9 @@
 						:class="['d-flex align-stretch', adminResults ? 'col-sm-3' : '']"
 					>
 						<p class="mb-0 rounded-lg pa-2">
-							<span :class="['v-card__title pa-0 d-inline', status_color[status]]">{{
-								data[status] || 0
-							}}</span>
+							<span :class="['v-card__title pa-0 d-inline', status_color[status]]">
+								{{ data[status] || 0 }}
+							</span>
 							{{ $root.lang(`review.titles.${status}`) }}
 						</p>
 					</v-col>
@@ -77,14 +77,14 @@
 		<v-card-actions class="d-flex mt-0 px-4 pt-1">
 			<v-row dense>
 				<v-col>
-					<v-btn block text color="primary" to="/addons/submissions">{{
-						$root.lang().dashboard.addons.submissions
-					}}</v-btn>
+					<v-btn block text color="primary" to="/addons/submissions">
+						{{ $root.lang().dashboard.addons.submissions }}
+					</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn block text color="primary" to="/addons/new">{{
-						$root.lang().dashboard.addons.upload
-					}}</v-btn>
+					<v-btn block text color="primary" to="/addons/new">
+						{{ $root.lang().dashboard.addons.upload }}
+					</v-btn>
 				</v-col>
 			</v-row>
 		</v-card-actions>
