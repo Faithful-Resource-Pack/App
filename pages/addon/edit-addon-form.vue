@@ -16,7 +16,7 @@
 			@header="handleHeader"
 			@screenshot="handleScreenshot"
 		/>
-		<v-dialog v-model="reasonDialog" persistent max-width="600px">
+		<v-dialog v-model="reasonDialog" max-width="600px">
 			<v-card>
 				<v-card-title>
 					<span class="text-h5">{{ this.$root.lang("addons.general.reason.title") }}</span>
@@ -112,9 +112,8 @@ export default {
 			}
 		},
 		confirmSubmit(data, approve) {
-			if (approve) {
-				data.reason = "Admin edit";
-			} else {
+			if (approve) data.reason = "Manager edit";
+			else {
 				data.reason = this.reason.trim();
 				this.reason = "";
 			}
@@ -187,7 +186,7 @@ export default {
 				});
 		},
 		async handleScreenshot(screenshots, index, remove = false, id) {
-			if (Array.isArray(screenshots) && screenshots.length === 0) return;
+			if (!screenshots.length) return;
 
 			let promise;
 			if (remove) {

@@ -332,7 +332,7 @@ export default {
 				},
 			},
 			reason: {
-				title: "Update Reason",
+				title: "Update reason",
 				text: "Please tell us what you updated to make reviewing your add-on easier!",
 				required: "An update reason is required",
 				bounds: "Update reason must be between %s and %s characters long",

@@ -5,7 +5,7 @@
 			{{ $root.lang().review.titles.addons }}
 		</div>
 
-		<deny-popup :reasonPopup="showDenyPopup" :closePopup="closeDenyPopup" />
+		<deny-popup v-model="showDenyPopup" :disableDialog="closeDenyPopup" />
 
 		<review-categories
 			:categories="categories"

@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="reasonPopup" max-width="600">
+	<v-dialog v-model="modalOpened" max-width="600">
 		<v-card>
 			<v-card-title class="headline">{{ $root.lang().review.deny_window.title }}</v-card-title>
 
@@ -14,14 +14,14 @@
 
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="closePopup(false, denyReason)">
+				<v-btn color="darken-1" text @click="disableDialog(false, denyReason)">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn
 					color="red"
 					text
 					:disabled="!denyReason || (denyReason && denyReason.length == 0)"
-					@click="closePopup(true, denyReason)"
+					@click="disableDialog(true, denyReason)"
 				>
 					{{ $root.lang().global.btn.ok }}
 				</v-btn>
@@ -34,20 +34,29 @@
 export default {
 	name: "deny-popup",
 	props: {
-		reasonPopup: {
+		value: {
 			type: Boolean,
 			required: true,
 		},
-		closePopup: {
+		disableDialog: {
 			type: Function,
 			required: true,
 		},
 	},
 	data() {
 		return {
+			modalOpened: false,
 			denyReason: "",
 			reasonRules: [(u) => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule],
 		};
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$emit("input", newValue);
+		},
 	},
 };
 </script>
