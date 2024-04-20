@@ -73,10 +73,6 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
 		add: {
 			type: Boolean,
 			required: false,
@@ -120,7 +116,7 @@ export default {
 	methods: {
 		onCancel() {
 			this.modalOpened = false;
-			this.disableDialog();
+			this.$emit("disableDialog");
 		},
 		formatPath(e) {
 			// windows fix
@@ -162,7 +158,7 @@ export default {
 			if (this.first) {
 				delete data.use;
 				this.$emit("pathAdded", data);
-				return this.disableDialog();
+				return this.$emit("disableDialog");
 			}
 
 			let method = "put";
@@ -177,7 +173,7 @@ export default {
 			axios[method](`${this.$root.apiURL}/paths/${pathId}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
+					this.$emit("disableDialog", true);
 				})
 				.catch((err) => {
 					console.error(err);

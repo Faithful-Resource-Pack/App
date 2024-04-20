@@ -4,7 +4,7 @@
 		<pack-modal
 			:color="pageColor"
 			v-model="dialogOpen"
-			:disableDialog="disableDialog"
+			@disableDialog="disableDialog"
 			:data="dialogData"
 			:add="dialogDataAdd"
 			:tags="tags"
@@ -12,7 +12,7 @@
 		<pack-remove-confirm
 			type="packs"
 			v-model="remove.confirm"
-			:disableDialog="
+			@disableDialog="
 				() => {
 					remove.confirm = false;
 					startSearch();

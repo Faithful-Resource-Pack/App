@@ -11,7 +11,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog">
+				<v-btn color="darken-1" text @click="$emit('disableDialog')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="error darken-1" text @click="onConfirm">
@@ -32,10 +32,6 @@ export default {
 		},
 		value: {
 			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
 			required: true,
 		},
 	},

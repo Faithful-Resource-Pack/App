@@ -93,7 +93,7 @@
 
 		<addon-remove-confirm
 			v-model="remove.confirm"
-			:disableDialog="
+			@disableDialog="
 				() => {
 					remove.confirm = false;
 					update();

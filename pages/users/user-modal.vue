@@ -66,7 +66,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="disableDialog">
+				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send">
@@ -85,10 +85,6 @@ export default {
 	props: {
 		value: {
 			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
 			required: true,
 		},
 		add: {
@@ -149,7 +145,7 @@ export default {
 				.post(`${this.$root.apiURL}/users/${id}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
+					this.$emit("disableDialog", true);
 				})
 				.catch((error) => {
 					console.error(error);

@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		:title="$root.lang().addons.remove.title"
-		:disableDialog="disableDialog"
+		@disableDialog="disableDialog"
 		@confirm="deleteAddon"
 	>
 		<p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
@@ -28,10 +28,6 @@ export default {
 			type: Object,
 			required: true,
 		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
 	},
 	data() {
 		return {
@@ -45,12 +41,11 @@ export default {
 				.delete(`${this.$root.apiURL}/addons/${addonID}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
+					this.$emit("disableDialog", true);
 				})
 				.catch((error) => {
 					console.error(error);
 					this.$root.showSnackBar(`${error.message} : ${error.response.data.error}`, "error");
-					this.disableDialog(true);
 				});
 		},
 	},

@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		title="Confirm deletion"
-		:disableDialog="disableDialog"
+		@disableDialog="$emit('disableDialog')"
 		@confirm="deleteData"
 	>
 		<p>Do you want to delete this {{ type }}?</p>
@@ -49,10 +49,6 @@ export default {
 			type: Object,
 			required: true,
 		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
 		type: {
 			type: String,
 			required: true,
@@ -94,12 +90,12 @@ export default {
 						.delete(`${this.$root.apiURL}/uses/${useId}`, this.$root.apiOptions)
 						.then(() => {
 							this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-							this.disableDialog(true);
+							this.$emit("disableDialog", true);
 						})
 						.catch((err) => {
 							console.error(err);
 							this.$root.showSnackBar(err, "error");
-							this.disableDialog(true);
+							this.$emit("disableDialog", true);
 						});
 				case "path":
 					const pathId = this.data.id;
@@ -107,19 +103,20 @@ export default {
 						.delete(`${this.$root.apiURL}/paths/${pathId}`, this.$root.apiOptions)
 						.then(() => {
 							this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-							this.disableDialog(true);
+							this.$emit("disableDialog", true);
 						})
 						.catch((err) => {
 							console.error(err);
 							this.$root.showSnackBar(err, "error");
-							this.disableDialog(true);
+							this.$emit("disableDialog", true);
 						});
 				case "texture":
 					return this.onSubmit(this.data)
-						.then(() => this.disableDialog(true))
+						.then(() => this.$emit("disableDialog", true))
 						.catch((err) => {
 							console.error(err);
 							this.$root.showSnackBar(err, "error");
+							this.$emit("disableDialog", true);
 						});
 			}
 		},

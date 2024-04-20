@@ -13,14 +13,14 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog(false, denyReason)">
+				<v-btn color="darken-1" text @click="$emit('disableDialog', false, denyReason)">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn
 					color="red"
 					text
 					:disabled="!denyReason || (denyReason && denyReason.length == 0)"
-					@click="disableDialog(true, denyReason)"
+					@click="$emit('disableDialog', true, denyReason)"
 				>
 					{{ $root.lang().global.btn.ok }}
 				</v-btn>
@@ -35,10 +35,6 @@ export default {
 	props: {
 		value: {
 			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
 			required: true,
 		},
 	},

@@ -3,7 +3,7 @@
 		<path-modal
 			:color="color"
 			v-model="pathModalOpen"
-			:disableDialog="closePathModal"
+			@disableDialog="closePathModal"
 			:add="Object.keys(pathModalData).length == 0"
 			:first="add"
 			:useID="formData.id"
@@ -14,7 +14,7 @@
 		<texture-remove-confirm
 			type="path"
 			v-model="remove.confirm"
-			:disableDialog="closeAndUpdate"
+			@disableDialog="closeAndUpdate"
 			:data="remove.data"
 		/>
 
@@ -90,7 +90,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="disableDialog">
+				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send" :disabled="!formValid">
@@ -116,10 +116,6 @@ export default {
 	props: {
 		value: {
 			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
 			required: true,
 		},
 		add: {
@@ -241,7 +237,7 @@ export default {
 			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
+					this.$emit("disableDialog", true);
 				})
 				.catch((err) => {
 					console.error(err);

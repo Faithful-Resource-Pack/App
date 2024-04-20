@@ -36,7 +36,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="disableDialog">
+				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send">
@@ -71,10 +71,6 @@ export default {
 				return [];
 			},
 		},
-		disableDialog: {
-			type: Function,
-			required: true,
-		},
 		color: {
 			type: String,
 			required: false,
@@ -97,6 +93,7 @@ export default {
 				.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, "success");
+					this.$emit("disableDialog");
 				})
 				.catch((err) => {
 					console.error(err);

@@ -105,7 +105,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="disableDialog">
+				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send" :disabled="!formValid">
@@ -129,10 +129,6 @@ export default {
 		},
 		value: {
 			type: Boolean,
-			required: true,
-		},
-		disableDialog: {
-			type: Function,
 			required: true,
 		},
 		data: {
@@ -189,7 +185,7 @@ export default {
 			// all pack info is added in one big request on creation so we "beam" it back
 			if (this.first) {
 				this.$emit("submissionFinished", data);
-				return this.disableDialog();
+				return this.$emit("disableDialog");
 			}
 
 			const requestPromise = this.add
@@ -199,7 +195,7 @@ export default {
 			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.disableDialog(true);
+					this.$emit("disableDialog", true);
 				})
 				.catch((err) => {
 					console.error(err);
