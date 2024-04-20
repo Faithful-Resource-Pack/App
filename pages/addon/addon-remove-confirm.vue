@@ -13,7 +13,7 @@
 				<v-btn color="darken-1" text @click="disableDialog">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
-				<v-btn color="error darken-1" @click="deleteAddon">
+				<v-btn color="error darken-1" text @click="deleteAddon">
 					{{ $root.lang().global.btn.yes }}
 				</v-btn>
 			</v-card-actions>

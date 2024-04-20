@@ -162,6 +162,10 @@ a {
 	filter: brightness(0) invert(1);
 }
 
+.theme--light .monochrome-logo img {
+	filter: brightness(0) invert(0);
+}
+
 .container {
 	max-width: 1080px;
 }
@@ -1016,9 +1020,6 @@ body .texture-avatar {
 }
 .theme--light header.v-toolbar {
 	border-bottom: 2px solid rgba(170, 170, 170, 0.5);
-}
-.theme--light .monochrome-logo img {
-	filter: brightness(0) invert(0.7);
 }
 .theme--light .texture-avatar {
 	background: white;

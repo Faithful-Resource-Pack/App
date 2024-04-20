@@ -146,7 +146,7 @@
 						<v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent">
 							<v-list-item v-for="texture in textures_arr" class="my-4" :key="texture.id">
 								<a :href="`/gallery?show=${texture.id}`">
-									<v-list-item-avatar tile class="texture-avatar my-0 white--text">
+									<v-list-item-avatar tile class="texture-avatar my-0 text--primary">
 										{{ texture.id }}
 									</v-list-item-avatar>
 								</a>

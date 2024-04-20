@@ -31,17 +31,17 @@
 							v-model="reason"
 							:counter="reasonCounter.max"
 						/>
-						<v-card-actions>
-							<v-spacer />
-							<v-btn color="red darken-1" text @click="() => handleReasonDialog(false)">
-								{{ $root.lang("global.btn.cancel") }}
-							</v-btn>
-							<v-btn color="darken-1" text @click="() => handleReasonDialog(true)">
-								{{ $root.lang("global.btn.submit") }}
-							</v-btn>
-						</v-card-actions>
 					</v-form>
 				</v-card-text>
+				<v-card-actions>
+					<v-spacer />
+					<v-btn color="red darken-1" text @click="() => handleReasonDialog(false)">
+						{{ $root.lang("global.btn.cancel") }}
+					</v-btn>
+					<v-btn color="darken-1" text @click="() => handleReasonDialog(true)">
+						{{ $root.lang("global.btn.submit") }}
+					</v-btn>
+				</v-card-actions>
 			</v-card>
 		</v-dialog>
 	</div>
