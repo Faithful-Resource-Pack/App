@@ -51,7 +51,7 @@
 			<v-col cols="12" sm="6" class="pt-0 py-sm-0">
 				<user-select
 					persistent-placeholder
-					:label="$root.lang('database.subtitles.user')"
+					:label="$root.lang('database.titles.users')"
 					outlined
 					v-model="selectedContributors"
 					:users="contributors"
