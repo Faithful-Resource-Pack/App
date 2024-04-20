@@ -1,31 +1,24 @@
 <template>
-	<v-dialog v-model="modalOpened" max-width="600">
-		<v-card>
-			<v-card-title class="headline">{{ $root.lang().addons.remove.title }}</v-card-title>
-			<v-card-text>
-				<v-form ref="form" lazy-validation>
-					<p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
-					<p style="color: red">{{ $root.lang().addons.remove.labels.warning }}</p>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="error darken-1" text @click="deleteAddon">
-					{{ $root.lang().global.btn.yes }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<remove-confirm
+		v-model="modalOpened"
+		:title="$root.lang().addons.remove.title"
+		:disableDialog="disableDialog"
+		@confirm="deleteAddon"
+	>
+		<p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
+		<p style="color: red">{{ $root.lang().addons.remove.labels.warning }}</p>
+	</remove-confirm>
 </template>
 
 <script>
 import axios from "axios";
+import RemoveConfirm from "../components/remove-confirm.vue";
 
 export default {
 	name: "addon-remove-confirm",
+	components: {
+		RemoveConfirm,
+	},
 	props: {
 		value: {
 			type: Boolean,
@@ -45,15 +38,9 @@ export default {
 			modalOpened: false,
 		};
 	},
-	computed: {
-		title() {
-			return this.$props.data.name;
-		},
-	},
 	methods: {
 		deleteAddon() {
 			const addonID = JSON.parse(JSON.stringify(this.$props.data.id));
-
 			axios
 				.delete(`${this.$root.apiURL}/addons/${addonID}`, this.$root.apiOptions)
 				.then(() => {

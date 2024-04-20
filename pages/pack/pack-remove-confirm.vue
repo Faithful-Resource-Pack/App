@@ -1,32 +1,23 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
-		<v-card>
-			<v-card-title class="headline">
-				{{ $root.lang().database.titles.confirm_deletion }}
-			</v-card-title>
-			<v-card-text>
-				<v-form ref="form" lazy-validation>
-					<p>{{ label }}</p>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="error darken-1" @click="deletePack">
-					{{ $root.lang().global.btn.yes }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<remove-confirm
+		v-model="modalOpened"
+		:title="$root.lang().database.titles.confirm_deletion"
+		:disableDialog="disableDialog"
+		@confirm="deletePack"
+	>
+		<p>{{ label }}</p>
+	</remove-confirm>
 </template>
 
 <script>
 import axios from "axios";
+import RemoveConfirm from "../components/remove-confirm.vue";
 
 export default {
 	name: "pack-remove-confirm",
+	components: {
+		RemoveConfirm,
+	},
 	props: {
 		value: {
 			type: Boolean,

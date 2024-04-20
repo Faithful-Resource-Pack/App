@@ -1,39 +1,30 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
-		<v-card>
-			<v-card-title class="headline">
-				{{ $root.lang().database.titles.confirm_deletion }}</v-card-title
-			>
-			<v-card-text>
-				<v-form ref="form" lazy-validation>
-					<p>
-						{{
-							$root
-								.lang()
-								.database.labels.ask_deletion.replace("%s", data.username)
-								.replace("%d", data.id)
-						}}
-					</p>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="darken-1" text @click="disableDialog">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="error darken-1" @click="deleteContributor">
-					{{ $root.lang().global.btn.yes }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<remove-confirm
+		v-model="modalOpened"
+		:title="$root.lang().database.titles.confirm_deletion"
+		:disableDialog="disableDialog"
+		@confirm="deleteUser"
+	>
+		<p>
+			{{
+				$root
+					.lang()
+					.database.labels.ask_deletion.replace("%s", data.username)
+					.replace("%d", data.id)
+			}}
+		</p>
+	</remove-confirm>
 </template>
 
 <script>
 import axios from "axios";
+import RemoveConfirm from "../components/remove-confirm.vue";
 
 export default {
 	name: "user-remove-confirm",
+	components: {
+		RemoveConfirm,
+	},
 	props: {
 		value: {
 			type: Boolean,
@@ -63,7 +54,7 @@ export default {
 		},
 	},
 	methods: {
-		deleteContributor() {
+		deleteUser() {
 			axios
 				.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
 				.then(() => {
