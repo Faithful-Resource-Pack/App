@@ -129,6 +129,7 @@ import axios from "axios";
 
 import UseModal from "./use-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
+import { sortTags } from "../../helpers/textures";
 
 export default {
 	name: "texture-modal",
@@ -211,23 +212,12 @@ export default {
 			this.getUses(this.formData.id);
 			this.$forceUpdate();
 		},
-
-		sortTags(input) {
-			// remove duplicates/null items and alphabetically sort
-			let arr = [...new Set(input.filter((i) => i))].sort();
-			// shift broader tags to start
-			if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
-			if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
-			if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
-			if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
-			return arr;
-		},
 		send() {
 			if (!this.$root.isUserLogged) return;
 
 			const data = {
 				name: this.formData.name,
-				tags: this.sortTags(this.formData.tags),
+				tags: sortTags(this.formData.tags),
 			};
 
 			// modal isn't used for adding anymore but oh well
@@ -257,7 +247,7 @@ export default {
 					const editionlessTags = (this.formData.tags || []).filter(
 						(r) => !["Java", "Bedrock"].includes(r),
 					);
-					this.formData.tags = this.sortTags([
+					this.formData.tags = sortTags([
 						...Object.values(res.data).map((v) => v.edition.toTitleCase()),
 						...editionlessTags,
 					]);

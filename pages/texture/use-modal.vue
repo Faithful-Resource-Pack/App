@@ -106,6 +106,7 @@ import axios from "axios";
 
 import PathModal from "./path-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
+import { MinecraftSorter, getNameFromPath } from "../../helpers/textures";
 
 export default {
 	name: "use-modal",
@@ -186,10 +187,8 @@ export default {
 			// won't trigger update otherwise
 			this.$set(this.formData.paths, this.formData.paths.length, data);
 			if (this.formData.name) return;
-			const split = data.name.split("/");
-			const name = split[split.length - 1].split(".")[0];
 
-			this.formData.name ||= name;
+			this.formData.name ||= getNameFromPath(data.name);
 		},
 		closeAndUpdate() {
 			if (this.add && this.remove.index !== null) {
@@ -203,28 +202,7 @@ export default {
 			this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
-		MinecraftSorter(a, b) {
-			const aSplit = a.split(".").map((s) => parseInt(s));
-			const bSplit = b.split(".").map((s) => parseInt(s));
 
-			if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
-				return String(a).localeCompare(String(b)); // compare as strings
-			}
-
-			const upper = Math.min(aSplit.length, bSplit.length);
-			let i = 0;
-			let result = 0;
-			while (i < upper && result == 0) {
-				result = aSplit[i] == bSplit[i] ? 0 : aSplit[i] < bSplit[i] ? -1 : 1; // each number
-				++i;
-			}
-
-			if (result != 0) return result;
-
-			result = aSplit.length == bSplit.length ? 0 : aSplit.length < bSplit.length ? -1 : 1; // longer length wins
-
-			return result;
-		},
 		send() {
 			const formData = this.formData;
 			const data = {
@@ -261,7 +239,7 @@ export default {
 					this.formData.paths = paths.map((p) => ({
 						...p,
 						use: p.use || useId,
-						versions: p.versions.sort(this.MinecraftSorter),
+						versions: p.versions.sort(MinecraftSorter),
 					}));
 				})
 				.catch((err) => {

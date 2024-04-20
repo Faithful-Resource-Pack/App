@@ -210,6 +210,14 @@
 <script>
 import axios from "axios";
 import Prism from "prismjs";
+import {
+	MinecraftSorter,
+	getNameFromPath,
+	getEditionFromPath,
+	getTagFromPath,
+	formatTag,
+	sortTags,
+} from "../../helpers/textures";
 
 const emptyPath = () => ({
 	name: "",
@@ -281,7 +289,7 @@ export default {
 	},
 	computed: {
 		sortedVersions() {
-			return this.versions.sort((a, b) => -1 * this.MinecraftSorter(a, b));
+			return this.versions.sort((a, b) => -1 * MinecraftSorter(a, b));
 		},
 	},
 	methods: {
@@ -307,53 +315,8 @@ export default {
 		deletePath(textureIndex, useIndex, pathIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1);
 		},
-		MinecraftSorter(a, b) {
-			const aSplit = a.split(".").map((s) => parseInt(s));
-			const bSplit = b.split(".").map((s) => parseInt(s));
-
-			// compare as strings
-			if (aSplit.includes(NaN) || bSplit.includes(NaN)) return String(a).localeCompare(String(b));
-
-			const upper = Math.min(aSplit.length, bSplit.length);
-			let i = 0;
-			let result = 0;
-			while (i < upper && result == 0) {
-				result = aSplit[i] == bSplit[i] ? 0 : aSplit[i] < bSplit[i] ? -1 : 1; // each number
-				++i;
-			}
-
-			if (result != 0) return result;
-
-			result = aSplit.length == bSplit.length ? 0 : aSplit.length < bSplit.length ? -1 : 1; // longer length wins
-
-			return result;
-		},
 		onCancel() {
 			this.modalOpened = false;
-		},
-		sortTags(input) {
-			// remove duplicates/null items and alphabetically sort
-			let arr = [...new Set(input.filter((i) => i))].sort();
-			// shift broader tags to start
-			if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
-			if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];
-			if (arr.includes("Bedrock")) arr = ["Bedrock", ...arr.filter((i) => i !== "Bedrock")];
-			if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
-			return arr;
-		},
-		formatTag(tag) {
-			switch (tag) {
-				case "Blocks":
-					return "Block";
-				case "Items":
-					return "Item";
-				case "Gui":
-					return "GUI";
-				case "Ui":
-					return "UI";
-				default:
-					return tag;
-			}
 		},
 		onEditionChange(edition, use, texture) {
 			use.paths ||= [emptyPath()];
@@ -362,7 +325,7 @@ export default {
 				if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 			});
 			if (!texture.tags.includes(edition.toTitleCase()))
-				texture.tags = this.sortTags([edition.toTitleCase(), ...texture.tags]);
+				texture.tags = sortTags([edition.toTitleCase(), ...texture.tags]);
 		},
 		pathAdded(el, path, use, texture) {
 			// windows fix
@@ -373,9 +336,8 @@ export default {
 			// largely ripped from https://github.com/3vorp/faithful-utilities/blob/main/tools/createTextures.js
 			if (!el || !path) return;
 
-			const split = path.name.split("/");
-			const name = split[split.length - 1].split(".")[0];
-			const edition = path.name.startsWith("assets") ? "java" : "bedrock";
+			const name = getNameFromPath(path.name);
+			const edition = getEditionFromPath(path.name);
 			if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 
 			if (!use) return;
@@ -389,23 +351,7 @@ export default {
 			if (!texture) return;
 			texture.name ||= name;
 
-			const textureFolderIndex = split.findIndex((v) => v == "textures");
-			texture.tags = this.sortTags(
-				[
-					...texture.tags,
-					textureFolderIndex == -1 ? null : split[textureFolderIndex + 1]?.toTitleCase(),
-				].map(this.formatTag),
-			);
-		},
-		versionsLeft(textureIndex, useIndex) {
-			const otherUseIndex = 1 - useIndex;
-			let result = this.editions;
-
-			const otherEditions = this.textures[textureIndex].uses[otherUseIndex].editions;
-			if (otherEditions.length > 0 && this.editions.include(otherEditions[0])) {
-				result = this.editions.splice(this.editions.indexOf(otherEditions[0]), 1);
-			}
-			return result;
+			texture.tags = sortTags([...texture.tags, getTagFromPath(path.name)].map(formatTag));
 		},
 		parseJSON() {
 			try {
@@ -420,7 +366,7 @@ export default {
 			const data = JSON.parse(JSON.stringify(this.textures));
 			const apiData = data.map((e) => ({
 				name: e.name,
-				tags: this.sortTags(e.tags),
+				tags: sortTags(e.tags),
 				uses: e.uses.map((u) => ({
 					name: u.name,
 					edition: u.edition,

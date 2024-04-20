@@ -65,6 +65,7 @@
 
 <script>
 import axios from "axios";
+import { MinecraftSorter } from "../../helpers/textures";
 
 export default {
 	name: "path-modal",
@@ -124,28 +125,6 @@ export default {
 			// infer png extension if not present
 			if (!e.includes(".")) this.formData.name += ".png";
 		},
-		MinecraftSorter(a, b) {
-			const aSplit = a.split(".").map((s) => parseInt(s));
-			const bSplit = b.split(".").map((s) => parseInt(s));
-
-			if (aSplit.includes(NaN) || bSplit.includes(NaN)) {
-				return String(a).localeCompare(String(b)); // compare as strings
-			}
-
-			const upper = Math.min(aSplit.length, bSplit.length);
-			let i = 0;
-			let result = 0;
-			while (i < upper && result == 0) {
-				result = aSplit[i] == bSplit[i] ? 0 : aSplit[i] < bSplit[i] ? -1 : 1; // each number
-				++i;
-			}
-
-			if (result != 0) return result;
-
-			result = aSplit.length == bSplit.length ? 0 : aSplit.length < bSplit.length ? -1 : 1; // longer length wins
-
-			return result;
-		},
 		send() {
 			const data = {
 				name: this.formData.name || "", // texture relative path
@@ -190,7 +169,7 @@ export default {
 		sortedVersions() {
 			return (
 				settings.versions[this.edition] || [...settings.versions.java, ...settings.versions.bedrock]
-			).sort(this.MinecraftSorter);
+			).sort(MinecraftSorter);
 		},
 	},
 	watch: {
@@ -200,7 +179,7 @@ export default {
 		modalOpened(newValue) {
 			this.$nextTick(() => {
 				if (!this.add) {
-					this.formData.versions = this.data.versions.sort(this.MinecraftSorter);
+					this.formData.versions = this.data.versions.sort(MinecraftSorter);
 					this.formData.id = this.data.id;
 					this.formData.name = this.data.name;
 					this.formData.use = this.data.use;

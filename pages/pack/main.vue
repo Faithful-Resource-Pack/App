@@ -151,7 +151,7 @@ export default {
 		formatTags(s) {
 			return s
 				.split("_")
-				.map((p) => (p == "progart" ? "Programmer Art" : p[0].toUpperCase() + p.slice(1)))
+				.map((p) => (p == "progart" ? "Programmer Art" : p.toTitleCase()))
 				.join(" ");
 		},
 		openDialog(data = undefined) {
