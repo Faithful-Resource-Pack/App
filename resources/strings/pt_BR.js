@@ -209,7 +209,6 @@ export default {
 				approved_by: "Aprovado por",
 				denied_by: "Negado por",
 				reason: "Motivo",
-				old_addon: "Add-on antigo, sem dados presentes nele.",
 			},
 		},
 	},

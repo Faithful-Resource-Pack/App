@@ -218,7 +218,6 @@ export default {
 				approved_by: "Schváleno administrátorem",
 				denied_by: "Zamítnuto administrátorem",
 				reason: "Důvod",
-				old_addon: "Starý doplněk, nejsou pro něj žádná data.",
 			},
 		},
 	},

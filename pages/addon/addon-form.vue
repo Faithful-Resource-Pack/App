@@ -4,7 +4,7 @@
 
 		<div class="text-center" v-if="loading">
 			<h2 class="mb-3">{{ $root.lang().addons.general.loading_addon }}</h2>
-			<v-progress-circular :size="70" :width="7" color="blue" indeterminate />
+			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
 		</div>
 		<v-list
 			v-else

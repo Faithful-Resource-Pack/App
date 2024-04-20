@@ -280,11 +280,7 @@ export default {
 				approved_by: "Approved by",
 				denied_by: "Denied by",
 				reason: "Reason",
-				old_addon: "Old add-on, no data present for it.",
 			},
-		},
-		translations: {
-			description: "This page has been moved to",
 		},
 	},
 	addons: {

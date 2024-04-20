@@ -182,7 +182,6 @@ export default {
 				approved_by: "Genehmigt von",
 				denied_by: "Abgelehnt von",
 				reason: "Grund",
-				old_addon: "Altes Add-on, keine Daten dafür vorhanden.",
 			},
 		},
 	},

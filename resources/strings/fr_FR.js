@@ -237,7 +237,6 @@ export default {
 				approved_by: "Approuvé par",
 				denied_by: "Refusé par",
 				reason: "Raison",
-				old_addon: "Ancien add-on, aucune données.",
 			},
 		},
 	},
