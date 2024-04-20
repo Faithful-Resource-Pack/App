@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 import AddonForm from "./addon-form.vue";
@@ -116,8 +115,8 @@ export default {
 				this.screenshots.splice(index, 1);
 				this.screenshotIds.splice(index, 1);
 				//? force variable update as slice method does only internal stuff
-				Vue.set(this, "screenshots", this.screenshots);
-				Vue.set(this, "screenshotIds", this.screenshotIds);
+				this.$set(this, "screenshots", this.screenshots);
+				this.$set(this, "screenshotIds", this.screenshotIds);
 
 				//? that will force computed screenSources to be recomputed
 			} else {

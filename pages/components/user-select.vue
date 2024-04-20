@@ -75,7 +75,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 
 const SEARCH_DELAY = 300;
@@ -178,7 +177,7 @@ export default {
 					const results = res.data;
 					results.forEach((result) => {
 						// in case some clever guy forgot their username or uuid or whatever
-						Vue.set(
+						this.$set(
 							this.loadedUsers,
 							result.id,
 							Object.merge(

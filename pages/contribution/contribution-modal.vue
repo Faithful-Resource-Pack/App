@@ -131,7 +131,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import moment from "moment";
 
 import ContributionForm from "./contribution-form.vue";
@@ -214,7 +213,7 @@ export default {
 
 			// add form
 			let newFormId = form.formId;
-			Vue.set(this.formRecords, newFormId, form);
+			this.$set(this.formRecords, newFormId, form);
 
 			// make the opened form our created form
 			this.openedFormId = newFormId;
@@ -235,7 +234,7 @@ export default {
 				createdFormObj = this.defaultValue(inputPacksList);
 			}
 
-			Vue.set(this, "formRecords", {
+			this.$set(this, "formRecords", {
 				[createdFormObj.formId]: createdFormObj,
 			});
 			this.openedFormId = createdFormObj.formId;
@@ -313,7 +312,7 @@ export default {
 			if (!this.formRecords[formId]) return;
 
 			// now affect
-			Vue.set(this.formRecords, formId, form);
+			this.$set(this.formRecords, formId, form);
 		},
 		removeForm(formId) {
 			// do not continue if not found
@@ -332,7 +331,7 @@ export default {
 
 			const newFormRecords = Object.assign({}, this.formRecords); // clean
 			delete newFormRecords[formId]; // delete
-			Vue.set(this, "formRecords", newFormRecords); // affect
+			this.$set(this, "formRecords", newFormRecords); // affect
 		},
 	},
 };

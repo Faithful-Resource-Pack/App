@@ -171,7 +171,6 @@
 </template>
 
 <script>
-import Vue from "vue";
 import axios from "axios";
 import moment from "moment";
 
@@ -455,7 +454,7 @@ export default {
 
 				// needs to be changed on next tick, cannot change same data on same cycle
 				this.$nextTick(() => {
-					Vue.set(this.form.packs[index_entry], "selected", true);
+					this.$set(this.form.packs[index_entry], "selected", true);
 				});
 			} else {
 				// do nothing, at least one is selected

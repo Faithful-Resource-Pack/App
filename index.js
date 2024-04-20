@@ -720,7 +720,7 @@ const app = new Vue({
 				else if (res.length) val = res.length;
 				else val = 0;
 
-				Vue.set(this.badges, url, val);
+				this.$set(this.badges, url, val);
 			});
 
 			if (this.isAdmin) {
