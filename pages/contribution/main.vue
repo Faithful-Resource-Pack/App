@@ -6,6 +6,12 @@
 			:onSubmit="onModalSubmit"
 			:multiple="multiple"
 		/>
+		<contribution-remove-confirm
+			v-model="remove.confirm"
+			:data="remove.data"
+			:contributors="contributors"
+			@disableDialog="disableDialog"
+		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
@@ -117,7 +123,7 @@
 							<v-list-item-subtitle>
 								{{
 									(contrib.authors || [])
-										.map((id) => contributors.filter((c) => c.id == id)[0].username || id)
+										.map((id) => contributors.find((c) => c.id == id).username || id)
 										.join(", ")
 								}}
 							</v-list-item-subtitle>
@@ -136,7 +142,7 @@
 							<v-btn icon @click="editContribution(contrib)">
 								<v-icon color="lighten-1">mdi-pencil</v-icon>
 							</v-btn>
-							<v-btn icon @click="deleteContribution(contrib.id)">
+							<v-btn icon @click="deleteContribution(contrib)">
 								<v-icon color="red lighten-1">mdi-delete</v-icon>
 							</v-btn>
 						</v-list-item-action>
@@ -170,12 +176,14 @@ import axios from "axios";
 import moment from "moment";
 
 import ContributionModal from "./contribution-modal.vue";
+import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
 import UserSelect from "../components/user-select.vue";
 
 export default {
 	components: {
 		ContributionModal,
 		UserSelect,
+		ContributionRemoveConfirm,
 	},
 	name: "contribution-page",
 	data() {
@@ -198,6 +206,10 @@ export default {
 			textureSearch: "",
 			displayedResults: INCREMENT,
 			newSubmit: false,
+			remove: {
+				confirm: false,
+				data: {},
+			}
 		};
 	},
 	computed: {
@@ -297,10 +309,6 @@ export default {
 					});
 				})
 				.catch(console.trace);
-		},
-		remove(id) {
-			const index = this.selectedContributors.indexOf(id);
-			if (index >= 0) this.selectedContributors.splice(index, 1);
 		},
 		addPack(name, value, selected = false) {
 			this.form.packs.push({
@@ -475,16 +483,13 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
-		deleteContribution(id) {
-			axios
-				.delete(`${this.$root.apiURL}/contributions/${id}`, this.$root.apiOptions)
-				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.startSearch(); // reset shown data
-				})
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-				});
+		deleteContribution(data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		disableDialog(refresh = false) {
+			this.remove.confirm = false;
+			if (refresh) this.startSearch();
 		},
 	},
 	created() {

@@ -1,7 +1,7 @@
 <template>
 	<remove-confirm
 		v-model="modalOpened"
-		title="Confirm deletion"
+		:title="$root.lang().database.titles.confirm_deletion"
 		@disableDialog="$emit('disableDialog')"
 		@confirm="deleteData"
 	>
@@ -24,7 +24,7 @@
 		<ul v-else>
 			<template v-for="(key, index) in Object.keys(data).sort()">
 				<li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="index">
-					{{ key }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
+					{{ key.toTitleCase() }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
 				</li>
 			</template>
 		</ul>
