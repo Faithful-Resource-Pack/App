@@ -5,7 +5,7 @@
 			:color="pageColor"
 			:textColor="textColorOnPage"
 			v-model="textureModalOpen"
-			@disableDialog="closeTextureModal"
+			@close="closeTextureModal"
 			:add="Object.keys(dialogData).length == 0"
 			:data="dialogData"
 			:tags="tags"
@@ -21,7 +21,7 @@
 		<modify-version-modal
 			:color="pageColor"
 			v-model="modifyVersionModalOpen"
-			@disableDialog="
+			@close="
 				() => {
 					modifyVersionModalOpen = false;
 				}
@@ -30,7 +30,7 @@
 		<add-version-modal
 			:color="pageColor"
 			v-model="addVersionModalOpen"
-			@disableDialog="
+			@close="
 				() => {
 					addVersionModalOpen = false;
 				}
@@ -42,7 +42,7 @@
 			type="texture"
 			v-model="remove.confirm"
 			:data="remove.data"
-			@disableDialog="
+			@close="
 				() => {
 					remove.confirm = false;
 				}

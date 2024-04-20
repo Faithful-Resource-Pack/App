@@ -3,7 +3,7 @@
 		<submission-modal
 			:color="color"
 			v-model="submissionOpen"
-			@disableDialog="disableSubmission"
+			@close="disableSubmission"
 			:data="submissionData"
 			:add="submissionAdd"
 			:first="add"
@@ -12,7 +12,7 @@
 		<pack-remove-confirm
 			type="submissions"
 			v-model="remove.confirm"
-			@disableDialog="
+			@close="
 				() => {
 					remove.confirm = false;
 					getSubmission(data.id);
@@ -128,7 +128,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
+				<v-btn color="red darken-1" text @click="$emit('close')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send">
@@ -284,7 +284,7 @@ export default {
 			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((err) => {
 					console.error(err);

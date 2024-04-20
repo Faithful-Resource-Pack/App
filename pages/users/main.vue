@@ -4,14 +4,14 @@
 		<user-modal
 			:color="pageColor"
 			v-model="dialogOpen"
-			@disableDialog="closeUserModal"
+			@close="closeUserModal"
 			:add="dialogDataAdd"
 			:data="dialogData"
 			:roles="roles"
 		/>
 		<user-remove-confirm
 			v-model="remove.confirm"
-			@disableDialog="
+			@close="
 				() => {
 					remove.confirm = false;
 					update();

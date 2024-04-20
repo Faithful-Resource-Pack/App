@@ -10,7 +10,7 @@
 			v-model="remove.confirm"
 			:data="remove.data"
 			:contributors="contributors"
-			@disableDialog="disableDialog"
+			@close="close"
 		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
@@ -487,7 +487,7 @@ export default {
 			this.remove.data = data;
 			this.remove.confirm = true;
 		},
-		disableDialog(refresh = false) {
+		close(refresh = false) {
 			this.remove.confirm = false;
 			if (refresh) this.startSearch();
 		},

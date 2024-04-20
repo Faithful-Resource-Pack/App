@@ -13,14 +13,14 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="$emit('disableDialog', false, denyReason)">
+				<v-btn color="darken-1" text @click="$emit('close', false, denyReason)">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn
 					color="red"
 					text
 					:disabled="!denyReason || (denyReason && denyReason.length == 0)"
-					@click="$emit('disableDialog', true, denyReason)"
+					@click="$emit('close', true, denyReason)"
 				>
 					{{ $root.lang().global.btn.ok }}
 				</v-btn>

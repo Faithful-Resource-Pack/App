@@ -11,7 +11,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="darken-1" text @click="$emit('disableDialog')">
+				<v-btn color="darken-1" text @click="$emit('close')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="error darken-1" text @click="onConfirm">

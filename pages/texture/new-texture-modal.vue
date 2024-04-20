@@ -356,7 +356,7 @@ export default {
 			}
 		},
 		onEditionChange(edition, use, texture) {
-			if (!use.paths) use.paths = [emptyPath()];
+			use.paths ||= [emptyPath()];
 			use.paths.forEach((path) => {
 				// add latest version if nothing added yet
 				if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
@@ -384,10 +384,10 @@ export default {
 				this.onEditionChange(edition, use, texture);
 			}
 
-			if (!use.name) use.name = name;
+			use.name ||= name;
 
 			if (!texture) return;
-			if (!texture.name) texture.name = name;
+			texture.name ||= name;
 
 			const textureFolderIndex = split.findIndex((v) => v == "textures");
 			texture.tags = this.sortTags(

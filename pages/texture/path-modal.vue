@@ -116,7 +116,7 @@ export default {
 	methods: {
 		onCancel() {
 			this.modalOpened = false;
-			this.$emit("disableDialog");
+			this.$emit("close");
 		},
 		formatPath(e) {
 			// windows fix
@@ -158,7 +158,7 @@ export default {
 			if (this.first) {
 				delete data.use;
 				this.$emit("pathAdded", data);
-				return this.$emit("disableDialog");
+				return this.$emit("close");
 			}
 
 			let method = "put";
@@ -173,7 +173,7 @@ export default {
 			axios[method](`${this.$root.apiURL}/paths/${pathId}`, data, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((err) => {
 					console.error(err);

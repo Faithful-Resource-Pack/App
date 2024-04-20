@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		:title="$root.lang().database.titles.confirm_deletion"
-		@disableDialog="$emit('disableDialog')"
+		@close="$emit('close')"
 		@confirm="deleteUser"
 	>
 		<p>
@@ -55,12 +55,12 @@ export default {
 				.delete(`${this.$root.apiURL}/users/${this.id}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((error) => {
 					console.error(error);
 					this.$root.showSnackBar(err, "error");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				});
 		},
 	},

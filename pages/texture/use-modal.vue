@@ -3,7 +3,7 @@
 		<path-modal
 			:color="color"
 			v-model="pathModalOpen"
-			@disableDialog="closePathModal"
+			@close="closePathModal"
 			:add="Object.keys(pathModalData).length == 0"
 			:first="add"
 			:useID="formData.id"
@@ -14,7 +14,7 @@
 		<texture-remove-confirm
 			type="path"
 			v-model="remove.confirm"
-			@disableDialog="closeAndUpdate"
+			@close="closeAndUpdate"
 			:data="remove.data"
 		/>
 
@@ -90,7 +90,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('disableDialog')">
+				<v-btn color="red darken-1" text @click="$emit('close')">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn color="darken-1" text @click="send" :disabled="!formValid">
@@ -179,12 +179,17 @@ export default {
 		},
 		closePathModal() {
 			this.pathModalOpen = false;
-			this.getPaths(this.formData.id);
+			if (!this.add) this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
 		pathAdded(data) {
 			// won't trigger update otherwise
 			this.$set(this.formData.paths, this.formData.paths.length, data);
+			if (this.formData.name) return;
+			const split = data.name.split("/");
+			const name = split[split.length - 1].split(".")[0];
+
+			this.formData.name ||= name;
 		},
 		closeAndUpdate() {
 			if (this.add && this.remove.index !== null) {
@@ -237,7 +242,7 @@ export default {
 			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((err) => {
 					console.error(err);

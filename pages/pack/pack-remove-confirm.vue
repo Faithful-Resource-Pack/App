@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		:title="$root.lang().database.titles.confirm_deletion"
-		@disableDialog="$emit('disableDialog')"
+		@close="$emit('close')"
 		@confirm="deletePack"
 	>
 		<p>{{ label }}</p>
@@ -47,7 +47,7 @@ export default {
 				.delete(`${this.$root.apiURL}/${this.type}/${this.id}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((error) => {
 					console.error(error);

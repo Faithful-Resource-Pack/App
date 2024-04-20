@@ -69,7 +69,7 @@ window.colorToHex = (color) => {
 /** @param {Vue} cmp */
 window.updatePageStyles = (cmp) => {
 	if (!cmp.$el) return;
-	if (!cmp.$el.id) cmp.$el.id = cmp.name;
+	cmp.$el.id ||= cmp.name;
 
 	const pageId = cmp.$el.id;
 	const hex = colorToHex(cmp.pageColor);

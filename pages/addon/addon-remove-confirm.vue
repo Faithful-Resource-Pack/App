@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		:title="$root.lang().addons.remove.title"
-		@disableDialog="disableDialog"
+		@close="$emit('close')"
 		@confirm="deleteAddon"
 	>
 		<p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
@@ -41,7 +41,7 @@ export default {
 				.delete(`${this.$root.apiURL}/addons/${addonID}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((error) => {
 					console.error(error);

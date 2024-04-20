@@ -3,7 +3,7 @@
 		<use-modal
 			:color="color"
 			v-model="useModalOpen"
-			@disableDialog="closeUseModal"
+			@close="closeUseModal"
 			:add="useModalAdd"
 			:textureID="formData.id"
 			:data="useModalData"
@@ -11,7 +11,7 @@
 		<texture-remove-confirm
 			type="use"
 			v-model="remove.confirm"
-			@disableDialog="closeAndUpdate"
+			@close="closeAndUpdate"
 			:data="remove.data"
 		/>
 
@@ -242,7 +242,7 @@ export default {
 			promise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((err) => {
 					console.error(err);
@@ -277,7 +277,7 @@ export default {
 		},
 		onCancel() {
 			this.modalOpened = false;
-			this.$emit("disableDialog");
+			this.$emit("close");
 		},
 	},
 	watch: {

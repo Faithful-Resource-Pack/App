@@ -2,7 +2,7 @@
 	<remove-confirm
 		v-model="modalOpened"
 		:title="$root.lang().database.titles.confirm_deletion"
-		@disableDialog="$emit('disableDialog')"
+		@close="$emit('close')"
 		@confirm="deleteContribution"
 	>
 		<li>ID: {{ data.id }}</li>
@@ -55,11 +55,11 @@ export default {
 				.delete(`${this.$root.apiURL}/contributions/${this.data.id}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				})
 				.catch((err) => {
 					this.$root.showSnackBar(err, "error");
-					this.$emit("disableDialog", true);
+					this.$emit("close", true);
 				});
 		},
 	},
