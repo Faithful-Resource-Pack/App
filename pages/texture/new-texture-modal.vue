@@ -210,14 +210,9 @@
 <script>
 import axios from "axios";
 import Prism from "prismjs";
-import {
-	MinecraftSorter,
-	getNameFromPath,
-	getEditionFromPath,
-	getTagFromPath,
-	formatTag,
-	sortTags,
-} from "../../helpers/textures";
+import { formatTag, sortTags } from "@helpers/textures";
+import { getNameFromPath, getEditionFromPath, getTagFromPath } from "@helpers/paths";
+import MinecraftSorter from "@helpers/MinecraftSorter";
 
 const emptyPath = () => ({
 	name: "",

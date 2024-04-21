@@ -1,4 +1,5 @@
 import vue from "@vitejs/plugin-vue2";
+import { fileURLToPath } from "url";
 import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
@@ -42,6 +43,7 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
+				"@helpers": fileURLToPath(new URL('./helpers', import.meta.url))
 			},
 		},
 	};

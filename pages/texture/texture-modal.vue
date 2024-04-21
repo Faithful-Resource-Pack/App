@@ -129,7 +129,7 @@ import axios from "axios";
 
 import UseModal from "./use-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
-import { sortTags } from "../../helpers/textures";
+import { sortTags } from "@helpers/textures";
 
 export default {
 	name: "texture-modal",

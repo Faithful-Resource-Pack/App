@@ -65,7 +65,7 @@
 
 <script>
 import axios from "axios";
-import { MinecraftSorter } from "../../helpers/textures";
+import MinecraftSorter from "@helpers/MinecraftSorter";
 
 export default {
 	name: "path-modal",

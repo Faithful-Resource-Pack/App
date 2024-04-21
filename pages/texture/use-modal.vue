@@ -106,7 +106,8 @@ import axios from "axios";
 
 import PathModal from "./path-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
-import { MinecraftSorter, getNameFromPath } from "../../helpers/textures";
+import MinecraftSorter from "@helpers/MinecraftSorter";
+import { getNameFromPath } from "@helpers/paths"
 
 export default {
 	name: "use-modal",
