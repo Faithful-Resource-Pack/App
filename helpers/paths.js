@@ -1,3 +1,5 @@
+import { formatTag } from "./textures";
+
 /**
  * Get the texture name from a path
  * @param {string} path full path
