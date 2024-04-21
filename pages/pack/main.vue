@@ -44,15 +44,16 @@
 				:class="['my-1 mr-2', activeTag(t)]"
 				:to="packURL(t)"
 				:exact="t == 'all'"
-				>{{ formatTags(t) }}</v-btn
 			>
+				{{ formatTags(t) }}
+			</v-btn>
 		</div>
 
 		<!-- results -->
 		<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
 		<v-list rounded v-if="packs.length" two-line class="main-container">
-			<v-row class="mb-1 mt-0"
-				><v-col :cols="12 / listColumns" xs="1" class="py-0" v-for="pack in packs" :key="pack.id">
+			<v-row class="mb-1 mt-0">
+				<v-col :cols="12 / listColumns" xs="1" class="py-0" v-for="pack in packs" :key="pack.id">
 					<v-list-item>
 						<v-list-item-avatar
 							:style="{

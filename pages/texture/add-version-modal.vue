@@ -7,8 +7,8 @@
 			<v-card-text class="mb-0">
 				<v-form ref="form">
 					<v-row>
-						<v-col
-							><v-select
+						<v-col>
+							<v-select
 								:color="color"
 								:item-color="color"
 								class="mb-0"

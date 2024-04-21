@@ -57,8 +57,9 @@
 									style="display: inline-block; position: absolute; right: 0; top: 0"
 								>
 									<v-icon small class="ma-1" @click.stop="(e) => $refs.headerPreview.open()">
-										mdi-fullscreen </v-icon
-									><v-icon
+										mdi-fullscreen
+									</v-icon>
+									<v-icon
 										small
 										class="ma-1"
 										@click="
@@ -86,10 +87,10 @@
 									style="height: 100%"
 								>
 									<template v-slot:label>
-										<span
-											><v-icon small>mdi-image</v-icon>
-											{{ $root.lang().addons.images.header.labels.drop }}</span
-										>
+										<span>
+											<v-icon small>mdi-image</v-icon>
+											{{ $root.lang().addons.images.header.labels.drop }}
+										</span>
 									</template>
 								</drop-zone>
 							</v-responsive>
@@ -111,10 +112,10 @@
 						style="height: 70px"
 					>
 						<template v-slot:label>
-							<span
-								><v-icon small>mdi-image</v-icon>
-								{{ $root.lang().addons.images.carousel.labels.drop }}</span
-							>
+							<span>
+								<v-icon small>mdi-image</v-icon>
+								{{ $root.lang().addons.images.carousel.labels.drop }}
+							</span>
 						</template>
 					</drop-zone>
 				</div>

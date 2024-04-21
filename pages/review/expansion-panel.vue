@@ -170,22 +170,25 @@
 							v-show="status != 'approved'"
 							@click="reviewAddon(addon, 'approved')"
 						>
-							{{ $root.lang().global.btn.approve }} </v-btn
-						><v-btn
+							{{ $root.lang().global.btn.approve }}
+						</v-btn>
+						<v-btn
 							text
 							color="red"
 							v-show="status != 'denied'"
 							@click="openDenyPopup(addonInPanel)"
 						>
-							{{ $root.lang().global.btn.deny }} </v-btn
-						><v-btn
+							{{ $root.lang().global.btn.deny }}
+						</v-btn>
+						<v-btn
 							text
 							color="gray"
 							v-show="status != 'archived'"
 							@click="openDenyPopup(addonInPanel, 'archive')"
 						>
-							{{ $root.lang().global.btn.archive }} </v-btn
-						><v-btn text color="yellow" :href="`/addons/edit/${addonInPanel.id}`">
+							{{ $root.lang().global.btn.archive }}
+						</v-btn>
+						<v-btn text color="yellow" :href="`/addons/edit/${addonInPanel.id}`">
 							{{ $root.lang().global.btn.edit }}
 						</v-btn>
 					</div>

@@ -672,22 +672,13 @@ code {
 	padding: 0.25rem;
 	text-align: center;
 	aspect-ratio: 1;
-}
-.not-done,
-.not-done > span {
-	height: 100%;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+	word-break: break-word;
 }
 .not-done > * {
 	vertical-align: middle;
 	display: inline-block;
-}
-.not-done > span + div {
-	width: 100%;
-}
-.not-done div h3 {
-	word-wrap: break-word;
-	white-space: pre-wrap;
-	word-break: break-word;
 }
 .not-done div p {
 	margin-bottom: 0;

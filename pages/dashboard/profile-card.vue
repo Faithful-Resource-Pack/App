@@ -32,7 +32,12 @@
 				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0"
 				v-if="user.roles.length"
 			>
-				<span v-html="user.roles.join('<br>')" />
+				<span>
+					<template v-for="role in user.roles">
+						{{ role }}
+						<br />
+					</template>
+				</span>
 			</p>
 			<div v-else />
 		</v-card-text>

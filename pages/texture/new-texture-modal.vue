@@ -110,9 +110,9 @@
 													/>
 												</v-col>
 												<v-col class="flex-grow-0 flex-shrink-0">
-													<v-icon color="error" @click="() => deleteUse(t_i, u_i)"
-														>mdi-close</v-icon
-													>
+													<v-icon color="error" @click="() => deleteUse(t_i, u_i)">
+														mdi-close
+													</v-icon>
 												</v-col>
 											</v-row>
 											<v-row dense class="mb-2">
@@ -167,9 +167,9 @@
 																/>
 															</v-col>
 															<v-col class="flex-grow-0 flex-shrink-0">
-																<v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)"
-																	>mdi-close</v-icon
-																>
+																<v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">
+																	mdi-close
+																</v-icon>
 															</v-col>
 														</v-row>
 													</v-container>

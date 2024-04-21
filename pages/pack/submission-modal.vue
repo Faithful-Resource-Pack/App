@@ -25,8 +25,7 @@
 								item-text="label"
 								item-value="value"
 								:label="$root.lang().database.labels.submission_reference"
-							>
-							</v-select>
+							/>
 						</v-col>
 					</v-row>
 					<v-row>

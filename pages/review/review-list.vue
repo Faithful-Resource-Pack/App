@@ -1,18 +1,19 @@
 <template>
 	<v-card flat class="overflow-y-auto rounded-lg">
-		<v-list-item
-			v-if="items.length > 0"
-			two-line
-			v-for="(item, i) in items"
-			:key="item.key"
-			:class="classes[i]"
-			@click="() => onClick(item.key)"
-		>
-			<v-list-item-content>
-				<v-list-item-title>{{ item.primary }}</v-list-item-title>
-				<v-list-item-subtitle>{{ item.secondary }}</v-list-item-subtitle>
-			</v-list-item-content>
-		</v-list-item>
+		<div v-if="items.length > 0">
+			<v-list-item
+				two-line
+				v-for="(item, i) in items"
+				:key="item.key"
+				:class="classes[i]"
+				@click="() => onClick(item.key)"
+			>
+				<v-list-item-content>
+					<v-list-item-title>{{ item.primary }}</v-list-item-title>
+					<v-list-item-subtitle>{{ item.secondary }}</v-list-item-subtitle>
+				</v-list-item-content>
+			</v-list-item>
+		</div>
 		<div v-else class="pa-2">
 			{{ empty }}
 		</div>

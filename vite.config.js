@@ -43,7 +43,7 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
-				"@helpers": fileURLToPath(new URL('./helpers', import.meta.url))
+				"@helpers": fileURLToPath(new URL("./helpers", import.meta.url)),
 			},
 		},
 	};

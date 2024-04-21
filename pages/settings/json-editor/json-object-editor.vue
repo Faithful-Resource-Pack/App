@@ -7,8 +7,8 @@
 		<div v-show="toggled" class="json-editor-content">
 			<div v-for="(val, index) in values" :key="val + index" class="d-flex">
 				<div class="json-object-key">
-					<span class="json-editor-delete" @click="() => deleteItem(index)">delete</span
-					><input
+					<span class="json-editor-delete" @click="() => deleteItem(index)">delete</span>
+					<input
 						class="json-editor-input json-object-key-input"
 						type="string"
 						v-model="keys[index]"

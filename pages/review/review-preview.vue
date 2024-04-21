@@ -69,8 +69,9 @@
 							>
 								mdi-fullscreen
 							</v-icon>
-						</v-card> </v-col
-					><v-col cols="12" sm="5">
+						</v-card>
+					</v-col>
+					<v-col cols="12" sm="5">
 						<v-list-item-title class="uppercase">
 							{{ $root.lang().review.addon.titles.authors }}
 						</v-list-item-title>
@@ -88,8 +89,8 @@
 							>
 								<li>
 									{{ file.name }} -
-									<a :href="file.source" class="text--secondary"
-										>{{ $root.lang().review.addon.labels.link }}
+									<a :href="file.source" class="text--secondary">
+										{{ $root.lang().review.addon.labels.link }}
 										<v-icon small color="light-blue">mdi-open-in-new</v-icon>
 									</a>
 								</li>
@@ -165,15 +166,12 @@
 					:disabled="status == 'approved'"
 					@click="reviewAddon(addonId, 'approved')"
 				>
-					{{ $root.lang().global.btn.approve }} </v-btn
-				><v-btn
-					text
-					color="red"
-					:disabled="status == 'denied'"
-					@click="openDenyPopup(addonInPanel)"
-				>
-					{{ $root.lang().global.btn.deny }} </v-btn
-				><v-btn
+					{{ $root.lang().global.btn.approve }}
+				</v-btn>
+				<v-btn text color="red" :disabled="status == 'denied'" @click="openDenyPopup(addonInPanel)">
+					{{ $root.lang().global.btn.deny }}
+				</v-btn>
+				<v-btn
 					text
 					color="gray"
 					:disabled="status == 'archived'"

@@ -49,8 +49,9 @@
 				:elevation="i == day ? 2 : 0"
 				@click="() => newDay(i)"
 				:disabled="disabled || i > days_in_month"
-				>{{ i }}</v-btn
 			>
+				{{ i }}
+			</v-btn>
 		</div>
 	</v-card>
 </template>

@@ -12,7 +12,8 @@
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
 		/>
 		<div v-else class="not-done">
-			<span />
+			<span style="height: 100%" />
+			<!-- no idea why this div is needed but it is -->
 			<div>
 				<slot />
 			</div>

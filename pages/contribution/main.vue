@@ -88,8 +88,8 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
 
 		<v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
-			<v-row
-				><v-col
+			<v-row>
+				<v-col
 					:cols="12 / listColumns"
 					xs="1"
 					v-for="(contrib_arr, index) in splitResults"
@@ -158,8 +158,9 @@
 				@click="showMore()"
 				:v-if="displayedResults < search.search_results.length"
 				elevation="2"
-				>{{ $root.lang().global.btn.load_more }}</v-btn
 			>
+				{{ $root.lang().global.btn.load_more }}
+			</v-btn>
 		</v-list>
 		<div v-else>
 			<br />
@@ -208,7 +209,7 @@ export default {
 			remove: {
 				confirm: false,
 				data: {},
-			}
+			},
 		};
 	},
 	computed: {

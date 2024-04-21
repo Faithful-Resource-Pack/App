@@ -23,8 +23,9 @@
 						style="display: inline-block; position: absolute; right: 0; top: 0"
 					>
 						<v-icon small class="ma-1" @click.stop="(e) => onFullscreen(item, index, e)">
-							mdi-fullscreen </v-icon
-						><v-icon
+							mdi-fullscreen
+						</v-icon>
+						<v-icon
 							v-if="deletable"
 							small
 							class="ma-1"

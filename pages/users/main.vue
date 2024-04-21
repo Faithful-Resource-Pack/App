@@ -33,8 +33,9 @@
 				:class="['my-2 mr-1', activeRole(t)]"
 				:to="userURL(t)"
 				:exact="t == 'all'"
-				>{{ t }}</v-btn
 			>
+				{{ t }}
+			</v-btn>
 		</div>
 
 		<!-- search -->
@@ -67,8 +68,8 @@
 			<v-progress-circular indeterminate :color="pageColor" />
 		</div>
 		<v-list rounded v-else-if="users.length" two-line class="main-container">
-			<v-row
-				><v-col :cols="12 / listColumns" xs="1" v-for="(users, index) in splitUsers" :key="index">
+			<v-row>
+				<v-col :cols="12 / listColumns" xs="1" v-for="(users, index) in splitUsers" :key="index">
 					<v-list-item v-for="user in users" :key="user.id">
 						<v-list-item-avatar
 							:style="{
@@ -110,8 +111,9 @@
 				@click="showMore()"
 				:v-if="displayedResults < Object.keys(users).length"
 				elevation="2"
-				>{{ $root.lang().global.btn.load_more }}</v-btn
 			>
+				{{ $root.lang().global.btn.load_more }}
+			</v-btn>
 		</v-list>
 		<div v-else>
 			<br />

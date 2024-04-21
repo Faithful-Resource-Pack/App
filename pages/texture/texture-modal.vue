@@ -71,8 +71,9 @@
 									'border-radius': '4px !important',
 									width: 'auto',
 								}"
-								>#{{ index }}</v-list-item-avatar
 							>
+								#{{ index }}
+							</v-list-item-avatar>
 
 							<v-list-item-content>
 								<v-list-item-title>

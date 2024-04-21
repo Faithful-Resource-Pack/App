@@ -12,24 +12,21 @@
 								:hint="'⚠️' + $root.lang().database.hints.path_id"
 								v-model="formData.id"
 								:label="$root.lang().database.labels.path_id"
-							>
-							</v-text-field>
+							/>
 							<v-text-field
 								:color="color"
 								v-if="add == false"
 								:hint="'⚠️' + $root.lang().database.hints.use_id"
 								v-model="formData.use"
 								:label="$root.lang().database.labels.use_id"
-							>
-							</v-text-field>
+							/>
 							<v-text-field
 								:color="color"
 								:hint="$root.lang().database.hints.path"
 								v-model="formData.name"
 								@change="(e) => formatPath(e)"
 								:label="$root.lang().database.labels.path"
-							>
-							</v-text-field>
+							/>
 							<v-select
 								:color="color"
 								:item-color="color"
@@ -39,8 +36,7 @@
 								v-model="formData.versions"
 								:items="sortedVersions"
 								:label="$root.lang().database.labels.versions"
-							>
-							</v-select>
+							/>
 							<v-checkbox
 								:color="color"
 								v-model="formData.mcmeta"

@@ -103,8 +103,8 @@
 
 				<!-- ================ SOCIAL SETTINGS ================ -->
 				<v-list-item>
-					<v-row class="mb-2"
-						><v-col>
+					<v-row class="mb-2">
+						<v-col>
 							<v-form lazy-validation>
 								<div class="text-h6">{{ $root.lang().profile.social.title }}</div>
 								<template v-if="localUser.media && Object.keys(localUser.media).length">
@@ -123,8 +123,7 @@
 												:label="
 													$root.lang().profile.social.edit.label.replace('%s', socialMedia.type)
 												"
-											>
-											</v-text-field>
+											/>
 										</v-col>
 										<v-col
 											class="py-0"
@@ -144,8 +143,7 @@
 														v-model="socialMedia.type"
 														hide-details
 														solo
-													>
-													</v-select>
+													/>
 												</v-col>
 												<v-col class="flex-grow-0 flex-shrink-0">
 													<v-btn
@@ -171,8 +169,7 @@
 											style="margin-bottom: 0px; margin-top: 12px"
 											v-model="newMedia.link"
 											:rules="urlAddRules"
-										>
-										</v-text-field>
+										/>
 									</v-col>
 									<v-col
 										class="py-0"

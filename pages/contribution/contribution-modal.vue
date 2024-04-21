@@ -23,7 +23,8 @@
 									? 'flex-grow-0 flex-shrink-1 px-4'
 									: 'flex-grow-1 flex-shrink-0 py-4',
 							]"
-							><v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
+						>
+							<v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
 						</v-col>
 						<v-col
 							class="flex-grow-1 flex-shrink-0 d-flex flex-column"

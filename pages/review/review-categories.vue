@@ -15,7 +15,6 @@
 				<v-badge inline dot left :color="cat.color" style="margin-left: -4px">
 					<div class="subtitle-1 text--secondary" style="margin-left: 5px">{{ cat.label }}</div>
 				</v-badge>
-
 				<h4 class="h4 ml-auto" style="margin-left: 5px">{{ cat.count || "" }}</h4>
 			</v-card>
 		</v-col>

@@ -18,8 +18,10 @@
 							class="d-flex align-stretch"
 						>
 							<p class="mb-0 rounded-lg pa-2">
-								<span class="v-card__title pa-0 d-inline text--primary">{{ total.value }}</span
-								>{{ " " + $root.lang(`dashboard.totals.${total.name}`) }}
+								<span class="v-card__title pa-0 d-inline text--primary">
+									{{ total.value }}
+								</span>
+								{{ " " + $root.lang(`dashboard.totals.${total.name}`) }}
 							</p>
 						</v-col>
 					</v-row>

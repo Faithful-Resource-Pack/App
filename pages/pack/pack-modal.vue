@@ -34,8 +34,7 @@
 						"
 						v-model="formData.id"
 						:label="$root.lang().database.labels.pack_id"
-					>
-					</v-text-field>
+					/>
 					<v-text-field
 						:color="color"
 						required
@@ -53,8 +52,7 @@
 						v-model="formData.tags"
 						:items="tags"
 						:label="$root.lang().database.labels.pack_tags"
-					>
-					</v-combobox>
+					/>
 					<v-text-field
 						:color="color"
 						required
@@ -79,16 +77,14 @@
 									:color="color"
 									:label="$root.lang().database.labels.github_org"
 									v-model="(formData.github[edition] || createNewGithub(edition)).org"
-								>
-								</v-text-field>
+								/>
 							</v-col>
 							<v-col>
 								<v-text-field
 									:color="color"
 									:label="$root.lang().database.labels.github_repo"
 									v-model="(formData.github[edition] || createNewGithub(edition)).repo"
-								>
-								</v-text-field>
+								/>
 							</v-col>
 						</v-row>
 					</div>
@@ -122,7 +118,8 @@
 						color="secondary"
 						@click="submissionModal(formData, true)"
 					>
-						{{ $root.lang().database.labels.new_submission }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.labels.new_submission }}
+						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-form>
 			</v-card-text>
