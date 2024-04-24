@@ -245,12 +245,13 @@ export default {
 			// compute based on existing paths and uses
 			axios
 				.get(`${this.$root.apiURL}/textures/${this.formData.id}/paths`, this.$root.apiOptions)
-				.then(({ data: paths }) => {
+				.then((res) => {
 					this.formData.tags = sortTags([
 						...Object.values(this.formData.uses).map((v) => v.edition.toTitleCase()),
-						...(paths || []).map((path) => formatTag(getTagFromPath(path.name))),
+						...(res.data || []).map((path) => formatTag(getTagFromPath(path.name))),
 					]);
-				});
+				})
+				.catch((err) => console.log(err));
 		},
 		getUses(textureID) {
 			axios
