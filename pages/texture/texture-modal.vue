@@ -130,7 +130,8 @@ import axios from "axios";
 
 import UseModal from "./use-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
-import { sortTags } from "@helpers/textures";
+import { formatTag, sortTags } from "@helpers/textures";
+import { getTagFromPath } from "@helpers/paths";
 
 export default {
 	name: "texture-modal",
@@ -240,18 +241,21 @@ export default {
 					this.$root.showSnackBar(err, "error");
 				});
 		},
+		recomputeTagList() {
+			// compute based on existing paths and uses
+			axios
+				.get(`${this.$root.apiURL}/textures/${this.formData.id}/paths`, this.$root.apiOptions)
+				.then(({ data: paths }) => {
+					this.formData.tags = sortTags([
+						...Object.values(this.formData.uses).map((v) => v.edition.toTitleCase()),
+						...(paths || []).map((path) => formatTag(getTagFromPath(path.name))),
+					]);
+				});
+		},
 		getUses(textureID) {
 			axios
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
-					// dynamic edition tags
-					const editionlessTags = (this.formData.tags || []).filter(
-						(r) => !["Java", "Bedrock"].includes(r),
-					);
-					this.formData.tags = sortTags([
-						...Object.values(res.data).map((v) => v.edition.toTitleCase()),
-						...editionlessTags,
-					]);
 					this.formData.uses = Object.values(res.data).reduce(
 						(acc, cur) => ({
 							...acc,
@@ -259,6 +263,8 @@ export default {
 						}),
 						{},
 					);
+					// recompute tag list once uses are loaded
+					this.recomputeTagList();
 				})
 				.catch((err) => console.error(err));
 		},
