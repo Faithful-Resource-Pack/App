@@ -177,7 +177,7 @@ export default {
 		openPathModal(data = {}, index = null) {
 			this.pathModalOpen = true;
 			this.pathModalData = data;
-			if (index !== null) this.$delete(this.formData.paths, index);
+			if (this.add && index !== null) this.$delete(this.formData.paths, index);
 		},
 		closePathModal() {
 			this.pathModalOpen = false;
