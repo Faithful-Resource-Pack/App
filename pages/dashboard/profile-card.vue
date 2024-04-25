@@ -10,10 +10,10 @@
 			<div v-if="user.roles.length === 0" />
 
 			<div class="text-center">
-				<v-list-item-avatar tile class="rounded-lg my-3 mr-0 primary" size="80">
+				<v-list-item-avatar tile class="rounded-lg my-3 mr-0 primary" size="120">
 					<v-img :src="user.avatar" v-if="user.avatar" />
 					<div class="text-h5 text-center text--primary font-weight-medium" v-else>
-						{{ user.username.charAt(0) }}
+						{{ user.username[0] }}
 					</div>
 				</v-list-item-avatar>
 			</div>

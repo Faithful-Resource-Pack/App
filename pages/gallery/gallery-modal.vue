@@ -83,12 +83,12 @@
 									</div>
 								</template>
 							</template>
-							<template v-if="tab === tabs.authors" class="double_table">
+							<template v-if="tab === tabs.authors" class="double-table">
 								<template v-for="{ category, packs } in authorCategories">
 									<div class="gallery-info">
 										<h2 style="text-transform: capitalize">{{ category }}</h2>
 										<!-- use div for horizontal layout -->
-										<div class="double_table">
+										<div class="double-table">
 											<div v-for="pack in packs">
 												<div class="title text-button text--secondary">
 													{{ packToName[pack] }}

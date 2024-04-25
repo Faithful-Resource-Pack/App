@@ -34,8 +34,8 @@ input[type=number] {
 }
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
-		-webkit-appearance: none;
-		margin: 0;
+	-webkit-appearance: none;
+	margin: 0;
 }
 
 /* ===== Scrollbar CSS ===== */
@@ -769,24 +769,24 @@ code {
 	padding: 5px;
 }
 
-.double_table {
+.double-table {
 	display: flex;
 	flex-direction: row;
 	gap: 30px;
 }
 
-.double_table > div {
+.double-table > div {
 	flex-grow: 1;
 }
 
-.go_up_btn {
+.go-up-btn {
 	position: fixed;
 	bottom: 64px;
 	right: 64px;
 	z-index: 202;
 }
 
-.go_up_btn:hover {
+.go-up-btn:hover {
 	cursor: pointer;
 }
 

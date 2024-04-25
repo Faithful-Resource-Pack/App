@@ -153,7 +153,7 @@
 			:onClose="() => changeShareURL()"
 		/>
 
-		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go_up_btn">
+		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
 			<v-icon> mdi-arrow-up </v-icon>
 		</v-btn>
 	</v-container>

@@ -74,7 +74,7 @@
 			</v-row>
 		</v-card-text>
 
-		<v-card-actions class="d-flex mt-0 px-4 pt-1">
+		<v-card-actions class="d-flex mt-0 px-4 pt-1" v-if="$root.isUserLogged">
 			<v-row dense>
 				<v-col>
 					<v-btn block text color="primary" to="/addons/submissions">
@@ -88,6 +88,9 @@
 				</v-col>
 			</v-row>
 		</v-card-actions>
+
+		<!-- fix missing bottom margin when user isn't logged in -->
+		<span v-else class="mb-3" />
 	</dashboard-card>
 </template>
 
