@@ -605,7 +605,7 @@ code {
 	bottom: 0;
 
 	border: 1px dashed currentColor;
-	z-index: 5;
+	z-index: 3;
 	border-radius: 10px;
 }
 
