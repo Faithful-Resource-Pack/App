@@ -212,16 +212,17 @@ export default {
 						contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
 					}));
 			switch (item) {
-				case this.textureCategories[0]:
+				case "texture":
 					return [
 						{
 							...this.textureObj[item],
 							tags: this.textureObj[item].tags.join(", "),
 						},
 					];
-				case this.textureCategories[1]:
+				case "uses":
+					// no arrays to transform
 					return Object.values(this.textureObj[item]);
-				case this.textureCategories[2]:
+				case "paths":
 					return this.textureObj[item].map((path) => ({
 						...path,
 						versions: path.versions.join(", "),
@@ -245,7 +246,7 @@ export default {
 					},
 				];
 			switch (item) {
-				case this.textureCategories[0]:
+				case "texture":
 					return [
 						{
 							text: this.$root.lang().gallery.modal.data.id,
@@ -263,7 +264,7 @@ export default {
 							sortable: false,
 						},
 					];
-				case this.textureCategories[1]:
+				case "uses":
 					return [
 						{
 							text: this.$root.lang().gallery.modal.data.use_id,
@@ -277,13 +278,8 @@ export default {
 							text: this.$root.lang().gallery.modal.data.edition,
 							value: "edition",
 						},
-						{
-							text: this.$root.lang().gallery.modal.data.texture_id,
-							value: "texture",
-						},
 					];
-
-				case this.textureCategories[2]:
+				case "paths":
 					return [
 						{
 							text: this.$root.lang().gallery.modal.data.path_id,

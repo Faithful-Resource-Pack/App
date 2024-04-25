@@ -314,7 +314,7 @@ export default {
 			required: true,
 		},
 		addonData: {
-			required: true,
+			required: false,
 		},
 		loading: {
 			type: Boolean,

@@ -5,7 +5,7 @@
 		@close="$emit('close')"
 		@confirm="deleteAddon"
 	>
-		<p>{{ $root.lang().addons.remove.labels.question.replace("%s", title) }}</p>
+		<p>{{ $root.lang().addons.remove.labels.question.replace("%s", data.name) }}</p>
 		<p style="color: red">{{ $root.lang().addons.remove.labels.warning }}</p>
 	</remove-confirm>
 </template>
