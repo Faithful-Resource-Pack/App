@@ -10,8 +10,8 @@
 
 		<v-row id="dashboard-row">
 			<v-col cols="12" sm="3">
-				<profile-card :show="$root.isUserLogged" />
-				<faithful-card :show="!$root.isUserLogged" />
+				<profile-card v-if="$root.isUserLogged" />
+				<faithful-card v-else />
 			</v-col>
 			<v-col cols="12" sm="9">
 				<user-card :colors="colors" />

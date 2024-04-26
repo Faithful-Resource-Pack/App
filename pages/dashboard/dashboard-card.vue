@@ -7,7 +7,6 @@
 				<v-icon v-if="href" :disabled="!clickable" large> mdi-chevron-right </v-icon>
 			</v-btn>
 		</v-card-title>
-
 		<slot />
 	</v-card>
 </template>

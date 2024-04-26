@@ -4,7 +4,6 @@
 		href="/profile"
 		:clickable="true"
 		class="d-flex flex-column"
-		:style="{ display: show ? 'inherit' : 'none !important' }"
 	>
 		<v-card-text v-if="user" class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
 			<div v-if="user.roles.length === 0" />

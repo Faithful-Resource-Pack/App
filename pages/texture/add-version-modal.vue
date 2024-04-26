@@ -6,32 +6,28 @@
 			</v-card-title>
 			<v-card-text class="mb-0">
 				<v-form ref="form">
-					<v-row>
-						<v-col>
-							<v-select
-								:color="color"
-								:item-color="color"
-								class="mb-0"
-								:items="editions"
-								v-model="form.edition"
-								:placeholder="$root.lang().database.labels.new_mc_version_edition"
-							/>
-							<v-select
-								:color="color"
-								:item-color="color"
-								class="mb-0"
-								:items="versions"
-								v-model="form.version"
-								:placeholder="$root.lang().database.labels.new_mc_version_path"
-							/>
-							<v-text-field
-								class="mb-0"
-								:color="color"
-								v-model="form.newVersion"
-								:placeholder="$root.lang().database.labels.new_mc_version_name"
-							/>
-						</v-col>
-					</v-row>
+					<v-select
+						:color="color"
+						:item-color="color"
+						class="mb-0"
+						:items="editions"
+						v-model="form.edition"
+						:placeholder="$root.lang().database.labels.new_mc_version_edition"
+					/>
+					<v-select
+						:color="color"
+						:item-color="color"
+						class="mb-0"
+						:items="versions"
+						v-model="form.version"
+						:placeholder="$root.lang().database.labels.new_mc_version_path"
+					/>
+					<v-text-field
+						class="mb-0"
+						:color="color"
+						v-model="form.newVersion"
+						:placeholder="$root.lang().database.labels.new_mc_version_name"
+					/>
 				</v-form>
 			</v-card-text>
 			<v-card-actions>
