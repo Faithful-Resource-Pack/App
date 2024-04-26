@@ -163,7 +163,7 @@
 																	:color="color"
 																	v-model="path.mcmeta"
 																	hide-details
-																	label="MCMETA"
+																	:label="$root.lang().database.labels.mcmeta"
 																/>
 															</v-col>
 															<v-col class="flex-grow-0 flex-shrink-0">

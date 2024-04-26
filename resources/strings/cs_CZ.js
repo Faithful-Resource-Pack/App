@@ -134,7 +134,6 @@ export default {
 			anonymous: "Anonym",
 			anonymous_explain:
 				'Pokud je zatrženo, jméno uživatele bude zobrazeno jako "Anonym" a jeho skin nebude viditelný. Může být změněno pouze administrátory!',
-			mcmeta: "Animovaná textura",
 			new_mc_version_edition: "Edice, ke které bude verze přidána",
 			new_mc_version_path: "Verze cesty, ke které bude verze přidána",
 			new_mc_version_name: "Jméno nové verze",

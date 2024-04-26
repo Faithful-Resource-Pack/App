@@ -145,7 +145,6 @@ export default {
 			anonymous: "Anonyme",
 			anonymous_explain:
 				"Si coché, l'utilisateur sera renommé \"Anonyme\" et son skin ne sera pas affichée. Cela n'est modifiable que par les administrateurs!",
-			mcmeta: "Texture animée",
 			new_mc_version_edition: "Édition à laquelle ajouter une version",
 			new_mc_version_path: "Version du chemin auquel ajouter la version",
 			new_mc_version_name: "Nom de la nouvelle version",

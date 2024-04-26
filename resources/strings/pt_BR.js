@@ -124,7 +124,6 @@ export default {
 			paths: "Caminho(s)",
 		},
 		labels: {
-			mcmeta: "Textura animada",
 			new_mc_version_edition: "Edição a adicionar a versão",
 			new_mc_version_path: "Versão do caminho a adicionar a versão",
 			new_mc_version_name: "Novo nome de versão",

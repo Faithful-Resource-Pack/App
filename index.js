@@ -873,7 +873,6 @@ const app = new Vue({
 				},
 				light: {
 					primary: "#76C945",
-					secondary: "#00552B",
 					accent: "#af0b51",
 					success: "#22a831",
 				},
