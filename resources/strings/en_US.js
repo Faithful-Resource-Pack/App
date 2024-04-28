@@ -478,6 +478,7 @@ export default {
 			pack: "Pack",
 		},
 		all: "All",
+		latest: "Latest",
 		modal: {
 			no_contributions: "No contributions found",
 			tabs: {

@@ -45,7 +45,7 @@
 							style="border-radius: 5px"
 							alt="Header not found!"
 						>
-							<template v-slot:placeholder>
+							<template #placeholder>
 								<v-row
 									class="fill-height ma-0"
 									align="center"

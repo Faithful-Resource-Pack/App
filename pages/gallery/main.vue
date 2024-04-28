@@ -16,7 +16,7 @@
 
 			<v-col cols="12" sm="6">
 				<v-select
-					:items="computeEditions"
+					:items="editionList"
 					item-text="label"
 					item-value="value"
 					:value="current.edition"
@@ -29,8 +29,10 @@
 		<v-row>
 			<v-col cols="12" sm="6">
 				<v-select
-					:items="options.versions"
+					:items="versionList"
 					:value="current.version"
+					item-text="label"
+					item-value="value"
 					:label="$root.lang('gallery.category.mc_version')"
 					@change="updateRoute($event, 'version')"
 				/>
@@ -107,7 +109,7 @@
 					@click.stop="() => changeShareURL(texture.textureID)"
 				>
 					<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
-						<template v-slot:trigger>
+						<template #trigger>
 							<gallery-image
 								:src="texture.url"
 								:textureID="texture.textureID"
@@ -154,7 +156,7 @@
 		/>
 
 		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
-			<v-icon> mdi-arrow-up </v-icon>
+			<v-icon>mdi-arrow-up</v-icon>
 		</v-btn>
 	</v-container>
 </template>
@@ -162,7 +164,6 @@
 <script>
 /* global settings */
 import axios from "axios";
-import moment from "moment";
 
 import GalleryModal from "./gallery-modal.vue";
 import GalleryTooltip from "./gallery-tooltip.vue";
@@ -193,15 +194,18 @@ export default {
 			options: {
 				packs: [],
 				tags: [this.$root.lang().gallery.all],
-				versions: settings.versions.java,
-				editions: settings.editions,
+				versions: [
+					this.$root.lang().gallery.latest,
+					...settings.versions.java,
+					...settings.versions.bedrock,
+				],
+				editions: [this.$root.lang().gallery.all, ...settings.editions],
 			},
 			// search values
 			current: {
 				pack: "faithful_32x",
 				tag: "all",
-				// latest is always at top
-				version: settings.versions.java[0],
+				version: "latest",
 				edition: "java",
 				search: null,
 			},
@@ -247,8 +251,18 @@ export default {
 				value: id,
 			}));
 		},
-		computeEditions() {
-			return settings.editions.map((e) => ({ label: e, value: e.toLowerCase() }));
+		editionList() {
+			return this.options.editions.map((e, i) => ({
+				label: e,
+				// prevent translated value being sent to api
+				value: i === 0 ? "all" : e.toLowerCase(),
+			}));
+		},
+		versionList() {
+			return this.options.versions.map((e, i) => ({
+				label: /\d/g.test(e) ? e : e.toTitleCase(),
+				value: i === 0 ? "latest" : e,
+			}));
 		},
 		displayedTexturesObject() {
 			return this.displayedTextures.reduce((acc, cur) => {
@@ -274,8 +288,15 @@ export default {
 					? this.resToPackID(params.pack)
 					: params.pack;
 
-				// change available versions so you don't get a blank item
-				this.options.versions = settings.versions[params.edition];
+				// change available versions before changing anything else
+				this.options.versions =
+					params.edition === "all"
+						? [
+								this.$root.lang().gallery.latest,
+								...settings.versions.java,
+								...settings.versions.bedrock,
+							]
+						: settings.versions[params.edition];
 				this.current.edition = params.edition;
 				this.current.version = params.version;
 				this.current.tag = params.tag;
@@ -371,7 +392,14 @@ export default {
 			if (!Object.keys(this.packToName).includes(this.current.pack))
 				this.current.pack = "faithful_32x";
 
-			if (!settings.versions[this.current.edition].includes(this.current.version)) {
+			if (this.current.edition === "all") {
+				this.current.version = "latest";
+				this.options.versions = [
+					this.$root.lang().gallery.latest,
+					...settings.versions.java,
+					...settings.versions.bedrock,
+				];
+			} else if (!settings.versions[this.current.edition].includes(this.current.version)) {
 				this.current.version = settings.versions[this.current.edition][0];
 				// set options to ensure proper data shows up in the selection
 				this.options.versions = settings.versions[this.current.edition];
@@ -388,15 +416,10 @@ export default {
 			this.loading = true;
 			this.displayedTextures = [];
 
-			const version =
-				this.current.version === "latest"
-					? settings.versions[this.current.edition][0]
-					: this.current.version;
-
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
 				.get(
-					`${this.$root.apiURL}/gallery/${this.current.pack}/${this.current.edition}/${version}/${
+					`${this.$root.apiURL}/gallery/${this.current.pack}/${this.current.edition}/${this.current.version}/${
 						this.current.tag
 					}${this.current.search ? `?search=${this.current.search}` : ""}`,
 				)
@@ -531,13 +554,6 @@ export default {
 		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
 	},
 	mounted() {
-		// redirect from "latest" to actual latest version
-		const split = this.$route.fullPath.split("/");
-		if (split[4] === "latest") {
-			split[4] = settings.versions[split[2]][0];
-			this.$router.push(split.join("/"));
-		}
-
 		this.scroll();
 		window.addEventListener("resize", this.computeGrid);
 		this.computeGrid();

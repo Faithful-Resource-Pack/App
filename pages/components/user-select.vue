@@ -12,7 +12,7 @@
 		chips
 	>
 		<!-- SELECTED THINGY -->
-		<template v-slot:selection="data">
+		<template #selection="data">
 			<v-chip
 				:key="data.item.id"
 				v-bind="data.attrs"
@@ -41,7 +41,7 @@
 			</span>
 		</template>
 		<!-- LIST ITEM PART -->
-		<template v-slot:item="data">
+		<template #item="data">
 			<template
 				v-if="data.item && data.item.constructor && data.item.constructor.name === 'String'"
 			>
@@ -66,7 +66,7 @@
 				</v-list-item-avatar>
 			</template>
 		</template>
-		<template v-slot:no-data>
+		<template #no-data>
 			<v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
 				{{ $root.lang("database.subtitles.search") }} <v-icon right dark>mdi-magnify</v-icon>
 			</v-btn>

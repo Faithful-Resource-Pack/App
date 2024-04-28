@@ -35,7 +35,7 @@
 							alt="Header not found!"
 							class="image-fullscreen-thumb"
 						>
-							<template v-slot:placeholder>
+							<template #placeholder>
 								<v-row
 									class="fill-height ma-0"
 									align="center"

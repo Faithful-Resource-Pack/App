@@ -1,8 +1,5 @@
 <template>
-	<dashboard-card
-		id="faithful-card"
-		class="d-flex flex-column"
-	>
+	<dashboard-card id="faithful-card" class="d-flex flex-column">
 		<v-card-text class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
 			<div class="text-center">
 				<v-img
@@ -42,11 +39,6 @@ export default {
 	name: "faithful-card",
 	components: {
 		DashboardCard,
-	},
-	props: {
-		show: {
-			required: true,
-		},
 	},
 };
 </script>

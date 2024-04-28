@@ -86,7 +86,7 @@
 									@change="headerChange"
 									style="height: 100%"
 								>
-									<template v-slot:label>
+									<template #label>
 										<span>
 											<v-icon small>mdi-image</v-icon>
 											{{ $root.lang().addons.images.header.labels.drop }}
@@ -111,7 +111,7 @@
 						@change="carouselChange"
 						style="height: 70px"
 					>
-						<template v-slot:label>
+						<template #label>
 							<span>
 								<v-icon small>mdi-image</v-icon>
 								{{ $root.lang().addons.images.carousel.labels.drop }}
