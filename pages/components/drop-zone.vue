@@ -24,7 +24,7 @@
 		<label for="fileInput" class="label">
 			<div v-if="isDragging">Release to drop files here.</div>
 			<div v-else>
-				<slot name="label" />
+				<slot />
 			</div>
 		</label>
 	</div>
