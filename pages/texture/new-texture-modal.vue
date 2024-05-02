@@ -9,7 +9,7 @@
 							<v-expansion-panels flat v-model="panel">
 								<v-expansion-panel>
 									<v-expansion-panel-header class="px-0 py-0">
-										<h2 class="title">
+										<h2 class="title text--secondary">
 											{{ $root.lang().database.subtitles.import_json_data }}
 										</h2>
 									</v-expansion-panel-header>
