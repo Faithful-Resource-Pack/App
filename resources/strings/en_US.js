@@ -157,8 +157,8 @@ export default {
 			anonymous_explain:
 				"If checked, the user's name will be displayed as \"Anonymous\" and their skin won't show up. Can only be changed by managers!",
 			mcmeta: "Animated",
-			new_mc_version_edition: "Edition to add the version to",
-			new_mc_version_path: "Path version to add the new version to",
+			new_mc_version_edition: "New version edition",
+			new_mc_version_path: "Clone an existing version as a template",
 			new_mc_version_name: "New version name",
 			nameless: "Nameless",
 			add_textures_success: "Added texture(s) successfully",
