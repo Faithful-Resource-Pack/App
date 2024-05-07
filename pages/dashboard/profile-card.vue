@@ -51,11 +51,6 @@ export default {
 	components: {
 		DashboardCard,
 	},
-	props: {
-		show: {
-			required: true,
-		},
-	},
 	computed: {
 		user() {
 			return this.$root.user;
