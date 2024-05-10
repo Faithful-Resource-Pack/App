@@ -83,7 +83,11 @@ export default {
 			const old_version = this.form.old;
 			const new_version = this.form.new;
 			axios
-				.put(`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`)
+				.put(
+					`${this.$root.apiURL}/paths/versions/modify/${old_version}/${new_version}`,
+					null,
+					this.$root.apiOptions,
+				)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 					this.$emit("close", true);

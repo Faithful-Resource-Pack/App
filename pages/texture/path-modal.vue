@@ -9,6 +9,8 @@
 							<v-text-field
 								:color="color"
 								v-if="add == false"
+								disabled
+								persistent-hint
 								:hint="'⚠️' + $root.lang().database.hints.path_id"
 								v-model="formData.id"
 								:label="$root.lang().database.labels.path_id"

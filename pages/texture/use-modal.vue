@@ -24,17 +24,18 @@
 				<v-form ref="form" v-model="formValid">
 					<v-text-field
 						:color="color"
-						v-model="formData.name"
-						:label="$root.lang().database.labels.use_name"
-					/>
-					<v-text-field
-						:color="color"
 						v-if="add == false"
+						disabled
 						required
 						persistent-hint
 						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
 						v-model="formData.id"
 						:label="$root.lang().database.labels.use_id"
+					/>
+					<v-text-field
+						:color="color"
+						v-model="formData.name"
+						:label="$root.lang().database.labels.use_name"
 					/>
 					<v-text-field
 						:color="color"
