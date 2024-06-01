@@ -99,10 +99,10 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
 	font-size: 1.04rem;
 	line-height: 1.6rem;;
 }
-.theme--dark #connect-title {
+.theme--dark .card-text-shadow {
 	text-shadow: 2px 2px rgba(0,0,0,.7);
 }
-.theme--light #connect-title {
+.theme--light .card-text-shadow {
 	text-shadow: 2px 2px rgba(0,0,0,.2);
 }
 
