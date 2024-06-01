@@ -7,16 +7,16 @@ settings:
 dependencies:
   '@vitejs/plugin-vue2':
     specifier: ^2.3.1
-    version: 2.3.1(vite@5.2.11)(vue@2.7.16)
+    version: 2.3.1(vite@5.2.12)(vue@2.7.16)
   axios:
-    specifier: ^1.6.8
-    version: 1.6.8
+    specifier: ^1.7.2
+    version: 1.7.2
   d3:
     specifier: 7.9.0
     version: 7.9.0
   dompurify:
-    specifier: ^3.1.3
-    version: 3.1.3
+    specifier: ^3.1.5
+    version: 3.1.5
   dotenv:
     specifier: ^16.4.5
     version: 16.4.5
@@ -30,14 +30,14 @@ dependencies:
     specifier: ^2.1.7
     version: 2.1.7(vue@2.7.16)
   prettier:
-    specifier: ^3.2.5
-    version: 3.2.5
+    specifier: ^3.3.0
+    version: 3.3.0
   prismjs:
     specifier: ~1.29.0
     version: 1.29.0
   vite:
-    specifier: ^5.2.11
-    version: 5.2.11
+    specifier: ^5.2.12
+    version: 5.2.12
   vue:
     specifier: ^2.7.16
     version: 2.7.16
@@ -86,11 +86,11 @@ devDependencies:
     specifier: ^10.4.0
     version: 10.4.0
   nodemon:
-    specifier: ^3.1.0
-    version: 3.1.0
+    specifier: ^3.1.2
+    version: 3.1.2
   puppeteer:
-    specifier: ^22.8.2
-    version: 22.8.2
+    specifier: ^22.10.0
+    version: 22.10.0
 
 packages:
 
@@ -763,14 +763,14 @@ packages:
     dev: true
     optional: true
 
-  /@vitejs/plugin-vue2@2.3.1(vite@5.2.11)(vue@2.7.16):
+  /@vitejs/plugin-vue2@2.3.1(vite@5.2.12)(vue@2.7.16):
     resolution: {integrity: sha512-/ksaaz2SRLN11JQhLdEUhDzOn909WEk99q9t9w+N12GjQCljzv7GyvAbD/p20aBUjHkvpGOoQ+FCOkG+mjDF4A==}
     engines: {node: ^14.18.0 || >= 16.0.0}
     peerDependencies:
       vite: ^3.0.0 || ^4.0.0 || ^5.0.0
       vue: ^2.7.0-0
     dependencies:
-      vite: 5.2.11
+      vite: 5.2.12
       vue: 2.7.16
     dev: false
 
@@ -865,8 +865,8 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios@1.6.8:
-    resolution: {integrity: sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==}
+  /axios@1.7.2:
+    resolution: {integrity: sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==}
     dependencies:
       follow-redirects: 1.15.6
       form-data: 4.0.0
@@ -1072,12 +1072,12 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /chromium-bidi@0.5.19(devtools-protocol@0.0.1273771):
+  /chromium-bidi@0.5.19(devtools-protocol@0.0.1286932):
     resolution: {integrity: sha512-UA6zL77b7RYCjJkZBsZ0wlvCTD+jTjllZ8f6wdO4buevXgTZYjV+XLB9CiEa2OuuTGGTLnI7eN9I60YxuALGQg==}
     peerDependencies:
       devtools-protocol: '*'
     dependencies:
-      devtools-protocol: 0.0.1273771
+      devtools-protocol: 0.0.1286932
       mitt: 3.0.1
       urlpattern-polyfill: 10.0.0
       zod: 3.22.4
@@ -1550,8 +1550,8 @@ packages:
     engines: {node: '>= 0.8', npm: 1.2.8000 || >= 1.4.16}
     dev: true
 
-  /devtools-protocol@0.0.1273771:
-    resolution: {integrity: sha512-QDbb27xcTVReQQW/GHJsdQqGKwYBE7re7gxehj467kKP2DKuYBUj6i2k5LRiAC66J1yZG/9gsxooz/s9pcm0Og==}
+  /devtools-protocol@0.0.1286932:
+    resolution: {integrity: sha512-wu58HMQll9voDjR4NlPyoDEw1syfzaBNHymMMZ/QOXiHRNluOnDgu9hp1yHOKYoMlxCh4lSSiugLITe6Fvu1eA==}
     dev: true
 
   /diff@5.0.0:
@@ -1559,8 +1559,8 @@ packages:
     engines: {node: '>=0.3.1'}
     dev: true
 
-  /dompurify@3.1.3:
-    resolution: {integrity: sha512-5sOWYSNPaxz6o2MUPvtyxTTqR4D3L77pr5rUQoWgD5ROQtVIZQgJkXbo1DLlK3vj11YGw5+LnF4SYti4gZmwng==}
+  /dompurify@3.1.5:
+    resolution: {integrity: sha512-lwG+n5h8QNpxtyrJW/gJWckL+1/DQiYMX8f7t8Z2AZTPw1esVrqjI63i7Zc2Gz0aKzLVMYC1V1PL/ky+aY/NgA==}
     dev: false
 
   /dotenv@16.4.5:
@@ -2289,8 +2289,8 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: true
 
-  /nodemon@3.1.0:
-    resolution: {integrity: sha512-xqlktYlDMCepBJd43ZQhjWwMw2obW/JRvkrLxq5RCNcuDDX1DbcPT+qT1IlIIdf+DhnWs90JpTMe+Y5KxOchvA==}
+  /nodemon@3.1.2:
+    resolution: {integrity: sha512-/Ib/kloefDy+N0iRTxIUzyGcdW9lzlnca2Jsa5w73bs3npXjg+WInmiX6VY13mIb6SykkthYX/U5t0ukryGqBw==}
     engines: {node: '>=10'}
     hasBin: true
     dependencies:
@@ -2471,8 +2471,8 @@ packages:
     dev: false
     optional: true
 
-  /prettier@3.2.5:
-    resolution: {integrity: sha512-3/GWa9aOC0YeD7LUfvOG2NiDyhOWRvt1k+rcKhOuYnMY24iiCphgneUfJDyFXd6rZCAnuLBv6UeAULtrhT/F4A==}
+  /prettier@3.3.0:
+    resolution: {integrity: sha512-J9odKxERhCQ10OC2yb93583f6UnYutOeiV5i0zEDS7UGTdUt0u+y8erxl3lBKvwo/JHyyoEdXjwp4dke9oyZ/g==}
     engines: {node: '>=14'}
     hasBin: true
     dev: false
@@ -2525,14 +2525,14 @@ packages:
       once: 1.4.0
     dev: true
 
-  /puppeteer-core@22.8.2:
-    resolution: {integrity: sha512-Gg9jUdJeF+UDbYPhwD602ky1LeS+AXDksl6sludrti1b7Sv/U4ZGY1LFyejarkIBCSHiPWL9SngXKCNcdZWBgQ==}
+  /puppeteer-core@22.10.0:
+    resolution: {integrity: sha512-I54J4Vy4I07UHsgB1QSmuFoF7KNQjJWcvFBPhtY+ezMdBfwgGDr8dzYrJa11aPgP9kxIUHjhktcMmmfJkOAtTw==}
     engines: {node: '>=18'}
     dependencies:
       '@puppeteer/browsers': 2.2.3
-      chromium-bidi: 0.5.19(devtools-protocol@0.0.1273771)
+      chromium-bidi: 0.5.19(devtools-protocol@0.0.1286932)
       debug: 4.3.4
-      devtools-protocol: 0.0.1273771
+      devtools-protocol: 0.0.1286932
       ws: 8.17.0
     transitivePeerDependencies:
       - bufferutil
@@ -2540,16 +2540,16 @@ packages:
       - utf-8-validate
     dev: true
 
-  /puppeteer@22.8.2:
-    resolution: {integrity: sha512-yNZmKZHhCtBAjwuzonMyzgXLYxnvR+tbpatuyMffK+zmag84xyqE2EvPEWV1FvDXwW3m+/PT4Zp4KLerWWydQQ==}
+  /puppeteer@22.10.0:
+    resolution: {integrity: sha512-ZOkZd6a6t0BdKcWb0wAYHWQqCfdlN1PPnXOmg/XNrbo6gJhYWFX4qCNb6ahSn8TpAqBqLCoD4Q010F7GwOM7mA==}
     engines: {node: '>=18'}
     hasBin: true
     requiresBuild: true
     dependencies:
       '@puppeteer/browsers': 2.2.3
       cosmiconfig: 9.0.0
-      devtools-protocol: 0.0.1273771
-      puppeteer-core: 22.8.2
+      devtools-protocol: 0.0.1286932
+      puppeteer-core: 22.10.0
     transitivePeerDependencies:
       - bufferutil
       - supports-color
@@ -2951,8 +2951,8 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /vite@5.2.11:
-    resolution: {integrity: sha512-HndV31LWW05i1BLPMUCE1B9E9GFbOu1MbenhS58FuK6owSO5qHm7GiCotrNY1YE5rMeQSFBGmT5ZaLEjFizgiQ==}
+  /vite@5.2.12:
+    resolution: {integrity: sha512-/gC8GxzxMK5ntBwb48pR32GGhENnjtY30G4A0jemunsBkiEZFw60s8InGpN8gkhHEkjnRK1aSAxeQgwvFhUHAA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     hasBin: true
     peerDependencies:
