@@ -133,16 +133,6 @@
 					:hint="$root.lang().addons.general.description.hint"
 				/>
 
-				<!-- Embed description -->
-				<v-text-field
-					clearable
-					v-model="submittedForm.embed_description"
-					:label="$root.lang().addons.general.embed_description.label"
-					:hint="$root.lang().addons.general.embed_description.hint"
-					:counter="form.embed_description.counter.max"
-					persistent-hint
-				/>
-
 				<!-- Addon description preview (using marked and sanitized)-->
 				<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 				<v-container
@@ -153,6 +143,25 @@
 					v-html="$root.compiledMarkdown(submittedForm.description)"
 				/>
 				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
+
+				<!-- Embed description -->
+				<v-text-field
+					clearable
+					v-model="submittedForm.embed_description"
+					:label="$root.lang().addons.general.embed_description.label"
+					:hint="$root.lang().addons.general.embed_description.hint"
+					:counter="form.embed_description.counter.max"
+					persistent-hint
+				/>
+
+				<!-- only visible to admins on already-existing addons -->
+				<v-text-field
+					clearable
+					v-model="submittedForm.slug"
+					v-if="$root.isAdmin && !addonNew"
+					:label="$root.lang().addons.general.slug.label"
+					:hint="$root.lang().addons.general.slug.hint"
+				/>
 
 				<!-- Addon authors selection -->
 				<user-select
@@ -581,9 +590,7 @@ export default {
 		headerChange(file) {
 			// delete not uploaded file
 			if (!file) {
-				if (this.addonNew) {
-					this.$emit("header", undefined, true);
-				}
+				if (this.addonNew) this.$emit("header", undefined, true);
 				return;
 			}
 
@@ -594,9 +601,7 @@ export default {
 				.then(() => {
 					this.headerValid = true;
 					this.$emit("header", file);
-					if (!this.addonNew) {
-						this.submittedForm.headerFile = undefined;
-					}
+					if (!this.addonNew) this.submittedForm.headerFile = undefined;
 				})
 				.catch((error) => {
 					this.headerValid = false;
@@ -685,9 +690,7 @@ export default {
 						return a.username > b.username ? 1 : b.username > a.username ? -1 : 0;
 					});
 				})
-				.catch((err) => {
-					console.trace(err);
-				});
+				.catch((err) => console.trace(err));
 		},
 	},
 	watch: {

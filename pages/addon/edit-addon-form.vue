@@ -275,7 +275,6 @@ export default {
 					downloads,
 				};
 				delete loadedAddon.last_updated;
-				delete loadedAddon.slug;
 				delete loadedAddon.approval;
 				delete loadedAddon.id;
 

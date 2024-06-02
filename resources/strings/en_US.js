@@ -327,6 +327,10 @@ export default {
 					too_big: "Embed description must be less than %s characters.",
 				},
 			},
+			slug: {
+				label: "Add-on slug",
+				hint: "Changing this will break old links!"
+			},
 			reason: {
 				title: "Update reason",
 				text: "Please tell us what you updated to make reviewing your add-on easier!",
