@@ -329,7 +329,7 @@ export default {
 			},
 			slug: {
 				label: "Add-on slug",
-				hint: "Changing this will break old links!"
+				hint: "Changing this will break old links!",
 			},
 			reason: {
 				title: "Update reason",

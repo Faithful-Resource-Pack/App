@@ -386,8 +386,18 @@ ALL_TABS.filter((t) => t.roles === undefined)
 router.addRoute(missingRoute);
 
 window.apiURL = import.meta.env.VITE_API_URL;
+// fix trailing slash
+if (apiURL.endsWith("/")) window.apiURL = window.apiURL.slice(0, -1);
+
 // set as global
-window.settings = await axios.get(`${window.apiURL}/settings/raw`).then((res) => res.data);
+window.settings = await axios
+	.get(`${window.apiURL}/settings/raw`)
+	.then((res) => res.data)
+	.catch((err) => {
+		console.error(err);
+		// don't completely break the webapp if settings can't be fetched
+		return {};
+	});
 
 const pinia = createPinia();
 Vue.use(pinia);
