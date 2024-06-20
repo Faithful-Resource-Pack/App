@@ -105,11 +105,7 @@
 								<v-img
 									class="texture-img"
 									:src="contrib.url"
-									:lazy-src="
-										'https://database.faithfulpack.net/images/branding/logos/transparent/64/f' +
-										contrib.resolution +
-										'_logo.png'
-									"
+									:lazy-src="logos[contrib.pack]"
 								/>
 							</a>
 						</v-list-item-avatar>
@@ -199,6 +195,7 @@ export default {
 			contributors: [],
 			selectedContributors: [],
 			packToCode: {},
+			logos: {},
 			search: {
 				searching: false,
 				search_results: [],
@@ -288,6 +285,7 @@ export default {
 			axios.get(`${this.$root.apiURL}/packs/search?type=submission`).then((res) => {
 				Object.values(res.data).forEach((r) => {
 					this.addPack(r.id, r.name);
+					this.logos[r.id] = r.logo;
 				});
 			});
 		},
