@@ -11,7 +11,7 @@ export default {
 		login: "Se connecter via Discord",
 		ends_success: "Terminé avec succès",
 		loading: "Chargement, veuillez patienter…",
-		no_results: "Aucun résultat n'a été trouvé.",
+		no_results: "Aucun résultat n'a été trouvé",
 		nyi: "N'a pas encore été implémenté.",
 		snackbar_system_theme: {
 			sentence: "Thème système changé en %s",

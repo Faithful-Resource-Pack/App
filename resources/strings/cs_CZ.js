@@ -5,7 +5,7 @@ export default {
 		login: "Přihlásit přes Discord",
 		ends_success: "Povedlo se!",
 		loading: "Načítám, prosím vyčkejte…",
-		no_results: "Žádné výsledky.",
+		no_results: "Žádné výsledky",
 		nyi: "Zatím neimplementováno",
 		snackbar_system_theme: {
 			sentence: "Systémový motiv změněn na %s",

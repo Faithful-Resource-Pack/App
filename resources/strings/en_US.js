@@ -9,7 +9,7 @@ export default {
 		login: "Log in via Discord",
 		ends_success: "Completed successfully",
 		loading: "Loading, please wait…",
-		no_results: "No results were found.",
+		no_results: "No results were found",
 		nyi: "Not yet implemented.",
 		snackbar_system_theme: {
 			sentence: "System theme changed to %s",

@@ -11,7 +11,7 @@ export default {
 		login: "Entrar com Discord",
 		ends_success: "Sucesso",
 		loading: "Carregando, aguarde…",
-		no_results: "Nenhum resultado encontrado.",
+		no_results: "Nenhum resultado encontrado",
 		nyi: "Não implementado ainda.",
 		btn: {
 			add: "Adicionar",

@@ -84,13 +84,15 @@
 			@click:clear="clearSearch"
 		/>
 
-		<v-row>
+		<v-row class="py-3 pb-0">
 			<v-col v-if="requestTime > 0 && textures.length">
-				<p class="py-3 pb-0 text--secondary">
+				<p class="text--secondary">
 					{{ resultMessage }}
 				</p>
 			</v-col>
-			<br v-else />
+			<v-col v-else>
+				<br />
+			</v-col>
 		</v-row>
 
 		<v-list class="main-container pa-2" two-line>

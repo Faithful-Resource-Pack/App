@@ -11,7 +11,7 @@ export default {
 		login: "Über Discord anmelden",
 		ends_success: "Erfolgreich abgeschlossen",
 		loading: "Wird geladen, bitte warten…",
-		no_results: "Es wurden keine Ergebnisse gefunden.",
+		no_results: "Es wurden keine Ergebnisse gefunden",
 		btn: {
 			add: "Hinzufügen",
 			add_download: "Download hinzufügen",
