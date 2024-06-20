@@ -257,13 +257,10 @@ export default {
 			axios
 				.get(`${this.$root.apiURL}/textures/${textureID}/uses`, this.$root.apiOptions)
 				.then((res) => {
-					this.formData.uses = Object.values(res.data).reduce(
-						(acc, cur) => ({
-							...acc,
-							[cur.id]: cur,
-						}),
-						{},
-					);
+					this.formData.uses = Object.values(res.data).reduce((acc, cur) => {
+						acc[cur.id] = cur;
+						return acc;
+					}, {});
 					// recompute tag list once uses are loaded
 					this.recomputeTagList();
 				})

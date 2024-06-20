@@ -84,7 +84,14 @@
 			@click:clear="clearSearch"
 		/>
 
-		<br />
+		<v-row>
+			<v-col v-if="requestTime > 0 && displayedTextures.length">
+				<p class="py-3 pb-0 text--secondary">
+					{{ resultMessage }}
+				</p>
+			</v-col>
+			<br v-else />
+		</v-row>
 
 		<v-list class="main-container pa-2" two-line>
 			<div class="text-center">
@@ -209,6 +216,10 @@ export default {
 				edition: "java",
 				search: null,
 			},
+			timer: {
+				start: null,
+				end: null,
+			},
 			// number of displayed results
 			displayedResults: 1,
 			// result
@@ -245,6 +256,22 @@ export default {
 		};
 	},
 	computed: {
+		requestTime() {
+			if (!this.timer.end || !this.timer.start);
+			const seconds = (this.timer.end - this.timer.start) / 1000;
+			// cast to number again to remove unnecessary zeros
+			return Number(seconds.toFixed(1));
+		},
+		resultMessage() {
+			const replacePlaceholders = (msg) =>
+				msg
+					.replace("%COUNT%", this.displayedTextures.length)
+					.replace("%SECONDS%", this.requestTime);
+
+			if (this.displayedTextures.length === 1)
+				return replacePlaceholders(this.$root.lang().gallery.result_stats_singular);
+			return replacePlaceholders(this.$root.lang().gallery.result_stats_plural);
+		},
 		packList() {
 			return Object.entries(this.packToName).map(([id, name]) => ({
 				label: name,
@@ -406,7 +433,7 @@ export default {
 			}
 
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
-			if (this.current.search) route += `/${this.current.search}`;
+			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
 			return this.$router.push(route);
@@ -414,6 +441,7 @@ export default {
 		updateSearch() {
 			if (this.loading) return;
 			this.loading = true;
+			this.timer.start = Date.now();
 			this.displayedTextures = [];
 
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
@@ -425,6 +453,7 @@ export default {
 				)
 				.then((res) => {
 					this.displayedTextures = res.data;
+					this.timer.end = Date.now();
 				})
 				.catch((e) => {
 					console.error(e);
@@ -521,13 +550,10 @@ export default {
 		});
 		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
 			this.options.packs = Object.values(res.data).map((v) => v.name);
-			this.packToName = Object.values(res.data).reduce(
-				(acc, cur) => ({
-					...acc,
-					[cur.id]: cur.name,
-				}),
-				{},
-			);
+			this.packToName = Object.values(res.data).reduce((acc, cur) => {
+				acc[cur.id] = cur.name;
+				return acc;
+			}, {});
 		});
 		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
 			this.loadedContributors = res.data.reduce((acc, cur) => {

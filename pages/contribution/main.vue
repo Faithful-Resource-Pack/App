@@ -102,11 +102,7 @@
 					>
 						<v-list-item-avatar tile class="texture-preview">
 							<a :href="`/gallery?show=${contrib.texture}`">
-								<v-img
-									class="texture-img"
-									:src="contrib.url"
-									:lazy-src="logos[contrib.pack]"
-								/>
+								<v-img class="texture-img" :src="contrib.url" :lazy-src="logos[contrib.pack]" />
 							</a>
 						</v-list-item-avatar>
 
@@ -490,17 +486,14 @@ export default {
 	},
 	created() {
 		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
-			this.packToCode = Object.values(res.data).reduce(
-				(acc, cur) => ({
-					...acc,
-					[cur.id]: cur.name
-						.split(" ")
-						// Classic Faithful 32x Programmer Art -> CF32PA
-						.map((el) => (isNaN(Number(el[0])) ? el[0].toUpperCase() : el.match(/\d+/g)?.[0]))
-						.join(""),
-				}),
-				{},
-			);
+			this.packToCode = Object.values(res.data).reduce((acc, cur) => {
+				acc[cur.id] = cur.name
+					.split(" ")
+					// Classic Faithful 32x Programmer Art -> CF32PA
+					.map((el) => (isNaN(Number(el[0])) ? el[0].toUpperCase() : el.match(/\d+/g)?.[0]))
+					.join("");
+				return acc;
+			}, {});
 		});
 		this.selectedContributors = this.queryToIds;
 		this.addPack(this.all_packs, this.all_packs_display, true);

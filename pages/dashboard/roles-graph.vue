@@ -95,7 +95,10 @@ export default {
 			return this.$root.isDark ? "dark" : "classic";
 		},
 		types() {
-			return this.labels.reduce((acc, cur, i) => ({ ...acc, [cur]: this.series[i] }), {});
+			return this.labels.reduce((acc, cur, i) => {
+				acc[cur] = this.series[i];
+				return acc;
+			}, {});
 		},
 		values() {
 			return this.series

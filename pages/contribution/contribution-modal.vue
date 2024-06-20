@@ -194,7 +194,10 @@ export default {
 					formID,
 					`${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`,
 				])
-				.reduce((acc, [formID, formLabel]) => ({ ...acc, [formID]: formLabel }), {});
+				.reduce((acc, [formID, formLabel]) => {
+					acc[formID] = formLabel;
+					return acc;
+				}, {});
 		},
 	},
 	methods: {

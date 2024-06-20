@@ -102,10 +102,10 @@ export default {
 		});
 		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
 			this.packToName = Object.values(res.data).reduce(
-				(acc, cur) => ({
-					...acc,
-					[cur.id]: cur.name,
-				}),
+				(acc, cur) => {
+					acc[cur.id] = cur.name;
+					return acc;
+				},
 				{},
 			);
 		});

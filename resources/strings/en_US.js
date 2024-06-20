@@ -483,6 +483,8 @@ export default {
 		},
 		all: "All",
 		latest: "Latest",
+		result_stats_singular: "%COUNT% texture found in %SECONDS% seconds",
+		result_stats_plural: "%COUNT% textures found in %SECONDS% seconds",
 		modal: {
 			no_contributions: "No contributions found",
 			tabs: {
