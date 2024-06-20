@@ -388,7 +388,6 @@ export default {
 				for (const texture_id of generated_range) {
 					const new_contribution = {
 						date: new Date(entry.date).getTime(),
-						resolution: Number.parseInt(entry.pack.match(/\d+/)[0], 10),
 						pack: entry.pack,
 						authors: entry.authors,
 						texture: String(texture_id),
@@ -465,7 +464,6 @@ export default {
 					`${this.$root.apiURL}/contributions/${data.id}`,
 					{
 						date: data.date,
-						resolution: data.resolution,
 						pack: data.pack,
 						authors: data.authors,
 						texture: String(data.texture),

@@ -55,13 +55,6 @@
 					/>
 					<v-text-field
 						:color="color"
-						required
-						type="number"
-						v-model="formData.resolution"
-						:label="$root.lang().database.labels.pack_resolution"
-					/>
-					<v-text-field
-						:color="color"
 						:rules="downloadLinkRules"
 						clearable
 						v-model="formData.logo"
