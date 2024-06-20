@@ -85,7 +85,7 @@
 		/>
 
 		<v-row>
-			<v-col v-if="requestTime > 0 && displayedTextures.length">
+			<v-col v-if="requestTime > 0 && textures.length">
 				<p class="py-3 pb-0 text--secondary">
 					{{ resultMessage }}
 				</p>
@@ -99,7 +99,7 @@
 					<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
 					<v-progress-circular class="ma-1" v-if="loading" indeterminate />
 				</template>
-				<template v-if="!loading && displayedTextures.length === 0">
+				<template v-if="!loading && textures.length === 0">
 					<div class="text-h6 my-2">
 						{{ error || $root.lang().global.no_results }}
 					</div>
@@ -108,7 +108,7 @@
 
 			<div v-if="!loading" class="gallery-textures-container mx-auto" :style="styles.grid">
 				<div
-					v-for="(texture, index) in displayedTextures"
+					v-for="(texture, index) in textures"
 					:key="texture.id"
 					v-if="index <= displayedResults"
 					:style="styles.cell"
@@ -216,6 +216,7 @@ export default {
 				edition: "java",
 				search: null,
 			},
+			// how long a request took
 			timer: {
 				start: null,
 				end: null,
@@ -223,7 +224,7 @@ export default {
 			// number of displayed results
 			displayedResults: 1,
 			// result
-			displayedTextures: [],
+			textures: [],
 			// loaded contributions
 			loadedContributions: {},
 			// loaded contributors
@@ -264,13 +265,13 @@ export default {
 		},
 		resultMessage() {
 			const replacePlaceholders = (msg) =>
-				msg
-					.replace("%COUNT%", this.displayedTextures.length)
-					.replace("%SECONDS%", this.requestTime);
+				msg.replace("%COUNT%", this.textures.length).replace("%SECONDS%", this.requestTime);
 
-			if (this.displayedTextures.length === 1)
-				return replacePlaceholders(this.$root.lang().gallery.result_stats_singular);
-			return replacePlaceholders(this.$root.lang().gallery.result_stats_plural);
+			return replacePlaceholders(
+				this.textures.length === 1
+					? this.$root.lang().gallery.result_stats_singular
+					: this.$root.lang().gallery.result_stats_plural,
+			);
 		},
 		packList() {
 			return Object.entries(this.packToName).map(([id, name]) => ({
@@ -290,12 +291,6 @@ export default {
 				label: /\d/g.test(e) ? e : e.toTitleCase(),
 				value: i === 0 ? "latest" : e,
 			}));
-		},
-		displayedTexturesObject() {
-			return this.displayedTextures.reduce((acc, cur) => {
-				acc[cur.textureID] = cur;
-				return acc;
-			}, {});
 		},
 		tagItems() {
 			return this.options.tags.map((e, i) => ({
@@ -442,7 +437,7 @@ export default {
 			if (this.loading) return;
 			this.loading = true;
 			this.timer.start = Date.now();
-			this.displayedTextures = [];
+			this.textures = [];
 
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
@@ -452,7 +447,7 @@ export default {
 					}${this.current.search ? `?search=${this.current.search}` : ""}`,
 				)
 				.then((res) => {
-					this.displayedTextures = res.data;
+					this.textures = res.data;
 					this.timer.end = Date.now();
 				})
 				.catch((e) => {
