@@ -14,7 +14,7 @@
 			<div
 				v-for="(texture, index) in sortedTextures"
 				v-if="index <= max"
-				:key="sort + index"
+				:key="sort + texture.textureID"
 				:style="styles.cell"
 				class="gallery-texture-in-container"
 				@click.stop="$emit('changeShareURL', texture.textureID)"
@@ -113,6 +113,17 @@ export default {
 		isMojang(packID) {
 			return ["default", "progart"].includes(packID);
 		},
+		getLastContributions(pack) {
+			if (this.isMojang(this.pack)) return this.loadedContributions;
+			return Object.entries(this.loadedContributions[pack])
+				.map(([key, contrib]) => {
+					return [key, contrib.sort((a, b) => b.date - a.date)?.[0]];
+				})
+				.reduce((acc, [k, cur]) => {
+					acc[k] = cur;
+					return acc;
+				}, {});
+		}
 	},
 	computed: {
 		sortedTextures() {
@@ -135,6 +146,12 @@ export default {
 			};
 		},
 	},
+	watch: {
+		pack(n, o) {
+			if (n === o || !Object.keys(this.loadedContributions)) return;
+			this.lastContributions = this.getLastContributions(n);
+		},
+	},
 	created() {
 		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
 			this.loadedContributions = Object.values(res.data)
@@ -150,15 +167,7 @@ export default {
 
 					return acc;
 				}, {});
-
-			this.lastContributions = Object.entries(this.loadedContributions[this.pack])
-				.map(([key, contrib]) => {
-					return [key, contrib.sort((a, b) => b.date - a.date)?.[0]];
-				})
-				.reduce((acc, [k, cur]) => {
-					acc[k] = cur;
-					return acc;
-				}, {});
+			this.lastContributions = this.getLastContributions(this.pack);
 		});
 	},
 };
