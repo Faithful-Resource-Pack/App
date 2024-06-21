@@ -85,15 +85,15 @@
 		/>
 
 		<v-row class="py-3 pb-0">
-			<v-col v-if="requestTime > 0 && textures.length">
+			<v-col cols="12" sm="9" v-if="requestTime > 0 && textures.length">
 				<p class="text--secondary">
 					{{ resultMessage }}
 				</p>
 			</v-col>
-			<v-col v-else>
+			<v-col cols="12" sm="9" v-else>
 				<br />
 			</v-col>
-			<v-col cols="3">
+			<v-col cols="12" sm="3" >
 				<v-select
 					color="text--secondary"
 					dense
