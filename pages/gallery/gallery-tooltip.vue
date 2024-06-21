@@ -66,12 +66,12 @@ export default {
 		},
 		lastContributionNames() {
 			if (this.lastContribution === undefined) return "";
-			return this.lastContribution.contributors
+			return this.lastContribution.authors
 				.map((d) => this.discordIDtoName(d).replace(/\s/gm, "\u00A0"))
 				.join(", ");
 		},
 		icon() {
-			if (this.lastContribution.contributors.length === 1) return "mdi-account";
+			if (this.lastContribution.authors.length === 1) return "mdi-account";
 			return "mdi-account-multiple";
 		},
 		modded() {

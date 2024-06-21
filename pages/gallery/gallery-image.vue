@@ -1,6 +1,6 @@
 <template>
 	<div
-		:class="modal ? 'gallery-dialog-texture' : ''"
+		:class="modal ? 'gallery-dialog-texture' : undefined"
 		:style="exists ? {} : { background: 'rgba(0,0,0,0.3)' }"
 	>
 		<img
@@ -31,6 +31,7 @@ export default {
 			required: true,
 		},
 		textureID: {
+			type: String,
 			required: true,
 		},
 		modal: {

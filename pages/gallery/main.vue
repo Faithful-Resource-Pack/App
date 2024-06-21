@@ -93,65 +93,29 @@
 			<v-col v-else>
 				<br />
 			</v-col>
+			<v-col cols="3">
+				<v-select
+					color="text--secondary"
+					dense
+					hide-details
+					:items="sortMethods"
+					item-text="label"
+					item-value="value"
+					v-model="currentSort"
+				/>
+			</v-col>
 		</v-row>
-
-		<v-list class="main-container pa-2" two-line>
-			<div class="text-center">
-				<template v-if="loading">
-					<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
-					<v-progress-circular class="ma-1" v-if="loading" indeterminate />
-				</template>
-				<template v-if="!loading && textures.length === 0">
-					<div class="text-h6 my-2">
-						{{ error || $root.lang().global.no_results }}
-					</div>
-				</template>
-			</div>
-
-			<div v-if="!loading" class="gallery-textures-container mx-auto" :style="styles.grid">
-				<div
-					v-for="(texture, index) in textures"
-					:key="texture.id"
-					v-if="index <= displayedResults"
-					:style="styles.cell"
-					class="gallery-texture-in-container"
-					@click.stop="() => changeShareURL(texture.textureID)"
-				>
-					<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
-						<template #trigger>
-							<gallery-image
-								:src="texture.url"
-								:textureID="texture.textureID"
-								:ignoreList="ignoredTextures[current.edition]"
-							>
-								<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
-								<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
-								<p :style="styles.not_done.message">
-									{{ $root.lang().gallery.error_message.texture_not_done }}
-								</p>
-							</gallery-image>
-							<v-btn
-								@click.stop="() => copyShareLink(texture.textureID)"
-								class="ma-2 gallery-share"
-								absolute
-								plain
-								icon
-							>
-								<v-icon>mdi-share-variant</v-icon>
-							</v-btn>
-						</template>
-
-						<gallery-tooltip
-							:mojang="isMojang(current.pack)"
-							:texture="texture"
-							:contributions="loadedContributions"
-							:pack="current.pack"
-							:discordIDtoName="discordIDtoName"
-						/>
-					</tippy>
-				</div>
-			</div>
-		</v-list>
+		<gallery-grid
+			:loading="loading"
+			:styles="styles"
+			:textures="textures"
+			:pack="current.pack"
+			:max="displayedResults"
+			:ignoreList="ignoredTextures[current.edition]"
+			:discordIDtoName="discordIDtoName"
+			:sort="currentSort"
+			@changeShareURL="changeShareURL"
+		/>
 		<div class="bottomElement" />
 
 		<gallery-modal
@@ -175,24 +139,23 @@
 import axios from "axios";
 
 import GalleryModal from "./gallery-modal.vue";
-import GalleryTooltip from "./gallery-tooltip.vue";
-import GalleryImage from "./gallery-image.vue";
+import GalleryGrid from "./gallery-grid.vue";
 
 const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
+const SORT_KEY = "gallery_sort";
 
 export default {
 	name: "gallery-page",
 	components: {
 		GalleryModal,
-		GalleryTooltip,
-		GalleryImage,
+		GalleryGrid,
 	},
 	data() {
 		return {
 			// whether the page shouldn't be stretched to the full width
-			stretched: localStorage.getItem(STRETCHED_KEY, "true") === "true",
+			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
 			// number of columns you want to display
 			columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -218,6 +181,14 @@ export default {
 				edition: "java",
 				search: null,
 			},
+			sortMethods: [
+				{ label: "Name (A → Z)", value: "nameAsc" },
+				{ label: "Name (Z → A)", value: "nameDesc" },
+				{ label: "Texture ID (smallest → largest)", value: "idAsc" },
+				{ label: "Texture ID (largest → smallest)", value: "idDesc" },
+				{ label: "Contribution Activity", value: "contribDesc" },
+			],
+			currentSort: localStorage.getItem(SORT_KEY) || "nameAsc",
 			// how long a request took
 			timer: {
 				start: null,
@@ -227,8 +198,6 @@ export default {
 			displayedResults: 1,
 			// result
 			textures: [],
-			// loaded contributions
-			loadedContributions: {},
 			// loaded contributors
 			loadedContributors: {},
 			// modal opened ID
@@ -237,14 +206,14 @@ export default {
 			modalTextureObj: {},
 			// whether modal is opened
 			modalOpen: false,
+			// object of pack id -> pack display name
 			packToName: {},
+			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
 			// styles
 			styles: {
 				// gallery cell styles
-				cell: {
-					"aspect-ratio": "1",
-				},
+				cell: { "aspect-ratio": "1" },
 				// grid styles
 				grid: undefined,
 				// placeholder font size styles
@@ -257,6 +226,176 @@ export default {
 			// go to the top arrow
 			scrollY: 0,
 		};
+	},
+	methods: {
+		resToPackID(res) {
+			// for legacy url support
+			switch (res) {
+				case "16x":
+					return "default";
+				case "32x":
+					return "faithful_32x";
+				case "64x":
+					return "faithful_64x";
+			}
+		},
+		changeShareURL(id, copyURL = false) {
+			if (!copyURL && id !== undefined) this.$router.push({ query: { show: id } });
+
+			// need location api to get base url to share
+			const showIndex = location.href.indexOf("?show=");
+			let changedURL = location.href;
+			// trim off show portion if already exists
+			if (showIndex !== -1 && id !== undefined) changedURL = changedURL.slice(0, showIndex);
+			// add new url
+			if (id !== undefined) changedURL += `?show=${id}`;
+			return changedURL;
+		},
+		removeShareURL() {
+			this.$router.push({ query: null });
+		},
+		copyShareLink(id) {
+			const url = this.changeShareURL(id, true);
+			navigator.clipboard.writeText(url);
+			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
+		},
+		openModal(id) {
+			this.modalTextureID = id;
+			this.modalTextureObj = {}; // changes text back to loading text if reopening modal
+			this.modalOpen = true;
+
+			axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
+				this.modalTextureObj = res.data;
+			});
+		},
+		discordIDtoName(d) {
+			return (
+				this.loadedContributors[d]?.username ||
+				this.$root.lang().gallery.error_message.user_anonymous
+			);
+		},
+		startSearch() {
+			this.updateRoute(null, null, true);
+		},
+		clearSearch() {
+			this.updateRoute(null, "search", true);
+		},
+		updateRoute(data, type, force = false) {
+			if (this.current[type] === data && !force) return; // avoid redundant redirection
+			this.current[type] = data;
+
+			// user safe interaction
+			// check if pack exist
+			if (!Object.keys(this.packToName).includes(this.current.pack))
+				this.current.pack = "faithful_32x";
+
+			if (this.current.edition === "all") {
+				this.current.version = "latest";
+				this.options.versions = [
+					this.$root.lang().gallery.latest,
+					...settings.versions.java,
+					...settings.versions.bedrock,
+				];
+			} else if (!settings.versions[this.current.edition].includes(this.current.version)) {
+				this.current.version = settings.versions[this.current.edition][0];
+				// set options to ensure proper data shows up in the selection
+				this.options.versions = settings.versions[this.current.edition];
+			}
+
+			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
+			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
+
+			if (this.$route.path === route) return; // new search is the same as before
+			return this.$router.push(route);
+		},
+		updateSearch() {
+			// prevent concurrency issues
+			if (this.loading) return;
+			this.loading = true;
+			this.timer.start = Date.now();
+			this.textures = [];
+			let url = `${this.$root.apiURL}/gallery/${this.current.pack}/${this.current.edition}/${this.current.version}/${
+				this.current.tag
+			}`;
+			if (this.current.search) url += `?search=${this.current.search}`;
+
+			// /gallery/{pack}/{edition}/{mc_version}/{tag}
+			axios
+				.get(url)
+				.then((res) => {
+					this.textures = res.data;
+					this.timer.end = Date.now();
+				})
+				.catch((e) => {
+					console.error(e);
+					this.error = `${e.statusCode}: ${e.response.value}`;
+				})
+				.finally(() => {
+					// no matter what it's not loading anymore
+					this.loading = false;
+				});
+		},
+		isScrolledIntoView(el, margin = 0) {
+			const rect = el.getBoundingClientRect();
+			const elemTop = rect.top;
+			const elemBottom = rect.bottom;
+			return elemTop < window.innerHeight + margin && elemBottom >= 0;
+		},
+		toTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		},
+		computeGrid() {
+			const breakpoints = this.$root.$vuetify.breakpoint;
+			let gap;
+			let number;
+
+			let baseColumns = this.columns;
+			if (breakpoints.smAndDown) baseColumns = breakpoints.smOnly ? 2 : 1;
+
+			// constants
+			const MIN_WIDTH = 110;
+			const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
+
+			// real content width
+			const width = this.$el.clientWidth - MARGIN * 2;
+
+			if (baseColumns != 1) {
+				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
+				// * where A = 200 / (1.5 * n)
+				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
+				// * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
+				// * multiply by n
+				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
+				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
+				// * solve that and keep positive value
+				const a = MIN_WIDTH;
+				const b = 200 / 1.5 - width;
+				const c = -200 / 1.5;
+				const delta = b * b - 4 * a * c;
+				const n = (-b + Math.sqrt(delta)) / (2 * a);
+				gap = 200 / (n * 1.5);
+				number = Math.min(baseColumns, Math.floor(n));
+			} else {
+				gap = 8;
+				number = 1;
+			}
+
+			const fontSize = width / number / 20;
+
+			this.styles.not_done = {
+				texture_id: { "font-size": `${fontSize * 4}px` },
+				texture_name: { "font-size": `${fontSize * 2}px` },
+				message: { "font-size": `${fontSize * 1.2}px` },
+			};
+
+			this.styles.grid = {
+				gap: `${gap}px`,
+				"grid-template-columns": `repeat(${number}, 1fr)`,
+			};
+		},
 	},
 	computed: {
 		requestTime() {
@@ -346,191 +485,11 @@ export default {
 			localStorage.setItem(STRETCHED_KEY, n);
 			this.computeGrid();
 		},
+		currentSort(n) {
+			localStorage.setItem(SORT_KEY, n);
+		},
 		modalOpen(n) {
 			if (!n) this.removeShareURL();
-		},
-	},
-	methods: {
-		isMojang(packID) {
-			return ["default", "progart"].includes(packID);
-		},
-		resToPackID(res) {
-			// for legacy url support
-			switch (res) {
-				case "16x":
-					return "default";
-				case "32x":
-					return "faithful_32x";
-				case "64x":
-					return "faithful_64x";
-			}
-		},
-		changeShareURL(id, copyURL = false) {
-			if (!copyURL && id !== undefined) this.$router.push({ query: { show: id } });
-
-			// need location api to get base url to share
-			const showIndex = location.href.indexOf("?show=");
-			let changedURL = location.href;
-			// trim off show portion if already exists
-			if (showIndex !== -1 && id !== undefined) changedURL = changedURL.slice(0, showIndex);
-			// add new url
-			if (id !== undefined) changedURL += `?show=${id}`;
-			return changedURL;
-		},
-		removeShareURL() {
-			this.$router.push({ query: null });
-		},
-		copyShareLink(id) {
-			const url = this.changeShareURL(id, true);
-			navigator.clipboard.writeText(url);
-			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
-		},
-		openModal(id) {
-			this.modalTextureID = id;
-			this.modalTextureObj = {}; // changes text back to loading text if reopening modal
-			this.modalOpen = true;
-
-			axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
-				this.modalTextureObj = res.data;
-			});
-		},
-		discordIDtoName(d) {
-			return (
-				this.loadedContributors[d]?.username ||
-				this.$root.lang().gallery.error_message.user_anonymous
-			);
-		},
-		startSearch() {
-			this.updateRoute(null, null, true);
-		},
-		clearSearch() {
-			this.updateRoute(null, "search", true);
-		},
-		updateRoute(data, type, force = false) {
-			if (this.current[type] === data && !force) return; // avoid redundant redirection
-
-			this.current[type] = data;
-
-			// user safe interaction
-			// check if pack exist
-			if (!Object.keys(this.packToName).includes(this.current.pack))
-				this.current.pack = "faithful_32x";
-
-			if (this.current.edition === "all") {
-				this.current.version = "latest";
-				this.options.versions = [
-					this.$root.lang().gallery.latest,
-					...settings.versions.java,
-					...settings.versions.bedrock,
-				];
-			} else if (!settings.versions[this.current.edition].includes(this.current.version)) {
-				this.current.version = settings.versions[this.current.edition][0];
-				// set options to ensure proper data shows up in the selection
-				this.options.versions = settings.versions[this.current.edition];
-			}
-
-			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
-			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
-
-			if (this.$route.path === route) return; // new search is the same as before
-			return this.$router.push(route);
-		},
-		updateSearch() {
-			if (this.loading) return;
-			this.loading = true;
-			this.timer.start = Date.now();
-			this.textures = [];
-
-			// /gallery/{pack}/{edition}/{mc_version}/{tag}
-			axios
-				.get(
-					`${this.$root.apiURL}/gallery/${this.current.pack}/${this.current.edition}/${this.current.version}/${
-						this.current.tag
-					}${this.current.search ? `?search=${this.current.search}` : ""}`,
-				)
-				.then((res) => {
-					this.textures = res.data;
-					this.timer.end = Date.now();
-				})
-				.catch((e) => {
-					console.error(e);
-					this.error = `${e.statusCode}: ${e.response.value}`;
-				})
-				.finally(() => {
-					this.loading = false;
-				});
-		},
-		scroll() {
-			window.onscroll = () => {
-				this.scrollY = document.firstElementChild.scrollTop;
-				const scrolledTo = document.querySelector(".bottomElement");
-
-				if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
-					this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
-					this.$forceUpdate();
-				}
-			};
-		},
-		isScrolledIntoView(el, margin = 0) {
-			const rect = el.getBoundingClientRect();
-			const elemTop = rect.top;
-			const elemBottom = rect.bottom;
-			return elemTop < window.innerHeight + margin && elemBottom >= 0;
-		},
-		toTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
-		},
-		computeGrid() {
-			const breakpoints = this.$root.$vuetify.breakpoint;
-			let gap;
-			let number;
-
-			let baseColumns = this.columns;
-			if (breakpoints.smAndDown) baseColumns = breakpoints.smOnly ? 2 : 1;
-
-			// constants
-			const MIN_WIDTH = 110;
-			const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
-
-			// real content width
-			const width = this.$el.clientWidth - MARGIN * 2;
-
-			if (baseColumns != 1) {
-				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
-				// * where A = 200 / (1.5 * n)
-				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
-				// * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
-				// * multiply by n
-				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
-				// * solve that and keep positive value
-				const a = MIN_WIDTH;
-				const b = 200 / 1.5 - width;
-				const c = -200 / 1.5;
-				const delta = b * b - 4 * a * c;
-				const n = (-b + Math.sqrt(delta)) / (2 * a);
-				gap = 200 / (n * 1.5);
-				number = Math.min(baseColumns, Math.floor(n));
-			} else {
-				gap = 8;
-				number = 1;
-			}
-
-			const fontSize = width / number / 20;
-
-			this.styles.not_done = {
-				texture_id: { "font-size": `${fontSize * 4}px` },
-				texture_name: { "font-size": `${fontSize * 2}px` },
-				message: { "font-size": `${fontSize * 1.2}px` },
-			};
-
-			this.styles.grid = {
-				gap: `${gap}px`,
-				"grid-template-columns": `repeat(${number}, 1fr)`,
-			};
 		},
 	},
 	created() {
@@ -558,27 +517,20 @@ export default {
 				return acc;
 			}, {});
 		});
-		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
-			this.loadedContributions = Object.values(res.data)
-				.filter((contribution) => contribution.pack && contribution.texture)
-				.reduce((acc, cur) => {
-					if (!acc[cur.pack]) acc[cur.pack] = {};
-					if (!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
-
-					acc[cur.pack][cur.texture].push({
-						contributors: cur.authors,
-						date: cur.date,
-					});
-
-					return acc;
-				}, {});
-		});
 
 		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
 	},
 	mounted() {
-		this.scroll();
-		window.addEventListener("resize", this.computeGrid);
+		window.onscroll = () => {
+			this.scrollY = document.firstElementChild.scrollTop;
+			const scrolledTo = document.querySelector(".bottomElement");
+
+			if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
+				this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
+				this.$forceUpdate();
+			}
+		};
+		window.addEventListener("resize", () => void this.computeGrid);
 		this.computeGrid();
 	},
 };
