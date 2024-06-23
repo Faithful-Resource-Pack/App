@@ -257,7 +257,7 @@ export default {
 		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
 	},
 	mounted() {
-		window.onscroll = () => {
+		document.addEventListener("scroll", () => {
 			this.scrollY = document.firstElementChild.scrollTop;
 			const scrolledTo = document.querySelector(".bottomElement");
 
@@ -265,7 +265,7 @@ export default {
 				this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
 				this.$forceUpdate();
 			}
-		};
+		});
 		window.addEventListener("resize", () => void this.computeGrid());
 		this.computeGrid();
 	},

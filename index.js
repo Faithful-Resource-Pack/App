@@ -860,11 +860,9 @@ const app = new Vue({
 	mounted() {
 		// watch color schemes for light and dark
 		window.matchMedia("(prefers-color-scheme: dark)").onchange = (ev) => {
-			console.log(ev);
 			if (ev.matches) this.onMediaChange(true);
 		};
 		window.matchMedia("(prefers-color-scheme: light)").onchange = (ev) => {
-			console.log(ev);
 			if (ev.matches) this.onMediaChange(false);
 		};
 		window.addEventListener("resize", () => {
