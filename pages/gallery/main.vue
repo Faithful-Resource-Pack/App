@@ -93,7 +93,7 @@
 			<v-col cols="12" sm="9" v-else>
 				<br />
 			</v-col>
-			<v-col cols="12" sm="3" >
+			<v-col cols="12" sm="3">
 				<v-select
 					color="text--secondary"
 					dense
@@ -106,17 +106,16 @@
 			</v-col>
 		</v-row>
 		<gallery-grid
+			v-model="columns"
 			:loading="loading"
-			:styles="styles"
+			:stretched="stretched"
 			:textures="textures"
 			:pack="current.pack"
-			:max="displayedResults"
 			:ignoreList="ignoredTextures[current.edition]"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
 			@changeShareURL="changeShareURL"
 		/>
-		<div class="bottomElement" />
 
 		<gallery-modal
 			v-model="modalOpen"
@@ -141,7 +140,6 @@ import axios from "axios";
 import GalleryModal from "./gallery-modal.vue";
 import GalleryGrid from "./gallery-grid.vue";
 
-const MIN_ROW_DISPLAYED = 5;
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
 const SORT_KEY = "gallery_sort";
@@ -157,7 +155,7 @@ export default {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
 			// number of columns you want to display
-			columns: Number.parseInt(localStorage.getItem(COLUMN_KEY) || 7),
+			columns: Number(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
 			loading: false,
 			// string error extracted
@@ -194,8 +192,6 @@ export default {
 				start: null,
 				end: null,
 			},
-			// number of displayed results
-			displayedResults: 1,
 			// result
 			textures: [],
 			// loaded contributors
@@ -210,19 +206,6 @@ export default {
 			packToName: {},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
-			// styles
-			styles: {
-				// gallery cell styles
-				cell: { "aspect-ratio": "1" },
-				// grid styles
-				grid: undefined,
-				// placeholder font size styles
-				not_done: {
-					texture_id: "font-size: 2em;",
-					texture_name: "font-size: 1.17em;",
-					message: "font-size: 16px",
-				},
-			},
 			// go to the top arrow
 			scrollY: 0,
 		};
@@ -335,66 +318,11 @@ export default {
 					this.loading = false;
 				});
 		},
-		isScrolledIntoView(el, margin = 0) {
-			const rect = el.getBoundingClientRect();
-			const elemTop = rect.top;
-			const elemBottom = rect.bottom;
-			return elemTop < window.innerHeight + margin && elemBottom >= 0;
-		},
 		toTop() {
 			window.scrollTo({
 				top: 0,
 				behavior: "smooth",
 			});
-		},
-		computeGrid() {
-			const breakpoints = this.$root.$vuetify.breakpoint;
-			let gap;
-			let number;
-
-			let baseColumns = this.columns;
-			if (breakpoints.smAndDown) baseColumns = breakpoints.smOnly ? 2 : 1;
-
-			// constants
-			const MIN_WIDTH = 110;
-			const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
-
-			// real content width
-			const width = this.$el.clientWidth - MARGIN * 2;
-
-			if (baseColumns != 1) {
-				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
-				// * where A = 200 / (1.5 * n)
-				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
-				// * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
-				// * multiply by n
-				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
-				// * solve that and keep positive value
-				const a = MIN_WIDTH;
-				const b = 200 / 1.5 - width;
-				const c = -200 / 1.5;
-				const delta = b * b - 4 * a * c;
-				const n = (-b + Math.sqrt(delta)) / (2 * a);
-				gap = 200 / (n * 1.5);
-				number = Math.min(baseColumns, Math.floor(n));
-			} else {
-				gap = 8;
-				number = 1;
-			}
-
-			const fontSize = width / number / 20;
-
-			this.styles.not_done = {
-				texture_id: { "font-size": `${fontSize * 4}px` },
-				texture_name: { "font-size": `${fontSize * 2}px` },
-				message: { "font-size": `${fontSize * 1.2}px` },
-			};
-
-			this.styles.grid = {
-				gap: `${gap}px`,
-				"grid-template-columns": `repeat(${number}, 1fr)`,
-			};
 		},
 	},
 	computed: {
@@ -479,11 +407,9 @@ export default {
 		},
 		columns(n) {
 			localStorage.setItem(COLUMN_KEY, String(n));
-			this.computeGrid();
 		},
 		stretched(n) {
 			localStorage.setItem(STRETCHED_KEY, n);
-			this.computeGrid();
 		},
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);
@@ -517,21 +443,6 @@ export default {
 				return acc;
 			}, {});
 		});
-
-		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
-	},
-	mounted() {
-		window.onscroll = () => {
-			this.scrollY = document.firstElementChild.scrollTop;
-			const scrolledTo = document.querySelector(".bottomElement");
-
-			if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
-				this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
-				this.$forceUpdate();
-			}
-		};
-		window.addEventListener("resize", () => void this.computeGrid);
-		this.computeGrid();
 	},
 };
 </script>
