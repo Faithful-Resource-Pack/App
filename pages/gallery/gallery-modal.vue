@@ -129,6 +129,7 @@ const PACK_GRID_ORDER = [
 
 const PACK_SLIDER_ORDER = [
 	"default",
+	"progart",
 	"faithful_32x",
 	"faithful_64x",
 	"classic_faithful_32x",
