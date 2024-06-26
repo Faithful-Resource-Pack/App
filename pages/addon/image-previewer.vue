@@ -15,14 +15,14 @@
 						:width="(150 * 16) / 9"
 						:aspect-ratio="16 / 9"
 						alt="preview"
-						@click="onFullscreen(item, index)"
+						@click="onFullscreen(index)"
 					/>
 					<v-card
 						class="ma-2"
 						rounded
 						style="display: inline-block; position: absolute; right: 0; top: 0"
 					>
-						<v-icon small class="ma-1" @click.stop="(e) => onFullscreen(item, index, e)">
+						<v-icon small class="ma-1" @click.stop="(e) => onFullscreen(index, e)">
 							mdi-fullscreen
 						</v-icon>
 						<v-icon
@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import FullscreenPreview from "./fullscreen-preview.vue";
+import FullscreenPreview from "../components/fullscreen-preview.vue";
 
 export default {
 	name: "image-previewer",
@@ -90,7 +90,7 @@ export default {
 				this.$emit("item-delete", item, index, undefined);
 			}
 		},
-		onFullscreen(item, index, e) {
+		onFullscreen(index, e) {
 			if (e) e.target.blur();
 			this.fullscreenIndex = index;
 			this.$refs.preview.open();

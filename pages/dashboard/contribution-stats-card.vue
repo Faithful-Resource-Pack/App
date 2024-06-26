@@ -1,9 +1,9 @@
 <template>
 	<dashboard-card
+		clickable
 		id="contribution-stats-card"
 		:title="$root.lang('dashboard.titles.contribution_stats')"
 		href="/contributions-stats"
-		:clickable="true"
 		class="d-flex flex-column"
 	>
 		<v-card-text class="pb-4 flex-grow-1 d-flex align-stretch">

@@ -2,7 +2,7 @@
 	<dashboard-card
 		:title="$root.lang('dashboard.titles.profile')"
 		href="/profile"
-		:clickable="true"
+		clickable
 		class="d-flex flex-column"
 	>
 		<v-card-text v-if="user" class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">

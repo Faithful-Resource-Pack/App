@@ -3,12 +3,14 @@
 		:class="modal ? 'gallery-dialog-texture' : undefined"
 		:style="exists ? {} : { background: 'rgba(0,0,0,0.3)' }"
 	>
+		<!-- send click events back to caller -->
 		<img
 			v-if="exists"
 			class="gallery-texture-image"
 			:src="imageURL"
 			style="aspect-ratio: 1"
 			@error="textureNotFound"
+			@click="$emit('click')"
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
 		/>
 		<div v-else class="not-done">

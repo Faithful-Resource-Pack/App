@@ -187,7 +187,7 @@
 <script>
 import axios from "axios";
 
-import FullscreenPreview from "../addon/fullscreen-preview.vue";
+import FullscreenPreview from "../components/fullscreen-preview.vue";
 import ImagePreviewer from "../addon/image-previewer.vue";
 
 export default {

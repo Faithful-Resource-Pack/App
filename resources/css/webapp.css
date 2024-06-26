@@ -732,16 +732,20 @@ code {
 	text-align: center;
 }
 
+:root {
+	--modal-image-size: 160px;
+}
+
 .gallery-dialog-texture {
-	height: 196px;
-	width: 196px;
+	height: var(--modal-image-size);
+	width: var(--modal-image-size);
 	position: relative;
 	background-size: cover;
 	background-position: center;
 }
 
 .gallery-dialog-texture-container h2 {
-	max-width: 196px;
+	max-width: var(--modal-image-size);
 	height: 48px;
 	font-size: 1em;
 }
@@ -752,8 +756,8 @@ code {
 
 .gallery-dialog-texture > * {
 	position: absolute;
-	height: 196px;
-	width: 196px;
+	height: var(--modal-image-size);
+	width: var(--modal-image-size);
 }
 
 #info-tabs .v-slide-group__prev {

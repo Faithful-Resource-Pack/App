@@ -7,6 +7,8 @@
 		@click.stop="() => closeModal()"
 	>
 		<v-card>
+			<fullscreen-preview ref="preview" :src="clickedImage" :aspect-ratio="1 / 1" texture />
+
 			<v-toolbar>
 				<v-btn icon @click.stop="() => closeModal()">
 					<v-icon>mdi-close</v-icon>
@@ -34,17 +36,15 @@
 					class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0"
 				>
 					<template v-for="(group, i) in grouped">
-						<div
-							class="gallery-dialog-intern d-flex flex-row pb-2 pb-sm-0"
-							:key="`dialog-intern-${i}`"
-						>
+						<div class="d-flex flex-row pb-2 pb-sm-0" :key="`dialog-intern-${i}`">
 							<template v-for="(url, j) in group">
-								<div class="gallery-dialog-texture-container px-1 pb-sm-2" :key="`${i}-${j}`">
+								<div class="gallery-dialog-texture-container px-2 pb-sm-2" :key="`${i}-${j}`">
 									<gallery-image
 										modal
 										:src="url.image"
 										:textureID="textureID"
 										:ignoreList="ignoreList"
+										@click="openFullscreenPreview(url.image)"
 									>
 										<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
 									</gallery-image>
@@ -119,11 +119,28 @@
 import moment from "moment";
 
 import GalleryImage from "./gallery-image.vue";
+import FullscreenPreview from "../components/fullscreen-preview.vue";
+
+const PACK_GRID_ORDER = [
+	["default", "faithful_32x", "faithful_64x"],
+	["default", "classic_faithful_32x", "classic_faithful_64x"],
+	["progart", "classic_faithful_32x_progart"],
+];
+
+const PACK_SLIDER_ORDER = [
+	"default",
+	"faithful_32x",
+	"faithful_64x",
+	"classic_faithful_32x",
+	"classic_faithful_32x_progart",
+	"classic_faithful_64x",
+];
 
 export default {
 	name: "gallery-modal",
 	components: {
 		GalleryImage,
+		FullscreenPreview,
 	},
 	props: {
 		value: {
@@ -175,6 +192,7 @@ export default {
 				},
 			],
 			opened: false,
+			clickedImage: "",
 		};
 	},
 	watch: {
@@ -228,6 +246,10 @@ export default {
 						versions: path.versions.join(", "),
 					}));
 			}
+		},
+		openFullscreenPreview(url) {
+			this.clickedImage = url;
+			this.$refs.preview.open();
 		},
 		getHeaders(item) {
 			if (this.packs.includes(item))
@@ -313,15 +335,20 @@ export default {
 			return this.authorCategories.map((v) => v.packs).flat();
 		},
 		grouped() {
-			const result = [];
-			if (this.textureObj) {
-				Object.entries(this.textureObj.urls).forEach((urlArr, i) => {
-					if (i % 2 === 0) result.push([]);
-					result[result.length - 1].push({ name: urlArr[0], image: urlArr[1] });
-				});
-			}
+			if (!this.textureObj) return [];
 
-			return result;
+			// don't display duplicates on mobile
+			if (this.$vuetify.breakpoint.xsOnly)
+				return [
+					PACK_SLIDER_ORDER.map((pack) => ({ name: pack, image: this.textureObj.urls[pack] })),
+				];
+
+			return PACK_GRID_ORDER.map((packSet) =>
+				packSet.map((pack) => {
+					const url = this.textureObj.urls[pack];
+					return { name: pack, image: url };
+				}),
+			);
 		},
 	},
 };
