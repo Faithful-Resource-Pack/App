@@ -481,6 +481,13 @@ export default {
 			edition: "Edition",
 			pack: "Pack",
 		},
+		sort: {
+			name_asc: "Name (A → Z)",
+			name_desc: "Name (Z → A)",
+			id_asc: "Texture ID (smallest → largest)",
+			id_desc: "Texture ID (largest → smallest)",
+			contrib_desc: "Recently Contributed",
+		},
 		all: "All",
 		latest: "Latest",
 		result_stats_singular: "%COUNT% texture found in %SECONDS% seconds",

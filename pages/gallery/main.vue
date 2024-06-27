@@ -151,6 +151,7 @@ export default {
 		GalleryGrid,
 	},
 	data() {
+		const sortStrings = this.$root.lang().gallery.sort;
 		return {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
@@ -180,11 +181,11 @@ export default {
 				search: null,
 			},
 			sortMethods: [
-				{ label: "Name (A → Z)", value: "nameAsc" },
-				{ label: "Name (Z → A)", value: "nameDesc" },
-				{ label: "Texture ID (smallest → largest)", value: "idAsc" },
-				{ label: "Texture ID (largest → smallest)", value: "idDesc" },
-				{ label: "Contribution Activity", value: "contribDesc" },
+				{ label: sortStrings.name_asc, value: "nameAsc" },
+				{ label: sortStrings.name_desc, value: "nameDesc" },
+				{ label: sortStrings.id_asc, value: "idAsc" },
+				{ label: sortStrings.id_desc, value: "idDesc" },
+				{ label: sortStrings.contrib_desc, value: "contribDesc" },
 			],
 			currentSort: localStorage.getItem(SORT_KEY) || "nameAsc",
 			// how long a request took
