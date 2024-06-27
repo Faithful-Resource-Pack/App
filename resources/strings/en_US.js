@@ -490,6 +490,7 @@ export default {
 		},
 		all: "All",
 		latest: "Latest",
+		clear_cache: "Clear Gallery Cache",
 		result_stats_singular: "%COUNT% texture found in %SECONDS% seconds",
 		result_stats_plural: "%COUNT% textures found in %SECONDS% seconds",
 		modal: {

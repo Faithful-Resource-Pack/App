@@ -64,8 +64,11 @@
 					max="16"
 				/>
 			</v-col>
-			<v-col cols="12" sm="6">
+			<v-col cols="12" :sm="$root.isAdmin ? 3 : 6">
 				<v-switch :label="$root.lang('gallery.stretched_switcher')" v-model="stretched" />
+			</v-col>
+			<v-col cols="12" sm="3" v-if="$root.isAdmin">
+				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
 			</v-col>
 		</v-row>
 
@@ -325,13 +328,22 @@ export default {
 				behavior: "smooth",
 			});
 		},
+		clearCache() {
+			axios
+				.get(`${this.$root.apiURL}/gallery/cache/purge`, this.$root.apiOptions)
+				.then(() => this.$root.showSnackBar(this.$root.lang().global.ends_success, "success"))
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
+		},
 	},
 	computed: {
 		requestTime() {
 			if (!this.timer.end || !this.timer.start);
 			const seconds = (this.timer.end - this.timer.start) / 1000;
 			// cast to number again to remove unnecessary zeros
-			return Number(seconds.toFixed(1));
+			return Number(seconds.toFixed(2));
 		},
 		resultMessage() {
 			const replacePlaceholders = (msg) =>
