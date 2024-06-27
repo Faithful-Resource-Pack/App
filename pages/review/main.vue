@@ -34,7 +34,7 @@ d88   888  888    888 d88   888
 					</div>
 				</div>
 			</div>
-			<template v-if="selectedItems && selectedItems.length > 0">
+			<template v-else>
 				<template v-if="$vuetify.breakpoint.mdAndUp">
 					<div id="review-list">
 						<review-list

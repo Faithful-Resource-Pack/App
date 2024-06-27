@@ -1023,10 +1023,6 @@ body .texture-avatar {
 	background-image: url(/resources/transparency-light.png);
 }
 
-.addon-expansion-panel .addon-name, .addon-expansion-panel .addon-tags {
-	color: white;
-}
-
 .addon-expansion-panel .addon-tags {
 	opacity: 0.7;
 }

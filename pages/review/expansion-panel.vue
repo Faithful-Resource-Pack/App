@@ -13,15 +13,14 @@
 		>
 			<v-expansion-panel-header
 				expand-icon="mdi-menu-down"
-				:color="color"
 				class="pa-4"
 				style="height: auto !important"
 			>
 				<v-row no-gutters>
-					<v-col cols="12" class="uppercase addon-name">
+					<v-col cols="12" class="addon-name">
 						{{ addon.name }}
 					</v-col>
-					<v-col cols="12" class="uppercase addon-tags" style="margin-top: 2.5px">
+					<v-col cols="12" class="addon-tags" style="margin-top: 2.5px">
 						{{ addon.options.tags.join(" • ") }}
 					</v-col>
 				</v-row>
