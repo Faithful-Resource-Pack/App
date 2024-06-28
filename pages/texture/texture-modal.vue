@@ -101,13 +101,19 @@
 					</v-list>
 					<div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-					<v-btn
-						block
-						:style="{ 'margin-top': '10px' }"
-						color="secondary"
-						@click="openUseModal(null, true)"
-					>
+					<v-btn block style="margin-top: 10px" color="secondary" @click="openUseModal(null, true)">
 						{{ $root.lang().database.labels.add_new_use }}
+						<v-icon right>mdi-plus</v-icon>
+					</v-btn>
+					<v-btn
+						v-if="Object.keys(formData.uses).length === 1"
+						block
+						class="white--text"
+						style="margin-top: 10px"
+						:color="color"
+						@click="openEditionUseModal"
+					>
+						{{ addEditionUseLabel }}
 						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-form>
@@ -131,7 +137,7 @@ import axios from "axios";
 import UseModal from "./use-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 import { formatTag, sortTags } from "@helpers/textures";
-import { getTagFromPath } from "@helpers/paths";
+import { getTagFromPath, convertEditionPath } from "@helpers/paths";
 
 export default {
 	name: "texture-modal",
@@ -195,12 +201,53 @@ export default {
 				? this.$root.lang().database.titles.add_texture
 				: this.$root.lang().database.titles.change_texture;
 		},
+		addEditionUseLabel() {
+			if (!Object.keys(this.formData).length) return;
+			const newEdition = this.getCorrespondingEdition(Object.values(this.formData.uses)[0].edition);
+			return this.$root
+				.lang()
+				.database.labels.add_edition_use.replace("%edition%", newEdition.toTitleCase());
+		},
 	},
 	methods: {
+		getCorrespondingEdition(edition) {
+			return (
+				settings.editions.find((e) => e.toLowerCase() !== edition) || "bedrock"
+			).toLowerCase();
+		},
 		openUseModal(data, add) {
 			this.useModalOpen = true;
 			this.useModalAdd = add;
 			this.useModalData = data || { texture: this.formData.id };
+		},
+		openEditionUseModal() {
+			// we already know at least one use exists at this point
+			const use = Object.values(this.formData.uses)[0];
+			const newEdition = this.getCorrespondingEdition(use.edition);
+			axios
+				.get(`${this.$root.apiURL}/uses/${use.id}/paths`)
+				.then((res) => {
+					if (!res.data.length) return;
+					const path = res.data[0];
+					this.useModalData = {
+						edition: newEdition,
+						name: use.name,
+						texture: this.formData.id,
+						paths: [
+							{
+								name: convertEditionPath(path.name, newEdition),
+								versions: [settings.versions[newEdition][0]],
+								mcmeta: false,
+							},
+						],
+					};
+					this.useModalAdd = true;
+					this.useModalOpen = true;
+				})
+				.catch((err) => {
+					console.error(err);
+					this.$root.showSnackBar(err, "error");
+				});
 		},
 		closeUseModal() {
 			this.useModalOpen = false;

@@ -260,17 +260,12 @@ export default {
 		},
 		modalOpened(newValue) {
 			this.$nextTick(() => {
-				if (this.add) {
-					this.$refs.form.reset();
-					this.formData.texture = this.data.texture;
-					this.formData.paths = [];
-				} else {
-					this.formData.edition = this.data.edition;
-					this.formData.id = this.data.id;
-					this.formData.name = this.data.name;
-					this.formData.texture = this.data.texture;
-					this.getPaths(this.data.id);
+				this.$refs.form.reset();
+				for (const [k, v] of Object.entries(this.data)) {
+					this.formData[k] = v;
 				}
+				if (this.add) this.formData.paths = this.data.paths || [];
+				else this.getPaths(this.data.id);
 			});
 			this.$emit("input", newValue);
 		},

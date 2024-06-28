@@ -24,3 +24,32 @@ export function getTagFromPath(path) {
 
 /** @param {string} path */
 export const getEditionFromPath = (path) => (path.startsWith("assets") ? "java" : "bedrock");
+
+export const convertEditionPath = (path, newEdition) => {
+	const folderData = [
+		{ java: "block", bedrock: "blocks" },
+		{ java: "item", bedrock: "items" },
+	];
+
+	// quite hacky but it works
+	switch (newEdition) {
+		case "bedrock": {
+			const folderTranslator = folderData.reduce((acc, cur) => {
+				acc[cur.java] = cur.bedrock;
+				return acc;
+			}, {});
+			const trimmed = path.replace("assets/minecraft/textures/", "");
+			const [folder, ...rest] = trimmed.split("/");
+			return `textures/${folderTranslator[folder] || folder}/${rest.join("/")}`;
+		}
+		case "java": {
+			const folderTranslator = folderData.reduce((acc, cur) => {
+				acc[cur.bedrock] = cur.java;
+				return acc;
+			});
+			const trimmed = path.replace("textures/", "");
+			const [folder, ...rest] = trimmed.split("/");
+			return `assets/minecraft/textures/${folderTranslator[folder] || folder}/${rest.join("/")}`;
+		}
+	}
+};

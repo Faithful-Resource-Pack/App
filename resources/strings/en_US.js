@@ -168,6 +168,7 @@ export default {
 			add_new_texture: "Add new texture",
 			add_new_path: "Add new path",
 			add_new_use: "Add new use",
+			add_edition_use: "Add automatic %edition% use",
 			add_texture: "Add new textures",
 			add_mc_version: "Add new Minecraft Version",
 			ask_deletion: "Do you want to delete %s (%d)?",
