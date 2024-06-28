@@ -227,19 +227,15 @@ export default {
 			axios
 				.get(`${this.$root.apiURL}/uses/${use.id}/paths`)
 				.then((res) => {
-					if (!res.data.length) return;
-					const path = res.data[0];
 					this.useModalData = {
 						edition: newEdition,
 						name: use.name,
 						texture: this.formData.id,
-						paths: [
-							{
-								name: convertEditionPath(path.name, newEdition),
-								versions: [settings.versions[newEdition][0]],
-								mcmeta: false,
-							},
-						],
+						paths: res.data.map((path) => ({
+							name: convertEditionPath(path.name, newEdition),
+							versions: [settings.versions[newEdition][0]],
+							mcmeta: false,
+						})),
 					};
 					this.useModalAdd = true;
 					this.useModalOpen = true;

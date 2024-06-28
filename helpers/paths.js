@@ -38,7 +38,7 @@ export const convertEditionPath = (path, newEdition) => {
 				acc[cur.java] = cur.bedrock;
 				return acc;
 			}, {});
-			const trimmed = path.replace("assets/minecraft/textures/", "");
+			const trimmed = path.replace("assets/", "").replace("minecraft/textures/", "");
 			const [folder, ...rest] = trimmed.split("/");
 			return `textures/${folderTranslator[folder] || folder}/${rest.join("/")}`;
 		}
