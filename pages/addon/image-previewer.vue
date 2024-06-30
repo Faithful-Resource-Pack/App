@@ -1,16 +1,16 @@
 <template>
-	<v-container :class="[notEmpty ? 'px-0 pt-0' : 'pa-0']">
+	<v-container :class="[empty ? 'pa-0' : 'px-0 pt-0']">
 		<div class="scroller" style="overflow: auto; white-space: nowrap">
 			<div class="scroller-content">
 				<v-card
 					class="pa-0 mr-2"
 					style="display: inline-block"
-					v-for="(item, index) in sources"
-					:key="index"
+					v-for="(url, index) in sources"
+					:key="url"
 				>
 					<v-img
 						class="rounded image-fullscreen-thumb"
-						:src="item"
+						:src="url"
 						height="150"
 						:width="(150 * 16) / 9"
 						:aspect-ratio="16 / 9"
@@ -29,7 +29,7 @@
 							v-if="deletable"
 							small
 							class="ma-1"
-							@click.stop="(e) => onDelete(item, index, e)"
+							@click.stop="(e) => onDelete(url, index, e)"
 						>
 							mdi-delete
 						</v-icon>
@@ -76,19 +76,16 @@ export default {
 			if (this.fullscreenIndex === undefined) return undefined;
 			return this.sources[this.fullscreenIndex];
 		},
-		notEmpty() {
-			return this.sources && !!this.sources.length;
+		empty() {
+			return !this.sources || !this.sources.length;
 		},
 	},
 	methods: {
 		onDelete(item, index, e) {
 			if (e) e.target.blur();
 
-			if (this.ids !== undefined) {
-				this.$emit("item-delete", item, index, this.ids[index]);
-			} else {
-				this.$emit("item-delete", item, index, undefined);
-			}
+			if (this.ids !== undefined) this.$emit("item-delete", item, index, this.ids[index]);
+			else this.$emit("item-delete", item, index, undefined);
 		},
 		onFullscreen(index, e) {
 			if (e) e.target.blur();

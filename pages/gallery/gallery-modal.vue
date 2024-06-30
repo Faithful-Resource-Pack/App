@@ -35,9 +35,9 @@
 				<div
 					class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0"
 				>
-					<template v-for="(group, i) in grouped">
-						<div class="d-flex flex-row pb-2 pb-sm-0" :key="`dialog-intern-${i}`">
-							<template v-for="(url, j) in group">
+					<template v-for="group in grouped">
+						<div class="d-flex flex-row pb-2 pb-sm-0">
+							<template v-for="url in group">
 								<div class="gallery-dialog-texture-container px-2 pb-sm-2" :key="url.name">
 									<gallery-image
 										modal

@@ -56,13 +56,13 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tag }}</div>
 		<div v-if="$vuetify.breakpoint.smAndUp" class="selector">
 			<v-btn
-				v-for="t in textureTags"
-				:key="t"
-				:class="['my-1 mr-2', activeTag(t)]"
-				:to="textureURL(t)"
-				:exact="t == 'all'"
+				v-for="tag in textureTags"
+				:key="tag"
+				:class="['my-1 mr-2', activeTag(tag)]"
+				:to="textureURL(tag)"
+				:exact="tag == 'all'"
 			>
-				{{ t }}
+				{{ tag }}
 			</v-btn>
 		</div>
 		<v-select

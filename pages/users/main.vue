@@ -28,13 +28,13 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_user_role }}</div>
 		<div class="selector">
 			<v-btn
-				v-for="t in usersRoles"
-				:key="t"
-				:class="['my-2 mr-1', activeRole(t)]"
-				:to="userURL(t)"
-				:exact="t == 'all'"
+				v-for="role in usersRoles"
+				:key="role"
+				:class="['my-2 mr-1', activeRole(role)]"
+				:to="userURL(role)"
+				:exact="role == 'all'"
 			>
-				{{ t }}
+				{{ role }}
 			</v-btn>
 		</div>
 

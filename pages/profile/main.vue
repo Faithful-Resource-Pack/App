@@ -110,7 +110,7 @@
 								<template v-if="localUser.media && Object.keys(localUser.media).length">
 									<v-row
 										v-for="(socialMedia, index) in localUser.media"
-										:key="index"
+										:key="socialMedia.type"
 										align="center"
 										:class="['mt-0', { 'mb-1': !$vuetify.breakpoint.mdAndUp }]"
 									>

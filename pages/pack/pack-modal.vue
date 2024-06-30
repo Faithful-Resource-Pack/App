@@ -62,7 +62,7 @@
 					/>
 					<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
 					<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
-					<div v-for="(edition, index) in editions" :key="index">
+					<div v-for="edition in editions" :key="edition">
 						<p class="text-body-1">{{ edition.toTitleCase() }}</p>
 						<v-row>
 							<v-col>

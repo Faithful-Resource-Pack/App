@@ -12,7 +12,7 @@
 		<blockquote v-if="type == 'use'">
 			<v-btn text @click="getPaths(data.id)"> See affected paths </v-btn>
 			<br />
-			<v-list-item v-for="(path, index) in data.paths" :key="index">
+			<v-list-item v-for="path in data.paths" :key="path.id">
 				<v-list-item-title>
 					{{ path.name }}
 					<v-list-item-subtitle>
@@ -22,8 +22,8 @@
 			</v-list-item>
 		</blockquote>
 		<ul v-else>
-			<template v-for="(key, index) in Object.keys(data).sort()">
-				<li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="index">
+			<template v-for="key in Object.keys(data).sort()">
+				<li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="key">
 					{{ key.toTitleCase() }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
 				</li>
 			</template>

@@ -143,9 +143,8 @@
 					</v-img>
 				</v-card>
 
-				<template v-for="(tab, tabIndex) in availableTabs">
+				<template v-for="(tab, tabIndex) in availableTabs" :key="tab.label">
 					<v-list
-						:key="`item-${tabIndex}`"
 						dense
 						nav
 						v-if="
@@ -163,7 +162,7 @@
 							link
 							v-if="tab.subtabs && (isUserLogged || subtab.unlogged)"
 							v-for="(subtab, subtabIndex) in tab.subtabs"
-							:key="subtabIndex"
+							:key="subtab.label"
 							:to="subtab.to"
 							:disabled="!subtab.enabled"
 							class="uppercase-unsized"
@@ -196,7 +195,6 @@
 						</v-list-item>
 					</v-list>
 					<v-divider
-						:key="`divider-${tabIndex}`"
 						style="margin-bottom: 10px"
 						v-if="
 							isUserLogged ||
