@@ -38,7 +38,7 @@
 					<template v-for="(group, i) in grouped">
 						<div class="d-flex flex-row pb-2 pb-sm-0" :key="`dialog-intern-${i}`">
 							<template v-for="(url, j) in group">
-								<div class="gallery-dialog-texture-container px-2 pb-sm-2" :key="`${i}-${j}`">
+								<div class="gallery-dialog-texture-container px-2 pb-sm-2" :key="url.name">
 									<gallery-image
 										modal
 										:src="url.image"
