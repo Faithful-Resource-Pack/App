@@ -601,30 +601,17 @@ const app = new Vue({
 		 * @returns all tabs to be added in the html
 		 */
 		availableTabs() {
-			const res = [];
-			const roles = this.userRoles;
-
-			for (let i = 0; i < this.tabs.length; i++) {
-				let found = false;
-
-				const tab = this.tabs[i];
-				tab.labelText = this.lang().global.tabs[this.tabs[i].label]?.title;
-
-				if (this.tabs[i].roles) {
-					this.tabs[i].roles.forEach((role) => {
-						if (roles.includes(role)) found = true;
+			// if there's no whitelisted roles assume it's available for everyone
+			return this.tabs
+				.filter((tab) => !tab.roles || tab.roles.some((role) => this.userRoles.includes(role)))
+				.map((tab) => {
+					tab.labelText = this.lang().global.tabs[tab.label]?.title;
+					tab.subtabs = tab.subtabs.map((subtab) => {
+						subtab.labelText = this.lang().global.tabs[tab.label]?.subtabs[subtab.label];
+						return subtab;
 					});
-				} else found = true;
-
-				if (found) {
-					res.push(this.tabs[i]);
-					this.tabs[i].subtabs.forEach((subtab) => {
-						subtab.labelText = this.lang().global.tabs[this.tabs[i].label]?.subtabs[subtab.label];
-					});
-				}
-			}
-
-			return res;
+					return tab;
+				});
 		},
 		isDesktop() {
 			return this.$vuetify.breakpoint.lgAndUp;
