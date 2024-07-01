@@ -130,7 +130,7 @@
 				/>
 			</template>
 		</v-card>
-		<div v-if="addonInPanel.approval.status === 'pending'" class="mt-2 rounded-lg pa-2">
+		<div v-if="status === 'pending'" class="mt-2 rounded-lg pa-2">
 			<v-list-item-title class="uppercase pb-1">
 				{{ $root.lang().addons.general.reason.title }}
 			</v-list-item-title>
@@ -141,15 +141,15 @@
 		<div v-if="addonInPanelLoading === false" id="review-actions" class="mt-2 rounded-lg pa-2">
 			<div class="d-flex align-center">
 				<div class="mr-auto">
-					<div v-if="addonInPanel.approval.status === 'approved'">
+					<div v-if="status === 'approved'">
 						{{
 							`${$root.lang().review.addon.labels.approved_by} ${getUsername(addonInPanel.approval.author)}`
 						}}
 					</div>
 					<div
 						v-if="
-							addonInPanel.approval.status === 'denied' ||
-							addonInPanel.approval.status === 'archived'
+							status === 'denied' ||
+							status === 'archived'
 						"
 					>
 						<div>

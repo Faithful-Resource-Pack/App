@@ -316,7 +316,8 @@ export default {
 	props: {
 		addonNew: {
 			type: Boolean,
-			required: true,
+			required: false,
+			default: false,
 		},
 		addonData: {
 			required: false,

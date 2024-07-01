@@ -265,6 +265,7 @@ export default {
 			pending: "There are currently no pending add-ons!",
 			denied: "There are currently no denied add-ons!",
 			archived: "There are currently no archived add-ons!",
+			approved: "There are current no approved add-ons!",
 			load_approved: "Load approved add-ons",
 		},
 		addon: {
