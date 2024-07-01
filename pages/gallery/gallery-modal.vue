@@ -7,7 +7,7 @@
 		@click.stop="() => closeModal()"
 	>
 		<v-card>
-			<fullscreen-preview ref="preview" :src="clickedImage" :aspect-ratio="1 / 1" texture />
+			<fullscreen-preview v-model="previewOpen" :src="clickedImage" :aspect-ratio="1 / 1" texture />
 
 			<v-toolbar>
 				<v-btn icon @click.stop="() => closeModal()">
@@ -194,6 +194,7 @@ export default {
 			],
 			opened: false,
 			clickedImage: "",
+			previewOpen: false,
 		};
 	},
 	watch: {
@@ -250,7 +251,7 @@ export default {
 		},
 		openFullscreenPreview(url) {
 			this.clickedImage = url;
-			this.$refs.preview.open();
+			this.previewOpen = true;
 		},
 		getHeaders(item) {
 			if (this.packs.includes(item))

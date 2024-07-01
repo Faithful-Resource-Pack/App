@@ -81,7 +81,7 @@ export default {
 			reason: "",
 			validForm: false,
 			addonData: undefined,
-			headerSource: undefined,
+			headerSource: "",
 			screenSources: [],
 			screenIds: [],
 		};
@@ -182,7 +182,7 @@ export default {
 					this.headerSource = `${res.data}?t=${new Date().getTime()}`;
 				})
 				.catch(() => {
-					this.headerSource = undefined;
+					this.headerSource = "";
 				});
 		},
 		async handleScreenshot(screenshots, index, remove = false, id) {

@@ -143,7 +143,7 @@
 					</v-img>
 				</v-card>
 
-				<template v-for="(tab, tabIndex) in availableTabs" :key="tab.label">
+				<div v-for="(tab, tabIndex) in availableTabs" :key="tab.label">
 					<v-list
 						dense
 						nav
@@ -203,7 +203,7 @@
 					>
 						<!-- auto-closing tags break here for some reason -->
 					</v-divider>
-				</template>
+				</div>
 
 				<v-list dense nav>
 					<v-list-item>

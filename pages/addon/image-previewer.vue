@@ -38,7 +38,7 @@
 			</div>
 		</div>
 
-		<fullscreen-preview ref="preview" :src="fullscreenItem" />
+		<fullscreen-preview v-model="previewOpen" :src="fullscreenItem" />
 	</v-container>
 </template>
 
@@ -69,11 +69,12 @@ export default {
 	data() {
 		return {
 			fullscreenIndex: undefined,
+			previewOpen: false,
 		};
 	},
 	computed: {
 		fullscreenItem() {
-			if (this.fullscreenIndex === undefined) return undefined;
+			if (this.fullscreenIndex === undefined) return "";
 			return this.sources[this.fullscreenIndex];
 		},
 		empty() {
@@ -90,7 +91,7 @@ export default {
 		onFullscreen(index, e) {
 			if (e) e.target.blur();
 			this.fullscreenIndex = index;
-			this.$refs.preview.open();
+			this.previewOpen = true;
 		},
 	},
 };

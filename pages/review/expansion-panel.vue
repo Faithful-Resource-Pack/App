@@ -1,6 +1,6 @@
 <template>
 	<v-container id="review-expanders">
-		<fullscreen-preview ref="preview" :src="imagePreview" />
+		<fullscreen-preview v-model="previewOpen" :src="imagePreview" />
 
 		<v-expansion-panel
 			v-for="addon in addons"
@@ -35,7 +35,7 @@
 						<v-img
 							@click.stop="
 								(e) => {
-									$refs.preview.open();
+									previewOpen = true;
 									imagePreview = addonInPanelHeaderURL;
 								}
 							"
@@ -70,7 +70,7 @@
 								class="ma-1"
 								@click.stop="
 									(e) => {
-										$refs.preview.open();
+										previewOpen = true;
 										imagePreview = addonInPanelHeaderURL;
 									}
 								"
@@ -249,7 +249,7 @@ export default {
 			imagePreview: "",
 			dialogAddon: {},
 			dialogOpen: false,
-
+			previewOpen: false,
 			addonInPanelLoading: true,
 			addonInPanel: {},
 			addonURL: undefined,

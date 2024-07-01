@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<fullscreen-preview ref="headerPreview" :src="header" />
+		<fullscreen-preview v-model="previewOpen" :src="header" />
 
 		<div class="text-center" v-if="loading">
 			<h2 class="mb-3">{{ $root.lang().addons.general.loading_addon }}</h2>
@@ -46,7 +46,7 @@
 						<div class="col">
 							<div style="position: relative" v-if="hasHeader" class="mt-3">
 								<v-img
-									@click.stop="(e) => $refs.headerPreview.open()"
+									@click.stop="() => (previewOpen = true)"
 									style="border-radius: 10px"
 									:aspect-ratio="16 / 9"
 									:src="header"
@@ -56,7 +56,7 @@
 									rounded
 									style="display: inline-block; position: absolute; right: 0; top: 0"
 								>
-									<v-icon small class="ma-1" @click.stop="(e) => $refs.headerPreview.open()">
+									<v-icon small class="ma-1" @click.stop="() => (previewOpen = true)">
 										mdi-fullscreen
 									</v-icon>
 									<v-icon
@@ -328,7 +328,7 @@ export default {
 		},
 		headerSource: {
 			required: false,
-			default: undefined,
+			default: "",
 		},
 		screenSources: {
 			required: false,
@@ -508,6 +508,7 @@ export default {
 			editions: ["Java", "Bedrock"],
 			res: ["32x", "64x"],
 			users: [],
+			previewOpen: false,
 		};
 	},
 	computed: {
@@ -519,9 +520,7 @@ export default {
 				? this.headerValidating == false && this.headerValid && this.submittedForm.headerFile
 					? URL.createObjectURL(this.submittedForm.headerFile)
 					: undefined
-				: this.headerSource
-					? this.headerSource
-					: undefined;
+				: this.headerSource;
 		},
 		carouselSources() {
 			return this.screenSources ? this.screenSources : [];

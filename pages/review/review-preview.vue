@@ -1,7 +1,7 @@
 <template>
 	<div id="review-preview" class="d-flex flex-column">
 		<v-card flat style="height: 100%" class="rounded-lg pa-2 overflow-x-hidden">
-			<fullscreen-preview ref="preview" :src="imagePreview" />
+			<fullscreen-preview v-model="previewOpen" :src="imagePreview" />
 			<template v-if="addonInPanelLoading === true">
 				<p>{{ $root.lang().global.loading }}</p>
 			</template>
@@ -25,7 +25,7 @@
 						<v-img
 							@click.stop="
 								(e) => {
-									$refs.preview.open();
+									previewOpen = true;
 									imagePreview = addonInPanelHeaderURL;
 								}
 							"
@@ -62,7 +62,7 @@
 								class="ma-1"
 								@click.stop="
 									(e) => {
-										$refs.preview.open();
+										previewOpen = true;
 										imagePreview = addonInPanelHeaderURL;
 									}
 								"
@@ -208,7 +208,7 @@ export default {
 			imagePreview: "",
 			dialogAddon: {},
 			dialogOpen: false,
-
+			previewOpen: false,
 			addonInPanelLoading: true,
 			addonInPanel: {},
 			addonURL: undefined,

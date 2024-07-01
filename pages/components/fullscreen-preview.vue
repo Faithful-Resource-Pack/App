@@ -8,7 +8,7 @@
 				alt="fullscreen preview"
 				:aspect-ratio="aspectRatio"
 				contain
-				@click="close"
+				@click="() => (modalOpened = false)"
 			/>
 		</v-card>
 	</v-dialog>
@@ -18,6 +18,10 @@
 export default {
 	name: "fullscreen-preview",
 	props: {
+		value: {
+			type: Boolean,
+			required: true,
+		},
 		aspectRatio: {
 			required: false,
 			type: Number,
@@ -38,20 +42,20 @@ export default {
 			modalOpened: false,
 		};
 	},
-	methods: {
-		close() {
-			this.modalOpened = false;
-		},
-		open() {
-			this.modalOpened = true;
-		},
-	},
 	computed: {
 		styles() {
 			if (!this.texture) return {};
 			return {
 				"image-rendering": "pixelated",
 			};
+		},
+	},
+	watch: {
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.$emit("input", newValue);
 		},
 	},
 };
