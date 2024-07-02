@@ -662,7 +662,7 @@ export default {
 					const image = new Image();
 					image.src = e.target.result;
 					image.onload = function () {
-						// do not use anonymous fn
+						// do not use arrow fn
 						try {
 							validateImage(this); // this is image now
 							resolve();

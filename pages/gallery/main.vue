@@ -340,7 +340,7 @@ export default {
 	},
 	computed: {
 		requestTime() {
-			if (!this.timer.end || !this.timer.start);
+			if (!this.timer.end || !this.timer.start) return;
 			const seconds = (this.timer.end - this.timer.start) / 1000;
 			// cast to number again to remove unnecessary zeros
 			return Number(seconds.toFixed(2));
