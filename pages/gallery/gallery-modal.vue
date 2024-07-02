@@ -67,7 +67,6 @@
 
 					<v-tabs-items v-model="selectedTab" class="info-table">
 						<v-tab-item v-for="tab in tabs" :key="tab">
-							<!-- use template for vertical layout -->
 							<template v-if="tab === tabs.information">
 								<template v-for="category in textureCategories">
 									<div class="gallery-info">
@@ -83,11 +82,10 @@
 									</div>
 								</template>
 							</template>
-							<template v-if="tab === tabs.authors" class="double-table">
+							<template v-if="tab === tabs.authors">
 								<template v-for="{ category, packs } in authorCategories">
 									<div class="gallery-info">
 										<h2 style="text-transform: capitalize">{{ category }}</h2>
-										<!-- use div for horizontal layout -->
 										<div class="double-table">
 											<div v-for="pack in packs">
 												<div class="title text-button text--secondary">

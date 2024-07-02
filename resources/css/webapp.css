@@ -780,6 +780,7 @@ code {
 .double-table {
 	display: flex;
 	flex-direction: row;
+	flex-wrap: wrap;
 	gap: 30px;
 }
 
