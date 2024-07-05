@@ -114,7 +114,7 @@
 			:stretched="stretched"
 			:textures="textures"
 			:pack="current.pack"
-			:ignoreList="ignoredTextures[current.edition]"
+			:ignoreList="ignoreList"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
 			@changeShareURL="changeShareURL"
@@ -126,7 +126,7 @@
 			:textureObj="modalTextureObj"
 			:contributors="loadedContributors"
 			:packToName="packToName"
-			:ignoreList="ignoredTextures[current.edition]"
+			:ignoreList="ignoreList"
 			:onClose="() => changeShareURL()"
 		/>
 
@@ -379,6 +379,19 @@ export default {
 				label: e,
 				value: i === 0 ? "all" : e,
 			}));
+		},
+		ignoreList() {
+			// not loaded yet
+			if (!Object.keys(this.ignoredTextures).length) return [];
+			// modded is always ignored
+			const ignoreList = [...this.ignoredTextures.modded];
+			// add all editions to ignore list
+			if (this.current.edition === "all")
+				ignoreList.push(
+					...settings.editions.map((edition) => this.ignoredTextures[edition]).flat(),
+				);
+			else ignoreList.push(...this.ignoredTextures[this.current.edition]);
+			return ignoreList;
 		},
 	},
 	watch: {

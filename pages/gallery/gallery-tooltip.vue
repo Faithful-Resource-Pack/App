@@ -2,7 +2,7 @@
 	<div class="tooltip">
 		<div class="texture-tooltip">
 			<div class="texture-info-container">
-				<span class="texture-id">{{ "#" + texture.textureID }}</span>
+				<span class="texture-id">#{{ texture.textureID }}</span>
 				<h1 align="left" class="encased">{{ texture.name }}</h1>
 				<ul align="left" class="encased">
 					<!-- always prioritize contributions -->
@@ -15,8 +15,10 @@
 						</p>
 					</li>
 					<!-- mojang only means it's in vanilla, modded isn't technically mojang -->
-					<li v-else-if="modded"><v-icon small>mdi-wrench</v-icon> Modded texture</li>
+					<li v-else-if="modded"><v-icon small>mdi-wrench</v-icon> Modded Texture</li>
+					<!-- ignored textures fall back to mojang-->
 					<li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
+					<li v-else-if="ignored"><v-icon small>mdi-texture</v-icon> Ignored Texture</li>
 					<li v-else>
 						{{ $root.lang("gallery.error_message.contribution_not_found") }}
 					</li>
@@ -24,7 +26,7 @@
 			</div>
 			<div class="texture-tags-container">
 				<span class="encased" v-for="tag in texture.tags" :key="tag">
-					{{ `#${tag}` }}
+					{{ `${tag}` }}
 				</span>
 			</div>
 		</div>
@@ -57,6 +59,10 @@ export default {
 			type: Function,
 			required: true,
 		},
+		ignoreList: {
+			type: Array,
+			required: true,
+		}
 	},
 	computed: {
 		lastContribution() {
@@ -74,9 +80,13 @@ export default {
 			if (this.lastContribution.authors.length === 1) return "mdi-account";
 			return "mdi-account-multiple";
 		},
+		// can be changed if we ever find a better way to handle this
 		modded() {
 			return this.texture.tags.includes("Modded");
 		},
+		ignored() {
+			return this.ignoreList.some((el) => this.texture.url.includes(el));
+		}
 	},
 	methods: {
 		timestampToDate(t) {

@@ -49,6 +49,7 @@
 						:contributions="loadedContributions"
 						:pack="pack"
 						:discordIDtoName="discordIDtoName"
+						:ignoreList="ignoreList"
 					/>
 				</tippy>
 			</div>
