@@ -146,12 +146,7 @@
 							`${$root.lang().review.addon.labels.approved_by} ${getUsername(addonInPanel.approval.author)}`
 						}}
 					</div>
-					<div
-						v-if="
-							status === 'denied' ||
-							status === 'archived'
-						"
-					>
+					<div v-if="status === 'denied' || status === 'archived'">
 						<div>
 							{{
 								`${$root.lang().review.addon.labels.denied_by} ${getUsername(addonInPanel.approval.author)}:`

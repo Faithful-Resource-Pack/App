@@ -388,7 +388,7 @@ export default {
 			// add all editions to ignore list
 			if (this.current.edition === "all")
 				ignoreList.push(
-					...settings.editions.map((edition) => this.ignoredTextures[edition]).flat(),
+					...settings.editions.map((edition) => this.ignoredTextures[edition.toLowerCase()]).flat(),
 				);
 			else ignoreList.push(...this.ignoredTextures[this.current.edition]);
 			return ignoreList;

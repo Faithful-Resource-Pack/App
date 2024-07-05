@@ -490,6 +490,11 @@ export default {
 			id_desc: "Texture ID (largest → smallest)",
 			contrib_desc: "Recently Contributed",
 		},
+		tooltip: {
+			modded: "Modded Texture",
+			mojang: "Mojang Studios",
+			ignored: "Ignored Texture",
+		},
 		all: "All",
 		latest: "Latest",
 		clear_cache: "Clear Gallery Cache",

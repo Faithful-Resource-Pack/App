@@ -15,12 +15,18 @@
 						</p>
 					</li>
 					<!-- mojang only means it's in vanilla, modded isn't technically mojang -->
-					<li v-else-if="modded"><v-icon small>mdi-wrench</v-icon> Modded Texture</li>
+					<li v-else-if="modded">
+						<v-icon small>mdi-wrench</v-icon> {{ $root.lang().gallery.tooltip.modded }}
+					</li>
 					<!-- ignored textures fall back to mojang-->
-					<li v-else-if="mojang"><i class="icon-mojang-red"></i> Mojang Studios</li>
-					<li v-else-if="ignored"><v-icon small>mdi-texture</v-icon> Ignored Texture</li>
+					<li v-else-if="mojang">
+						<i class="icon-mojang-red"></i> {{ $root.lang().gallery.tooltip.mojang }}
+					</li>
+					<li v-else-if="ignored">
+						<v-icon small>mdi-texture</v-icon> {{ $root.lang().gallery.tooltip.ignored }}
+					</li>
 					<li v-else>
-						{{ $root.lang("gallery.error_message.contribution_not_found") }}
+						{{ $root.lang().gallery.error_message.contribution_not_found }}
 					</li>
 				</ul>
 			</div>
@@ -62,7 +68,7 @@ export default {
 		ignoreList: {
 			type: Array,
 			required: true,
-		}
+		},
 	},
 	computed: {
 		lastContribution() {
@@ -86,7 +92,7 @@ export default {
 		},
 		ignored() {
 			return this.ignoreList.some((el) => this.texture.url.includes(el));
-		}
+		},
 	},
 	methods: {
 		timestampToDate(t) {
