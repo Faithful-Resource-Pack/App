@@ -171,7 +171,9 @@
 					:hint="$root.lang().addons.general.authors.hint"
 				/>
 
-				<div class="container" id="type-checkbox">
+				<div class="text-h5">{{ $root.lang().addons.options.title }}</div>
+
+				<div class="container">
 					<div class="row text-center">
 						<div class="col-12 col-md-6">
 							<v-row>
@@ -207,11 +209,6 @@
 							</v-row>
 						</div>
 					</div>
-				</div>
-
-				<div class="text-h5">{{ $root.lang().addons.options.title }}</div>
-
-				<div class="container">
 					<v-row>
 						<v-checkbox
 							class="col-6"
