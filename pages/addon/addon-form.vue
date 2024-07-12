@@ -275,7 +275,7 @@
 				<div class="pb-3">
 					<v-btn block @click="downloadAdd()">
 						{{ $root.lang().global.btn.add_download }}
-						<v-icon small>mdi-plus</v-icon>
+						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</div>
 
