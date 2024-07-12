@@ -135,11 +135,11 @@
 
 				<!-- Addon description preview (using marked and sanitized)-->
 				<!-- eslint-disable vue/no-v-text-v-html-on-component -->
-				<v-container
+				<v-card
 					id="addon-description-preview"
 					v-if="submittedForm.description && submittedForm.description.length > 0"
-					class="markdown"
-					style="background-color: rgba(33, 33, 33, 1); border-radius: 5px"
+					class="markdown pa-3"
+					:elevation="0"
 					v-html="$root.compiledMarkdown(submittedForm.description)"
 				/>
 				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
@@ -275,7 +275,7 @@
 				<div class="pb-3">
 					<v-btn block @click="downloadAdd()">
 						{{ $root.lang().global.btn.add_download }}
-						<v-icon color="white lighten-1">mdi-plus</v-icon>
+						<v-icon small>mdi-plus</v-icon>
 					</v-btn>
 				</div>
 
@@ -285,10 +285,11 @@
 						:disabled="!validForm"
 						@click="() => onSubmit(true)"
 						color="primary"
+						class="ma-2"
 					>
 						{{ $root.lang("global.btn.submit_and_approve") }}
 					</v-btn>
-					<v-btn :disabled="!validForm" @click="() => onSubmit(false)" color="primary">
+					<v-btn :disabled="!validForm" @click="() => onSubmit(false)" color="primary" class="ma-2">
 						{{ $root.lang().global.btn.submit }}
 					</v-btn>
 				</div>
