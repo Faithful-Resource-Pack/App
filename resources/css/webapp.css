@@ -72,18 +72,6 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
 	content: "\e901";
 	color: #fff;
 }
-.icon-people:before {
-	content: "\e902";
-	color: #fff;
-}
-.icon-peoples:before {
-	content: "\e903";
-	color: #fff;
-}
-.icon-time:before {
-	content: "\e904";
-	color: #fff;
-}
 
 /* Keep background from #app when the page is loading */
 .theme--dark.v-application {
@@ -91,14 +79,6 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
 	background-attachment: fixed;
 }
 
-#connect-title {
-	text-align: center;
-	width: 200px;
-	max-width: 100%;
-	margin-bottom: 20px;
-	font-size: 1.04rem;
-	line-height: 1.6rem;;
-}
 .theme--dark .card-text-shadow {
 	text-shadow: 2px 2px rgba(0,0,0,.7);
 }
@@ -139,10 +119,6 @@ a {
 	background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/forest.png?w=320);
 	background-position: center;
 	background-size: cover;
-}
-
-#banner-card .unlogged {
-	opacity: 0;
 }
 
 #app .v-tabs {
@@ -240,11 +216,6 @@ div.tooltip.vue-tooltip-theme {
 	max-width: 256px;
 }
 
-/* disabled because of the texture gallery modal */
-/* .texture-img:hover {
-	cursor: pointer;
-} */
-
 .texture-img > .v-image__image {
 	background-size: contain !important;
 	image-rendering: pixelated;
@@ -290,7 +261,7 @@ img.texture-img {
 	font-size: 14px;
 	height: 22px;
 	line-height: 22px;
-	border-radius: 11px;
+	border-radius: 3px;
 	margin-left: -3px;
 	margin-top: -11px;
 }
