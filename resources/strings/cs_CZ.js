@@ -212,7 +212,6 @@ export default {
 			},
 			labels: {
 				link: "Odkaz",
-				comments: "Komentáře",
 				optifine: "OptiFine",
 				approved_by: "Schváleno administrátorem",
 				denied_by: "Zamítnuto administrátorem",
@@ -287,9 +286,6 @@ export default {
 		},
 		options: {
 			title: "Možnosti",
-			comments: {
-				label: "Povolit komentáře",
-			},
 			optifine: {
 				label: "Vyžaduje OptiFine",
 			},

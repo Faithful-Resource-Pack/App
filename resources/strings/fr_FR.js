@@ -231,7 +231,6 @@ export default {
 			},
 			labels: {
 				link: "Lien",
-				comments: "Commentaires",
 				optifine: "OptiFine",
 				approved_by: "Approuvé par",
 				denied_by: "Refusé par",
@@ -304,9 +303,6 @@ export default {
 		},
 		options: {
 			title: "Options",
-			comments: {
-				label: "Activer les commentaires",
-			},
 			optifine: {
 				label: "Requière OptiFine",
 			},

@@ -490,7 +490,6 @@ export default {
 				selectedRes: ["32x"],
 				options: {
 					tags: [],
-					comments: true,
 					optifine: false,
 				},
 			},
