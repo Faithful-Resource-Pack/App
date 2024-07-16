@@ -26,6 +26,7 @@
 					<!-- LEFT PART : INPUT -->
 					<div class="col pb-0">
 						<div class="text-h5">{{ $root.lang().addons.general.title }}</div>
+
 						<!-- Addon name -->
 						<v-text-field
 							required
@@ -35,6 +36,14 @@
 							:counter="form.name.counter.max"
 							:label="$root.lang().addons.general.name.label"
 							:hint="$root.lang().addons.general.name.hint"
+						/>
+
+						<!-- Addon authors selection -->
+						<user-select
+							:users="users"
+							v-model="submittedForm.authors"
+							:label="$root.lang().addons.general.authors.label"
+							:hint="$root.lang().addons.general.authors.hint"
 						/>
 
 						<div class="text-h5 mb-3" v-if="!$vuetify.breakpoint.smAndDown">
@@ -161,14 +170,6 @@
 					v-if="$root.isAdmin && !addonNew"
 					:label="$root.lang().addons.general.slug.label"
 					:hint="$root.lang().addons.general.slug.hint"
-				/>
-
-				<!-- Addon authors selection -->
-				<user-select
-					:users="users"
-					v-model="submittedForm.authors"
-					:label="$root.lang().addons.general.authors.label"
-					:hint="$root.lang().addons.general.authors.hint"
 				/>
 
 				<div class="text-h5">{{ $root.lang().addons.options.title }}</div>
