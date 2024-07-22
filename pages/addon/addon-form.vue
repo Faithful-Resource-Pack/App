@@ -187,7 +187,7 @@
 											submittedForm.selectedEditions[0] === type
 										"
 										:value="type"
-										:hide-details="$vuetify.breakpoint.smAndDown"
+										hide-details
 										color="primary"
 									/>
 								</v-col>
@@ -203,6 +203,7 @@
 											submittedForm.selectedRes.length === 1 &&
 											submittedForm.selectedRes[0] === type
 										"
+										hide-details
 										:value="type"
 										color="primary"
 									/>

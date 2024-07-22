@@ -770,6 +770,10 @@ code {
 	cursor: pointer;
 }
 
+#addon-description-preview {
+	margin-bottom: 1.5vh;
+}
+
 #addon-description-preview,
 #addon-description-preview > p {
 	word-break: break-all;
