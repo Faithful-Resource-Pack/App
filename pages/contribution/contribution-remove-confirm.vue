@@ -8,6 +8,7 @@
 		<li>ID: {{ data.id }}</li>
 		<li>Name: {{ data.name }}</li>
 		<li>Pack: {{ data.pack }}</li>
+		<li>Date: {{ data.date }} ({{ timestampToDate(data.date) }})</li>
 		<li>
 			Authors:
 			<ul>
@@ -21,6 +22,7 @@
 
 <script>
 import axios from "axios";
+import moment from "moment";
 import RemoveConfirm from "../components/remove-confirm.vue";
 
 export default {
@@ -50,6 +52,9 @@ export default {
 		};
 	},
 	methods: {
+		timestampToDate(t) {
+			return moment(new Date(t)).format("ll");
+		},
 		deleteContribution() {
 			axios
 				.delete(`${this.$root.apiURL}/contributions/${this.data.id}`, this.$root.apiOptions)
