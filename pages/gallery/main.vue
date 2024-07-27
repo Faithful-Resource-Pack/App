@@ -440,9 +440,6 @@ export default {
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);
 		},
-		modalOpen(n) {
-			if (!n) this.removeShareURL();
-		},
 	},
 	created() {
 		axios

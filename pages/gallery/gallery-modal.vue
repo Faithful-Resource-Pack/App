@@ -78,6 +78,7 @@
 											class="elevation-1"
 											style="margin-top: 10px"
 											hide-default-footer
+											disable-pagination
 										>
 											<template #item.versions="{ value }">
 												<!-- title property gives alt text -->
@@ -108,6 +109,7 @@
 													class="elevation-1"
 													style="margin-top: 10px"
 													hide-default-footer
+													disable-pagination
 													:no-data-text="$root.lang().gallery.modal.no_contributions"
 												/>
 											</div>
@@ -359,7 +361,7 @@ export default {
 			},
 			immediate: true,
 		},
-		opened(n) {
+		modalOpened(n) {
 			this.$emit("input", n);
 		},
 	},
