@@ -127,7 +127,7 @@
 			:contributors="loadedContributors"
 			:packToName="packToName"
 			:ignoreList="ignoreList"
-			:onClose="() => changeShareURL()"
+			@close="removeShareURL"
 		/>
 
 		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
@@ -439,9 +439,6 @@ export default {
 		},
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);
-		},
-		modalOpen(n) {
-			if (!n) this.removeShareURL();
 		},
 	},
 	created() {
