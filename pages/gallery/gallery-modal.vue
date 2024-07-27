@@ -1,6 +1,6 @@
 <template>
 	<v-dialog
-		v-model="opened"
+		v-model="modalOpened"
 		fullscreen
 		hide-overlay
 		transition="dialog-bottom-transition"
@@ -78,7 +78,18 @@
 											class="elevation-1"
 											style="margin-top: 10px"
 											hide-default-footer
-										/>
+											disable-pagination
+										>
+											<template #item.versions="{ value }">
+												<!-- title property gives alt text -->
+												<span :title="value.join(', ')">{{ formatPathVersions(value) }}</span>
+											</template>
+											<!-- technically applies to both texture/use names but it doesn't matter -->
+											<template #item.name="{ value }">
+												<template v-if="value">{{ value }}</template>
+												<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+											</template>
+										</v-data-table>
 									</div>
 								</template>
 							</template>
@@ -98,6 +109,7 @@
 													class="elevation-1"
 													style="margin-top: 10px"
 													hide-default-footer
+													disable-pagination
 													:no-data-text="$root.lang().gallery.modal.no_contributions"
 												/>
 											</div>
@@ -115,6 +127,7 @@
 
 <script>
 import moment from "moment";
+import MinecraftSorter from "@helpers/MinecraftSorter";
 
 import GalleryImage from "./gallery-image.vue";
 import FullscreenPreview from "../components/fullscreen-preview.vue";
@@ -166,10 +179,6 @@ export default {
 		ignoreList: {
 			type: Array,
 		},
-		onClose: {
-			type: Function,
-			default: () => {},
-		},
 	},
 	data() {
 		return {
@@ -190,26 +199,15 @@ export default {
 					packs: ["classic_faithful_32x_progart"],
 				},
 			],
-			opened: false,
+			modalOpened: false,
 			clickedImage: "",
 			previewOpen: false,
 		};
 	},
-	watch: {
-		value: {
-			handler(n) {
-				this.opened = n;
-			},
-			immediate: true,
-		},
-		opened(n) {
-			this.$emit("input", n);
-		},
-	},
 	methods: {
 		closeModal() {
-			this.onClose();
-			this.opened = false;
+			this.$emit("close");
+			this.modalOpened = false;
 		},
 		discordIDtoName(d) {
 			return this.contributors[d]
@@ -243,9 +241,14 @@ export default {
 				case "paths":
 					return this.textureObj[item].map((path) => ({
 						...path,
-						versions: path.versions.join(", "),
+						// sort() mutates the original array so we need to clone it
+						versions: Array.from(path.versions).sort(MinecraftSorter),
 					}));
 			}
+		},
+		formatPathVersions(versions) {
+			if (versions.length === 1) return versions[0];
+			return `${versions[0]} – ${versions[versions.length - 1]}`;
 		},
 		openFullscreenPreview(url) {
 			this.clickedImage = url;
@@ -349,6 +352,17 @@ export default {
 					return { name: pack, image: url };
 				}),
 			);
+		},
+	},
+	watch: {
+		value: {
+			handler(n) {
+				this.modalOpened = n;
+			},
+			immediate: true,
+		},
+		modalOpened(n) {
+			this.$emit("input", n);
 		},
 	},
 };
