@@ -73,7 +73,7 @@
 					class="pt-0 my-0"
 					height="100%"
 					:placeholder="$root.lang().database.labels.search_texture"
-					@keydown.enter="startSearch()"
+					@keyup.enter="startSearch()"
 					hide-details
 				/>
 			</v-col>

@@ -17,7 +17,9 @@
 				:key="sort + texture.textureID"
 				:style="styles.cell"
 				class="gallery-texture-in-container"
-				@click.stop="$emit('changeShareURL', texture.textureID)"
+				@click.exact.stop="$emit('open', texture.textureID)"
+				@click.middle.stop="$emit('openNewTab', texture.textureID)"
+				@click.meta.stop="$emit('openNewTab', texture.textureID)"
 			>
 				<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 					<template #trigger>
