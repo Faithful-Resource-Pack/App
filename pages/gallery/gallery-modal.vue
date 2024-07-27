@@ -78,7 +78,17 @@
 											class="elevation-1"
 											style="margin-top: 10px"
 											hide-default-footer
-										/>
+										>
+											<template #item.versions="{ value }">
+												<!-- title property gives alt text -->
+												<span :title="value.join(', ')">{{ formatPathVersions(value) }}</span>
+											</template>
+											<!-- technically applies to both texture/use names but it doesn't matter -->
+											<template #item.name="{ value }">
+												<template v-if="value">{{ value }}</template>
+												<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+											</template>
+										</v-data-table>
 									</div>
 								</template>
 							</template>
@@ -115,6 +125,7 @@
 
 <script>
 import moment from "moment";
+import MinecraftSorter from "@helpers/MinecraftSorter";
 
 import GalleryImage from "./gallery-image.vue";
 import FullscreenPreview from "../components/fullscreen-preview.vue";
@@ -243,9 +254,14 @@ export default {
 				case "paths":
 					return this.textureObj[item].map((path) => ({
 						...path,
-						versions: path.versions.join(", "),
+						// sort() mutates the original array so we need to clone it
+						versions: Array.from(path.versions).sort(MinecraftSorter),
 					}));
 			}
+		},
+		formatPathVersions(versions) {
+			if (versions.length === 1) return versions[0];
+			return `${versions[0]} – ${versions[versions.length - 1]}`;
 		},
 		openFullscreenPreview(url) {
 			this.clickedImage = url;
