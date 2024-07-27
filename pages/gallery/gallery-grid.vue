@@ -35,7 +35,7 @@
 							</p>
 						</gallery-image>
 						<v-btn
-							@click.stop="$emit('changeShareURL', texture.textureID)"
+							@click.stop="$emit('share', texture.textureID)"
 							class="ma-2 gallery-share"
 							absolute
 							plain

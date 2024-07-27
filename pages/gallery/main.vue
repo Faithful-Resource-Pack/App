@@ -117,8 +117,9 @@
 			:ignoreList="ignoreList"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
-			@open="changeShareURL"
+			@open="newShareURL"
 			@openNewTab="newTabShareURL"
+			@share="copyShareURL"
 		/>
 
 		<gallery-modal
@@ -227,7 +228,7 @@ export default {
 					return "faithful_64x";
 			}
 		},
-		changeShareURL(id, update = true) {
+		newShareURL(id, update = true) {
 			if (update && id !== undefined) this.$router.push({ query: { show: id } });
 
 			// need location api to get base url to share
@@ -243,12 +244,12 @@ export default {
 			this.$router.push({ query: null });
 		},
 		copyShareURL(id) {
-			const url = this.changeShareURL(id, false);
+			const url = this.newShareURL(id, false);
 			navigator.clipboard.writeText(url);
 			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
 		},
 		newTabShareURL(id) {
-			const url = this.changeShareURL(id, false);
+			const url = this.newShareURL(id, false);
 			window.open(url, "_blank");
 		},
 		openModal(id) {
