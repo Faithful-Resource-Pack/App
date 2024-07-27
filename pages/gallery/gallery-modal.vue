@@ -1,6 +1,6 @@
 <template>
 	<v-dialog
-		v-model="opened"
+		v-model="modalOpened"
 		fullscreen
 		hide-overlay
 		transition="dialog-bottom-transition"
@@ -177,10 +177,6 @@ export default {
 		ignoreList: {
 			type: Array,
 		},
-		onClose: {
-			type: Function,
-			default: () => {},
-		},
 	},
 	data() {
 		return {
@@ -201,26 +197,15 @@ export default {
 					packs: ["classic_faithful_32x_progart"],
 				},
 			],
-			opened: false,
+			modalOpened: false,
 			clickedImage: "",
 			previewOpen: false,
 		};
 	},
-	watch: {
-		value: {
-			handler(n) {
-				this.opened = n;
-			},
-			immediate: true,
-		},
-		opened(n) {
-			this.$emit("input", n);
-		},
-	},
 	methods: {
 		closeModal() {
-			this.onClose();
-			this.opened = false;
+			this.$emit("close");
+			this.modalOpened = false;
 		},
 		discordIDtoName(d) {
 			return this.contributors[d]
@@ -365,6 +350,17 @@ export default {
 					return { name: pack, image: url };
 				}),
 			);
+		},
+	},
+	watch: {
+		value: {
+			handler(n) {
+				this.modalOpened = n;
+			},
+			immediate: true,
+		},
+		opened(n) {
+			this.$emit("input", n);
 		},
 	},
 };
