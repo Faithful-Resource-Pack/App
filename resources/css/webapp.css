@@ -669,7 +669,8 @@ code {
 	left: 0;
 }
 
-.gallery-texture-image:hover {
+.gallery-texture-image:hover,
+.gallery-texture-image:active {
 	cursor: pointer;
 }
 
