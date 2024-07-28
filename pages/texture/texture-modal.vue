@@ -211,9 +211,7 @@ export default {
 	},
 	methods: {
 		getCorrespondingEdition(edition) {
-			return (
-				settings.editions.find((e) => e.toLowerCase() !== edition) || "bedrock"
-			).toLowerCase();
+			return settings.editions.find((e) => e !== edition) || "bedrock";
 		},
 		openUseModal(data, add) {
 			this.useModalOpen = true;
@@ -294,7 +292,7 @@ export default {
 						...(res.data || []).map((path) => formatTag(getTagFromPath(path.name))),
 					]);
 				})
-				.catch((err) => console.log(err));
+				.catch((err) => console.error(err));
 		},
 		getUses(textureID) {
 			axios

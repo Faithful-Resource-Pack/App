@@ -108,6 +108,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		error: {
+			type: String,
+			required: false,
+		},
 	},
 	data() {
 		return {

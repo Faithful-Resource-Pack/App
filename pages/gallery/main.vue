@@ -2,53 +2,7 @@
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
 		<div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
 
-		<v-row>
-			<v-col cols="12" sm="6">
-				<v-select
-					:items="packList"
-					item-text="label"
-					item-value="value"
-					:value="current.pack"
-					:label="$root.lang('gallery.category.pack')"
-					@change="updateRoute($event, 'pack')"
-				/>
-			</v-col>
-
-			<v-col cols="12" sm="6">
-				<v-select
-					:items="editionList"
-					item-text="label"
-					item-value="value"
-					:value="current.edition"
-					:label="$root.lang('gallery.category.edition')"
-					@change="updateRoute($event, 'edition')"
-				/>
-			</v-col>
-		</v-row>
-
-		<v-row>
-			<v-col cols="12" sm="6">
-				<v-select
-					:items="versionList"
-					:value="current.version"
-					item-text="label"
-					item-value="value"
-					:label="$root.lang('gallery.category.mc_version')"
-					@change="updateRoute($event, 'version')"
-				/>
-			</v-col>
-
-			<v-col cols="12" sm="6">
-				<v-select
-					:items="tagItems"
-					item-text="label"
-					item-value="value"
-					:value="current.tag"
-					:label="$root.lang('gallery.category.tag')"
-					@change="updateRoute($event, 'tag')"
-				/>
-			</v-col>
-		</v-row>
+		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
 
 		<v-row class="my-2">
 			<v-col cols="12" sm="6">
@@ -117,6 +71,7 @@
 			:ignoreList="ignoreList"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
+			:error="error"
 			@open="newShareURL"
 			@openNewTab="newTabShareURL"
 			@share="copyShareURL"
@@ -142,8 +97,9 @@
 /* global settings */
 import axios from "axios";
 
-import GalleryModal from "./gallery-modal.vue";
+import GalleryOptions from "./gallery-options.vue";
 import GalleryGrid from "./gallery-grid.vue";
+import GalleryModal from "./gallery-modal.vue";
 
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
@@ -152,8 +108,9 @@ const SORT_KEY = "gallery_sort";
 export default {
 	name: "gallery-page",
 	components: {
-		GalleryModal,
+		GalleryOptions,
 		GalleryGrid,
+		GalleryModal,
 	},
 	data() {
 		const sortStrings = this.$root.lang().gallery.sort;
@@ -166,17 +123,6 @@ export default {
 			loading: false,
 			// string error extracted
 			error: undefined,
-			// search values available
-			options: {
-				packs: [],
-				tags: [this.$root.lang().gallery.all],
-				versions: [
-					this.$root.lang().gallery.latest,
-					...settings.versions.java,
-					...settings.versions.bedrock,
-				],
-				editions: [this.$root.lang().gallery.all, ...settings.editions],
-			},
 			// search values
 			current: {
 				pack: "faithful_32x",
@@ -268,33 +214,15 @@ export default {
 			);
 		},
 		startSearch() {
-			this.updateRoute(null, null, true);
+			this.updateRoute();
 		},
 		clearSearch() {
-			this.updateRoute(null, "search", true);
+			// avoid restarting search if there's already nothing there
+			if (this.current.search === null) return;
+			this.current.search = null;
+			this.updateRoute();
 		},
-		updateRoute(data, type, force = false) {
-			if (this.current[type] === data && !force) return; // avoid redundant redirection
-			this.current[type] = data;
-
-			// user safe interaction
-			// check if pack exist
-			if (!Object.keys(this.packToName).includes(this.current.pack))
-				this.current.pack = "faithful_32x";
-
-			if (this.current.edition === "all") {
-				this.current.version = "latest";
-				this.options.versions = [
-					this.$root.lang().gallery.latest,
-					...settings.versions.java,
-					...settings.versions.bedrock,
-				];
-			} else if (!settings.versions[this.current.edition].includes(this.current.version)) {
-				this.current.version = settings.versions[this.current.edition][0];
-				// set options to ensure proper data shows up in the selection
-				this.options.versions = settings.versions[this.current.edition];
-			}
-
+		updateRoute() {
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
 			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
 
@@ -361,40 +289,15 @@ export default {
 					: this.$root.lang().gallery.result_stats_plural,
 			);
 		},
-		packList() {
-			return Object.entries(this.packToName).map(([id, name]) => ({
-				label: name,
-				value: id,
-			}));
-		},
-		editionList() {
-			return this.options.editions.map((e, i) => ({
-				label: e,
-				// prevent translated value being sent to api
-				value: i === 0 ? "all" : e.toLowerCase(),
-			}));
-		},
-		versionList() {
-			return this.options.versions.map((e, i) => ({
-				label: /\d/g.test(e) ? e : e.toTitleCase(),
-				value: i === 0 ? "latest" : e,
-			}));
-		},
-		tagItems() {
-			return this.options.tags.map((e, i) => ({
-				label: e,
-				value: i === 0 ? "all" : e,
-			}));
-		},
 		ignoreList() {
 			// not loaded yet
 			if (!Object.keys(this.ignoredTextures).length) return [];
 			// modded is always ignored
-			const ignoreList = [...this.ignoredTextures.modded];
+			const ignoreList = Array.from(this.ignoredTextures.modded);
 			// add all editions to ignore list
 			if (this.current.edition === "all")
 				ignoreList.push(
-					...settings.editions.map((edition) => this.ignoredTextures[edition.toLowerCase()]).flat(),
+					...settings.editions.map((edition) => this.ignoredTextures[edition]).flat(),
 				);
 			else ignoreList.push(...this.ignoredTextures[this.current.edition]);
 			return ignoreList;
@@ -406,26 +309,19 @@ export default {
 				// if query changed but not params
 				if (JSON.stringify(params) === JSON.stringify(prev)) return;
 
-				// convert legacy urls to modern format if needed
-				this.current.pack = ["16x", "32x", "64x"].includes(params.pack)
-					? this.resToPackID(params.pack)
-					: params.pack;
-
-				// change available versions before changing anything else
-				this.options.versions =
-					params.edition === "all"
-						? [
-								this.$root.lang().gallery.latest,
-								...settings.versions.java,
-								...settings.versions.bedrock,
-							]
-						: settings.versions[params.edition];
-				this.current.edition = params.edition;
 				this.current.version = params.version;
+				this.current.edition = params.edition;
 				this.current.tag = params.tag;
 				this.current.search = params.search;
 
-				this.updateSearch();
+				// convert legacy urls to modern format
+				if (["16x", "32x", "64x"].includes(params.pack)) {
+					this.current.pack = this.resToPackID(params.pack);
+					this.updateRoute();
+				} else this.current.pack = params.pack;
+
+				// wait until version/edition watcher sync has been done
+				this.$nextTick(() => this.updateSearch());
 			},
 			deep: true,
 			immediate: true,
@@ -456,11 +352,7 @@ export default {
 				this.ignoredTextures = res.data;
 			});
 
-		axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
-			this.options.tags = [...this.options.tags, ...res.data];
-		});
 		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
-			this.options.packs = Object.values(res.data).map((v) => v.name);
 			this.packToName = Object.values(res.data).reduce((acc, cur) => {
 				acc[cur.id] = cur.name;
 				return acc;
