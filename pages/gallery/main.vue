@@ -99,7 +99,7 @@ import axios from "axios";
 
 import GalleryOptions from "./gallery-options.vue";
 import GalleryGrid from "./gallery-grid.vue";
-import GalleryModal from "./gallery-modal.vue";
+import GalleryModal from "./modal/main.vue";
 
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
