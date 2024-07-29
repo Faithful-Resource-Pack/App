@@ -84,6 +84,7 @@
 			:contributors="loadedContributors"
 			:packToName="packToName"
 			:ignoreList="ignoreList"
+			@share="copyShareURL"
 			@close="removeShareURL"
 		/>
 

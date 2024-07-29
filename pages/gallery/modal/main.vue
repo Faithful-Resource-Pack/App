@@ -18,7 +18,7 @@
 
 					<v-spacer />
 
-					<v-btn icon @click="() => $parent.copyShareLink(textureID)">
+					<v-btn icon @click="$emit('share', textureID)">
 						<v-icon>mdi-share-variant</v-icon>
 					</v-btn>
 				</template>
