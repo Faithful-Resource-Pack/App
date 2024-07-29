@@ -73,7 +73,7 @@
 			:sort="currentSort"
 			:error="error"
 			@open="newShareURL"
-			@openNewTab="newTabShareURL"
+			@openNewTab="openModalInNewTab"
 			@share="copyShareURL"
 		/>
 
@@ -81,7 +81,7 @@
 			v-model="modalOpen"
 			:textureID="modalTextureID"
 			:textureObj="modalTextureObj"
-			:contributors="loadedContributors"
+			:discordIDtoName="discordIDtoName"
 			:packToName="packToName"
 			:ignoreList="ignoreList"
 			@share="copyShareURL"
@@ -195,7 +195,7 @@ export default {
 			navigator.clipboard.writeText(url);
 			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
 		},
-		newTabShareURL(id) {
+		openModalInNewTab(id) {
 			const url = this.newShareURL(id, false);
 			window.open(url, "_blank");
 		},
@@ -228,7 +228,7 @@ export default {
 			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
-			return this.$router.push(route);
+			this.$router.push(route);
 		},
 		updateSearch() {
 			// prevent concurrency issues
@@ -281,14 +281,12 @@ export default {
 			return Number(seconds.toFixed(2));
 		},
 		resultMessage() {
-			const replacePlaceholders = (msg) =>
-				msg.replace("%COUNT%", this.textures.length).replace("%SECONDS%", this.requestTime);
-
-			return replacePlaceholders(
+			const str =
 				this.textures.length === 1
 					? this.$root.lang().gallery.result_stats_singular
-					: this.$root.lang().gallery.result_stats_plural,
-			);
+					: this.$root.lang().gallery.result_stats_plural;
+
+			return str.replace("%COUNT%", this.textures.length).replace("%SECONDS%", this.requestTime);
 		},
 		ignoreList() {
 			// not loaded yet
@@ -310,6 +308,7 @@ export default {
 				// if query changed but not params
 				if (JSON.stringify(params) === JSON.stringify(prev)) return;
 
+				// done first so any routing updates also update the version/edition
 				this.current.version = params.version;
 				this.current.edition = params.edition;
 				this.current.tag = params.tag;

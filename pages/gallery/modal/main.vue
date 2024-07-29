@@ -72,7 +72,7 @@
 								v-if="tab === tabs.authors"
 								:contributions="textureObj.contributions"
 								:packToName="packToName"
-								:contributors="contributors"
+								:discordIDtoName="discordIDtoName"
 							/>
 						</v-tab-item>
 					</v-tabs-items>
@@ -124,8 +124,8 @@ export default {
 			type: Object,
 			required: true,
 		},
-		contributors: {
-			type: Object,
+		discordIDtoName: {
+			type: Function,
 			required: true,
 		},
 		// saves on duplicate code since it's already in the gallery page

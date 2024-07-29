@@ -31,16 +31,16 @@ import moment from "moment";
 export default {
 	name: "author-tab",
 	props: {
-		packToName: {
-			type: Object,
-			required: true,
-		},
 		contributions: {
 			type: Array,
 			required: true,
 		},
-		contributors: {
+		packToName: {
 			type: Object,
+			required: true,
+		},
+		discordIDtoName: {
+			type: Function,
 			required: true,
 		},
 	},
@@ -71,7 +71,7 @@ export default {
 				},
 				{
 					text: this.$root.lang().gallery.modal.data.authors,
-					value: "contributors",
+					value: "authors",
 				},
 			],
 		};
@@ -81,24 +81,19 @@ export default {
 			if (versions.length === 1) return versions[0];
 			return `${versions[0]} – ${versions[versions.length - 1]}`;
 		},
-		discordIDtoName(d) {
-			return this.contributors[d]
-				? this.contributors[d].username || this.$root.lang().gallery.error_message.user_anonymous
-				: this.$root.lang().gallery.error_message.user_not_found;
-		},
 		timestampToDate(t) {
 			return moment(new Date(t)).format("ll");
 		},
 		getContributions(pack) {
 			return this.contributions
-					.filter((el) => pack === el.pack)
-					.sort((a, b) => b.date - a.date)
-					.map((el) => ({
-						id: el.id,
-						date: this.timestampToDate(el.date),
-						contributors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
-					}));
-		}
+				.filter((el) => pack === el.pack)
+				.sort((a, b) => b.date - a.date)
+				.map((el) => ({
+					id: el.id,
+					date: this.timestampToDate(el.date),
+					authors: el.authors.map((el) => this.discordIDtoName(el)).join(",\n"),
+				}));
+		},
 	},
 	computed: {
 		packs() {
