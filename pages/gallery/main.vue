@@ -85,7 +85,7 @@
 			:packToName="packToName"
 			:ignoreList="ignoreList"
 			@share="copyShareURL"
-			@close="removeShareURL"
+			@close="closeModal"
 		/>
 
 		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
@@ -148,7 +148,7 @@ export default {
 			// result
 			textures: [],
 			// loaded contributors
-			loadedContributors: {},
+			authors: {},
 			// modal opened ID
 			modalTextureID: null,
 			// modal texture opened
@@ -187,9 +187,6 @@ export default {
 			if (id !== undefined) changedURL += `?show=${id}`;
 			return changedURL;
 		},
-		removeShareURL() {
-			this.$router.push({ query: null });
-		},
 		copyShareURL(id) {
 			const url = this.newShareURL(id, false);
 			navigator.clipboard.writeText(url);
@@ -208,11 +205,13 @@ export default {
 				this.modalTextureObj = res.data;
 			});
 		},
+		closeModal() {
+			this.modalTextureID = null;
+			this.modalTextureObj = {};
+			this.$router.push({ query: null });
+		},
 		discordIDtoName(d) {
-			return (
-				this.loadedContributors[d]?.username ||
-				this.$root.lang().gallery.error_message.user_anonymous
-			);
+			return this.authors[d]?.username || this.$root.lang().gallery.error_message.user_anonymous;
 		},
 		startSearch() {
 			this.updateRoute();
@@ -226,6 +225,7 @@ export default {
 		updateRoute() {
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
 			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
+			if (this.modalTextureID !== null) route += `?show=${this.modalTextureID}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
 			this.$router.push(route);
@@ -359,7 +359,7 @@ export default {
 			}, {});
 		});
 		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
-			this.loadedContributors = res.data.reduce((acc, cur) => {
+			this.authors = res.data.reduce((acc, cur) => {
 				acc[cur.id] = cur;
 				return acc;
 			}, {});
