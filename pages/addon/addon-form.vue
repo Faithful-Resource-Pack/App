@@ -147,7 +147,7 @@
 				<v-card
 					id="addon-description-preview"
 					v-if="submittedForm.description && submittedForm.description.length > 0"
-					class="markdown pa-3"
+					class="pa-3"
 					:elevation="0"
 					v-html="$root.compiledMarkdown(submittedForm.description)"
 				/>

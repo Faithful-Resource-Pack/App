@@ -772,8 +772,16 @@ code {
 }
 
 #addon-description-preview,
-#addon-description-preview > p {
-	word-break: break-all;
+#addon-description-preview > pre {
+	white-space: inherit;
+}
+
+#addon-description-preview pre:not(:last-child) {
+	margin-bottom: 16px;
+}
+
+#addon-description-preview code {
+	box-decoration-break: clone;
 }
 
 .list-item-inline {
