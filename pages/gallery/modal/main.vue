@@ -118,7 +118,6 @@ export default {
 			required: true,
 		},
 		textureID: {
-			type: String,
 			required: true,
 		},
 		textureObj: {
