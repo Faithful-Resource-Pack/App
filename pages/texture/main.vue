@@ -390,9 +390,9 @@ export default {
 			this.update();
 		},
 		removeTexture(data) {
-			const textureId = data.id;
+			const textureID = data.id;
 			return axios
-				.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
+				.delete(`${this.$root.apiURL}/textures/${textureID}`, this.$root.apiOptions)
 				.then(() => {
 					this.startSearch();
 				});

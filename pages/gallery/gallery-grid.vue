@@ -14,28 +14,28 @@
 			<div
 				v-for="(texture, index) in sortedTextures"
 				v-if="index <= displayedResults"
-				:key="sort + texture.textureID"
+				:key="sort + texture.id"
 				:style="styles.cell"
 				class="gallery-texture-in-container"
-				@click.exact.stop="$emit('open', texture.textureID)"
-				@click.middle.stop="$emit('openNewTab', texture.textureID)"
-				@click.meta.stop="$emit('openNewTab', texture.textureID)"
+				@click.exact.stop="$emit('open', texture.id)"
+				@click.middle.stop="$emit('openNewTab', texture.id)"
+				@click.meta.stop="$emit('openNewTab', texture.id)"
 			>
 				<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 					<template #trigger>
 						<gallery-image
 							:src="texture.url"
-							:textureID="texture.textureID"
+							:textureID="texture.id"
 							:ignoreList="ignoreList"
 						>
-							<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
+							<h1 :style="styles.not_done.texture_id">#{{ texture.id }}</h1>
 							<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
 							<p :style="styles.not_done.message">
 								{{ $root.lang().gallery.error_message.texture_not_done }}
 							</p>
 						</gallery-image>
 						<v-btn
-							@click.stop="$emit('share', texture.textureID)"
+							@click.stop="$emit('share', texture.id)"
 							class="ma-2 gallery-share"
 							absolute
 							plain
@@ -215,13 +215,13 @@ export default {
 			return {
 				nameDesc: (a, b) => b.name.localeCompare(a.name),
 				nameAsc: (a, b) => a.name.localeCompare(b.name),
-				idDesc: (a, b) => Number(b.textureID) - Number(a.textureID),
-				idAsc: (a, b) => Number(a.textureID) - Number(b.textureID),
+				idDesc: (a, b) => Number(b.id) - Number(a.id),
+				idAsc: (a, b) => Number(a.id) - Number(b.id),
 				contribDesc: (a, b) => {
 					if (!this.lastContributions) return 0;
 					// later date wins (if the pack has no contributions put them at end)
-					const aContrib = this.lastContributions[a.textureID]?.date || 0;
-					const bContrib = this.lastContributions[b.textureID]?.date || 0;
+					const aContrib = this.lastContributions[a.id]?.date || 0;
+					const bContrib = this.lastContributions[b.id]?.date || 0;
 					return bContrib - aContrib;
 				},
 			};

@@ -2,7 +2,7 @@
 	<div class="tooltip">
 		<div class="texture-tooltip">
 			<div class="texture-info-container">
-				<span class="texture-id">#{{ texture.textureID }}</span>
+				<span class="texture-id">#{{ texture.id }}</span>
 				<h1 align="left" class="encased">{{ texture.name }}</h1>
 				<ul align="left" class="encased">
 					<!-- always prioritize contributions -->
@@ -72,7 +72,7 @@ export default {
 	},
 	computed: {
 		lastContribution() {
-			const contributions = this.contributions[this.pack]?.[this.texture.textureID];
+			const contributions = this.contributions[this.pack]?.[this.texture.id];
 			if (contributions !== undefined)
 				return contributions.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
 		},
