@@ -80,7 +80,6 @@
 		<gallery-modal
 			v-model="modalOpen"
 			:textureID="modalTextureID"
-			:textureObj="modalTextureObj"
 			:discordIDtoName="discordIDtoName"
 			:packToName="packToName"
 			:ignoreList="ignoreList"
@@ -149,10 +148,6 @@ export default {
 			textures: [],
 			// loaded contributors
 			authors: {},
-			// modal opened ID
-			modalTextureID: null,
-			// modal texture opened
-			modalTextureObj: {},
 			// whether modal is opened
 			modalOpen: false,
 			// object of pack id -> pack display name
@@ -196,18 +191,11 @@ export default {
 			const url = this.newShareURL(id, false);
 			window.open(url, "_blank");
 		},
-		openModal(id) {
-			this.modalTextureID = id;
-			this.modalTextureObj = {}; // changes text back to loading text if reopening modal
+		openModal() {
+			// router has already been triggered at this point
 			this.modalOpen = true;
-
-			axios.get(`${this.$root.apiURL}/gallery/modal/${id}/${this.current.version}`).then((res) => {
-				this.modalTextureObj = res.data;
-			});
 		},
 		closeModal() {
-			this.modalTextureID = null;
-			this.modalTextureObj = {};
 			this.$router.push({ query: null });
 		},
 		discordIDtoName(d) {
@@ -225,7 +213,7 @@ export default {
 		updateRoute() {
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
 			if (this.current.search) route += `/${this.current.search.replace(/ /g, "_")}`;
-			if (this.modalTextureID !== null) route += `?show=${this.modalTextureID}`;
+			if (this.modalTextureID !== undefined) route += `?show=${this.modalTextureID}`;
 
 			if (this.$route.path === route) return; // new search is the same as before
 			this.$router.push(route);
@@ -301,6 +289,9 @@ export default {
 			else ignoreList.push(...this.ignoredTextures[this.current.edition]);
 			return ignoreList;
 		},
+		modalTextureID() {
+			return this.$route.query.show;
+		},
 	},
 	watch: {
 		"$route.params": {
@@ -329,7 +320,8 @@ export default {
 		"$route.query.show": {
 			handler(params, prev) {
 				if (!params || JSON.stringify(params) === JSON.stringify(prev)) return;
-				this.openModal(params);
+				// modal texture id is computed so we don't need to pass anything
+				this.openModal();
 			},
 			immediate: true,
 		},

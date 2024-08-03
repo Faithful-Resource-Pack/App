@@ -83,6 +83,7 @@
 </template>
 
 <script>
+import axios from "axios";
 import GalleryImage from "../gallery-image.vue";
 import TextureTab from "./texture-tab.vue";
 import AuthorTab from "./author-tab.vue";
@@ -120,10 +121,6 @@ export default {
 		textureID: {
 			required: true,
 		},
-		textureObj: {
-			type: Object,
-			required: true,
-		},
 		discordIDtoName: {
 			type: Function,
 			required: true,
@@ -142,6 +139,7 @@ export default {
 	},
 	data() {
 		return {
+			textureObj: {},
 			selectedTab: null,
 			tabs: this.$root.lang().gallery.modal.tabs,
 			modalOpened: false,
@@ -178,6 +176,27 @@ export default {
 		},
 	},
 	watch: {
+		textureID: {
+			handler(newValue, oldValue) {
+				// doesn't matter if the modal isn't open yet
+				if (newValue === oldValue) return;
+				if (newValue === undefined) {
+					this.textureObj = {};
+					return;
+				}
+
+				axios
+					.get(`${this.$root.apiURL}/gallery/modal/${newValue}/latest`)
+					.then((res) => {
+						this.textureObj = res.data;
+					})
+					.catch((err) => {
+						console.error(err);
+						this.$root.showSnackBar(err, "error");
+					});
+			},
+			immediate: true,
+		},
 		value: {
 			handler(n) {
 				this.modalOpened = n;
