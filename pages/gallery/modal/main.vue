@@ -4,13 +4,13 @@
 		fullscreen
 		hide-overlay
 		transition="dialog-bottom-transition"
-		@click.stop="() => closeModal()"
+		@keyup.esc="closeModal"
 	>
 		<v-card>
 			<fullscreen-preview v-model="previewOpen" :src="clickedImage" :aspect-ratio="1 / 1" texture />
 
 			<v-toolbar>
-				<v-btn icon @click.stop="() => closeModal()">
+				<v-btn icon @click.stop="closeModal">
 					<v-icon>mdi-close</v-icon>
 				</v-btn>
 				<template v-if="Object.keys(textureObj).length > 0">
