@@ -4,7 +4,7 @@
 		fullscreen
 		hide-overlay
 		transition="dialog-bottom-transition"
-		@keyup.esc="closeModal"
+		@keydown.esc="closeModal"
 	>
 		<v-card>
 			<fullscreen-preview v-model="previewOpen" :src="clickedImage" :aspect-ratio="1 / 1" texture />
@@ -150,6 +150,7 @@ export default {
 	methods: {
 		closeModal() {
 			this.$emit("close");
+			this.textureObj = {};
 			this.modalOpened = false;
 		},
 		openFullscreenPreview(url) {
