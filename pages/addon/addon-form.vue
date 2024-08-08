@@ -570,7 +570,7 @@ export default {
 			if (!files || files.length == 0) return;
 
 			this.carouselValidating = true;
-			Promise.all(files.map((f) => this.verifyImage(f, this.validateRatio)))
+			Promise.all(files.map((f) => this.verifyImage(f, this.is16x9)))
 				.then(() => {
 					this.carouselValid = true;
 					this.$emit("screenshot", files);
@@ -596,7 +596,7 @@ export default {
 			// activate validation loading
 			this.headerValidating = true;
 
-			this.verifyImage(file, this.validateRatio)
+			this.verifyImage(file, this.is16x9)
 				.then(() => {
 					this.headerValid = true;
 					this.$emit("header", file);
@@ -643,15 +643,15 @@ export default {
 
 			this.$emit("submit", this.submittedData, approve);
 		},
-		validateRatio(ctx) {
-			const ratio = (ctx.width / ctx.height).toFixed(2) == 1.78;
-			if (!ratio) throw new Error(this.$root.lang().addons.images.header.rules.image_ratio);
+		is16x9(img) {
+			return (img.width / img.height).toFixed(2) == 1.78;
 		},
 		validURL(str) {
 			return String.urlRegex.test(str);
 		},
+		/** @param {(image: HTMLImageElement) => boolean} validateImage */
 		verifyImage(file, validateImage) {
-			if (validateImage === undefined) validateImage = this.validateRatio;
+			if (validateImage === undefined) validateImage = this.is16x9;
 
 			return new Promise((resolve, reject) => {
 				// start reader
@@ -662,16 +662,13 @@ export default {
 					image.src = e.target.result;
 					image.onload = function () {
 						// do not use arrow fn
-						try {
-							validateImage(this); // this is image now
-							resolve();
-						} catch (error) {
-							reject(error);
-						}
+						const isValidImage = validateImage(this); // this is image now
+						if (isValidImage) resolve();
+						else reject(this.$root.lang().addons.images.header.rules.image_ratio);
 					};
 					image.onerror = () => reject(e);
 				};
-				reader.onerror = () => reject(e);
+				reader.onerror = () => reject();
 
 				// set file to be read
 				reader.readAsDataURL(file);
