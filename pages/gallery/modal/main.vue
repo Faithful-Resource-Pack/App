@@ -187,7 +187,10 @@ export default {
 				}
 
 				axios
-					.get(`${this.$root.apiURL}/gallery/modal/${newValue}/latest`)
+					.get(
+						// way easier to use route params than drill a version prop
+						`${this.$root.apiURL}/gallery/modal/${newValue}/${this.$route.params.version || "latest"}`,
+					)
 					.then((res) => {
 						this.textureObj = res.data;
 					})
