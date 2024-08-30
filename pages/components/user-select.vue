@@ -143,7 +143,7 @@ export default {
 		},
 		loadedUsers: {
 			handler(n) {
-				window.eventBus.$emit("newutor", this.userList);
+				this.$emit("newUser", this.userList);
 			},
 			deep: true,
 		},

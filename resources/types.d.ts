@@ -53,8 +53,6 @@ declare global {
 	declare const apiURL: string;
 
 	interface Window {
-		eventBus: Vue;
-
 		// aliases
 		readonly colors: typeof colors;
 		colorToHex: typeof colorToHex;

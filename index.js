@@ -841,8 +841,6 @@ const app = new Vue({
 				);
 			}
 		});
-
-		window.eventBus = new Vue();
 	},
 	mounted() {
 		// watch color schemes for light and dark

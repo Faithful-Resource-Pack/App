@@ -37,20 +37,18 @@
 				>
 					<template v-for="group in grouped">
 						<div class="d-flex flex-row pb-2 pb-sm-0">
-							<template v-for="url in group">
-								<div class="gallery-dialog-texture-container px-2 pb-sm-2" :key="url.name">
-									<gallery-image
-										modal
-										:src="url.image"
-										:textureID="textureID"
-										:ignoreList="ignoreList"
-										@click="openFullscreenPreview(url.image)"
-									>
-										<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
-									</gallery-image>
-									<h2>{{ packToName[url.name] }}</h2>
-								</div>
-							</template>
+							<div v-for="url in group" class="gallery-dialog-texture-container px-2 pb-sm-2" :key="url.name">
+								<gallery-image
+									modal
+									:src="url.image"
+									:textureID="textureID"
+									:ignoreList="ignoreList"
+									@click="openFullscreenPreview(url.image)"
+								>
+									<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+								</gallery-image>
+								<h2>{{ packToName[url.name] }}</h2>
+							</div>
 						</div>
 					</template>
 				</div>

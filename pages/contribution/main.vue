@@ -60,6 +60,7 @@
 					class="my-0 pt-0"
 					small-chips
 					clearable
+					@newUser="(l) => { this.contributors = l }"
 				/>
 			</v-col>
 			<v-col cols="12" sm="6" class="pb-0 py-sm-0">
@@ -497,9 +498,6 @@ export default {
 		});
 		this.selectedContributors = this.queryToIds;
 		this.addPack(this.all_packs, this.all_packs_display, true);
-		window.eventBus.$on("newContributor", (l) => {
-			this.contributors = l;
-		});
 	},
 	mounted() {
 		this.getPacks();
