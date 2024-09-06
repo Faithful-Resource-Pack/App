@@ -56,7 +56,7 @@
 				</tippy>
 			</div>
 		</div>
-		<div class="bottomElement" />
+		<div ref="bottomElement" />
 	</v-list>
 </template>
 
@@ -266,7 +266,7 @@ export default {
 	mounted() {
 		document.addEventListener("scroll", () => {
 			this.scrollY = document.firstElementChild.scrollTop;
-			const scrolledTo = document.querySelector(".bottomElement");
+			const scrolledTo = this.$refs.bottomElement;
 
 			if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
 				this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
