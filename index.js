@@ -250,7 +250,7 @@ const ALL_TABS = [
 				label: "statistics",
 				unlogged: true,
 				routes: [
-					{ path: "/contributions-stats", component: ContributorStatsPage, name: "Statistics" },
+					{ path: "/contribution-stats", component: ContributorStatsPage, name: "Statistics" },
 				],
 			},
 			{

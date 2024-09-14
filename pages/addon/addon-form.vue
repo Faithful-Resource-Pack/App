@@ -3,7 +3,7 @@
 		<fullscreen-preview v-model="previewOpen" :src="header" />
 
 		<div class="text-center" v-if="loading">
-			<h2 class="mb-3">{{ $root.lang().addons.general.loading_addon }}</h2>
+			<h2 class="mb-5">{{ $root.lang().addons.general.loading_addon }}</h2>
 			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
 		</div>
 		<v-list

@@ -5,7 +5,11 @@
 		</div>
 
 		<div class="text-center mb-4">
-			<div id="graph" />
+			<div class="text-center" v-if="isLoading">
+				<h2 class="mb-5">{{ $root.lang().statistics.loading }}</h2>
+				<v-progress-circular :size="70" :width="7" indeterminate />
+			</div>
+			<div v-show="!isLoading" ref="graph" />
 		</div>
 
 		<v-card>
@@ -43,10 +47,12 @@ export default {
 			authorsCount: 0,
 			contributionsCount: 0,
 			contrib: [],
+			isLoading: false,
 		};
 	},
 	methods: {
 		getData() {
+			this.isLoading = true;
 			axios
 				.get(`${this.$root.apiURL}/contributions/raw`)
 				.then((res) => Object.values(res.data))
@@ -88,7 +94,10 @@ export default {
 					this.contrib.sort((a, b) => a.date - b.date);
 					this.buildGraph();
 				})
-				.catch((err) => this.$root.showSnackBar(err, "error"));
+				.catch((err) => this.$root.showSnackBar(err, "error"))
+				.finally(() => {
+					this.isLoading = false;
+				});
 		},
 		buildGraph() {
 			const width = 800;
@@ -132,7 +141,7 @@ export default {
 
 			// add center content inside svg
 			const svg = d3
-				.select(document.getElementById("graph"))
+				.select(this.$refs.graph)
 				.append("svg")
 				.attr("width", width)
 				.attr("height", height)
