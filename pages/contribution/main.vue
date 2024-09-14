@@ -60,7 +60,11 @@
 					class="my-0 pt-0"
 					small-chips
 					clearable
-					@newUser="(l) => { this.contributors = l }"
+					@newUser="
+						(l) => {
+							this.contributors = l;
+						}
+					"
 				/>
 			</v-col>
 			<v-col cols="12" sm="6" class="pb-0 py-sm-0">
