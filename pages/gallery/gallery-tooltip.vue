@@ -4,31 +4,31 @@
 			<div class="texture-info-container">
 				<span class="texture-id">#{{ texture.textureID }}</span>
 				<h1 align="left" class="encased">{{ texture.name }}</h1>
-				<ul align="left" class="encased">
-					<!-- always prioritize contributions -->
-					<li v-if="lastContribution !== undefined">
+				<div align="left" class="encased">
+					<!-- always show contributions even if a texture is ignored/modded -->
+					<template v-if="lastContribution !== undefined">
 						<p>
 							<v-icon small>{{ icon }}</v-icon> {{ lastContributionNames }}
 						</p>
 						<p>
 							<v-icon small>mdi-clock-outline</v-icon> {{ timestampToDate(lastContribution.date) }}
 						</p>
-					</li>
-					<!-- mojang only means it's in vanilla, modded isn't technically mojang -->
-					<li v-else-if="modded">
+					</template>
+					<!-- even in 16x the modded textures aren't by mojang -->
+					<p v-else-if="modded">
 						<v-icon small>mdi-wrench</v-icon> {{ $root.lang().gallery.tooltip.modded }}
-					</li>
-					<!-- ignored textures fall back to mojang-->
-					<li v-else-if="mojang">
+					</p>
+					<!-- there's no mdi mojang icon so this is a custom one -->
+					<p v-else-if="mojang">
 						<i class="icon-mojang-red"></i> {{ $root.lang().gallery.tooltip.mojang }}
-					</li>
-					<li v-else-if="ignored">
+					</p>
+					<p v-else-if="ignored">
 						<v-icon small>mdi-texture</v-icon> {{ $root.lang().gallery.tooltip.ignored }}
-					</li>
-					<li v-else>
+					</p>
+					<p v-else>
 						{{ $root.lang().gallery.error_message.contribution_not_found }}
-					</li>
-				</ul>
+					</p>
+				</div>
 			</div>
 			<div class="texture-tags-container">
 				<span class="encased" v-for="tag in texture.tags" :key="tag">
