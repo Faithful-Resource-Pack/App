@@ -300,10 +300,10 @@
 <script>
 import axios from "axios";
 
-import UserSelect from "../components/user-select.vue";
+import UserSelect from "@components/user-select.vue";
 import ImagePreviewer from "./image-previewer.vue";
-import FullscreenPreview from "../components/fullscreen-preview.vue";
-import DropZone from "../components/drop-zone.vue";
+import FullscreenPreview from "@components/fullscreen-preview.vue";
+import DropZone from "@components/drop-zone.vue";
 
 export default {
 	name: "addon-form",

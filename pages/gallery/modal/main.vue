@@ -72,8 +72,8 @@ import axios from "axios";
 import GalleryImage from "../gallery-image.vue";
 import TextureTab from "./texture-tab.vue";
 import AuthorTab from "./author-tab.vue";
-import FullscreenPreview from "../../components/fullscreen-preview.vue";
-import FullscreenModal from "../../components/fullscreen-modal.vue";
+import FullscreenPreview from "@components/fullscreen-preview.vue";
+import FullscreenModal from "@components/fullscreen-modal.vue";
 
 const PACK_GRID_ORDER = [
 	["default", "faithful_32x", "faithful_64x"],

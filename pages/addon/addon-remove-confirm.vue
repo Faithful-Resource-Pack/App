@@ -12,7 +12,7 @@
 
 <script>
 import axios from "axios";
-import RemoveConfirm from "../components/remove-confirm.vue";
+import RemoveConfirm from "@components/remove-confirm.vue";
 
 export default {
 	name: "addon-remove-confirm",

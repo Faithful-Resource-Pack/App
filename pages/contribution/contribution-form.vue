@@ -88,9 +88,9 @@
 <script>
 import moment from "moment";
 
-import UserSelect from "../components/user-select.vue";
-import QuickDatePicker from "../components/quick-date-picker.vue";
-import MultiRangeInput from "../components/multi-range-input.vue";
+import UserSelect from "@components/user-select.vue";
+import QuickDatePicker from "@components/quick-date-picker.vue";
+import MultiRangeInput from "@components/multi-range-input.vue";
 
 export default {
 	name: "contribution-form",

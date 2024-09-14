@@ -405,6 +405,7 @@ export default {
 	},
 	statistics: {
 		title: "Contribution Statistics",
+		loading: "Loading graph…",
 		label: {
 			textures: "Textures",
 			contributors: "Contributors",

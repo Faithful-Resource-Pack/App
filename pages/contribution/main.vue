@@ -174,7 +174,7 @@ import moment from "moment";
 
 import ContributionModal from "./contribution-modal.vue";
 import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
-import UserSelect from "../components/user-select.vue";
+import UserSelect from "@components/user-select.vue";
 
 export default {
 	components: {

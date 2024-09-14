@@ -23,7 +23,7 @@
 <script>
 import axios from "axios";
 import moment from "moment";
-import RemoveConfirm from "../components/remove-confirm.vue";
+import RemoveConfirm from "@components/remove-confirm.vue";
 
 export default {
 	name: "contribution-remove-confirm",
