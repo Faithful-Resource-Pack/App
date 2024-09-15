@@ -34,6 +34,7 @@ export default {
 			approve: "Approve",
 			archive: "Archive",
 			load_more: "Load More",
+			discard: "Discard",
 		},
 		tabs: {
 			general: {
@@ -153,6 +154,7 @@ export default {
 			paths: "Paths",
 		},
 		labels: {
+			copy_json_data: "Copied JSON data to clipboard",
 			anonymous: "Anonymous",
 			anonymous_explain:
 				"If checked, the user's name will be displayed as \"Anonymous\" and their skin won't show up. Can only be changed by managers!",
@@ -161,6 +163,7 @@ export default {
 			new_mc_version_path: "Clone an existing version as a template",
 			new_mc_version_name: "New version name",
 			nameless: "Nameless",
+			tagless: "No tags added",
 			add_textures_success: "Added texture(s) successfully",
 			add_version_success: "Added version successfully",
 			add_new_user: "Add new user",
@@ -174,6 +177,7 @@ export default {
 			ask_deletion: "Do you want to delete %s (%d)?",
 			ask_submission_deletion: "Do you want to delete submission information for %s (%d)?",
 			close_on_submit: "Close on submit",
+			clear_on_save: "Clear on save",
 			user_role: "User roles",
 			discord_id: "Discord ID",
 			pack_id: "Pack ID",
@@ -226,6 +230,10 @@ export default {
 				one_required: "At least one texture ID or an ID range is required",
 				incorrect_value: "Incorrect texture %value% ID or ID range",
 			},
+			use_singular: "Use",
+			use_plural: "Uses",
+			path_singular: "Path",
+			path_plural: "Paths",
 		},
 		hints: {
 			pack_id_creation: "A Pack ID can either be manually specified or automatically generated.",

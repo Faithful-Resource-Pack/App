@@ -6,6 +6,7 @@
 		transition="dialog-bottom-transition"
 		@keydown.esc="closeModal"
 	>
+		<div class="styles" v-html="pageStyles" />
 		<v-card>
 			<v-toolbar>
 				<v-btn icon @click.stop="closeModal">
@@ -40,16 +41,25 @@ export default {
 			required: false,
 			default: false,
 		},
+		pageColor: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
 	},
 	data() {
 		return {
 			modalOpened: false,
+			pageStyles: "",
 		};
 	},
 	methods: {
 		closeModal() {
 			this.$emit("close");
 		},
+	},
+	mounted() {
+		updatePageStyles(this);
 	},
 	watch: {
 		value: {

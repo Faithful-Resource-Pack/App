@@ -1,250 +1,280 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="860">
-		<v-card>
-			<v-card-title class="headline">{{ $root.lang().database.titles.add_textures }}</v-card-title>
-			<v-card-text class="pb-0">
-				<v-row>
-					<v-col class="col-12" sm="12">
-						<v-form ref="form">
-							<v-expansion-panels flat v-model="panel">
-								<v-expansion-panel>
-									<v-expansion-panel-header class="px-0 py-0">
-										<h2 class="title text--secondary">
-											{{ $root.lang().database.subtitles.import_json_data }}
-										</h2>
-									</v-expansion-panel-header>
-									<v-expansion-panel-content class="mx-n6">
-										<prism-editor
-											class="ma-0 my-editor fixed-height mb-2"
-											v-model="formData.importJSON"
-											:highlight="highlighter"
-											line-numbers
-										/>
-										<v-btn block @click="parseJSON" :color="color" :class="[textColor]">
-											{{ $root.lang().database.labels.parse_json }}
-										</v-btn>
-									</v-expansion-panel-content>
-								</v-expansion-panel>
-							</v-expansion-panels>
-							<h2 class="title my-2">{{ $root.lang().database.subtitles.add_manually }}</h2>
-							<v-container
-								fluid
-								class="pa-0"
-								v-for="(texture, t_i) in textures"
-								:key="`tex-${t_i}`"
-							>
-								<v-row dense>
-									<v-col>
-										<v-text-field
-											:color="color"
-											class="mb-1"
-											v-model="texture.name"
-											:placeholder="$root.lang().database.labels.texture_name"
-											hide-details
-											dense
-											clearable
-										/>
-									</v-col>
-									<v-col>
-										<v-combobox
-											:color="color"
-											:item-color="color"
-											class="mb-1"
-											v-model="texture.tags"
-											:items="tags"
-											:placeholder="$root.lang().database.labels.texture_tags"
-											@change="
-												() => {
-													texture.tags = sortTags(texture.tags);
-												}
-											"
-											multiple
-											hide-details
-											dense
-											clearable
-											small-chips
-										/>
-									</v-col>
-									<v-col class="flex-grow-0 flex-shrink-0">
-										<v-icon color="error" @click="() => deleteTexture(t_i)">mdi-close</v-icon>
-									</v-col>
-								</v-row>
-								<v-row dense class="mb-2">
-									<v-col class="flex-grow-0 flex-shrink-0">
-										<h3 class="ma-0 mt-1">{{ $root.lang().database.subtitles.uses }}</h3>
-										<v-btn x-small @click="() => addNewUse(t_i)">
-											{{ $root.lang().global.btn.add }}
-										</v-btn>
-									</v-col>
-									<v-col>
-										<v-container
-											fluid
-											class="pa-0"
-											v-for="(use, u_i) in texture.uses"
-											:key="`tex-${t_i}-use-${u_i}`"
-										>
-											<v-row dense>
-												<v-col>
-													<v-text-field
-														:color="color"
-														class="mb-1"
-														v-model="use.name"
-														:placeholder="$root.lang().database.labels.use_name"
-														hide-details
-														dense
-														clearable
-													/>
-												</v-col>
-												<v-col>
-													<v-select
-														:color="color"
-														:item-color="color"
-														class="mb-1"
-														:items="editions"
-														@change="(e) => onEditionChange(e, use, texture)"
-														v-model="use.edition"
-														:placeholder="$root.lang().database.labels.use_edition"
-														hide-details
-														dense
-														clearable
-													/>
-												</v-col>
-												<v-col class="flex-grow-0 flex-shrink-0">
-													<v-icon color="error" @click="() => deleteUse(t_i, u_i)">
-														mdi-close
-													</v-icon>
-												</v-col>
-											</v-row>
-											<v-row dense class="mb-2">
-												<v-col class="flex-grow-0 flex-shrink-0">
-													<h3 class="ma-0">{{ $root.lang().database.subtitles.paths }}</h3>
-													<v-btn x-small class="mt-2" @click="() => addNewPath(t_i, u_i)">
-														{{ $root.lang().global.btn.add }}
-													</v-btn>
-												</v-col>
-												<v-col>
-													<v-container
-														class="pa-0"
-														fluid
-														v-for="(path, p_i) in use.paths"
-														:key="`tex-${t_i}-use-${u_i}-p_i-${p_i}`"
-													>
-														<v-row dense>
-															<v-col>
-																<v-text-field
-																	:color="color"
-																	class="mb-0"
-																	v-model="path.name"
-																	:placeholder="$root.lang().database.labels.path"
-																	dense
-																	clearable
-																	@change="(e) => pathAdded(e, path, use, texture)"
-																	persistent-hint
-																	:hint="$root.lang().database.hints.path_prefill"
-																/>
-															</v-col>
-															<v-col>
-																<v-select
-																	:color="color"
-																	:item-color="color"
-																	class="mb-0"
-																	:items="sortedVersions"
-																	v-model="path.versions"
-																	:placeholder="$root.lang().database.labels.versions"
-																	multiple
-																	hide-details
-																	dense
-																	clearable
-																	small-chips
-																/>
-															</v-col>
-															<v-col class="flex-grow-0 flex-shrink-0">
-																<v-checkbox
-																	:color="color"
-																	v-model="path.mcmeta"
-																	hide-details
-																	:label="$root.lang().database.labels.mcmeta"
-																/>
-															</v-col>
-															<v-col class="flex-grow-0 flex-shrink-0">
-																<v-icon color="error" @click="() => deletePath(t_i, u_i, p_i)">
-																	mdi-close
-																</v-icon>
-															</v-col>
-														</v-row>
-													</v-container>
-												</v-col>
-											</v-row>
-										</v-container>
-									</v-col>
-								</v-row>
-							</v-container>
-							<v-btn x-small @click="addNewTexture">
-								{{ $root.lang().database.labels.add_new_texture }}
-							</v-btn>
-						</v-form>
-					</v-col>
-				</v-row>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<div class="pb-1 pr-4">
-					<v-checkbox
-						:color="color"
-						v-model="closeOnSubmit"
-						hide-details
-						:label="$root.lang('database.labels.close_on_submit')"
+	<fullscreen-modal
+		v-model="modalOpened"
+		:title="$root.lang().database.titles.add_texture"
+		:pageColor="color"
+		@close="closeModal"
+	>
+		<template #toolbar>
+			<v-btn icon @click="copyData"><v-icon>mdi-content-copy</v-icon></v-btn>
+			<v-menu v-model="jsonModalOpened" :close-on-content-click="false">
+				<template #activator="{ on, attrs }">
+					<v-btn icon v-on="on" v-bind="attrs"><v-icon>mdi-content-paste</v-icon></v-btn>
+				</template>
+				<div class="texture-json-editor">
+					<h2 class="title text--secondary ma-2">
+						{{ $root.lang().database.subtitles.import_json_data }}
+					</h2>
+					<prism-editor
+						class="my-editor"
+						style="height: 75%"
+						v-model="importJSON"
+						:highlight="highlighter"
+						line-numbers
 					/>
+					<v-btn block @click="parseJSON" :color="color">
+						{{ $root.lang().database.labels.parse_json }}
+					</v-btn>
 				</div>
-				<v-btn color="red darken-1" text @click="onCancel">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</v-menu>
+		</template>
+		<div class="px-10 py-5">
+			<v-row>
+				<v-col cols="12" :md="$vuetify.breakpoint.lgAndUp ? 9 : 8">
+					<v-tabs :color="color" v-model="selectedTab" :show-arrows="false">
+						<v-tab
+							v-for="(texture, ti) in textures"
+							:key="texture.key"
+							style="text-transform: uppercase"
+							append
+						>
+							<span v-if="texture.name">{{ texture.name }}</span>
+							<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+							<v-btn :color="color" icon @click="deleteTexture(ti)">
+								<v-icon>mdi-minus</v-icon>
+							</v-btn>
+						</v-tab>
+						<v-btn text large color="grey darken-1" @click="addTexture()">
+							{{ $root.lang().global.btn.add }}<v-icon right>mdi-plus</v-icon>
+						</v-btn>
+					</v-tabs>
+					<v-tabs-items v-model="selectedTab" fixed-tabs>
+						<v-tab-item eager v-for="(texture, ti) in textures" :key="texture.key">
+							<h2 class="pt-5 pb-3">{{ $root.lang().gallery.modal.info.texture }}</h2>
+							<v-row>
+								<v-col cols="12" sm="6">
+									<v-text-field
+										required
+										clearable
+										:color="color"
+										v-model="texture.name"
+										:label="$root.lang().database.labels.texture_name"
+									/>
+								</v-col>
+								<v-col cols="12" sm="6">
+									<v-combobox
+										:color="color"
+										:item-color="color"
+										required
+										multiple
+										deletable-chips
+										small-chips
+										@change="
+											() => {
+												texture.tags = sortTags(texture.tags);
+											}
+										"
+										v-model="texture.tags"
+										:items="tags"
+										:label="$root.lang().database.labels.texture_tags"
+									/>
+								</v-col>
+							</v-row>
+							<h2 class="py-3">
+								{{ $root.lang().gallery.modal.info.uses }} /
+								{{ $root.lang().gallery.modal.info.paths }}
+							</h2>
+							<v-timeline dense align-top class="pl-0">
+								<v-timeline-item
+									v-for="(use, ui) in texture.uses"
+									:key="use.key"
+									fill-dot
+									:color="color"
+								>
+									<template #icon>
+										<span class="white--text">{{ useIDFromIndex(ui) }}</span>
+									</template>
+									<v-row>
+										<v-col cols="12" sm="5">
+											<v-text-field
+												:color="color"
+												v-model="use.name"
+												:label="$root.lang().database.labels.use_name"
+											/>
+										</v-col>
+										<v-col cols="12" sm="6">
+											<v-select
+												:color="color"
+												:item-color="color"
+												:items="editions"
+												v-model="use.edition"
+												@change="(e) => onEditionChange(e, use, texture)"
+												:label="$root.lang().database.labels.use_edition"
+											/>
+										</v-col>
+										<v-col cols="12" sm="1">
+											<v-btn color="red lighten-1" icon @click="deleteUse(ti, ui)">
+												<v-icon>mdi-trash-can</v-icon>
+											</v-btn>
+										</v-col>
+									</v-row>
+									<div v-for="(path, pi) in use.paths" :key="path.key">
+										<v-row>
+											<v-col cols="12" sm="5">
+												<v-text-field
+													:color="color"
+													v-model="path.name"
+													:label="$root.lang().database.labels.path"
+													clearable
+													@change="(e) => pathAdded(e, path, use, texture)"
+													persistent-hint
+													:hint="$root.lang().database.hints.path_prefill"
+												/>
+											</v-col>
+											<v-col cols="12" sm="4">
+												<v-select
+													:color="color"
+													:item-color="color"
+													:items="sortedVersions"
+													v-model="path.versions"
+													:label="$root.lang().database.labels.versions"
+													multiple
+													hide-details
+													clearable
+													small-chips
+												/>
+											</v-col>
+											<v-col cols="12" sm="2">
+												<v-checkbox
+													:color="color"
+													v-model="path.mcmeta"
+													:label="$root.lang().database.labels.mcmeta"
+												/>
+											</v-col>
+											<v-col cols="12" sm="1">
+												<v-btn color="red lighten-1" icon @click="deletePath(ti, ui, pi)">
+													<v-icon>mdi-minus</v-icon>
+												</v-btn>
+											</v-col>
+										</v-row>
+									</div>
+									<v-btn block class="my-5" color="secondary" @click="addPath(ti, ui)">
+										{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
+									</v-btn>
+								</v-timeline-item>
+							</v-timeline>
+							<v-btn block class="my-5 white--text" :color="color" @click="addUse(ti)">
+								{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon>
+							</v-btn>
+						</v-tab-item>
+					</v-tabs-items>
+				</v-col>
+				<v-divider vertical class="ma-5" />
+				<v-col>
+					<v-list>
+						<div class="font-weight-medium text--secondary my-2">
+							{{ $root.lang().database.titles.textures }}
+						</div>
+						<v-list-item class="pl-0" v-for="(tex, i) in textures" :key="tex.key">
+							<v-list-item-content>
+								<v-list-item-title :class="summaryStyles">
+									<template v-if="tex.name">{{ tex.name }}</template>
+									<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+									• {{ summaryString(tex) }}
+								</v-list-item-title>
+								<v-list-item-subtitle>
+									<span v-if="tex.tags.length">{{ tex.tags.join(", ") }}</span>
+									<i v-else>{{ $root.lang().database.labels.tagless }}</i>
+								</v-list-item-subtitle>
+							</v-list-item-content>
+							<v-list-item-action>
+								<v-icon color="red lighten-1" @click="deleteTexture(i)">mdi-trash-can</v-icon>
+							</v-list-item-action>
+						</v-list-item>
+					</v-list>
+					<v-divider class="ma-5" />
+					<v-row no-gutters>
+						<v-col cols="12" lg="6">
+							<v-checkbox
+								:color="color"
+								v-model="clearOnSave"
+								hide-details
+								:label="$root.lang('database.labels.clear_on_save')"
+							/>
+						</v-col>
+						<v-col cols="12" lg="3">
+							<v-btn class="px-1" color="red darken-1" text @click="resetModal">
+								{{ $root.lang().global.btn.discard }}
+							</v-btn>
+						</v-col>
+						<v-col cols="12" lg="3">
+							<v-btn class="px-1" color="darken-1" text @click="send">
+								{{ $root.lang().global.btn.save }}
+							</v-btn>
+						</v-col>
+					</v-row>
+				</v-col>
+			</v-row>
+		</div>
+	</fullscreen-modal>
 </template>
 
 <script>
 import axios from "axios";
 import Prism from "prismjs";
+import FullscreenModal from "@components/fullscreen-modal.vue";
 import { formatTag, sortTags } from "@helpers/textures";
 import { getNameFromPath, getEditionFromPath, getTagFromPath } from "@helpers/paths";
 import MinecraftSorter from "@helpers/MinecraftSorter";
 
 const emptyPath = () => ({
+	// has problems with v-for otherwise
+	key: crypto.randomUUID(),
 	name: "",
 	versions: [],
 	mcmeta: false,
 });
 
 const emptyUse = () => ({
+	key: crypto.randomUUID(),
 	name: "",
 	edition: "",
 	paths: [emptyPath()],
 });
 
 const emptyTexture = () => ({
+	key: crypto.randomUUID(),
 	name: "",
 	tags: [],
 	uses: [emptyUse()],
 });
 
+const CLOSE_ON_SAVE_KEY = "new_textures_close";
+
 export default {
 	name: "new-texture-modal",
+	components: {
+		FullscreenModal,
+	},
 	props: {
 		value: {
 			type: Boolean,
 			required: true,
 		},
+		color: {
+			type: String,
+			required: false,
+			default: "primary",
+		},
+		textColor: {
+			type: String,
+			required: false,
+			default: "",
+		},
 		tags: {
 			type: Array,
 			required: false,
-			default() {
-				return [];
-			},
+			default: () => [],
 		},
 		versions: {
 			type: Array,
@@ -260,58 +290,62 @@ export default {
 				return [];
 			},
 		},
-		color: {
-			type: String,
-			required: false,
-			default: "primary",
-		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
-		},
 	},
 	data() {
 		return {
 			modalOpened: false,
-			panel: undefined,
-			closeOnSubmit: false,
-			formData: {
-				importJSON: "[]",
-			},
+			selectedTab: null,
 			textures: [emptyTexture()],
+			importJSON: "[]",
+			jsonModalOpened: false,
+			clearOnSave: localStorage.getItem(CLOSE_ON_SAVE_KEY) === "true",
 		};
 	},
-	computed: {
-		sortedVersions() {
-			return this.versions.sort((a, b) => -1 * MinecraftSorter(a, b));
-		},
-	},
 	methods: {
+		sortTags,
 		highlighter(code) {
 			// js highlight example
 			return Prism.highlight(code, Prism.languages.js, "json");
 		},
-		addNewTexture() {
+		summaryString(tex) {
+			const labels = this.$root.lang().database.labels;
+			let strBuilder = `${tex.uses.length} `;
+			strBuilder += tex.uses.length === 1 ? labels.use_singular : labels.use_plural;
+			const pathCount = tex.uses.reduce((acc, cur) => acc + cur.paths.length, 0);
+			strBuilder += `, ${pathCount} `;
+			strBuilder += pathCount === 1 ? labels.path_singular : labels.path_plural;
+			return strBuilder;
+		},
+		addTexture() {
 			this.textures.push(emptyTexture());
+			// change focused tab to new one
+			this.$nextTick(() => {
+				this.selectedTab = this.textures.length - 1;
+			});
 		},
-		addNewUse(textureIndex) {
-			this.textures[textureIndex].uses.push(emptyUse());
+		addUse(index) {
+			this.textures[index].uses.push(emptyUse());
 		},
-		addNewPath(textureIndex, useIndex) {
+		addPath(textureIndex, useIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.push(emptyPath());
 		},
-		deleteTexture(textureIndex) {
-			this.textures.splice(textureIndex, 1);
+		deleteTexture(index) {
+			this.textures.splice(index, 1);
+			// make sure there's at least one texture
+			if (!this.textures.length) this.addTexture();
 		},
 		deleteUse(textureIndex, useIndex) {
 			this.textures[textureIndex].uses.splice(useIndex, 1);
+			if (!this.textures[textureIndex].uses.length) this.addUse(textureIndex);
 		},
 		deletePath(textureIndex, useIndex, pathIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.splice(pathIndex, 1);
+			if (!this.textures[textureIndex].uses[useIndex].paths.length)
+				this.addPath(textureIndex, useIndex);
 		},
-		onCancel() {
-			this.modalOpened = false;
+		useIDFromIndex(i) {
+			// 'a' == 97
+			return String.fromCharCode(97 + i);
 		},
 		onEditionChange(edition, use, texture) {
 			use.paths ||= [emptyPath()];
@@ -350,36 +384,49 @@ export default {
 		},
 		parseJSON() {
 			try {
-				const data = JSON.parse(this.formData.importJSON);
-				this.textures = data;
+				let data = JSON.parse(this.importJSON);
+				if (!data || !data.length) data = [emptyTexture()];
+				// make sure there's at least one use and one path to prevent form errors
+				const cleaned = data.map((tex) => {
+					tex.key = crypto.randomUUID();
+					tex.name ||= "";
+					tex.tags ||= [];
+					if (!tex.uses || !tex.uses.length) tex.uses = [emptyUse()];
+					tex.uses = tex.uses.map((use) => {
+						use.key = crypto.randomUUID();
+						use.edition ||= "";
+						if (!use.paths || !use.paths.length) use.paths = [emptyPath()];
+						return use;
+					});
+					return tex;
+				});
+				this.textures = cleaned;
 			} catch (err) {
 				console.error(err);
 				this.$root.showSnackBar(err, "error");
 			}
 		},
+		copyData() {
+			const data = JSON.stringify(this.cleanedData, null, 2);
+			navigator.clipboard.writeText(data);
+			this.$root.showSnackBar(this.$root.lang("database.labels.copy_json_data"), "success");
+		},
+		resetModal() {
+			this.textures = [emptyTexture()];
+		},
+		closeModal() {
+			this.$emit("close");
+			this.modalOpened = false;
+		},
 		send() {
-			const data = JSON.parse(JSON.stringify(this.textures));
-			const apiData = data.map((e) => ({
-				name: e.name,
-				tags: sortTags(e.tags),
-				uses: e.uses.map((u) => ({
-					name: u.name,
-					edition: u.edition,
-					paths: u.paths.map((p) => ({
-						name: p.name,
-						versions: p.versions,
-						mcmeta: p.mcmeta || false,
-					})),
-				})),
-			}));
 			axios
-				.post(`${this.$root.apiURL}/textures/multiple`, apiData, this.$root.apiOptions)
+				.post(`${this.$root.apiURL}/textures/multiple`, this.cleanedData, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(
 						this.$root.lang().database.labels.add_textures_success,
 						"success",
 					);
-					if (this.closeOnSubmit) this.modalOpened = false;
+					if (this.clearOnSave) this.resetModal();
 				})
 				.catch((err) => {
 					console.error(err);
@@ -387,28 +434,39 @@ export default {
 				});
 		},
 	},
+	computed: {
+		sortedVersions() {
+			return Array.from(this.versions).sort(MinecraftSorter).reverse();
+		},
+		summaryStyles() {
+			return this.color.split(" ").map((c) => (c.includes("-") ? c : `${c}--text`));
+		},
+		cleanedData() {
+			// used for both copying and sending
+			return this.textures.map((tex) => ({
+				name: tex.name,
+				tags: sortTags(tex.tags),
+				uses: tex.uses.map((use) => ({
+					name: use.name,
+					edition: use.edition,
+					paths: use.paths.map((path) => ({
+						name: path.name,
+						versions: Array.from(path.versions).sort(MinecraftSorter),
+						mcmeta: path.mcmeta || false,
+					})),
+				})),
+			}));
+		},
+	},
 	watch: {
-		closeOnSubmit: {
-			handler(newValue, oldValue) {
-				if (oldValue === undefined && newValue === false) {
-					this.closeOnSubmit = localStorage.getItem("MTMA_MODAL") || newValue;
-				} else if (newValue !== oldValue) {
-					localStorage.setItem("MTMA_MODAL", newValue);
-				}
-			},
-			immediate: true,
+		value(n) {
+			this.modalOpened = n;
 		},
-		value(newValue, oldValue) {
-			if (oldValue !== newValue && newValue === true) {
-				this.$nextTick(() => {
-					this.textures = [emptyTexture()];
-					this.$refs.form.reset();
-				});
-			}
-			this.modalOpened = newValue;
+		modalOpened(n) {
+			this.$emit("input", n);
 		},
-		modalOpened(newValue) {
-			this.$emit("input", newValue);
+		clearOnSave(n) {
+			localStorage.setItem(CLOSE_ON_SAVE_KEY, n);
 		},
 	},
 };

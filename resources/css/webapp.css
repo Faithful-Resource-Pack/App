@@ -1244,3 +1244,13 @@ body .texture-avatar {
 	width: 100% !important;
 	height: 100% !important;
 }
+
+.v-timeline-item__dot,
+.v-timeline-item__inner-dot {
+	border-radius: 4px;
+}
+
+.texture-json-editor {
+	width: 50vw;
+	height: 80vh;
+}
