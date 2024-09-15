@@ -309,6 +309,7 @@ export default {
 		},
 		summaryString(tex) {
 			const labels = this.$root.lang().database.labels;
+			// bit cleaner than using a ton of nested ternaries
 			let strBuilder = `${tex.uses.length} `;
 			strBuilder += tex.uses.length === 1 ? labels.use_singular : labels.use_plural;
 			const pathCount = tex.uses.reduce((acc, cur) => acc + cur.paths.length, 0);
@@ -386,7 +387,7 @@ export default {
 			try {
 				let data = JSON.parse(this.importJSON);
 				if (!data || !data.length) data = [emptyTexture()];
-				// make sure there's at least one use and one path to prevent form errors
+				// validate parsed data
 				const cleaned = data.map((tex) => {
 					tex.key = crypto.randomUUID();
 					tex.name ||= "";
@@ -396,6 +397,12 @@ export default {
 						use.key = crypto.randomUUID();
 						use.edition ||= "";
 						if (!use.paths || !use.paths.length) use.paths = [emptyPath()];
+						use.paths = use.paths.map((path) => {
+							path.name ||= "";
+							path.versions ||= [];
+							path.mcmeta ||= false;
+							return path;
+						});
 						return use;
 					});
 					return tex;
