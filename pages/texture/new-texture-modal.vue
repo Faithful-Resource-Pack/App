@@ -1,7 +1,7 @@
 <template>
 	<fullscreen-modal
 		v-model="modalOpened"
-		:title="$root.lang().database.titles.add_texture"
+		:title="$root.lang().database.labels.add_texture"
 		:pageColor="color"
 		@close="closeModal"
 	>
