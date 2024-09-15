@@ -1253,4 +1253,6 @@ body .texture-avatar {
 .texture-json-editor {
 	width: 50vw;
 	height: 80vh;
+	display: flex;
+	flex-direction: column;
 }

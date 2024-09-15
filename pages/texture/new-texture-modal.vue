@@ -17,12 +17,11 @@
 					</h2>
 					<prism-editor
 						class="my-editor"
-						style="height: 75%"
 						v-model="importJSON"
 						:highlight="highlighter"
 						line-numbers
 					/>
-					<v-btn block @click="parseJSON" :color="color">
+					<v-btn block @click="parseJSON" :color="color" class="white--text">
 						{{ $root.lang().database.labels.parse_json }}
 					</v-btn>
 				</div>
@@ -194,7 +193,7 @@
 					</v-list>
 					<v-divider class="ma-5" />
 					<v-row no-gutters>
-						<v-col cols="12" lg="6">
+						<v-col cols="12" sm="6">
 							<v-checkbox
 								:color="color"
 								v-model="clearOnSave"
@@ -202,12 +201,12 @@
 								:label="$root.lang('database.labels.clear_on_save')"
 							/>
 						</v-col>
-						<v-col cols="12" lg="3">
+						<v-col cols="12" sm="3">
 							<v-btn class="px-1" color="red darken-1" text @click="resetModal">
 								{{ $root.lang().global.btn.discard }}
 							</v-btn>
 						</v-col>
-						<v-col cols="12" lg="3">
+						<v-col cols="12" sm="3">
 							<v-btn class="px-1" color="darken-1" text @click="send">
 								{{ $root.lang().global.btn.save }}
 							</v-btn>
