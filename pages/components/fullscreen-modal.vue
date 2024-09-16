@@ -3,6 +3,7 @@
 		v-model="modalOpened"
 		fullscreen
 		hide-overlay
+		content-class="colored"
 		transition="dialog-bottom-transition"
 		@keydown.esc="closeModal"
 	>

@@ -62,7 +62,7 @@ window.colorToHex = (color) => {
 		if (colorArr.length > 1) colorArr[1] = colorArr[1].replace("-", "");
 		return colors[colorArr[0]][colorArr.length > 1 ? colorArr[1] : "base"];
 	} catch (error) {
-		return "currentcolor";
+		return "primary";
 	}
 };
 
