@@ -4,5 +4,9 @@
 		"resolveJsonModule": true,
 		"baseUrl": ".",
 		"strict": true,
+		"paths": {
+			"@helpers/*": ["./helpers/*"],
+			"@components/*": ["./components/*"]
+		}
 	}
 }

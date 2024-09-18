@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => {
 				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
 				"@helpers": fileURLToPath(new URL("./helpers", import.meta.url)),
-				"@components": fileURLToPath(new URL("./pages/components", import.meta.url)),
+				"@components": fileURLToPath(new URL("./components", import.meta.url)),
 			},
 		},
 	};
