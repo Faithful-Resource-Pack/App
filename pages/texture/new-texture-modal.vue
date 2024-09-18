@@ -7,7 +7,7 @@
 	>
 		<template #toolbar>
 			<v-btn icon @click="copyData"><v-icon>mdi-content-copy</v-icon></v-btn>
-			<v-btn icon @click="openJSONModal"><v-icon>mdi-content-paste</v-icon></v-btn>
+			<v-btn icon @click="openJSONModal"><v-icon>mdi-code-json</v-icon></v-btn>
 			<v-dialog v-model="jsonModalOpened" content-class="colored" max-width="800">
 				<v-card>
 					<h2 class="title text--secondary ma-2">
