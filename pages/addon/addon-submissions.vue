@@ -51,17 +51,7 @@
 						<v-card-title>{{ addon.name }}</v-card-title>
 						<v-card-subtitle>{{ addon.options.tags.join(", ") }}</v-card-subtitle>
 						<v-card-text style="height: 60px">
-							<v-badge
-								dot
-								inline
-								:color="
-									addon.approval.status == 'approved'
-										? 'green'
-										: addon.approval.status == 'pending'
-											? 'yellow'
-											: 'red'
-								"
-							/>
+							<v-badge dot inline :color="getStatusColor(addon.approval.status)" />
 							{{ $root.lang().addons.status[addon.approval.status] }}
 							<v-btn
 								v-if="addon.approval.status == 'approved'"
@@ -133,6 +123,16 @@ export default {
 			this.dialogOpen = false;
 			this.dialogAddon = {};
 			this.update();
+		},
+		getStatusColor(status) {
+			switch (status) {
+				case "approved":
+					return "green";
+				case "pending":
+					return "yellow";
+				default:
+					return "red";
+			}
 		},
 		deleteAddon(addon) {
 			this.remove.data = addon;
