@@ -62,7 +62,7 @@ window.colorToHex = (color) => {
 		if (colorArr.length > 1) colorArr[1] = colorArr[1].replace("-", "");
 		return colors[colorArr[0]][colorArr.length > 1 ? colorArr[1] : "base"];
 	} catch (error) {
-		return "primary";
+		return "inherit";
 	}
 };
 
@@ -73,7 +73,6 @@ window.updatePageStyles = (page) => {
 
 	const pageId = page.$el.id;
 	const hex = colorToHex(page.pageColor);
-	console.log(pageId, hex);
 
 	page.pageStyles = `
 	<style>

@@ -7,16 +7,14 @@
 	>
 		<template #toolbar>
 			<v-btn icon @click="copyData"><v-icon>mdi-content-copy</v-icon></v-btn>
-			<v-menu v-model="jsonModalOpened" :close-on-content-click="false">
-				<template #activator="{ on, attrs }">
-					<v-btn icon v-on="on" v-bind="attrs"><v-icon>mdi-content-paste</v-icon></v-btn>
-				</template>
-				<div class="texture-json-editor">
+			<v-btn icon @click="openJSONModal"><v-icon>mdi-content-paste</v-icon></v-btn>
+			<v-dialog v-model="jsonModalOpened" content-class="colored" max-width="800">
+				<v-card>
 					<h2 class="title text--secondary ma-2">
 						{{ $root.lang().database.subtitles.import_json_data }}
 					</h2>
 					<prism-editor
-						class="my-editor"
+						class="my-editor texture-json-editor"
 						v-model="importJSON"
 						:highlight="highlighter"
 						line-numbers
@@ -24,8 +22,8 @@
 					<v-btn block @click="parseJSON" :color="color" class="white--text">
 						{{ $root.lang().database.labels.parse_json }}
 					</v-btn>
-				</div>
-			</v-menu>
+				</v-card>
+			</v-dialog>
 		</template>
 		<div class="px-10 py-5">
 			<v-row>
@@ -381,6 +379,9 @@ export default {
 			texture.name ||= name;
 
 			texture.tags = sortTags([...texture.tags, getTagFromPath(path.name)].map(formatTag));
+		},
+		openJSONModal() {
+			this.jsonModalOpened = true;
 		},
 		parseJSON() {
 			try {

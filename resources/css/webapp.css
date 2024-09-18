@@ -1251,8 +1251,10 @@ body .texture-avatar {
 }
 
 .texture-json-editor {
-	width: 50vw;
-	height: 80vh;
-	display: flex;
-	flex-direction: column;
+	min-height: 20em;
+}
+
+.v-slide-group__prev--disabled {
+	/* fix weird left margin on mobile tabs */
+	display: none !important;
 }
