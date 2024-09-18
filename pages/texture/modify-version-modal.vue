@@ -8,13 +8,10 @@
 				<v-form ref="form">
 					<v-row>
 						<v-col class="col-12" sm="12">
-							<p align="justify">
-								{{ $root.lang().database.hints.example_scenario }}
-								<br /><br />
-								<strong style="color: red">
-									{{ $root.lang().database.hints.example_scenario_warn }}
-								</strong>
-							</p>
+							<p>{{ $root.lang().database.hints.example_scenario }}</p>
+							<v-alert type="warning" class="px-2" outlined dense>
+								{{ $root.lang().database.hints.example_scenario_warn }}
+							</v-alert>
 						</v-col>
 					</v-row>
 					<v-row>
