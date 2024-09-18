@@ -1244,3 +1244,17 @@ body .texture-avatar {
 	width: 100% !important;
 	height: 100% !important;
 }
+
+.v-timeline-item__dot,
+.v-timeline-item__inner-dot {
+	border-radius: 4px;
+}
+
+.texture-json-editor {
+	min-height: 20em;
+}
+
+.v-slide-group__prev--disabled {
+	/* fix weird left margin on mobile tabs */
+	display: none !important;
+}

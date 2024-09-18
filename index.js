@@ -62,19 +62,19 @@ window.colorToHex = (color) => {
 		if (colorArr.length > 1) colorArr[1] = colorArr[1].replace("-", "");
 		return colors[colorArr[0]][colorArr.length > 1 ? colorArr[1] : "base"];
 	} catch (error) {
-		return "currentcolor";
+		return "inherit";
 	}
 };
 
-/** @param {Vue} cmp */
-window.updatePageStyles = (cmp) => {
-	if (!cmp.$el) return;
-	cmp.$el.id ||= cmp.name;
+/** @param {Vue} page */
+window.updatePageStyles = (page) => {
+	if (!page.$el) return;
+	page.$el.id ||= page.name;
 
-	const pageId = cmp.$el.id;
-	const hex = colorToHex(cmp.pageColor);
+	const pageId = page.$el.id;
+	const hex = colorToHex(page.pageColor);
 
-	cmp.pageStyles = `
+	page.pageStyles = `
 	<style>
 		html.theme--light,
 		html.theme--light .colored,
@@ -93,7 +93,7 @@ window.updatePageStyles = (cmp) => {
 		html.theme--dark .v-menu__content *,
 		html.theme--dark #${pageId},
 		html.theme--dark #${pageId} * {
-			scrollbar-color: ${hex} #000000bb;
+			scrollbar-color: ${hex} #000000bb !important;
 		}
 	</style>`;
 };
