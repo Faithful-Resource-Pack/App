@@ -1,144 +1,127 @@
 <template>
-	<v-dialog v-model="modalOpened" width="800">
-		<v-card>
-			<v-card-title class="headline">{{ $root.lang().database.titles.contributions }}</v-card-title>
-			<v-card-text class="pb-0">
-				<template v-if="multiple">
-					<v-row dense>
-						<v-col
-							class="flex-grow-0 flex-shrink-1"
-							:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
-						>
-							<contribution-form
-								:value="activeForm"
-								@input="onFormInput"
-								:disabled="activeForm === undefined"
-								:contributors="contributors"
-								:multiple="multiple"
-							/>
-						</v-col>
-						<v-col
-							:class="[
-								$vuetify.breakpoint.mdAndUp
-									? 'flex-grow-0 flex-shrink-1 px-4'
-									: 'flex-grow-1 flex-shrink-0 py-4',
-							]"
-						>
-							<v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
-						</v-col>
-						<v-col
-							class="flex-grow-1 flex-shrink-0 d-flex flex-column"
-							:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
-						>
-							<div class="font-weight-medium text--secondary mb-2">
-								{{ $root.lang("database.titles.contributions") }}
-							</div>
-							<v-list
-								id="contribution-form-list"
-								dense
-								flat
-								style="min-height: 300px"
-								class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
+	<modal-form
+		v-model="modalOpened"
+		:title="$root.lang().database.titles.contributions"
+		max-width="800"
+		@close="closeAndCancel"
+		@submit="closeOrAndSubmit"
+	>
+		<v-row dense v-if="multiple">
+			<v-col class="flex-grow-0 flex-shrink-1" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
+				<contribution-form
+					:value="activeForm"
+					@input="onFormInput"
+					:disabled="activeForm === undefined"
+					:contributors="contributors"
+					:multiple="multiple"
+				/>
+			</v-col>
+			<v-col
+				:class="[
+					$vuetify.breakpoint.mdAndUp
+						? 'flex-grow-0 flex-shrink-1 px-4'
+						: 'flex-grow-1 flex-shrink-0 py-4',
+				]"
+			>
+				<v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
+			</v-col>
+			<v-col
+				class="flex-grow-1 flex-shrink-0 d-flex flex-column"
+				:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
+			>
+				<div class="font-weight-medium text--secondary mb-2">
+					{{ $root.lang("database.titles.contributions") }}
+				</div>
+				<v-list
+					id="contribution-form-list"
+					dense
+					flat
+					style="min-height: 300px"
+					class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
+				>
+					<div>
+						<template v-for="(form, formIndex) in formRecordsList">
+							<v-list-item
+								:key="`item-${form.formId}`"
+								class="pl-0"
+								@click.stop.prevent="() => changeOpenedForm(form.formId)"
 							>
-								<div>
-									<template v-for="(form, formIndex) in formRecordsList">
-										<v-list-item
-											:key="`item-${form.formId}`"
-											class="pl-0"
-											@click.stop.prevent="() => changeOpenedForm(form.formId)"
+								<v-list-item-content :class="[openedFormId === form.formId ? 'primary--text' : '']">
+									<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
+									<v-list-item-subtitle class="text-truncate">
+										<span v-if="form.authors.length">
+											{{ contributorsFromIds(form.authors) }}
+										</span>
+										<i v-else>{{ $root.lang("database.subtitles.no_contributor_yet") }}</i>
+									</v-list-item-subtitle>
+									<v-list-item-subtitle v-if="form.texture && form.texture.length">
+										<v-chip
+											class="mr-1 px-2"
+											x-small
+											v-for="(range, range_i) in form.texture"
+											:key="
+												'item-' +
+												form.formId +
+												'-chip-' +
+												String(range).replace(',', '-') +
+												'+' +
+												range_i
+											"
 										>
-											<v-list-item-content
-												:class="[openedFormId === form.formId ? 'primary--text' : '']"
-											>
-												<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
-												<v-list-item-subtitle class="text-truncate">
-													<span v-if="form.authors.length">
-														{{ contributorsFromIds(form.authors) }}
-													</span>
-													<i v-else>{{ $root.lang("database.subtitles.no_contributor_yet") }}</i>
-												</v-list-item-subtitle>
-												<v-list-item-subtitle v-if="form.texture && form.texture.length">
-													<v-chip
-														class="mr-1 px-2"
-														x-small
-														v-for="(range, range_i) in form.texture"
-														:key="
-															'item-' +
-															form.formId +
-															'-chip-' +
-															String(range).replace(',', '-') +
-															'+' +
-															range_i
-														"
-													>
-														{{ "#" + (Array.isArray(range) ? range.join(" — #") : String(range)) }}
-													</v-chip>
-												</v-list-item-subtitle>
-											</v-list-item-content>
+											{{ "#" + (Array.isArray(range) ? range.join(" — #") : String(range)) }}
+										</v-chip>
+									</v-list-item-subtitle>
+								</v-list-item-content>
 
-											<v-list-item-action v-if="formIndex > 0">
-												<v-icon
-													@click.stop.prevent="() => removeForm(form.formId)"
-													:color="openedFormId === form.formId ? 'primary' : ''"
-												>
-													mdi-delete
-												</v-icon>
-											</v-list-item-action>
-										</v-list-item>
+								<v-list-item-action v-if="formIndex > 0">
+									<v-icon
+										@click.stop.prevent="() => removeForm(form.formId)"
+										:color="openedFormId === form.formId ? 'primary' : ''"
+									>
+										mdi-delete
+									</v-icon>
+								</v-list-item-action>
+							</v-list-item>
 
-										<v-divider
-											:key="`divider-${form.formId}`"
-											v-if="formIndex < formRecordsLength - 1"
-										/>
-									</template>
-								</div>
-							</v-list>
-							<v-btn
-								class="flex-grow-0 flex-shrink-1"
-								elevation="0"
-								block
-								@click.stop.prevent="addNewForm"
-							>
-								{{
-									$root.lang(
-										`database.subtitles.${openedFormId ? "clone_contribution" : "add_new_contribution"}`,
-									)
-								}}
-							</v-btn>
-						</v-col>
-					</v-row>
-				</template>
-				<template v-else>
-					<contribution-form
-						:value="activeForm"
-						@input="onFormInput"
-						:disabled="activeForm === undefined"
-						:contributors="contributors"
-						:multiple="multiple"
-					/>
-				</template>
-			</v-card-text>
-			<v-card-actions class="pt-4">
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="closeAndCancel">
-					{{ $root.lang().global.btn.cancel }}
+							<v-divider :key="`divider-${form.formId}`" v-if="formIndex < formRecordsLength - 1" />
+						</template>
+					</div>
+				</v-list>
+				<v-btn
+					class="flex-grow-0 flex-shrink-1"
+					elevation="0"
+					block
+					@click.stop.prevent="addNewForm"
+				>
+					{{
+						$root.lang(
+							`database.subtitles.${openedFormId ? "clone_contribution" : "add_new_contribution"}`,
+						)
+					}}
 				</v-btn>
-				<v-btn color="darken-1" text @click="closeOrAndSubmit">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			</v-col>
+		</v-row>
+		<contribution-form
+			v-else
+			:value="activeForm"
+			@input="onFormInput"
+			:disabled="activeForm === undefined"
+			:contributors="contributors"
+			:multiple="multiple"
+		/>
+	</modal-form>
 </template>
 
 <script>
 import moment from "moment";
 
+import ModalForm from "@components/modal-form.vue";
 import ContributionForm from "./contribution-form.vue";
 
 export default {
 	name: "contribution-modal",
 	components: {
+		ModalForm,
 		ContributionForm,
 	},
 	props: {

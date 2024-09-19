@@ -166,7 +166,10 @@
 						</v-tab-item>
 					</v-tabs-items>
 				</v-col>
-				<v-divider vertical class="ma-5" />
+				<v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="ma-5" />
+				<v-col cols="12" v-else>
+					<v-divider class="mx-5 my-0" />
+				</v-col>
 				<v-col>
 					<v-list>
 						<div class="font-weight-medium text--secondary my-2">
@@ -276,16 +279,12 @@ export default {
 		versions: {
 			type: Array,
 			required: false,
-			default() {
-				return [];
-			},
+			default: () => [],
 		},
 		editions: {
 			type: Array,
 			required: false,
-			default() {
-				return [];
-			},
+			default: () => [],
 		},
 	},
 	data() {
@@ -412,6 +411,7 @@ export default {
 				console.error(err);
 				this.$root.showSnackBar(err, "error");
 			}
+			this.jsonModalOpened = false;
 		},
 		copyData() {
 			const data = JSON.stringify(this.cleanedData, null, 2);

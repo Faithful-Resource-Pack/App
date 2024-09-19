@@ -16,7 +16,7 @@
 			dense
 			type="number"
 			:value="year"
-			:max="this_year"
+			:max="thisYear"
 			min="0"
 			@input="(e) => newYear(e)"
 		/>
@@ -33,7 +33,7 @@
 					small
 					@click="() => newMonth(i)"
 				>
-					{{ upper_months[i - 1] }}
+					{{ upperMonths[i - 1] }}
 				</v-btn>
 			</v-col>
 		</v-row>
@@ -48,7 +48,7 @@
 				:text="i !== day"
 				:elevation="i == day ? 2 : 0"
 				@click="() => newDay(i)"
-				:disabled="disabled || i > days_in_month"
+				:disabled="disabled || i > daysInCurMonth"
 			>
 				{{ i }}
 			</v-btn>
@@ -89,6 +89,7 @@ export default {
 	data() {
 		return {
 			date: new Date(new Date(this.value).setHours(0, 0, 0, 0)),
+			thisYear: new Date().getFullYear(),
 		};
 	},
 	computed: {
@@ -104,25 +105,21 @@ export default {
 		year() {
 			return this.date.getFullYear();
 		},
-		date_str() {
-			return this.date.toDateString();
-		},
-		this_year: () => new Date().getFullYear(),
-		days_in_month() {
+		daysInCurMonth() {
 			return this.daysInMonth(this.year, this.month + 1);
 		},
-		upper_months() {
-			return this.months.map((name) => name[0].toUpperCase() + name.slice(1));
+		upperMonths() {
+			return this.months.map((name) => name.toTitleCase());
 		},
 	},
 	methods: {
 		checkAndMaxDate(year, month) {
 			const newDate = new Date(year, month - 1, this.day);
 			if (newDate.getDate() != this.day) {
-				const days_in_new_month = this.daysInMonth(year, month);
-				const new_day = Math.min(this.day, days_in_new_month);
-				const corrected_date = new Date(new Date(year, month - 1, new_day).setHours(0, 0, 0, 0));
-				this.date = corrected_date;
+				const daysInNewMonth = this.daysInMonth(year, month);
+				const newDay = Math.min(this.day, daysInNewMonth);
+				const correctedDay = new Date(new Date(year, month - 1, newDay).setHours(0, 0, 0, 0));
+				this.date = correctedDay;
 			}
 		},
 		newDay(i) {
@@ -136,15 +133,15 @@ export default {
 		},
 		newYear(e) {
 			let parsed = Number.parseInt(e);
-			let new_year = this.year;
-			if (!Number.isNaN(parsed)) new_year = parsed;
+			let newYear = this.year;
+			if (!Number.isNaN(parsed)) newYear = parsed;
 
-			this.checkAndMaxDate(new_year, this.month + 1);
-			this.date.setFullYear(new_year);
+			this.checkAndMaxDate(newYear, this.month + 1);
+			this.date.setFullYear(newYear);
 			this.date = new Date(this.date);
 		},
-		daysInMonth(year, month_i) {
-			return new Date(year, month_i, 0).getDate();
+		daysInMonth(year, monthIndex) {
+			return new Date(year, monthIndex, 0).getDate();
 		},
 	},
 	watch: {

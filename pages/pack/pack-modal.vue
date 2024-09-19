@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
+	<modal-form v-model="modalOpened" :title="dialogTitle" @close="$emit('close')" @submit="send">
 		<submission-modal
 			:color="color"
 			v-model="submissionOpen"
@@ -21,130 +21,118 @@
 			:id="remove.id"
 			:label="remove.label"
 		/>
-		<v-card>
-			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
-			<v-card-text>
-				<v-form ref="form" lazy-validation>
-					<v-text-field
-						:color="color"
-						:hint="
-							add
-								? $root.lang().database.hints.pack_id_creation
-								: $root.lang().database.hints.pack_id_editing
-						"
-						v-model="formData.id"
-						:label="$root.lang().database.labels.pack_id"
-					/>
-					<v-text-field
-						:color="color"
-						required
-						clearable
-						v-model="formData.name"
-						:label="$root.lang().database.labels.pack_name"
-					/>
-					<v-combobox
-						:color="color"
-						:item-color="color"
-						required
-						multiple
-						deletable-chips
-						small-chips
-						v-model="formData.tags"
-						:items="tags"
-						:label="$root.lang().database.labels.pack_tags"
-					/>
-					<v-text-field
-						:color="color"
-						required
-						type="number"
-						v-model="formData.resolution"
-						:label="$root.lang().database.labels.pack_resolution"
-					/>
-					<v-text-field
-						:color="color"
-						:rules="downloadLinkRules"
-						clearable
-						v-model="formData.logo"
-						:label="$root.lang().database.labels.pack_logo"
-					/>
-					<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
-					<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
-					<div v-for="edition in editions" :key="edition">
-						<p class="text-body-1">{{ edition.toTitleCase() }}</p>
-						<v-row>
-							<v-col>
-								<v-text-field
-									:color="color"
-									:label="$root.lang().database.labels.github_org"
-									v-model="(formData.github[edition] || createNewGithub(edition)).org"
-								/>
-							</v-col>
-							<v-col>
-								<v-text-field
-									:color="color"
-									:label="$root.lang().database.labels.github_repo"
-									v-model="(formData.github[edition] || createNewGithub(edition)).repo"
-								/>
-							</v-col>
-						</v-row>
-					</div>
-					<h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
-					<v-row v-if="Object.keys(formData.submission).length">
-						<v-col>
-							<v-btn
-								block
-								:style="{ 'margin-top': '10px' }"
-								color="secondary"
-								@click="submissionModal(formData, false)"
-							>
-								{{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
-							</v-btn>
-						</v-col>
-						<v-col cols="2">
-							<v-btn
-								block
-								:style="{ 'margin-top': '10px' }"
-								color="error darken-1"
-								@click="deleteSubmission(formData)"
-							>
-								<v-icon>mdi-delete</v-icon>
-							</v-btn>
-						</v-col>
-					</v-row>
+		<v-form ref="form" lazy-validation>
+			<v-text-field
+				:color="color"
+				:hint="
+					add
+						? $root.lang().database.hints.pack_id_creation
+						: $root.lang().database.hints.pack_id_editing
+				"
+				v-model="formData.id"
+				:label="$root.lang().database.labels.pack_id"
+			/>
+			<v-text-field
+				:color="color"
+				required
+				clearable
+				v-model="formData.name"
+				:label="$root.lang().database.labels.pack_name"
+			/>
+			<v-combobox
+				:color="color"
+				:item-color="color"
+				required
+				multiple
+				deletable-chips
+				small-chips
+				v-model="formData.tags"
+				:items="tags"
+				:label="$root.lang().database.labels.pack_tags"
+			/>
+			<v-text-field
+				:color="color"
+				required
+				type="number"
+				v-model="formData.resolution"
+				:label="$root.lang().database.labels.pack_resolution"
+			/>
+			<v-text-field
+				:color="color"
+				:rules="downloadLinkRules"
+				clearable
+				v-model="formData.logo"
+				:label="$root.lang().database.labels.pack_logo"
+			/>
+			<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
+			<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
+			<div v-for="edition in editions" :key="edition">
+				<p class="text-body-1">{{ edition.toTitleCase() }}</p>
+				<v-row>
+					<v-col>
+						<v-text-field
+							:color="color"
+							:label="$root.lang().database.labels.github_org"
+							v-model="(formData.github[edition] || createNewGithub(edition)).org"
+						/>
+					</v-col>
+					<v-col>
+						<v-text-field
+							:color="color"
+							:label="$root.lang().database.labels.github_repo"
+							v-model="(formData.github[edition] || createNewGithub(edition)).repo"
+						/>
+					</v-col>
+				</v-row>
+			</div>
+			<h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
+			<v-row v-if="Object.keys(formData.submission).length">
+				<v-col>
 					<v-btn
-						v-else
 						block
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
-						@click="submissionModal(formData, true)"
+						@click="submissionModal(formData, false)"
 					>
-						{{ $root.lang().database.labels.new_submission }}
-						<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
 					</v-btn>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('close')">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+				</v-col>
+				<v-col cols="2">
+					<v-btn
+						block
+						:style="{ 'margin-top': '10px' }"
+						color="error darken-1"
+						@click="deleteSubmission(formData)"
+					>
+						<v-icon>mdi-delete</v-icon>
+					</v-btn>
+				</v-col>
+			</v-row>
+			<v-btn
+				v-else
+				block
+				:style="{ 'margin-top': '10px' }"
+				color="secondary"
+				@click="submissionModal(formData, true)"
+			>
+				{{ $root.lang().database.labels.new_submission }}
+				<v-icon right>mdi-plus</v-icon>
+			</v-btn>
+		</v-form>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 
+import ModalForm from "@components/modal-form.vue";
 import SubmissionModal from "./submission-modal.vue";
 import PackRemoveConfirm from "./pack-remove-confirm.vue";
 
 export default {
 	name: "pack-modal",
 	components: {
+		ModalForm,
 		SubmissionModal,
 		PackRemoveConfirm,
 	},

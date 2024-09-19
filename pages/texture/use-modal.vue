@@ -1,5 +1,12 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="800">
+	<modal-form
+		v-model="modalOpened"
+		max-width="800"
+		:disabled="!formValid"
+		:title="dialogTitle"
+		@close="$emit('close')"
+		@submit="send"
+	>
 		<path-modal
 			:color="color"
 			v-model="pathModalOpen"
@@ -18,93 +25,76 @@
 			:data="remove.data"
 		/>
 
-		<v-card>
-			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
-			<v-card-text>
-				<v-form ref="form" v-model="formValid">
-					<v-text-field
-						:color="color"
-						v-if="add == false"
-						disabled
-						required
-						persistent-hint
-						:hint="'⚠️ ' + $root.lang().database.hints.use_id"
-						v-model="formData.id"
-						:label="$root.lang().database.labels.use_id"
-					/>
-					<v-text-field
-						:color="color"
-						v-model="formData.name"
-						:label="$root.lang().database.labels.use_name"
-					/>
-					<v-text-field
-						:color="color"
-						v-if="add == false"
-						persistent-hint
-						:hint="'⚠️ ' + $root.lang().database.hints.texture_id"
-						required
-						clearable
-						v-model="formData.texture"
-						:label="$root.lang().database.labels.texture_id"
-					/>
-					<v-select
-						required
-						:color="color"
-						:item-color="color"
-						v-model="formData.edition"
-						:items="editions"
-						:label="$root.lang().database.labels.use_edition"
-					/>
-					<h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
-					<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
-						<v-list-item
-							class="list-item-inline"
-							v-for="(path, index) in formData.paths"
-							:key="index"
-						>
-							<v-list-item-content>
-								<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
-								<v-list-item-subtitle :title="(path.versions || []).join(', ')">
-									{{ (path.versions || []).join(", ") }}
-								</v-list-item-subtitle>
-							</v-list-item-content>
+		<v-form ref="form" v-model="formValid">
+			<v-text-field
+				:color="color"
+				v-if="add == false"
+				disabled
+				required
+				persistent-hint
+				:hint="'⚠️ ' + $root.lang().database.hints.use_id"
+				v-model="formData.id"
+				:label="$root.lang().database.labels.use_id"
+			/>
+			<v-text-field
+				:color="color"
+				v-model="formData.name"
+				:label="$root.lang().database.labels.use_name"
+			/>
+			<v-text-field
+				:color="color"
+				v-if="add == false"
+				persistent-hint
+				:hint="'⚠️ ' + $root.lang().database.hints.texture_id"
+				required
+				clearable
+				v-model="formData.texture"
+				:label="$root.lang().database.labels.texture_id"
+			/>
+			<v-select
+				required
+				:color="color"
+				:item-color="color"
+				v-model="formData.edition"
+				:items="editions"
+				:label="$root.lang().database.labels.use_edition"
+			/>
+			<h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
+			<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
+				<v-list-item class="list-item-inline" v-for="(path, index) in formData.paths" :key="index">
+					<v-list-item-content>
+						<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
+						<v-list-item-subtitle :title="(path.versions || []).join(', ')">
+							{{ (path.versions || []).join(", ") }}
+						</v-list-item-subtitle>
+					</v-list-item-content>
 
-							<v-list-item-action class="merged">
-								<v-btn icon @click="openPathModal(path, index)">
-									<v-icon color="lighten-1">mdi-pencil</v-icon>
-								</v-btn>
-								<v-btn icon @click="askRemovePath(path, index)">
-									<v-icon color="red lighten-1">mdi-delete</v-icon>
-								</v-btn>
-							</v-list-item-action>
-						</v-list-item>
-					</v-list>
+					<v-list-item-action class="merged">
+						<v-btn icon @click="openPathModal(path, index)">
+							<v-icon color="lighten-1">mdi-pencil</v-icon>
+						</v-btn>
+						<v-btn icon @click="askRemovePath(path, index)">
+							<v-icon color="red lighten-1">mdi-delete</v-icon>
+						</v-btn>
+					</v-list-item-action>
+				</v-list-item>
+			</v-list>
 
-					<div v-else>
-						{{ $root.lang().database.labels.no_path_found }}
-					</div>
+			<div v-else>
+				{{ $root.lang().database.labels.no_path_found }}
+			</div>
 
-					<v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openPathModal()">
-						{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
-					</v-btn>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('close')">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send" :disabled="!formValid">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			<v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openPathModal()">
+				{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
+			</v-btn>
+		</v-form>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 
+import ModalForm from "@components/modal-form.vue";
 import PathModal from "./path-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 import MinecraftSorter from "@helpers/MinecraftSorter";
@@ -113,6 +103,7 @@ import { getNameFromPath } from "@helpers/paths";
 export default {
 	name: "use-modal",
 	components: {
+		ModalForm,
 		PathModal,
 		TextureRemoveConfirm,
 	},

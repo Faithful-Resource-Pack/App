@@ -1,9 +1,10 @@
 <template>
-	<remove-confirm
+	<modal-form
 		v-model="modalOpened"
+		danger
 		:title="$root.lang().database.titles.confirm_deletion"
 		@close="$emit('close')"
-		@confirm="deleteContribution"
+		@submit="deleteContribution"
 	>
 		<li>ID: {{ data.id }}</li>
 		<li>Name: {{ data.name }}</li>
@@ -17,18 +18,18 @@
 				</li>
 			</ul>
 		</li>
-	</remove-confirm>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 import moment from "moment";
-import RemoveConfirm from "@components/remove-confirm.vue";
+import ModalForm from "@components/modal-form.vue";
 
 export default {
 	name: "contribution-remove-confirm",
 	components: {
-		RemoveConfirm,
+		ModalForm,
 	},
 	props: {
 		value: {

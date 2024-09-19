@@ -1,9 +1,10 @@
 <template>
-	<remove-confirm
+	<modal-form
 		v-model="modalOpened"
+		danger
 		:title="$root.lang().database.titles.confirm_deletion"
 		@close="$emit('close')"
-		@confirm="deleteData"
+		@submit="deleteData"
 	>
 		<p>Do you want to delete this {{ type }}?</p>
 		<v-alert v-if="type == 'use'" type="warning" class="px-2" outlined dense>
@@ -28,17 +29,17 @@
 				</li>
 			</template>
 		</ul>
-	</remove-confirm>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
-import RemoveConfirm from "@components/remove-confirm.vue";
+import ModalForm from "@components/modal-form.vue";
 
 export default {
 	name: "texture-remove-confirm",
 	components: {
-		RemoveConfirm,
+		ModalForm,
 	},
 	props: {
 		value: {

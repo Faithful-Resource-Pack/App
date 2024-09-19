@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
+	<modal-form v-model="modalOpened" :title="dialogTitle" @close="onCancel" @submit="send">
 		<use-modal
 			:color="color"
 			v-model="useModalOpen"
@@ -14,126 +14,108 @@
 			@close="closeAndUpdate"
 			:data="remove.data"
 		/>
+		<v-form ref="form">
+			<v-text-field
+				:disabled="!add"
+				:color="color"
+				persistent-hint
+				:hint="'⚠️' + $root.lang().database.hints.texture_id"
+				required
+				:readonly="add == false"
+				v-model="formData.id"
+				:label="$root.lang().database.labels.texture_id"
+			/>
+			<v-text-field
+				:color="color"
+				required
+				clearable
+				v-model="formData.name"
+				:label="$root.lang().database.labels.texture_name"
+			/>
+			<v-combobox
+				:color="color"
+				:item-color="color"
+				required
+				multiple
+				deletable-chips
+				small-chips
+				@change="
+					() => {
+						formData.tags = sortTags(formData.tags);
+					}
+				"
+				v-model="formData.tags"
+				:items="tags"
+				:label="$root.lang().database.labels.texture_tags"
+			/>
 
-		<v-card>
-			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
-			<v-card-text>
-				<v-form ref="form">
-					<v-text-field
-						:disabled="!add"
-						:color="color"
-						persistent-hint
-						:hint="'⚠️' + $root.lang().database.hints.texture_id"
-						required
-						:readonly="add == false"
-						v-model="formData.id"
-						:label="$root.lang().database.labels.texture_id"
-					/>
-					<v-text-field
-						:color="color"
-						required
-						clearable
-						v-model="formData.name"
-						:label="$root.lang().database.labels.texture_name"
-					/>
-					<v-combobox
-						:color="color"
-						:item-color="color"
-						required
-						multiple
-						deletable-chips
-						small-chips
-						@change="
-							() => {
-								formData.tags = sortTags(formData.tags);
-							}
-						"
-						v-model="formData.tags"
-						:items="tags"
-						:label="$root.lang().database.labels.texture_tags"
-					/>
-
-					<h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
-					<v-list
-						v-if="Object.keys(formData.uses).length"
-						:label="$root.lang().database.labels.texture_uses"
+			<h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
+			<v-list
+				v-if="Object.keys(formData.uses).length"
+				:label="$root.lang().database.labels.texture_uses"
+			>
+				<v-list-item class="list-item-inline" v-for="(use, index) in formData.uses" :key="index">
+					<v-list-item-avatar
+						tile
+						:class="[color, textColor]"
+						:style="{
+							padding: '0 10px 0 10px',
+							'border-radius': '4px !important',
+							width: 'auto',
+						}"
 					>
-						<v-list-item
-							class="list-item-inline"
-							v-for="(use, index) in formData.uses"
-							:key="index"
-						>
-							<v-list-item-avatar
-								tile
-								:class="[color, textColor]"
-								:style="{
-									padding: '0 10px 0 10px',
-									'border-radius': '4px !important',
-									width: 'auto',
-								}"
-							>
-								#{{ index }}
-							</v-list-item-avatar>
+						#{{ index }}
+					</v-list-item-avatar>
 
-							<v-list-item-content>
-								<v-list-item-title>
-									<v-list-item style="display: inline; padding: 0 0 0 5px">
-										<template v-if="use.name">{{ use.name }}</template>
-										<template v-else>
-											<i>{{ $root.lang().database.labels.nameless }}</i>
-										</template>
-									</v-list-item>
-									<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">
-										{{ use.edition }}
-									</v-list-item-subtitle>
-								</v-list-item-title>
-							</v-list-item-content>
+					<v-list-item-content>
+						<v-list-item-title>
+							<v-list-item style="display: inline; padding: 0 0 0 5px">
+								<template v-if="use.name">{{ use.name }}</template>
+								<template v-else>
+									<i>{{ $root.lang().database.labels.nameless }}</i>
+								</template>
+							</v-list-item>
+							<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">
+								{{ use.edition }}
+							</v-list-item-subtitle>
+						</v-list-item-title>
+					</v-list-item-content>
 
-							<v-list-item-action class="merged">
-								<v-btn icon @click="openUseModal(use, false)">
-									<v-icon color="lighten-1">mdi-pencil</v-icon>
-								</v-btn>
-								<v-btn icon @click="askRemoveUse(use)">
-									<v-icon color="red lighten-1">mdi-delete</v-icon>
-								</v-btn>
-							</v-list-item-action>
-						</v-list-item>
-					</v-list>
-					<div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
+					<v-list-item-action class="merged">
+						<v-btn icon @click="openUseModal(use, false)">
+							<v-icon color="lighten-1">mdi-pencil</v-icon>
+						</v-btn>
+						<v-btn icon @click="askRemoveUse(use)">
+							<v-icon color="red lighten-1">mdi-delete</v-icon>
+						</v-btn>
+					</v-list-item-action>
+				</v-list-item>
+			</v-list>
+			<div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
 
-					<v-btn block style="margin-top: 10px" color="secondary" @click="openUseModal(null, true)">
-						{{ $root.lang().database.labels.add_new_use }}
-						<v-icon right>mdi-plus</v-icon>
-					</v-btn>
-					<v-btn
-						v-if="Object.keys(formData.uses).length === 1"
-						block
-						class="white--text"
-						style="margin-top: 10px"
-						:color="color"
-						@click="openEditionUseModal"
-					>
-						{{ addEditionUseLabel }}
-						<v-icon right>mdi-plus</v-icon>
-					</v-btn>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="onCancel">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+			<v-btn block style="margin-top: 10px" color="secondary" @click="openUseModal(null, true)">
+				{{ $root.lang().database.labels.add_new_use }}
+				<v-icon right>mdi-plus</v-icon>
+			</v-btn>
+			<v-btn
+				v-if="Object.keys(formData.uses).length === 1"
+				block
+				class="white--text"
+				style="margin-top: 10px"
+				:color="color"
+				@click="openEditionUseModal"
+			>
+				{{ addEditionUseLabel }}
+				<v-icon right>mdi-plus</v-icon>
+			</v-btn>
+		</v-form>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 
+import ModalForm from "@components/modal-form.vue";
 import UseModal from "./use-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 import { formatTag, sortTags } from "@helpers/textures";
@@ -142,6 +124,7 @@ import { getTagFromPath, convertEditionPath } from "@helpers/paths";
 export default {
 	name: "texture-modal",
 	components: {
+		ModalForm,
 		UseModal,
 		TextureRemoveConfirm,
 	},
@@ -162,9 +145,7 @@ export default {
 		tags: {
 			type: Array,
 			required: false,
-			default() {
-				return [];
-			},
+			default: () => [],
 		},
 		color: {
 			type: String,

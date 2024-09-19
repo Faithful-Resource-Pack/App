@@ -1,57 +1,50 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
-		<v-card>
-			<v-card-title class="headline">
-				{{ $root.lang().database.titles.change_mc_version }}
-			</v-card-title>
-			<v-card-text class="mb-0">
-				<v-form ref="form">
-					<v-row>
-						<v-col class="col-12" sm="12">
-							<p>{{ $root.lang().database.hints.example_scenario }}</p>
-							<v-alert type="warning" class="px-2" outlined dense>
-								{{ $root.lang().database.hints.example_scenario_warn }}
-							</v-alert>
-						</v-col>
-					</v-row>
-					<v-row>
-						<v-col class="col-12" sm="12">
-							<v-form ref="form">
-								<v-text-field
-									:color="color"
-									required
-									v-model="form.old"
-									:label="$root.lang().database.labels.current_mc_version"
-								/>
-								<v-text-field
-									:color="color"
-									required
-									v-model="form.new"
-									:label="$root.lang().database.labels.new_mc_version"
-								/>
-							</v-form>
-						</v-col>
-					</v-row>
-				</v-form>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('close')">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<modal-form
+		v-model="modalOpened"
+		:title="$root.lang().database.titles.change_mc_version"
+		@close="$emit('close')"
+		@submit="send"
+	>
+		<v-form ref="form">
+			<v-row>
+				<v-col class="col-12" sm="12">
+					<p>{{ $root.lang().database.hints.example_scenario }}</p>
+					<v-alert type="warning" class="px-2" outlined dense>
+						{{ $root.lang().database.hints.example_scenario_warn }}
+					</v-alert>
+				</v-col>
+			</v-row>
+			<v-row>
+				<v-col class="col-12" sm="12">
+					<v-form ref="form">
+						<v-text-field
+							:color="color"
+							required
+							v-model="form.old"
+							:label="$root.lang().database.labels.current_mc_version"
+						/>
+						<v-text-field
+							:color="color"
+							required
+							v-model="form.new"
+							:label="$root.lang().database.labels.new_mc_version"
+						/>
+					</v-form>
+				</v-col>
+			</v-row>
+		</v-form>
+	</modal-form>
 </template>
 
 <script>
+import ModalForm from "@components/modal-form.vue";
 import axios from "axios";
 
 export default {
 	name: "modify-version-modal",
+	components: {
+		ModalForm,
+	},
 	props: {
 		value: {
 			type: Boolean,

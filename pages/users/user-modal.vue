@@ -1,87 +1,68 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
-		<v-card>
-			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
-			<v-card-text>
-				<v-row>
-					<v-col v-if="formData.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2">
-						<img
-							alt="avatar"
-							style="width: 100%; max-width: 250"
-							:src="
-								($vuetify.breakpoint.mdAndUp
-									? 'https://visage.surgeplay.com/full/256/'
-									: 'https://visage.surgeplay.com/head/128/') + formData.uuid
-							"
-						/>
-					</v-col>
-					<v-col
-						:class="`col-${formData.uuid ? '10' : '12'}`"
-						:sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12"
-					>
-						<v-form ref="form" lazy-validation>
-							<v-text-field
-								:color="color"
-								required
-								:readonly="add == false"
-								v-model="formData.id"
-								:label="$root.lang().database.labels.discord_id"
-							/>
-							<v-text-field
-								:color="color"
-								required
-								clearable
-								v-model="formData.username"
-								:label="$root.lang().database.labels.username"
-							/>
-							<v-select
-								:color="color"
-								:item-color="color"
-								required
-								multiple
-								small-chips
-								v-model="formData.roles"
-								:items="roles"
-								:label="$root.lang().database.labels.user_role"
-							/>
-							<v-text-field
-								:color="color"
-								clearable
-								v-model="formData.uuid"
-								:label="$root.lang().database.labels.uuid"
-							/>
-							<v-checkbox
-								:color="color"
-								required
-								clearable
-								v-model="formData.anonymous"
-								:label="$root.lang().database.labels.anonymous"
-							/>
-							<v-text v-if="formData.anonymous">
-								{{ $root.lang().database.labels.anonymous_explain }}
-							</v-text>
-						</v-form>
-					</v-col>
-				</v-row>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="$emit('close')">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<modal-form v-model="modalOpened" :title="dialogTitle" @close="$emit('close')" @submit="send">
+		<v-row>
+			<v-col v-if="formData.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2">
+				<img alt="avatar" style="width: 100%; max-width: 250" :src="avatarSrc" />
+			</v-col>
+			<v-col
+				:class="`col-${formData.uuid ? '10' : '12'}`"
+				:sm="formData.uuid ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12"
+			>
+				<v-form ref="form" lazy-validation>
+					<v-text-field
+						:color="color"
+						required
+						:readonly="add == false"
+						v-model="formData.id"
+						:label="$root.lang().database.labels.discord_id"
+					/>
+					<v-text-field
+						:color="color"
+						required
+						clearable
+						v-model="formData.username"
+						:label="$root.lang().database.labels.username"
+					/>
+					<v-select
+						:color="color"
+						:item-color="color"
+						required
+						multiple
+						small-chips
+						v-model="formData.roles"
+						:items="roles"
+						:label="$root.lang().database.labels.user_role"
+					/>
+					<v-text-field
+						:color="color"
+						clearable
+						v-model="formData.uuid"
+						:label="$root.lang().database.labels.uuid"
+					/>
+					<v-checkbox
+						:color="color"
+						required
+						clearable
+						v-model="formData.anonymous"
+						:label="$root.lang().database.labels.anonymous"
+					/>
+					<p v-if="formData.anonymous">{{ $root.lang().database.labels.anonymous_explain }}</p>
+				</v-form>
+			</v-col>
+		</v-row>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 
+import ModalForm from "@components/modal-form.vue";
+
 export default {
 	name: "user-modal",
+	components: {
+		ModalForm,
+	},
 	props: {
 		value: {
 			type: Boolean,
@@ -129,6 +110,12 @@ export default {
 			return this.add
 				? this.$root.lang().database.titles.add_user
 				: this.$root.lang().database.titles.change_user;
+		},
+		avatarSrc() {
+			const baseURL = this.$vuetify.breakpoint.mdAndUp
+				? "https://visage.surgeplay.com/full/256/"
+				: "https://visage.surgeplay.com/head/128/";
+			return baseURL + this.formData.uuid;
 		},
 	},
 	methods: {

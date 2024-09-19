@@ -16,44 +16,36 @@
 			@header="handleHeader"
 			@screenshot="handleScreenshot"
 		/>
-		<v-dialog v-model="reasonDialog" max-width="600px">
-			<v-card>
-				<v-card-title class="headline">
-					{{ this.$root.lang("addons.general.reason.title") }}
-				</v-card-title>
-				<v-card-text>
-					<v-form lazy-validation v-model="validForm" ref="reasonForm">
-						<p>{{ this.$root.lang("addons.general.reason.text") }}</p>
-						<v-text-field
-							:label="$root.lang('addons.general.reason.title')"
-							required
-							:rules="reasonRules"
-							v-model="reason"
-							:counter="reasonCounter.max"
-						/>
-					</v-form>
-				</v-card-text>
-				<v-card-actions>
-					<v-spacer />
-					<v-btn color="red darken-1" text @click="() => handleReasonDialog(false)">
-						{{ $root.lang("global.btn.cancel") }}
-					</v-btn>
-					<v-btn color="darken-1" text @click="() => handleReasonDialog(true)">
-						{{ $root.lang("global.btn.submit") }}
-					</v-btn>
-				</v-card-actions>
-			</v-card>
-		</v-dialog>
+		<modal-form
+			v-model="reasonDialog"
+			button-type="submit"
+			:title="this.$root.lang('addons.general.reason.title')"
+			@close="() => handleReasonDialog(false)"
+			@submit="handleReasonDialog(true)"
+		>
+			<v-form lazy-validation v-model="validForm" ref="reasonForm">
+				<p>{{ this.$root.lang("addons.general.reason.text") }}</p>
+				<v-text-field
+					:label="$root.lang('addons.general.reason.title')"
+					required
+					:rules="reasonRules"
+					v-model="reason"
+					:counter="reasonCounter.max"
+				/>
+			</v-form>
+		</modal-form>
 	</div>
 </template>
 
 <script>
 import axios from "axios";
 import AddonForm from "./addon-form.vue";
+import ModalForm from "@components/modal-form.vue";
 
 export default {
 	name: "edit-addon-form",
 	components: {
+		ModalForm,
 		AddonForm,
 	},
 	data() {

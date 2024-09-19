@@ -30,17 +30,17 @@
 		<h2 class="my-2 text-h5">{{ $root.lang().database.subtitles.resource_packs }}</h2>
 		<div class="d-flex flex-wrap ma-n1">
 			<v-card
-				v-for="packs_obj in form.packs"
-				:key="packs_obj.key"
+				v-for="packObj in form.packs"
+				:key="packObj.key"
 				class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
 			>
 				<v-checkbox
-					v-model="packs_obj.selected"
-					:label="packs_obj.value"
-					:id="packs_obj.key"
+					v-model="packObj.selected"
+					:label="packObj.value"
+					:id="packObj.key"
 					hide-details
 					class="ma-0 pt-0"
-					@change="(val) => onPackChange(val, packs_obj.key)"
+					@change="(val) => onPackChange(val, packObj.key)"
 				/>
 			</v-card>
 		</div>

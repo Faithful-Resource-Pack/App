@@ -1,72 +1,59 @@
 <template>
-	<v-dialog v-model="modalOpened" content-class="colored" max-width="600">
-		<v-card>
-			<v-card-title class="headline">{{ dialogTitle }}</v-card-title>
-			<v-card-text>
-				<v-row>
-					<v-col class="col-12" :sm="12">
-						<v-form ref="form">
-							<v-text-field
-								:color="color"
-								v-if="add == false"
-								disabled
-								persistent-hint
-								:hint="'⚠️' + $root.lang().database.hints.path_id"
-								v-model="formData.id"
-								:label="$root.lang().database.labels.path_id"
-							/>
-							<v-text-field
-								:color="color"
-								v-if="add == false"
-								:hint="'⚠️' + $root.lang().database.hints.use_id"
-								v-model="formData.use"
-								:label="$root.lang().database.labels.use_id"
-							/>
-							<v-text-field
-								:color="color"
-								:hint="$root.lang().database.hints.path"
-								v-model="formData.name"
-								@change="(e) => formatPath(e)"
-								:label="$root.lang().database.labels.path"
-							/>
-							<v-select
-								:color="color"
-								:item-color="color"
-								required
-								multiple
-								small-chips
-								v-model="formData.versions"
-								:items="sortedVersions"
-								:label="$root.lang().database.labels.versions"
-							/>
-							<v-checkbox
-								:color="color"
-								v-model="formData.mcmeta"
-								:label="$root.lang().database.labels.mcmeta"
-							/>
-						</v-form>
-					</v-col>
-				</v-row>
-			</v-card-text>
-			<v-card-actions>
-				<v-spacer />
-				<v-btn color="red darken-1" text @click="onCancel">
-					{{ $root.lang().global.btn.cancel }}
-				</v-btn>
-				<v-btn color="darken-1" text @click="send">
-					{{ $root.lang().global.btn.save }}
-				</v-btn>
-			</v-card-actions>
-		</v-card>
-	</v-dialog>
+	<modal-form v-model="modalOpened" :title="dialogTitle" @close="onCancel" @submit="send">
+		<v-form ref="form">
+			<v-text-field
+				:color="color"
+				v-if="add == false"
+				disabled
+				persistent-hint
+				:hint="'⚠️' + $root.lang().database.hints.path_id"
+				v-model="formData.id"
+				:label="$root.lang().database.labels.path_id"
+			/>
+			<v-text-field
+				:color="color"
+				v-if="add == false"
+				:hint="'⚠️' + $root.lang().database.hints.use_id"
+				v-model="formData.use"
+				:label="$root.lang().database.labels.use_id"
+			/>
+			<v-text-field
+				:color="color"
+				:hint="$root.lang().database.hints.path"
+				v-model="formData.name"
+				@change="(e) => formatPath(e)"
+				:label="$root.lang().database.labels.path"
+			/>
+			<v-select
+				:color="color"
+				:item-color="color"
+				required
+				multiple
+				small-chips
+				v-model="formData.versions"
+				:items="sortedVersions"
+				:label="$root.lang().database.labels.versions"
+			/>
+			<v-checkbox
+				:color="color"
+				v-model="formData.mcmeta"
+				:label="$root.lang().database.labels.mcmeta"
+			/>
+		</v-form>
+	</modal-form>
 </template>
 
 <script>
 import axios from "axios";
 import MinecraftSorter from "@helpers/MinecraftSorter";
 
+import ModalForm from "@components/modal-form.vue";
+
 export default {
 	name: "path-modal",
+	components: {
+		ModalForm,
+	},
 	props: {
 		value: {
 			type: Boolean,
