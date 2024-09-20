@@ -160,8 +160,19 @@
 									</v-btn>
 								</v-timeline-item>
 							</v-timeline>
-							<v-btn block class="my-5 white--text" :color="color" @click="addUse(ti)">
+							<v-btn block class="my-5" color="secondary" @click="addUse(ti)">
 								{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon>
+							</v-btn>
+							<!-- one use and one path are essentially guaranteed by the modal setup -->
+							<v-btn
+								v-if="canAddEditionUse(texture)"
+								block
+								class="my-5 white--text"
+								:color="color"
+								@click="addEditionUse(ti)"
+							>
+								{{ addEditionUseLabel(ti) }}
+								<v-icon right>mdi-plus</v-icon>
 							</v-btn>
 						</v-tab-item>
 					</v-tabs-items>
@@ -224,7 +235,12 @@ import axios from "axios";
 import Prism from "prismjs";
 import FullscreenModal from "@components/fullscreen-modal.vue";
 import { formatTag, sortTags } from "@helpers/textures";
-import { getNameFromPath, getEditionFromPath, getTagFromPath } from "@helpers/paths";
+import {
+	getNameFromPath,
+	getEditionFromPath,
+	getTagFromPath,
+	convertEditionPath,
+} from "@helpers/paths";
 import MinecraftSorter from "@helpers/MinecraftSorter";
 
 const emptyPath = () => ({
@@ -323,6 +339,31 @@ export default {
 		addUse(index) {
 			this.textures[index].uses.push(emptyUse());
 		},
+		addEditionUse(index) {
+			// we already know at least one use exists at this point
+			const use = this.textures[index].uses[0];
+			const newEdition = this.getCorrespondingEdition(use.edition);
+			this.textures[index].uses.push({
+				...emptyUse(),
+				name: use.name,
+				edition: newEdition,
+				paths: use.paths.map((p) => ({
+					name: convertEditionPath(p.name, newEdition),
+					versions: [settings.versions[newEdition][0]],
+					mcmeta: false,
+				})),
+			});
+		},
+		canAddEditionUse(texture) {
+			// must have only one use to select from
+			if (texture.uses.length !== 1) return false;
+			const use = texture.uses[0];
+			// can't make edition use without an edition
+			if (!use.edition) return false;
+			// at least one path is guaranteed by the modal
+			if (!use.paths[0].name) return false;
+			return true;
+		},
 		addPath(textureIndex, useIndex) {
 			this.textures[textureIndex].uses[useIndex].paths.push(emptyPath());
 		},
@@ -378,6 +419,17 @@ export default {
 			texture.name ||= name;
 
 			texture.tags = sortTags([...texture.tags, getTagFromPath(path.name)].map(formatTag));
+		},
+		getCorrespondingEdition(edition) {
+			return settings.editions.find((e) => e !== edition) || "bedrock";
+		},
+		addEditionUseLabel(index) {
+			const uses = this.textures[index].uses;
+			if (!uses.length) return;
+			const newEdition = this.getCorrespondingEdition(uses[0].edition);
+			return this.$root
+				.lang()
+				.database.labels.add_edition_use.replace("%edition%", newEdition.toTitleCase());
 		},
 		openJSONModal() {
 			this.jsonModalOpened = true;
