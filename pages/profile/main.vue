@@ -210,21 +210,43 @@
 					</v-row>
 				</v-list-item>
 
-				<div :style="{ display: 'flex', 'justify-content': 'center' }">
-					<v-btn color="primary" @click="send" :disabled="!everythingIsOk">
-						{{ $root.lang().global.btn.save }}
+				<div class="d-flex justify-end ma-2">
+					<v-btn text color="error darken-1" @click="openDeleteModal">
+						{{ $root.lang().profile.delete.btn }}
+					</v-btn>
+					<v-btn text color="darken-1" @click="send" :disabled="!everythingIsOk">
+						{{ $root.lang().profile.save_changes }}
 					</v-btn>
 				</div>
 			</v-list>
 		</div>
+		<modal-form
+			v-model="deleteModalOpened"
+			danger
+			:title="$root.lang().profile.delete.title"
+			@close="
+				() => {
+					deleteModalOpened = false;
+				}
+			"
+			@submit="deleteAccount"
+		>
+			<p>{{ $root.lang().profile.delete.description }}</p>
+			<v-alert type="warning" outlined dense>{{ $root.lang().profile.delete.warning }}</v-alert>
+		</modal-form>
 	</v-container>
 </template>
 
 <script>
 import axios from "axios";
 
+import ModalForm from "@components/modal-form.vue";
+
 export default {
 	name: "profile-page",
+	components: {
+		ModalForm,
+	},
 	data() {
 		return {
 			uuidMaxLength: 36,
@@ -258,6 +280,7 @@ export default {
 					),
 			],
 			localUser: {},
+			deleteModalOpened: false,
 		};
 	},
 	methods: {
@@ -313,6 +336,22 @@ export default {
 					this.$root.showSnackBar(error, "error");
 				});
 		},
+		openDeleteModal() {
+			this.deleteModalOpened = true;
+		},
+		deleteAccount() {
+			axios
+				.delete(`${this.$root.apiURL}/users/${this.$root.user.id}`, this.$root.apiOptions)
+				.then(() => {
+					this.$router.push({ path: "dashboard" });
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					this.$root.logout();
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(error, "error");
+				});
+		},
 		getUserInfo() {
 			if (!this.$root.isUserLogged) return;
 
@@ -332,7 +371,8 @@ export default {
 				});
 		},
 		update() {
-			this.getUserInfo();
+			// prevents issues when deleting account
+			this.$nextTick(() => this.getUserInfo());
 		},
 	},
 	mounted() {

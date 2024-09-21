@@ -6,14 +6,15 @@ export const appUserStore = defineStore("appUser", {
 	state: () => ({
 		/** @type {string} */
 		appUserId: undefined,
+		/** @type {string} */
+		appUsername: undefined,
 		/** @type {string[]} */
 		appUserRoles: undefined,
 	}),
 	actions: {
 		getOrCreateUser(rootApiURL, accessToken) {
-			// api requires a post request even though it's really not necessary
 			return axios
-				.post(`${rootApiURL}/users/newprofile`, null, {
+				.get(`${rootApiURL}/users/newprofile`, {
 					headers: {
 						discord: accessToken,
 					},
@@ -40,6 +41,7 @@ export const appUserStore = defineStore("appUser", {
 					.then((data) => {
 						return this.$patch({
 							appUserId: data.id,
+							appUsername: data.username,
 							appUserRoles: data.roles,
 						});
 					})

@@ -48,10 +48,7 @@ export const discordUserStore = defineStore("discordUser", {
 								json.banner != null
 									? `https://cdn.discordapp.com/banners/${json.id}/${json.banner}?size=1024`
 									: "https://database.faithfulpack.net/images/branding/backgrounds/forest.png",
-							discordName:
-								json.discriminator != 0
-									? `${json.username}#${json.discriminator}`
-									: json.global_name,
+							discordName: json.global_name,
 						});
 					})
 					.catch((...args) => {

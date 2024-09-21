@@ -577,7 +577,7 @@ const app = new Vue({
 				avatar: this.discordUser.discordAvatar,
 				banner: this.discordUser.discordBanner,
 				id: this.appUser.appUserId,
-				username: this.discordUser.discordName,
+				username: this.appUser.appUsername || this.discordUser.discordName,
 				roles: this.appUser.appUserRoles || [],
 			};
 		},

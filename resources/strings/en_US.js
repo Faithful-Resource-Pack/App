@@ -35,6 +35,7 @@ export default {
 			archive: "Archive",
 			load_more: "Load More",
 			discard: "Discard",
+			confirm: "Confirm",
 		},
 		tabs: {
 			general: {
@@ -445,6 +446,13 @@ export default {
 				placeholder: "https://www.example.com/",
 				label: "New social media",
 			},
+		},
+		save_changes: "Save changes",
+		delete: {
+			title: "Delete account",
+			btn: "Delete account",
+			description: "Are you sure you want to delete your account?",
+			warning: "This process is irreversible!",
 		},
 	},
 	files: {

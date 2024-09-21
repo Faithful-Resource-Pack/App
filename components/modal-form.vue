@@ -61,7 +61,7 @@ export default {
 			// prioritize props
 			if (this.buttonType) return this.buttonType;
 			// danger needs confirmation
-			if (this.danger) return "yes";
+			if (this.danger) return "confirm";
 			return "save";
 		},
 	},
