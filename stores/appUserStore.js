@@ -1,49 +1,33 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 
+/** Handle Faithful API/database integration using tokens from the auth store */
 export const appUserStore = defineStore("appUser", {
 	state: () => ({
+		/** @type {string} */
 		appUserId: undefined,
+		/** @type {string[]} */
 		appUserRoles: undefined,
 	}),
-
 	actions: {
-		getUser(rootApiURL, accessToken) {
-			return fetch(`${rootApiURL}/users/profile`, {
-				method: "GET",
-				headers: {
-					discord: accessToken,
-				},
-			}).then(async (response) => {
-				if (response.status === 200) {
-					return response.json();
-				} else {
-					const json = await response.json();
-					return Promise.reject(json);
-				}
-			});
-		},
 		getOrCreateUser(rootApiURL, accessToken) {
-			return fetch(`${rootApiURL}/users/newprofile`, {
-				method: "POST",
-				headers: {
-					discord: accessToken,
-				},
-			}).then(async (response) => {
-				if (response.status === 200) {
-					return response.json();
-				} else {
-					const json = await response.json();
-					return Promise.reject(json);
-				}
-			});
+			// api requires a post request even though it's really not necessary
+			return axios
+				.post(`${rootApiURL}/users/newprofile`, null, {
+					headers: {
+						discord: accessToken,
+					},
+				})
+				.then((res) => res.data);
 		},
-		watchDiscordAuth(store, rootApiURL, onError) {
-			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
-			store.$subscribe((mutation) => {
+		watchDiscordAuth(authStore, rootApiURL, onError) {
+			// https://pinia.vuejs.org/core-concepts/state.html#Subscribing-to-the-state
+			authStore.$subscribe((mutation) => {
 				if (mutation.type === "patch function") return;
 
-				const auth = store.$state;
+				const auth = authStore.$state;
 
+				// logged out
 				if (auth.access_token === undefined) {
 					this.$reset();
 					this.$patch({
@@ -54,12 +38,10 @@ export const appUserStore = defineStore("appUser", {
 
 				return this.getOrCreateUser(rootApiURL, auth.access_token)
 					.then((data) => {
-						this.$patch({
+						return this.$patch({
 							appUserId: data.id,
 							appUserRoles: data.roles,
 						});
-						// console.log(this.$state)
-						return; // void
 					})
 					.catch((...args) => {
 						onError(...args);

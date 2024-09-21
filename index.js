@@ -318,7 +318,7 @@ const ALL_TABS = [
 						component: ReviewTranslationsPage,
 						name: "Translations",
 						beforeEnter() {
-							window.location.href = "https://translate.faithfulpack.net/";
+							location.href = "https://translate.faithfulpack.net/";
 						},
 					},
 				],
@@ -586,9 +586,9 @@ const app = new Vue({
 				Vue.config.devtools &&
 				this.vapiURL &&
 				this.vapiURL.includes("localhost") &&
-				window.location.host !== "localhost"
+				location.host !== "localhost"
 			)
-				return this.vapiURL.replace("localhost", window.location.host.split(":")[0]);
+				return this.vapiURL.replace("localhost", location.host.split(":")[0]);
 			return this.vapiURL;
 		},
 		apiOptions() {
@@ -810,15 +810,15 @@ const app = new Vue({
 
 		this.discordAuth.apiURL = window.apiURL;
 		this.discordAuth
-			.begin(window.location.search, localStorage.getItem(AUTH_STORAGE_KEY))
-			.then(() => {
-				if (window.location.search.startsWith("?access_token="))
-					// avoid persistent query parameters
-					window.location.search = "";
+			.tryLogin(location.search, localStorage.getItem(AUTH_STORAGE_KEY))
+			.then((_isLogged) => {
+				// remove query parameters after login
+				if (new URLSearchParams(location.search).has("access_token")) {
+					location.search = "";
+				}
 			})
-			.catch((err) => {
-				if (!err.message.includes("auth method")) this.showSnackBar(err, "error", 3000);
-			});
+			.catch((err) => this.showSnackBar(err, "error", 3000));
+
 		this.discordUser.watchDiscordAuth(this.discordAuth, (err) =>
 			this.showSnackBar(err, "error", 3000),
 		);
@@ -834,9 +834,9 @@ const app = new Vue({
 			} else {
 				if (Vue.config.devtools) console.log(`Discord Token: ${this.discordAuth.access_token}`);
 				// persist
-				window.localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state));
+				localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(this.discordAuth.$state));
 				setTimeout(
-					() => this.discordAuth.refresh(),
+					() => this.discordAuth.refreshLogin(),
 					new Date(this.discordAuth.expires_at).getTime() - new Date().getTime(),
 				);
 			}

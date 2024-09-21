@@ -1,78 +1,69 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 
+/** Base store to handle logins and Discord tokens */
 export const discordAuthStore = defineStore("discordAuth", {
 	state: () => ({
+		/** @type {string} */
 		apiURL: undefined,
+		/** @type {string} */
 		access_token: undefined,
+		/** @type {string} */
 		refresh_token: undefined,
+		/** @type {Date} */
 		expires_at: undefined,
 	}),
-
 	getters: {
-		discordAuthURL() {
-			return `${this.$state.apiURL}/auth/discord/webapp`;
-		},
-		discordRefreshURL() {
-			return `${this.$state.apiURL}/auth/discord/refresh`;
-		},
+		discordAuthURL: ({ apiURL }) => `${apiURL}/auth/discord/webapp`,
+		discordRefreshURL: ({ apiURL }) => `${apiURL}/auth/discord/refresh`,
 	},
 	actions: {
-		verifySearchParams(search) {
-			const urlSearchParams = new URLSearchParams(search);
-			const auth = Object.fromEntries(urlSearchParams.entries());
+		parseSearchParams(search) {
+			const params = new URLSearchParams(search);
 
-			// [present, auth]
-			return [
-				"access_token" in auth,
-				{
-					access_token: auth.access_token,
-					refresh_token: auth.refresh_token,
-					expires_at: this.expiryDurationToTime(auth.expires_in),
-				},
-			];
+			return {
+				access_token: params.get("access_token"),
+				refresh_token: params.get("refresh_token"),
+				expires_at: this.expiryDurationToTime(params.get("expires_in")),
+			};
 		},
-		verifyLocalStorage(storedAuth) {
-			if (storedAuth === null) return [false, undefined, undefined];
+		parseLocalStorage(storedAuth) {
+			if (storedAuth === null) return null;
 
-			let auth = undefined;
+			let auth;
 			try {
 				auth = JSON.parse(storedAuth);
-			} catch (error) {
-				console.log(storedAuth);
-				return [false, undefined, undefined];
+			} catch (err) {
+				console.error(err);
+				return null;
 			}
 
-			if (!auth.expires_at) return [false, undefined, undefined];
-
-			const expires_at = new Date(auth.expires_at);
-			if (new Date() > expires_at) return [true, true, undefined];
-
-			// [present, outdated, auth]
-			return [true, false, auth];
+			if (!auth || !auth.expires_at) return null;
+			return auth;
+		},
+		isAuthExpired(auth) {
+			return new Date() > new Date(auth.expires_at);
+		},
+		isValidAuth(auth) {
+			return auth && auth.access_token;
 		},
 		expiryDurationToTime(duration) {
 			return new Date(new Date().getTime() + duration * 1000 - 60000);
 		},
-		refreshLogin(auth = undefined) {
+		async refreshLogin(auth = undefined) {
 			if (auth === undefined) auth = this.$state;
 
-			return fetch(`${this.$state.apiURL}/auth/discord/refresh`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
+			const json = await axios
+				.post(this.discordRefreshURL, {
 					refresh_token: auth.refresh_token,
-				}),
-			})
-				.then((response) => response.json())
-				.then((json) => {
-					return {
-						access_token: json.access_token,
-						refresh_token: json.refresh_token,
-						expires_at: this.expiryDurationToTime(json.expires_in),
-					};
-				});
+				})
+				.then((res) => res.data);
+
+			return {
+				access_token: json.access_token,
+				refresh_token: json.refresh_token,
+				expires_at: this.expiryDurationToTime(json.expires_in),
+			};
 		},
 		logout() {
 			const apiURL = this.$state.apiURL;
@@ -82,25 +73,27 @@ export const discordAuthStore = defineStore("discordAuth", {
 				access_token: this.$state.access_token,
 			});
 		},
-		begin(search, storedAuth) {
-			let [hasAuthQueryParams, auth] = this.verifySearchParams(search);
-			let expired = false;
+		/** @returns {Promise<boolean>} whether the user is now logged in */
+		tryLogin(search, storedAuth) {
+			// api returns tokens through search params, so prioritize those for login
+			let auth = this.parseSearchParams(search);
 
-			if (!hasAuthQueryParams)
-				[hasAuthQueryParams, expired, auth] = this.verifyLocalStorage(storedAuth);
+			// nothing in search params, try localstorage
+			if (!this.isValidAuth(auth)) auth = this.parseLocalStorage(storedAuth);
 
-			if (!hasAuthQueryParams) return Promise.reject(new Error("No auth method provided"));
+			// both api and localstorage auth tried, user is definitely not logged in at this point
+			if (!this.isValidAuth(auth)) return Promise.resolve(false);
 
-			const lastLogin = expired ? this.refreshLogin(auth) : Promise.resolve(auth);
+			const lastLogin = this.isAuthExpired(auth) ? this.refreshLogin(auth) : Promise.resolve(auth);
 
+			// for some reason this doesn't work with async/await
 			return lastLogin.then((auth) => {
 				this.$patch({
 					access_token: auth.access_token,
 					refresh_token: auth.refresh_token,
 					expires_at: auth.expires_at,
 				});
-				// console.log(this.$state)
-				return; // void
+				return true;
 			});
 		},
 	},

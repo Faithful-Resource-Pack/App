@@ -1,10 +1,15 @@
+import axios from "axios";
 import { defineStore } from "pinia";
 
+/** Handle Discord integration using tokens from the auth store */
 export const discordUserStore = defineStore("discordUser", {
 	state: () => ({
 		discordUserURL: "https://discord.com/api/users/@me",
+		/** @type {string} */
 		discordId: undefined,
+		/** @type {string} */
 		discordAvatar: undefined,
+		/** @type {string} */
 		discordBanner: undefined,
 		discordName: "",
 	}),
@@ -15,36 +20,23 @@ export const discordUserStore = defineStore("discordUser", {
 				discordUserURL: newDiscordUserURL || this.discordUserURL,
 			});
 		},
-		getInfo(accessToken) {
-			return fetch(this.discordUserURL, {
-				headers: {
-					authorization: `Bearer ${accessToken}`,
-				},
-			}).then(async (response) => {
-				if (response.status === 200) {
-					return response.json();
-				} else {
-					const json = await response.json();
-					return Promise.reject(json);
-				}
+		async getInfo(accessToken) {
+			const res = await axios.get(this.discordUserURL, {
+				headers: { authorization: `Bearer ${accessToken}` },
 			});
+			return res.data;
 		},
-		watchDiscordAuth(store, onError) {
-			// https://pinia.vuejs.org/core-concepts/state.html#subscribing-to-the-state
-			store.$subscribe((mutation) => {
+		watchDiscordAuth(authStore, onError) {
+			// https://pinia.vuejs.org/core-concepts/state.html#Subscribing-to-the-state
+			authStore.$subscribe((mutation) => {
 				if (mutation.type === "patch function") return;
 
-				const auth = store.$state;
+				const auth = authStore.$state;
 
-				if (auth.access_token === undefined) {
-					this.$reset();
-					this.$patch({
-						discordId: this.$state.discordId,
-					});
-					return;
-				}
+				// logged out
+				if (auth.access_token === undefined) return this.$reset();
 
-				return this.getInfo(auth.access_token)
+				this.getInfo(auth.access_token)
 					.then((json) => {
 						this.$patch({
 							discordId: json.id,
@@ -61,8 +53,6 @@ export const discordUserStore = defineStore("discordUser", {
 									? `${json.username}#${json.discriminator}`
 									: json.global_name,
 						});
-						// console.log(this.$state)
-						return; // void
 					})
 					.catch((...args) => {
 						onError(...args);
