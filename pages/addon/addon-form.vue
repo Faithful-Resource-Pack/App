@@ -91,7 +91,7 @@
 								<drop-zone
 									:disabled="disabledHeaderInput"
 									v-model="submittedForm.headerFile"
-									accept="image/jpg, image/jpeg, image/png, image/gif"
+									accept="image/jpg, image/jpeg"
 									@change="headerChange"
 									style="height: 100%"
 								>
@@ -114,7 +114,7 @@
 					<drop-zone
 						multiple
 						v-model="submittedForm.carouselFiles"
-						accept="image/jpg, image/jpeg, image/png, image/gif"
+						accept="image/jpg, image/jpeg"
 						@change="carouselChange"
 						style="height: 70px"
 					>
