@@ -28,8 +28,9 @@ export default {
 			default: 16 / 9,
 		},
 		src: {
-			required: true,
 			type: String,
+			required: false,
+			default: "",
 		},
 		texture: {
 			required: false,

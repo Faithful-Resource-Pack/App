@@ -287,7 +287,6 @@ export default {
 			title: "Allgemein",
 			uuid: {
 				label: "Minecraft-Profil UUID",
-				hint: "Dein Skin wird auf Beiträgen angezeigt, die du verfasst hast.",
 			},
 			username: {
 				label: "Benutzername",

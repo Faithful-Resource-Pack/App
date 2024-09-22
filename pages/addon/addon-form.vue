@@ -657,6 +657,7 @@ export default {
 				// start reader
 				const reader = new FileReader();
 
+				const self = this;
 				reader.onload = (e) => {
 					const image = new Image();
 					image.src = e.target.result;
@@ -664,7 +665,7 @@ export default {
 						// do not use arrow fn
 						const isValidImage = validateImage(this); // this is image now
 						if (isValidImage) resolve();
-						else reject(this.$root.lang().addons.images.header.rules.image_ratio);
+						else reject(new Error(self.$root.lang().addons.images.header.rules.image_ratio));
 					};
 					image.onerror = () => reject(e);
 				};

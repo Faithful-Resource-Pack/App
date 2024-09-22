@@ -334,7 +334,6 @@ export default {
 			title: "Obecné",
 			uuid: {
 				label: "UUID Minecraft profilu",
-				hint: "Tvůj skin se zobrazí na příspěvcích, ve kterých jsi autorem.",
 			},
 			username: {
 				label: "Uživatelské jméno",

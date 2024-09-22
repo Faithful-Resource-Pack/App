@@ -12,7 +12,9 @@
 					</v-list-item-avatar>
 
 					<v-list-item-content>
-						<v-list-item-title>{{ $root.user.username }}</v-list-item-title>
+						<v-list-item-title>
+							{{ $root.discordUser.discordName || $root.user.username }}
+						</v-list-item-title>
 						<v-list-item-subtitle style="font-size: 0.7rem; opacity: 0.8">
 							{{ $root.user.id }}
 						</v-list-item-subtitle>
@@ -67,20 +69,7 @@
 							style="max-width: 100%"
 						>
 							<v-form ref="form" lazy-validation>
-								<div class="text-h6">{{ $root.lang().profile.general.title }}</div>
-								<v-row class="height-90 mt-2">
-									<v-col>
-										<v-text-field
-											placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33"
-											:rules="uuidRules"
-											:counter="uuidMaxLength"
-											clearable
-											v-model="localUser.uuid"
-											:label="$root.lang().profile.general.uuid.label"
-											:hint="$root.lang().profile.general.uuid.hint"
-										/>
-									</v-col>
-								</v-row>
+								<div class="text-h6 mb-5">{{ $root.lang().profile.general.title }}</div>
 								<v-row>
 									<v-col>
 										<v-text-field
@@ -91,6 +80,19 @@
 											v-model="localUser.username"
 											:label="$root.lang().profile.general.username.label"
 											:hint="$root.lang().profile.general.username.hint"
+										/>
+									</v-col>
+								</v-row>
+								<v-row>
+									<v-col>
+										<v-text-field
+											placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33"
+											:rules="uuidRules"
+											:counter="uuidMaxLength"
+											clearable
+											v-model="localUser.uuid"
+											:label="$root.lang().profile.general.uuid.label"
+											:hint="$root.lang().profile.general.uuid.hint"
 										/>
 									</v-col>
 								</v-row>
@@ -106,7 +108,7 @@
 					<v-row class="mb-2">
 						<v-col>
 							<v-form lazy-validation>
-								<div class="text-h6">{{ $root.lang().profile.social.title }}</div>
+								<div class="text-h6 mb-5">{{ $root.lang().profile.social.title }}</div>
 								<v-row v-for="(socialMedia, i) in localUser.media" :key="socialMedia.key">
 									<v-col cols="12" sm="8">
 										<v-text-field
