@@ -360,16 +360,7 @@ export default {
 		},
 		social: {
 			title: "Réseaux Sociaux",
-			edit: {
-				label: "Éditer l'URL de %s",
-			},
-			select: {
-				label: "Sélectionner un média",
-			},
-			new: {
-				placeholder: "https://www.exemple.com/",
-				label: "Nouveau réseau social",
-			},
+			placeholder: "https://www.exemple.com/",
 		},
 	},
 	files: {

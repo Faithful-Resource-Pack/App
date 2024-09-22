@@ -343,16 +343,7 @@ export default {
 		},
 		social: {
 			title: "Odkazy na sociální sítě",
-			edit: {
-				label: "Upravit %s URL",
-			},
-			select: {
-				label: "Vybrat stránku",
-			},
-			new: {
-				placeholder: "https://www.příklad.cz/",
-				label: "Nová sociální síť",
-			},
+			placeholder: "https://www.příklad.cz/",
 		},
 	},
 	files: {

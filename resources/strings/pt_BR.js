@@ -330,16 +330,7 @@ export default {
 		},
 		social: {
 			title: "Links sociais",
-			edit: {
-				label: "Editar URL de %s",
-			},
-			select: {
-				label: "Selecionar site",
-			},
-			new: {
-				placeholder: "https://www.example.com/",
-				label: "Nova rede social",
-			},
+			placeholder: "https://www.example.com/",
 		},
 	},
 	gallery: {

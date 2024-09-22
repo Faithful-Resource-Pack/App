@@ -296,16 +296,7 @@ export default {
 		},
 		social: {
 			title: "Soziale Links",
-			edit: {
-				label: "URL %s bearbeiten",
-			},
-			select: {
-				label: "Medien auswählen",
-			},
-			new: {
-				placeholder: "https://www.beispiel.de/",
-				label: "Neue soziale Medien",
-			},
+			placeholder: "https://www.beispiel.de/",
 		},
 	},
 };

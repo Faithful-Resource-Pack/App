@@ -107,104 +107,34 @@
 						<v-col>
 							<v-form lazy-validation>
 								<div class="text-h6">{{ $root.lang().profile.social.title }}</div>
-								<template v-if="localUser.media && Object.keys(localUser.media).length">
-									<v-row
-										v-for="(socialMedia, index) in localUser.media"
-										:key="socialMedia.type"
-										align="center"
-										:class="['mt-0', { 'mb-1': !$vuetify.breakpoint.mdAndUp }]"
-									>
-										<v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
-											<v-text-field
-												clearable
-												style="margin-bottom: 0px; margin-top: 12px"
-												v-model="socialMedia.link"
-												:rules="urlRules"
-												:label="
-													$root.lang().profile.social.edit.label.replace('%s', socialMedia.type)
-												"
-											/>
-										</v-col>
-										<v-col
-											class="py-0"
-											:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
-											:style="[
-												{ 'max-width': $vuetify.breakpoint.mdAndUp ? '300px' : 'none' },
-												'margin-top: 10px',
-											]"
-										>
-											<v-row align="center">
-												<v-col
-													:style="{ 'max-width': $vuetify.breakpoint.mdAndUp ? '250px' : 'none' }"
-												>
-													<v-select
-														:items="media"
-														:label="$root.lang().profile.social.select.label"
-														v-model="socialMedia.type"
-														hide-details
-														solo
-													/>
-												</v-col>
-												<v-col class="flex-grow-0 flex-shrink-0">
-													<v-btn
-														icon
-														@click="removeSocialMedia(index)"
-														style="margin-right: 8px"
-														elevation="2"
-													>
-														<v-icon color="red lighten-1">mdi-delete</v-icon>
-													</v-btn>
-												</v-col>
-											</v-row>
-										</v-col>
-									</v-row>
-								</template>
-
-								<v-row class="mt-2" align="center">
-									<v-col class="py-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
+								<v-row v-for="(socialMedia, i) in localUser.media" :key="socialMedia.key">
+									<v-col cols="12" sm="8">
 										<v-text-field
 											clearable
-											:placeholder="$root.lang().profile.social.new.placeholder"
-											:label="$root.lang().profile.social.new.label"
-											style="margin-bottom: 0px; margin-top: 12px"
-											v-model="newMedia.link"
-											:rules="urlAddRules"
+											:placeholder="$root.lang().profile.social.placeholder"
+											:label="$root.lang().profile.social.link_label"
+											v-model="socialMedia.link"
+											:rules="urlRules"
 										/>
 									</v-col>
-									<v-col
-										class="py-0"
-										:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
-										:style="[
-											{ 'max-width': $vuetify.breakpoint.mdAndUp ? '300px' : 'none' },
-											'margin-top: 10px',
-										]"
-									>
-										<v-row align="center">
-											<v-col
-												:style="{ 'max-width': $vuetify.breakpoint.mdAndUp ? '250px' : 'none' }"
-											>
-												<v-select
-													:items="media"
-													:label="$root.lang().profile.social.select.label"
-													v-model="newMedia.type"
-													hide-details
-													solo
-												/>
-											</v-col>
-											<v-col class="flex-grow-0 flex-shrink-0">
-												<v-btn
-													icon
-													@click="addSocialMedia()"
-													:disabled="isMediaOk()"
-													style="margin-right: 8px"
-													elevation="2"
-												>
-													<v-icon color="lighten-1">mdi-plus</v-icon>
-												</v-btn>
-											</v-col>
-										</v-row>
+									<v-col cols="12" sm="3">
+										<v-select
+											:items="mediaTypes"
+											:label="$root.lang().profile.social.type_label"
+											v-model="socialMedia.type"
+											:rules="mediaTypeRules"
+										/>
+									</v-col>
+									<v-col cols="12" sm="1">
+										<v-btn icon @click="removeSocialMedia(i)">
+											<v-icon color="red darken-1"> mdi-minus </v-icon>
+										</v-btn>
 									</v-col>
 								</v-row>
+								<v-btn block class="my-5" color="secondary" @click="addSocialMedia">
+									{{ $root.lang().profile.social.add }}
+									<v-icon right>mdi-plus</v-icon>
+								</v-btn>
 							</v-form>
 						</v-col>
 					</v-row>
@@ -214,7 +144,7 @@
 					<v-btn text color="error darken-1" @click="openDeleteModal">
 						{{ $root.lang().profile.delete.btn }}
 					</v-btn>
-					<v-btn text color="darken-1" @click="send" :disabled="!everythingIsOk">
+					<v-btn text color="darken-1" @click="send" :disabled="!canSubmit">
 						{{ $root.lang().profile.save_changes }}
 					</v-btn>
 				</div>
@@ -242,6 +172,12 @@ import axios from "axios";
 
 import ModalForm from "@components/modal-form.vue";
 
+const emptySocial = () => ({
+	key: crypto.randomUUID(),
+	type: "",
+	link: "",
+});
+
 export default {
 	name: "profile-page",
 	components: {
@@ -249,21 +185,25 @@ export default {
 	},
 	data() {
 		return {
+			localUser: {},
 			uuidMaxLength: 36,
 			usernameMaxLength: 24,
-			everythingIsOk: false,
-			newMedia: {
-				type: "",
-				link: "",
-			},
-			media: settings.socials,
-			urlAddRules: [(u) => this.validForm(this.validURL(u) || u === "", "URL must be valid.")],
+			mediaTypes: settings.socials,
+			validationObject: {},
 			urlRules: [(u) => this.validForm(this.validURL(u), "URL must be valid.")],
+			mediaTypeRules: [
+				(u) =>
+					this.validForm(
+						u && typeof u === "string" && u.trim().length > 0,
+						"Social type is required.",
+					),
+				(u) => this.validForm(this.mediaTypes.includes(u), "Social type must be valid."),
+			],
 			uuidRules: [
 				(u) =>
 					this.validForm(
 						(u && u.length === this.uuidMaxLength) || !u,
-						"The UUID needs to be 36 characters long.",
+						"UUID needs to be 36 characters long.",
 					),
 			],
 			usernameRules: [
@@ -279,41 +219,24 @@ export default {
 						`Username must be less than ${this.usernameMaxLength} characters.`,
 					),
 			],
-			localUser: {},
 			deleteModalOpened: false,
 		};
 	},
 	methods: {
-		isMediaOk() {
-			if (this.newMedia.type !== "" && this.newMedia.link !== "") return false;
-			return true;
-		},
 		validURL(str) {
 			return String.urlRegex.test(str);
+		},
+		addSocialMedia() {
+			this.localUser.media ||= [];
+			this.localUser.media.push(emptySocial());
 		},
 		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);
 		},
-		addSocialMedia() {
-			if (!this.localUser.media) this.localUser.media = [];
-
-			this.localUser.media.push({
-				type: this.newMedia.type,
-				link: this.newMedia.link,
-			});
-
-			this.newMedia = {
-				type: "",
-				link: "",
-			};
-		},
 		validForm(boolResult, sentence) {
-			if (boolResult) {
-				this.everythingIsOk = true;
-				return true;
-			}
-
-			this.everythingIsOk = false;
+			// use object to override existing result
+			this.$set(this.validationObject, sentence, boolResult);
+			if (boolResult) return true;
 			return sentence.toString();
 		},
 		send() {
@@ -323,7 +246,7 @@ export default {
 			const data = {
 				uuid: this.localUser.uuid || "",
 				username: this.localUser.username || "",
-				media: this.localUser.media || [],
+				media: this.cleanedMedia,
 			};
 
 			axios
@@ -361,9 +284,9 @@ export default {
 					this.localUser = res.data;
 
 					// fix if new user or empty user
-					this.localUser.uuid = this.localUser.uuid || "";
-					this.localUser.username = this.localUser.username || "";
-					this.localUser.media = this.localUser.media || [];
+					this.localUser.uuid ||= "";
+					this.localUser.username ||= "";
+					this.localUser.media ||= [];
 				})
 				.catch((err) => {
 					console.error(err);
@@ -373,6 +296,19 @@ export default {
 		update() {
 			// prevents issues when deleting account
 			this.$nextTick(() => this.getUserInfo());
+		},
+	},
+	computed: {
+		cleanedMedia() {
+			return (this.localUser.media || [])
+				.filter((m) => m.link && m.type)
+				.map((m) => {
+					delete m.key;
+					return m;
+				});
+		},
+		canSubmit() {
+			return Object.values(this.validationObject).every((val) => val === true);
 		},
 	},
 	mounted() {

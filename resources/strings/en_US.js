@@ -427,7 +427,7 @@ export default {
 			title: "General",
 			uuid: {
 				label: "Minecraft profile UUID",
-				hint: "Your skin will be displayed in submissions you authored.",
+				hint: "Your skin will be displayed with add-ons you authored.",
 			},
 			username: {
 				label: "Username",
@@ -436,16 +436,10 @@ export default {
 		},
 		social: {
 			title: "Social Links",
-			edit: {
-				label: "Edit %s URL",
-			},
-			select: {
-				label: "Select media",
-			},
-			new: {
-				placeholder: "https://www.example.com/",
-				label: "New social media",
-			},
+			link_label: "Edit link",
+			type_label: "Select media type",
+			placeholder: "https://www.example.com/",
+			add: "Add social media",
 		},
 		save_changes: "Save changes",
 		delete: {
