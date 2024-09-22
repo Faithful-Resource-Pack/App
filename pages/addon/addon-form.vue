@@ -272,23 +272,23 @@
 					</v-row>
 				</div>
 				<div class="pb-3">
-					<v-btn block @click="downloadAdd()">
+					<v-btn block color="secondary" @click="downloadAdd">
 						{{ $root.lang().global.btn.add_download }}
 						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</div>
 
-				<div class="text-center">
+				<div class="d-flex justify-end ma-2">
 					<v-btn
 						v-if="$root.isAdmin"
 						:disabled="!validForm"
-						@click="() => onSubmit(true)"
 						color="primary"
-						class="ma-2"
+						text
+						@click="() => onSubmit(true)"
 					>
 						{{ $root.lang("global.btn.submit_and_approve") }}
 					</v-btn>
-					<v-btn :disabled="!validForm" @click="() => onSubmit(false)" color="primary" class="ma-2">
+					<v-btn :disabled="!validForm" color="darken-1" text @click="() => onSubmit(false)">
 						{{ $root.lang().global.btn.submit }}
 					</v-btn>
 				</div>
