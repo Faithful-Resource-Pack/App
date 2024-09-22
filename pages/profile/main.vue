@@ -192,31 +192,36 @@ export default {
 			usernameMaxLength: 24,
 			mediaTypes: settings.socials,
 			validationObject: {},
-			urlRules: [(u) => this.validForm(this.validURL(u), "URL must be valid.")],
+			urlRules: [(u) => this.validForm("social:exists", this.validURL(u), "URL must be valid.")],
 			mediaTypeRules: [
 				(u) =>
 					this.validForm(
+						"social:exists",
 						u && typeof u === "string" && u.trim().length > 0,
 						"Social type is required.",
 					),
-				(u) => this.validForm(this.mediaTypes.includes(u), "Social type must be valid."),
+				(u) =>
+					this.validForm("social:valid", this.mediaTypes.includes(u), "Social type must be valid."),
 			],
 			uuidRules: [
 				(u) =>
 					this.validForm(
+						"uuid:length",
 						(u && u.length === this.uuidMaxLength) || !u,
 						"UUID needs to be 36 characters long.",
 					),
 			],
 			usernameRules: [
-				(u) => this.validForm(!!u, "Username is required."),
+				(u) => this.validForm("username:exists", !!u, "Username is required."),
 				(u) =>
 					this.validForm(
+						"username:content",
 						u && typeof u === "string" && u.trim().length > 0,
 						`Username cannot be empty`,
 					),
 				(u) =>
 					this.validForm(
+						"username:length",
 						u && u.length <= this.usernameMaxLength,
 						`Username must be less than ${this.usernameMaxLength} characters.`,
 					),
@@ -226,6 +231,7 @@ export default {
 	},
 	methods: {
 		validURL(str) {
+			if (!str || typeof str !== "string") return false;
 			return String.urlRegex.test(str);
 		},
 		addSocialMedia() {
@@ -235,9 +241,11 @@ export default {
 		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);
 		},
-		validForm(boolResult, sentence) {
-			// use object to override existing result
-			this.$set(this.validationObject, sentence, boolResult);
+		validForm(scope, boolResult, sentence) {
+			if (scope.startsWith("username:") || scope.startsWith("uuid")) {
+				// socials are validated separately since there's multiple of them
+				this.validationObject[scope] = boolResult;
+			}
 			if (boolResult) return true;
 			return sentence.toString();
 		},
@@ -310,7 +318,16 @@ export default {
 				});
 		},
 		canSubmit() {
-			return Object.values(this.validationObject).every((val) => val === true);
+			// media handled separately since there's multiple
+			if (
+				!this.localUser.media.every((m) => {
+					if (!this.validURL(m.link)) return false;
+					if (!this.mediaTypes.includes(m.type)) return false;
+					return true;
+				})
+			)
+				return false;
+			return Object.values(this.validationObject).every((v) => v === true);
 		},
 	},
 	mounted() {
