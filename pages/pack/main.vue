@@ -51,40 +51,44 @@
 
 		<!-- results -->
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
-		<v-list rounded v-if="packs.length" two-line class="main-container">
-			<v-row>
-				<v-col :cols="12 / listColumns" xs="1" v-for="(packs, i) in splitResults" :key="i">
-					<v-list-item v-for="pack in packs" :key="pack.id">
-						<v-list-item-avatar
-							:style="{
-								height: '64px',
-								width: '64px',
-								'min-width': '64px',
-								'border-radius': '10px',
-							}"
-						>
-							<v-img :src="pack.logo" />
-						</v-list-item-avatar>
-						<v-list-item-content>
-							<v-list-item-title>{{ pack.name }}</v-list-item-title>
-							<v-list-item-subtitle>
-								{{ (pack.tags.map(formatTags) || []).join(", ") }}
-							</v-list-item-subtitle>
-						</v-list-item-content>
+		<smart-grid
+			v-if="packs.length"
+			:items="packs"
+			:pageColor="pageColor"
+			:textColor="textColorOnPage"
+			:max-columns="2"
+			track="id"
+		>
+			<template #default="{ item }">
+				<!-- for some reason .database-list-avatar isn't working here -->
+				<v-list-item-avatar
+					:style="{
+						height: '64px',
+						width: '64px',
+						'min-width': '64px',
+						'border-radius': '5px',
+					}"
+				>
+					<v-img :src="item.logo" />
+				</v-list-item-avatar>
+				<v-list-item-content>
+					<v-list-item-title>{{ item.name }}</v-list-item-title>
+					<v-list-item-subtitle>
+						{{ (item.tags.map(formatTags) || []).join(", ") }}
+					</v-list-item-subtitle>
+				</v-list-item-content>
 
-						<!-- action buttons -->
-						<v-list-item-action class="merged">
-							<v-btn icon @click="openDialog(pack)">
-								<v-icon color="lighten-1">mdi-pencil</v-icon>
-							</v-btn>
-							<v-btn icon @click="askRemove(pack)">
-								<v-icon color="red lighten-1">mdi-delete</v-icon>
-							</v-btn>
-						</v-list-item-action>
-					</v-list-item>
-				</v-col>
-			</v-row>
-		</v-list>
+				<!-- action buttons -->
+				<v-list-item-action class="merged">
+					<v-btn icon @click="openDialog(item)">
+						<v-icon color="lighten-1">mdi-pencil</v-icon>
+					</v-btn>
+					<v-btn icon @click="askRemove(item)">
+						<v-icon color="red lighten-1">mdi-delete</v-icon>
+					</v-btn>
+				</v-list-item-action>
+			</template>
+		</smart-grid>
 		<div v-else class="text-center">
 			<v-progress-circular indeterminate :color="pageColor" />
 		</div>
@@ -94,12 +98,15 @@
 <script>
 import axios from "axios";
 
+import SmartGrid from "@components/smart-grid.vue";
+
 import PackModal from "./pack-modal.vue";
 import PackRemoveConfirm from "./pack-remove-confirm.vue";
 
 export default {
 	name: "pack-page",
 	components: {
+		SmartGrid,
 		PackModal,
 		PackRemoveConfirm,
 	},
@@ -181,27 +188,6 @@ export default {
 		},
 		tag() {
 			return this.$route.params.tag || "all";
-		},
-		listColumns() {
-			// big screens use two columns, smaller use one
-			return this.$vuetify.breakpoint.mdAndUp ? 2 : 1;
-		},
-		splitResults() {
-			const res = [];
-
-			const keys = Object.keys(this.packs);
-			const len = keys.length;
-
-			for (let col = 0; col < this.listColumns; ++col) res.push([]);
-
-			let arrayIndex = 0;
-
-			for (let i = 0; i < len; i++) {
-				res[arrayIndex].push(this.packs[keys[i]]);
-				arrayIndex = (arrayIndex + 1) % this.listColumns;
-			}
-
-			return res;
 		},
 	},
 	mounted() {

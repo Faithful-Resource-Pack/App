@@ -112,51 +112,35 @@
 		</div>
 
 		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
-		<v-list rounded v-if="Object.keys(textures).length" two-line class="main-container">
-			<v-row>
-				<v-col
-					:cols="12 / listColumns"
-					xs="1"
-					v-for="(textures, index) in splitResults"
-					:key="index"
-				>
-					<v-list-item v-for="texture in textures" :key="texture.id">
-						<a :href="`/gallery?show=${texture.id}`">
-							<v-list-item-avatar tile class="database-list-avatar text--primary">
-								{{ texture.id }}
-							</v-list-item-avatar>
-						</a>
+		<smart-grid
+			v-if="Object.keys(textures).length"
+			:pageColor="pageColor"
+			:textColor="textColorOnPage"
+			:items="Object.values(textures)"
+			track="id"
+		>
+			<template #default="{ item }">
+				<a :href="`/gallery?show=${item.id}`">
+					<v-list-item-avatar tile class="database-list-avatar text--primary">
+						{{ item.id }}
+					</v-list-item-avatar>
+				</a>
 
-						<v-list-item-content>
-							<v-list-item-title>{{ texture.name }}</v-list-item-title>
-							<v-list-item-subtitle>{{ (texture.tags || []).join(", ") }}</v-list-item-subtitle>
-						</v-list-item-content>
+				<v-list-item-content>
+					<v-list-item-title>{{ item.name }}</v-list-item-title>
+					<v-list-item-subtitle>{{ (item.tags || []).join(", ") }}</v-list-item-subtitle>
+				</v-list-item-content>
 
-						<v-list-item-action class="merged">
-							<v-btn icon @click="openTextureModal(texture)">
-								<v-icon color="lighten-1">mdi-pencil</v-icon>
-							</v-btn>
-							<v-btn icon @click="askRemove(texture)">
-								<v-icon color="red lighten-1">mdi-delete</v-icon>
-							</v-btn>
-						</v-list-item-action>
-					</v-list-item>
-				</v-col>
-			</v-row>
-
-			<v-btn
-				:style="{ margin: 'auto', 'min-width': '250px !important' }"
-				:disabled="displayedResults >= Object.keys(textures).length"
-				:color="pageColor"
-				:class="[textColorOnPage, 'mb-4']"
-				block
-				@click="showMore()"
-				v-if="displayedResults < Object.keys(textures).length"
-				elevation="2"
-			>
-				{{ $root.lang().global.btn.load_more }}
-			</v-btn>
-		</v-list>
+				<v-list-item-action class="merged">
+					<v-btn icon @click="openTextureModal(item)">
+						<v-icon color="lighten-1">mdi-pencil</v-icon>
+					</v-btn>
+					<v-btn icon @click="askRemove(item)">
+						<v-icon color="red lighten-1">mdi-delete</v-icon>
+					</v-btn>
+				</v-list-item-action>
+			</template>
+		</smart-grid>
 		<div v-else>
 			<br />
 			<i>{{ $root.lang().global.no_results }}</i>
@@ -167,6 +151,8 @@
 <script>
 import axios from "axios";
 
+import SmartGrid from "@components/smart-grid.vue";
+
 import TextureModal from "./texture-modal.vue";
 import NewTextureModal from "./new-texture-modal.vue";
 import ModifyVersionModal from "./modify-version-modal.vue";
@@ -176,6 +162,7 @@ import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 export default {
 	name: "texture-page",
 	components: {
+		SmartGrid,
 		TextureModal,
 		ModifyVersionModal,
 		NewTextureModal,
@@ -183,8 +170,6 @@ export default {
 		TextureRemoveConfirm,
 	},
 	data() {
-		const INCREMENT = 250;
-
 		return {
 			pageColor: "blue darken-1",
 			pageStyles: "",
@@ -204,7 +189,6 @@ export default {
 				confirm: false,
 				data: {},
 			},
-			displayedResults: INCREMENT,
 			selectTextureTag: "all",
 		};
 	},
@@ -221,42 +205,10 @@ export default {
 			if (this.tag !== undefined) return this.$route.params.name;
 			return this.$route.params.tag;
 		},
-		listColumns() {
-			let columns = 1;
-
-			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
-				columns = 2;
-				if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
-					columns = 3;
-				}
-			}
-
-			if (Object.keys(this.textures).length === 1) columns = 1;
-
-			return columns;
-		},
-		splitResults() {
-			const res = [];
-
-			const keys = Object.keys(this.textures);
-			const len = keys.length;
-
-			for (let col = 0; col < this.listColumns; ++col) res.push([]);
-
-			let arrayIndex = 0;
-
-			for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-				res[arrayIndex].push(this.textures[keys[i]]);
-				arrayIndex = (arrayIndex + 1) % this.listColumns;
-			}
-
-			return res;
-		},
 	},
 	methods: {
 		activeTag(t) {
 			const result = {};
-
 			result[`v-btn--active ${this.pageColor} ${this.textColorOnPage}`] =
 				(t === "all" && !this.tag && !!this.name) ||
 				(t && this.tag && t.toLowerCase() === this.tag.toLowerCase());
@@ -359,10 +311,6 @@ export default {
 			if (textures) this.getTextures();
 			this.getEditions();
 			this.getVersions();
-		},
-		showMore() {
-			this.displayedResults += 100;
-			this.update();
 		},
 		removeTexture(data) {
 			const textureId = data.id;

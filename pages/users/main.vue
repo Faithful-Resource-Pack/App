@@ -67,47 +67,35 @@
 		<div v-if="loading" class="text-center">
 			<v-progress-circular indeterminate :color="pageColor" />
 		</div>
-		<v-list rounded v-else-if="users.length" two-line class="main-container">
-			<v-row>
-				<v-col :cols="12 / listColumns" xs="1" v-for="(users, index) in splitUsers" :key="index">
-					<v-list-item v-for="user in users" :key="user.id">
-						<v-list-item-avatar tile class="database-list-avatar">
-							<v-img v-if="user.uuid" :src="`https://visage.surgeplay.com/head/48/${user.uuid}`" />
-							<v-icon large v-else style="background: rgba(39, 39, 39, 0.8)">mdi-account</v-icon>
-						</v-list-item-avatar>
+		<smart-grid
+			v-else-if="users.length"
+			:items="users"
+			:pageColor="pageColor"
+			:textColor="textColorOnPage"
+			track="id"
+		>
+			<template #default="{ item }">
+				<v-list-item-avatar tile class="database-list-avatar">
+					<v-img v-if="item.uuid" :src="`https://visage.surgeplay.com/head/48/${item.uuid}`" />
+					<v-icon large v-else class="darken-1">mdi-account</v-icon>
+				</v-list-item-avatar>
 
-						<v-list-item-content>
-							<v-list-item-title>{{ user.username }}</v-list-item-title>
+				<v-list-item-content>
+					<v-list-item-title>{{ item.username }}</v-list-item-title>
+					<v-list-item-subtitle>{{ (item.roles || []).join(", ") }}</v-list-item-subtitle>
+				</v-list-item-content>
 
-							<v-list-item-subtitle>{{ (user.roles || []).join(", ") }}</v-list-item-subtitle>
-						</v-list-item-content>
-
-						<!-- action buttons -->
-						<v-list-item-action class="merged">
-							<v-btn icon @click="openDialog(user)">
-								<v-icon color="lighten-1">mdi-pencil</v-icon>
-							</v-btn>
-							<v-btn icon @click="askRemove(user)">
-								<v-icon color="red lighten-1">mdi-delete</v-icon>
-							</v-btn>
-						</v-list-item-action>
-					</v-list-item>
-				</v-col>
-			</v-row>
-
-			<v-btn
-				:style="{ margin: 'auto', 'min-width': '250px !important' }"
-				:disabled="displayedResults >= Object.keys(users).length"
-				:color="pageColor"
-				:class="[textColorOnPage, 'mb-4']"
-				block
-				@click="showMore()"
-				v-if="displayedResults < Object.keys(users).length"
-				elevation="2"
-			>
-				{{ $root.lang().global.btn.load_more }}
-			</v-btn>
-		</v-list>
+				<!-- action buttons -->
+				<v-list-item-action class="merged">
+					<v-btn icon @click="openDialog(item)">
+						<v-icon color="lighten-1">mdi-pencil</v-icon>
+					</v-btn>
+					<v-btn icon @click="askRemove(item)">
+						<v-icon color="red lighten-1">mdi-delete</v-icon>
+					</v-btn>
+				</v-list-item-action>
+			</template>
+		</smart-grid>
 		<div v-else>
 			<br />
 			<i>{{ $root.lang().global.no_results }}</i>
@@ -120,16 +108,16 @@ import axios from "axios";
 
 import UserModal from "./user-modal.vue";
 import UserRemoveConfirm from "./user-remove-confirm.vue";
+import SmartGrid from "@components/smart-grid.vue";
 
 export default {
 	name: "users-page",
 	components: {
+		SmartGrid,
 		UserModal,
 		UserRemoveConfirm,
 	},
 	data() {
-		const INCREMENT = 250;
-
 		return {
 			pageColor: "indigo accent-2",
 			textColorOnPage: "white--text",
@@ -147,7 +135,6 @@ export default {
 				confirm: false,
 				data: {},
 			},
-			displayedResults: INCREMENT,
 		};
 	},
 	methods: {
@@ -218,10 +205,6 @@ export default {
 			this.getRoles();
 			if (users) this.getUsers();
 		},
-		showMore() {
-			this.displayedResults += 100;
-			this.update(false);
-		},
 		clearSearch() {
 			this.search = "";
 			this.startSearch();
@@ -255,34 +238,6 @@ export default {
 		name() {
 			if (this.role !== undefined) return this.$route.params.name;
 			return this.$route.params.role;
-		},
-		listColumns() {
-			let columns = 1;
-
-			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
-				columns = 2;
-				if (this.$vuetify.breakpoint.lgAndUp && this.displayedResults >= 21) {
-					columns = 3;
-				}
-			}
-
-			return columns;
-		},
-		splitUsers() {
-			const res = [];
-
-			const keys = Object.keys(this.users);
-			const len = keys.length;
-
-			for (let col = 0; col < this.listColumns; ++col) res.push([]);
-
-			let arrayIndex = 0;
-			for (let i = 0; i < Math.min(this.displayedResults, len); i++) {
-				res[arrayIndex].push(this.users[keys[i]]);
-				arrayIndex = (arrayIndex + 1) % this.listColumns;
-			}
-
-			return res;
 		},
 	},
 	mounted() {

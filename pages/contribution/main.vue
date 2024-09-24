@@ -92,74 +92,46 @@
 
 		<div class="mb-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
 
-		<v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
-			<v-row>
-				<v-col
-					:cols="12 / listColumns"
-					xs="1"
-					v-for="(contrib_arr, index) in splitResults"
-					:key="index"
-				>
-					<v-list-item
-						v-for="(contrib, i) in contrib_arr"
-						:key="contrib.id"
-						v-if="i < displayedResults"
-					>
-						<v-list-item-avatar tile class="texture-preview">
-							<a :href="`/gallery?show=${contrib.texture}`">
-								<v-img class="texture-img" :src="contrib.url" :lazy-src="logos[contrib.pack]" />
-							</a>
-						</v-list-item-avatar>
+		<smart-grid v-if="search.search_results.length" :items="search.search_results" track="id">
+			<template #default="{ item }">
+				<v-list-item-avatar tile class="texture-preview">
+					<a :href="`/gallery?show=${item.texture}`">
+						<v-img class="texture-img" :src="item.url" :lazy-src="logos[item.pack]" />
+					</a>
+				</v-list-item-avatar>
 
-						<v-list-item-content>
-							<v-list-item-title>
-								{{
-									`${contrib.name || "Unknown texture"} • ${moment(new Date(contrib.date)).format("ll")}`
-								}}
-							</v-list-item-title>
-							<v-list-item-subtitle>
-								{{
-									(contrib.authors || [])
-										.map((id) => contributors.find((c) => c.id == id).username || id)
-										.join(", ")
-								}}
-							</v-list-item-subtitle>
+				<v-list-item-content>
+					<v-list-item-title>
+						{{ `${item.name || "Unknown texture"} • ${moment(new Date(item.date)).format("ll")}` }}
+					</v-list-item-title>
+					<v-list-item-subtitle>
+						{{
+							(item.authors || [])
+								.map((id) => contributors.find((c) => c.id == id).username || id)
+								.join(", ")
+						}}
+					</v-list-item-subtitle>
 
-							<div>
-								<v-chip label x-small class="mr-1"> {{ packToCode[contrib.pack] }} </v-chip>
-								<a :href="`/gallery?show=${contrib.texture}`" target="_blank">
-									<v-chip style="cursor: pointer" label x-small class="mr-1">
-										#{{ contrib.texture }} <span class="mdi mdi-open-in-new ml-1" />
-									</v-chip>
-								</a>
-							</div>
-						</v-list-item-content>
+					<div>
+						<v-chip label x-small class="mr-1"> {{ packToCode[item.pack] }} </v-chip>
+						<a :href="`/gallery?show=${item.texture}`" target="_blank">
+							<v-chip style="cursor: pointer" label x-small class="mr-1">
+								#{{ item.texture }} <span class="mdi mdi-open-in-new ml-1" />
+							</v-chip>
+						</a>
+					</div>
+				</v-list-item-content>
 
-						<v-list-item-action class="merged">
-							<v-btn icon @click="editContribution(contrib)">
-								<v-icon color="lighten-1">mdi-pencil</v-icon>
-							</v-btn>
-							<v-btn icon @click="deleteContribution(contrib)">
-								<v-icon color="red lighten-1">mdi-delete</v-icon>
-							</v-btn>
-						</v-list-item-action>
-					</v-list-item>
-				</v-col>
-			</v-row>
-
-			<v-btn
-				:style="{ margin: 'auto', 'min-width': '250px !important' }"
-				:disabled="displayedResults >= search.search_results.length"
-				block
-				color="primary"
-				class="mb-4"
-				@click="showMore()"
-				v-if="displayedResults < search.search_results.length"
-				elevation="2"
-			>
-				{{ $root.lang().global.btn.load_more }}
-			</v-btn>
-		</v-list>
+				<v-list-item-action class="merged">
+					<v-btn icon @click="editContribution(item)">
+						<v-icon color="lighten-1">mdi-pencil</v-icon>
+					</v-btn>
+					<v-btn icon @click="deleteContribution(item)">
+						<v-icon color="red lighten-1">mdi-delete</v-icon>
+					</v-btn>
+				</v-list-item-action>
+			</template>
+		</smart-grid>
 		<div v-else>
 			<br />
 			<i>{{ $root.lang().global.no_results }}</i>
@@ -174,17 +146,17 @@ import moment from "moment";
 import ContributionModal from "./contribution-modal.vue";
 import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
 import UserSelect from "@components/user-select.vue";
+import SmartGrid from "@components/smart-grid.vue";
 
 export default {
 	components: {
+		SmartGrid,
 		ContributionModal,
 		UserSelect,
 		ContributionRemoveConfirm,
 	},
 	name: "contribution-page",
 	data() {
-		const INCREMENT = 250;
-
 		return {
 			maxheight: 170,
 			form: {
@@ -201,7 +173,6 @@ export default {
 				search_results: [],
 			},
 			textureSearch: "",
-			displayedResults: INCREMENT,
 			newSubmit: false,
 			remove: {
 				confirm: false,
@@ -231,18 +202,6 @@ export default {
 				(this.selectedContributors.length === 0 && invalidTextSearch);
 			return result;
 		},
-		listColumns() {
-			let columns = 1;
-
-			if (this.$vuetify.breakpoint.mdAndUp && this.contributors.length >= 6) {
-				columns = 2;
-				if (this.$vuetify.breakpoint.lgAndUp && this.contributors.length >= 21) {
-					columns = 3;
-				}
-			}
-
-			return columns;
-		},
 		multiple() {
 			return this.newSubmit;
 		},
@@ -257,20 +216,6 @@ export default {
 					.map((v) => ({ label: v.value, value: v.key }))
 			);
 		},
-		splitResults() {
-			const res = [];
-			for (let col = 0; col < this.listColumns; ++col) {
-				res.push([]);
-			}
-
-			let arrayIndex = 0;
-			this.search.search_results.forEach((contrib) => {
-				res[arrayIndex].push(contrib);
-				arrayIndex = (arrayIndex + 1) % this.listColumns;
-			});
-
-			return res;
-		},
 		onModalSubmit() {
 			return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit;
 		},
@@ -278,9 +223,6 @@ export default {
 	methods: {
 		// expose for inline use
 		moment,
-		showMore() {
-			this.displayedResults += 100;
-		},
 		getPacks() {
 			axios.get(`${this.$root.apiURL}/packs/search?type=submission`).then((res) => {
 				Object.values(res.data).forEach((r) => {
