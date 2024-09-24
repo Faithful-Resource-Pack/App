@@ -47,7 +47,7 @@
 
 		<!-- Contribution search -->
 		<h2 class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</h2>
-		<v-row align="stretch" class="my-0">
+		<v-row align="stretch" class="my-2">
 			<v-col cols="12" sm="6" class="pt-0 py-sm-0">
 				<user-select
 					persistent-placeholder
@@ -85,12 +85,12 @@
 		</v-row>
 
 		<!-- Search button -->
-		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="mt-5">
+		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="my-6">
 			{{ $root.lang().database.labels.search_contributions }}
 			<v-icon right dark>mdi-magnify</v-icon>
 		</v-btn>
 
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
+		<div class="mb-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
 
 		<v-list rounded v-if="search.search_results.length" two-line class="main-container mt-4">
 			<v-row>
@@ -152,8 +152,9 @@
 				:disabled="displayedResults >= search.search_results.length"
 				block
 				color="primary"
+				class="mb-4"
 				@click="showMore()"
-				:v-if="displayedResults < search.search_results.length"
+				v-if="displayedResults < search.search_results.length"
 				elevation="2"
 			>
 				{{ $root.lang().global.btn.load_more }}
@@ -161,9 +162,7 @@
 		</v-list>
 		<div v-else>
 			<br />
-			<p>
-				<i>{{ $root.lang().global.no_results }}</i>
-			</p>
+			<i>{{ $root.lang().global.no_results }}</i>
 		</div>
 	</v-container>
 </template>
@@ -323,6 +322,7 @@ export default {
 			});
 		},
 		startSearch() {
+			if (this.searchDisabled) return;
 			this.search.searching = true;
 			Promise.all([
 				axios.get(

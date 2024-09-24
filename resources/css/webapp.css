@@ -839,7 +839,7 @@ code {
 	margin: 0;
 }
 
-body .texture-avatar {
+body .database-list-avatar {
 	height: 64px !important;
 	min-width: 64px !important;
 	background: rgba(39, 39, 39, 0.8);
@@ -1001,7 +1001,7 @@ body .texture-avatar {
 .theme--light header.v-toolbar {
 	border-bottom: 2px solid rgba(170, 170, 170, 0.5);
 }
-.theme--light .texture-avatar {
+.theme--light .database-list-avatar {
 	background: white;
 }
 .theme--light .gallery-dialog-texture, .theme--light .gallery-texture-in-container {

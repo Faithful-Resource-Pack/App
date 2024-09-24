@@ -30,7 +30,7 @@
 			<v-btn
 				v-for="role in usersRoles"
 				:key="role"
-				:class="['my-2 mr-1', activeRole(role)]"
+				:class="['my-1 mr-2', activeRole(role)]"
 				:to="userURL(role)"
 				:exact="role == 'all'"
 			>
@@ -71,14 +71,7 @@
 			<v-row>
 				<v-col :cols="12 / listColumns" xs="1" v-for="(users, index) in splitUsers" :key="index">
 					<v-list-item v-for="user in users" :key="user.id">
-						<v-list-item-avatar
-							:style="{
-								height: '64px',
-								width: '64px',
-								'min-width': '64px',
-								'border-radius': '10px',
-							}"
-						>
+						<v-list-item-avatar tile class="database-list-avatar">
 							<v-img v-if="user.uuid" :src="`https://visage.surgeplay.com/head/48/${user.uuid}`" />
 							<v-icon large v-else style="background: rgba(39, 39, 39, 0.8)">mdi-account</v-icon>
 						</v-list-item-avatar>
@@ -106,10 +99,10 @@
 				:style="{ margin: 'auto', 'min-width': '250px !important' }"
 				:disabled="displayedResults >= Object.keys(users).length"
 				:color="pageColor"
-				:class="textColorOnPage"
+				:class="[textColorOnPage, 'mb-4']"
 				block
 				@click="showMore()"
-				:v-if="displayedResults < Object.keys(users).length"
+				v-if="displayedResults < Object.keys(users).length"
 				elevation="2"
 			>
 				{{ $root.lang().global.btn.load_more }}
@@ -117,9 +110,7 @@
 		</v-list>
 		<div v-else>
 			<br />
-			<p>
-				<i>{{ $root.lang().global.no_results }}</i>
-			</p>
+			<i>{{ $root.lang().global.no_results }}</i>
 		</div>
 	</v-container>
 </template>

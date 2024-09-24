@@ -39,22 +39,22 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_tag }}</div>
 		<div class="selector">
 			<v-btn
-				v-for="t in packTags"
-				:key="t"
-				:class="['my-1 mr-2', activeTag(t)]"
-				:to="packURL(t)"
-				:exact="t == 'all'"
+				v-for="tag in packTags"
+				:key="tag"
+				:class="['my-1 mr-2', activeTag(tag)]"
+				:to="packURL(tag)"
+				:exact="tag == 'all'"
 			>
-				{{ formatTags(t) }}
+				{{ formatTags(tag) }}
 			</v-btn>
 		</div>
 
 		<!-- results -->
-		<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
 		<v-list rounded v-if="packs.length" two-line class="main-container">
-			<v-row class="mb-1 mt-0">
-				<v-col :cols="12 / listColumns" xs="1" class="py-0" v-for="pack in packs" :key="pack.id">
-					<v-list-item>
+			<v-row>
+				<v-col :cols="12 / listColumns" xs="1" v-for="(packs, i) in splitResults" :key="i">
+					<v-list-item v-for="pack in packs" :key="pack.id">
 						<v-list-item-avatar
 							:style="{
 								height: '64px',
@@ -180,12 +180,28 @@ export default {
 			return ["all", ...this.tags];
 		},
 		tag() {
-			if (this.$route.params.tag) return this.$route.params.tag;
-			return "all";
+			return this.$route.params.tag || "all";
 		},
 		listColumns() {
 			// big screens use two columns, smaller use one
 			return this.$vuetify.breakpoint.mdAndUp ? 2 : 1;
+		},
+		splitResults() {
+			const res = [];
+
+			const keys = Object.keys(this.packs);
+			const len = keys.length;
+
+			for (let col = 0; col < this.listColumns; ++col) res.push([]);
+
+			let arrayIndex = 0;
+
+			for (let i = 0; i < len; i++) {
+				res[arrayIndex].push(this.packs[keys[i]]);
+				arrayIndex = (arrayIndex + 1) % this.listColumns;
+			}
+
+			return res;
 		},
 	},
 	mounted() {

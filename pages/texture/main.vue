@@ -54,7 +54,7 @@
 			{{ $root.lang().database.titles.textures }}
 		</div>
 		<div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tag }}</div>
-		<div v-if="$vuetify.breakpoint.smAndUp" class="selector">
+		<div class="selector">
 			<v-btn
 				v-for="tag in textureTags"
 				:key="tag"
@@ -65,22 +65,7 @@
 				{{ tag }}
 			</v-btn>
 		</div>
-		<v-select
-			id="selectTextureTag"
-			v-else
-			:items="
-				textureTags.map((e) => {
-					return { text: e.toUpperCase(), value: e };
-				})
-			"
-			item-text="text"
-			item-value="value"
-			:color="pageColor"
-			:item-color="pageColor"
-			filled
-			v-model="selectTextureTag"
-		/>
-		<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
 		<div class="my-2">
 			<v-text-field
 				v-model="search"
@@ -91,13 +76,14 @@
 				:color="pageColor"
 				:placeholder="$root.lang().database.labels.search_texture"
 				type="text"
+				hide-details
 				@keyup.enter="startSearch"
 				@click:append-outer="startSearch"
 				@click:clear="clearSearch"
 			/>
 		</div>
 
-		<div>
+		<div class="my-6">
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
@@ -108,16 +94,7 @@
 			<br />
 			<v-row>
 				<v-col>
-					<v-btn
-						block
-						:color="pageColor"
-						:class="[textColorOnPage]"
-						@click="
-							() => {
-								addVersionModalOpen = true;
-							}
-						"
-					>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openAddVersionModal">
 						{{ $root.lang().database.labels.add_mc_version }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
@@ -126,68 +103,63 @@
 						block
 						:color="pageColor"
 						:class="[textColorOnPage]"
-						@click="openModifyVersionModal()"
+						@click="openModifyVersionModal"
 					>
 						{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
+		</div>
 
-			<div class="mt-4 mb-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
-			<div v-if="Object.keys(textures).length" class="main-container pb-4 rounded">
-				<v-row class="mb-1 mt-0">
-					<v-col
-						:cols="12 / listColumns"
-						xs="1"
-						class="py-0"
-						v-for="(textures_arr, index) in splitResults"
-						:key="index"
-					>
-						<v-list two-line style="padding-top: 1px; padding-bottom: 1px; background: transparent">
-							<v-list-item v-for="texture in textures_arr" class="my-4" :key="texture.id">
-								<a :href="`/gallery?show=${texture.id}`">
-									<v-list-item-avatar tile class="texture-avatar my-0 text--primary">
-										{{ texture.id }}
-									</v-list-item-avatar>
-								</a>
-
-								<v-list-item-content class="py-0">
-									<v-list-item-title>{{ texture.name }}</v-list-item-title>
-									<v-list-item-subtitle>{{ (texture.tags || []).join(", ") }}</v-list-item-subtitle>
-								</v-list-item-content>
-
-								<v-list-item-action class="merged">
-									<v-btn icon @click="openTextureModal(texture)">
-										<v-icon color="lighten-1">mdi-pencil</v-icon>
-									</v-btn>
-									<v-btn icon @click="askRemove(texture)">
-										<v-icon color="red lighten-1">mdi-delete</v-icon>
-									</v-btn>
-								</v-list-item-action>
-							</v-list-item>
-						</v-list>
-					</v-col>
-				</v-row>
-
-				<v-btn
-					:style="{ margin: 'auto', 'min-width': '250px !important' }"
-					:disabled="displayedResults >= Object.keys(textures).length"
-					:color="pageColor"
-					:class="textColorOnPage"
-					block
-					@click="showMore()"
-					:v-if="displayedResults < Object.keys(textures).length"
-					elevation="2"
+		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
+		<v-list rounded v-if="Object.keys(textures).length" two-line class="main-container">
+			<v-row>
+				<v-col
+					:cols="12 / listColumns"
+					xs="1"
+					v-for="(textures, index) in splitResults"
+					:key="index"
 				>
-					{{ $root.lang().global.btn.load_more }}
-				</v-btn>
-			</div>
-			<div v-else>
-				<br />
-				<p>
-					<i>{{ $root.lang().global.no_results }}</i>
-				</p>
-			</div>
+					<v-list-item v-for="texture in textures" :key="texture.id">
+						<a :href="`/gallery?show=${texture.id}`">
+							<v-list-item-avatar tile class="database-list-avatar text--primary">
+								{{ texture.id }}
+							</v-list-item-avatar>
+						</a>
+
+						<v-list-item-content>
+							<v-list-item-title>{{ texture.name }}</v-list-item-title>
+							<v-list-item-subtitle>{{ (texture.tags || []).join(", ") }}</v-list-item-subtitle>
+						</v-list-item-content>
+
+						<v-list-item-action class="merged">
+							<v-btn icon @click="openTextureModal(texture)">
+								<v-icon color="lighten-1">mdi-pencil</v-icon>
+							</v-btn>
+							<v-btn icon @click="askRemove(texture)">
+								<v-icon color="red lighten-1">mdi-delete</v-icon>
+							</v-btn>
+						</v-list-item-action>
+					</v-list-item>
+				</v-col>
+			</v-row>
+
+			<v-btn
+				:style="{ margin: 'auto', 'min-width': '250px !important' }"
+				:disabled="displayedResults >= Object.keys(textures).length"
+				:color="pageColor"
+				:class="[textColorOnPage, 'mb-4']"
+				block
+				@click="showMore()"
+				v-if="displayedResults < Object.keys(textures).length"
+				elevation="2"
+			>
+				{{ $root.lang().global.btn.load_more }}
+			</v-btn>
+		</v-list>
+		<div v-else>
+			<br />
+			<i>{{ $root.lang().global.no_results }}</i>
 		</div>
 	</v-container>
 </template>
@@ -320,6 +292,9 @@ export default {
 				this.getTextures();
 				this.getVersions();
 			}
+		},
+		openAddVersionModal() {
+			this.addVersionModalOpen = true;
 		},
 		openModifyVersionModal() {
 			this.modifyVersionModalOpen = true;
