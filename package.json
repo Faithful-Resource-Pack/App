@@ -8,11 +8,7 @@
 		"dev": "vite --host",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prettier": "prettier \"{,!(node_modules)/**/}*.{js,vue,html,ts}\" --config .prettierrc --write",
-		"test:app": "env-cmd -f ./tests/.env.test node index.js",
-		"test:mocha": "mocha --recursive tests/**/*.test.js",
-		"nodemon:app:test": "nodemon --exec pnpm run test:app",
-		"nodemon:mock_server": "nodemon --exec node tests/mock_server.js"
+		"prettier": "prettier \"{,!(node_modules)/**/}*.{js,vue,html,ts}\" --config .prettierrc --write"
 	},
 	"repository": {
 		"type": "git",
