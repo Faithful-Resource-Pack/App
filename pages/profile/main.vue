@@ -320,7 +320,7 @@ export default {
 		canSubmit() {
 			// media handled separately since there's multiple
 			if (
-				!this.localUser.media.every((m) => {
+				!(this.localUser.media || []).every((m) => {
 					if (!this.validURL(m.link)) return false;
 					if (!this.mediaTypes.includes(m.type)) return false;
 					return true;

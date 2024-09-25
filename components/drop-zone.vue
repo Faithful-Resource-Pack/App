@@ -76,10 +76,17 @@ export default {
 			e.preventDefault();
 			this.isDragging = false;
 		},
+		/** @param {DragEvent} e */
 		drop(e) {
 			if (this.disabled) return;
 
 			e.preventDefault();
+			const files = e.dataTransfer.files;
+			if (!Array.from(files).every((file) => this.accept.includes(file.type_))) {
+				this.$root.showSnackBar(this.$root.lang().addons.images.header.rules.jpeg, "error");
+				this.isDragging = false;
+				return;
+			}
 			this.$refs.file.files = e.dataTransfer.files;
 			this.onChange();
 			this.isDragging = false;
