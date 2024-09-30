@@ -225,7 +225,7 @@
 
 				<div>
 					<v-row v-for="(obj, index) in submittedForm.downloads" :key="index" style="margin-top: 0">
-						<v-col cols="3">
+						<v-col cols="12" sm="3">
 							<v-text-field
 								clearable
 								:placeholder="$root.lang().addons.downloads.name.placeholder"
@@ -234,7 +234,7 @@
 								:rules="downloadTitleRules"
 							/>
 						</v-col>
-						<v-col cols="9">
+						<v-col cols="12" sm="9">
 							<v-row
 								v-for="(link, indexLinks) in obj.links"
 								:key="indexLinks"
