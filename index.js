@@ -168,6 +168,7 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 		action,
 		bcp47: name.replace("_", "-"),
 		file: e,
+		iso3166: name.split("_")[1].toLowerCase()
 	};
 });
 

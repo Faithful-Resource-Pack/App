@@ -131,6 +131,39 @@
 								</v-btn>
 							</v-card>
 
+                     <v-menu offset-y>
+                        <template v-slot:activator="{ on, attrs }">
+                           <v-btn
+                              class="ml-2"
+                              v-bind="attrs"
+                              v-on="on"
+                              icon
+                           >
+                           <v-icon class="theme-icon">mdi-translate</v-icon>
+                           </v-btn>
+                        </template>
+                        <v-list class="py-0">
+                           <v-list-item
+                              v-for="language in languages"
+                              :key="language.bcp47"
+                              :class="{ 'primary': language.lang == selectedLang }"
+                              v-on:click="() => selectedLang = language.lang"
+                              style="cursor: pointer"
+                              dense
+                           >
+                              <v-list-item-avatar min-width="24" :width="24" max-width="24" :height="18" class="rounded-0">
+                                 <v-img
+                                    :src="'https://flagcdn.com/24x18/' + language.iso3166 + '.png'"
+                                    :srcset="'https://flagcdn.com/32x24/' + language.iso3166 +
+                                    '.png 2x, https://flagcdn.com/48x36/' + language.iso3166 + '.png 3x'"
+                                    width="24" height="18"
+                                 >
+                              </v-list-item-avatar>
+                              <v-list-item-title class="uppercase">{{ language.lang }}</v-list-item-title>
+                           </v-list-item>
+                        </v-list>
+                     </v-menu>
+
 							<v-spacer></v-spacer>
 
 							<v-btn small color="red white--text" @click="logout" v-if="isUserLogged">
@@ -201,24 +234,6 @@
 						<!-- auto-closing tags break here for some reason -->
 					</v-divider>
 				</div>
-
-				<v-list dense nav>
-					<v-list-item>
-						<v-list-item-title class="uppercase-unsized">
-							{{ $root.lang().global.tabs.review.subtabs.translations }}
-						</v-list-item-title>
-					</v-list-item>
-					<v-radio-group class="px-2 pb-2" row v-model="selectedLang" hide-details>
-						<v-radio
-							class="uppercase pb-1"
-							v-for="language in languages"
-							:key="language.bcp47"
-							:label="language.lang"
-							:value="language.lang"
-							hide-details
-						/>
-					</v-radio-group>
-				</v-list>
 
 				<!-- Fix problem on firefox on mobile where bar disappears and elements fixed are hidden -->
 				<div class="py-8" v-if="!isDesktop"></div>
