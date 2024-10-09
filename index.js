@@ -168,6 +168,7 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 		action,
 		bcp47: name.replace("_", "-"),
 		file: e,
+		iso3166: name.split("_")[1].toLowerCase()
 	};
 });
 
@@ -449,7 +450,7 @@ const app = new Vue({
 			theme: undefined,
 			themes: {
 				dark: "mdi-weather-night",
-				system: "mdi-theme-light-dark",
+				system: "mdi-desktop-tower-monitor",
 				light: "mdi-white-balance-sunny",
 			},
 			atl: [],
