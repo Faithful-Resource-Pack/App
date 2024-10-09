@@ -450,7 +450,7 @@ const app = new Vue({
 			theme: undefined,
 			themes: {
 				dark: "mdi-weather-night",
-				system: "mdi-theme-light-dark",
+				system: "mdi-desktop-tower-monitor",
 				light: "mdi-white-balance-sunny",
 			},
 			atl: [],

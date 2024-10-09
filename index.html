@@ -81,6 +81,87 @@
 						/>
 					</a>
 				</span>
+
+				<v-menu
+					left
+					offset-y
+					open-on-hover
+					transition="slide-y-transition"
+				>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn
+							min-width="0"
+							class="px-1 ms-2"
+							v-bind="attrs"
+							v-on="on"
+							elevation="0"
+						>
+							<v-icon>mdi-theme-light-dark</v-icon>
+							<v-icon small>mdi-chevron-down</v-icon>
+						</v-btn>
+					</template>
+					<v-list class="pt-0" dense nav>
+						<v-subheader class="font-weight-black text-uppercase text-center justify-center text--primary">
+								{{ $root.lang().global.snackbar_system_theme.themes.title }}
+							</v-subheader>
+						<v-list-item
+							v-for="(icon, key) in themes"
+							:key="key"
+							:class="{ 'v-list-item--active': theme == key, 'text-left': true }"
+							@click="theme = key"
+							style="cursor: pointer"
+							dense
+						>
+							<v-list-item-icon class="me-4">
+								<v-icon v-text="icon"></v-icon>
+							</v-list-item-icon>
+							<v-list-item-title>{{ $root.lang().global.snackbar_system_theme.themes[key] }}</v-list-item-title>
+						</v-list-item>
+					</v-list>
+				</v-menu>
+
+				<v-menu
+					right
+					offset-y
+					open-on-hover
+					transition="slide-y-transition"
+				>
+					<template v-slot:activator="{ on, attrs }">
+						<v-btn
+							min-width="0"
+							class="px-1 ms-2"
+							v-bind="attrs"
+							v-on="on"
+							elevation="0"
+						>
+							<v-icon>mdi-translate</v-icon>
+							<v-icon small>mdi-chevron-down</v-icon>
+						</v-btn>
+					</template>
+					<v-list class="pt-0" dense nav>
+						<v-subheader class="font-weight-black text-uppercase text-center justify-center text--primary">
+							{{ $root.lang().global.translations }}
+						</v-subheader>
+						<v-list-item
+							v-for="language in languages"
+							:key="language.bcp47"
+							:class="{ 'v-list-item--active': language.lang == selectedLang, 'text-center': true }"
+							v-on:click="() => selectedLang = language.lang"
+							style="cursor: pointer"
+							dense
+						>
+							<v-list-item-avatar min-width="24" :width="24" max-width="24" :height="18" class="rounded-0">
+								<v-img
+									:src="'https://flagcdn.com/24x18/' + language.iso3166 + '.png'"
+									:srcset="'https://flagcdn.com/32x24/' + language.iso3166 +
+									'.png 2x, https://flagcdn.com/48x36/' + language.iso3166 + '.png 3x'"
+									width="24" height="18"
+								>
+							</v-list-item-avatar>
+							<v-list-item-title class="uppercase">{{ language.lang }}</v-list-item-title>
+						</v-list-item>
+					</v-list>
+				</v-menu>
 			</v-app-bar>
 
 			<v-navigation-drawer width="320" fixed app v-model="drawer">
@@ -113,56 +194,6 @@
 							</v-btn>
 						</div>
 						<v-card-actions style="align-items: flex-end" class="mt-n2">
-							<v-card
-								id="theme"
-								style="display: flex; justify-content: center; align-items: center"
-							>
-								<v-btn
-									icon
-									v-for="(icon, key) in themes"
-									:key="key"
-									elevation="0"
-									:class="['rounded d-inline-block', { 'active primary': theme === key }]"
-									@click="theme = key"
-								>
-									<v-icon class="theme-icon">
-										{{ icon }}
-									</v-icon>
-								</v-btn>
-							</v-card>
-
-                     <v-menu offset-y>
-                        <template v-slot:activator="{ on, attrs }">
-                           <v-btn
-                              class="ml-2"
-                              v-bind="attrs"
-                              v-on="on"
-                              icon
-                           >
-                           <v-icon class="theme-icon">mdi-translate</v-icon>
-                           </v-btn>
-                        </template>
-                        <v-list class="py-0">
-                           <v-list-item
-                              v-for="language in languages"
-                              :key="language.bcp47"
-                              :class="{ 'primary': language.lang == selectedLang }"
-                              v-on:click="() => selectedLang = language.lang"
-                              style="cursor: pointer"
-                              dense
-                           >
-                              <v-list-item-avatar min-width="24" :width="24" max-width="24" :height="18" class="rounded-0">
-                                 <v-img
-                                    :src="'https://flagcdn.com/24x18/' + language.iso3166 + '.png'"
-                                    :srcset="'https://flagcdn.com/32x24/' + language.iso3166 +
-                                    '.png 2x, https://flagcdn.com/48x36/' + language.iso3166 + '.png 3x'"
-                                    width="24" height="18"
-                                 >
-                              </v-list-item-avatar>
-                              <v-list-item-title class="uppercase">{{ language.lang }}</v-list-item-title>
-                           </v-list-item>
-                        </v-list>
-                     </v-menu>
 
 							<v-spacer></v-spacer>
 

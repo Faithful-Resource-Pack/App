@@ -11,11 +11,14 @@ export default {
 		loading: "Loading, please wait…",
 		no_results: "No results were found",
 		nyi: "Not yet implemented.",
+		translations: "Translations",
 		snackbar_system_theme: {
 			sentence: "System theme changed to %s",
 			themes: {
-				light: "light",
-				dark: "dark",
+				title: "Theme",
+				light: "Light",
+				dark: "Dark",
+				system: "System",
 			},
 		},
 		btn: {
