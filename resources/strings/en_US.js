@@ -54,18 +54,18 @@ export default {
 					upload: "upload",
 				},
 			},
-			modding: {
-				title: "modding",
-				subtabs: {
-					mod: "submit mod",
-					modpack: "submit modpack",
-				},
-			},
 			review: {
 				title: "reviews",
 				subtabs: {
 					addons: "add-ons",
 					translations: "translations",
+				},
+			},
+			posts: {
+				title: "posts",
+				subtabs: {
+					list: "list",
+					create: "create",
 				},
 			},
 			database: {
@@ -411,6 +411,37 @@ export default {
 			approved: "Approved",
 			denied: "Denied",
 			pending: "Pending",
+		},
+	},
+	posts: {
+		grid_title: "All posts",
+		edit_title: "Edit post",
+		status: {
+			published: "Published",
+			pending: "Pending",
+		},
+		loading: "Loading post…",
+		general: {
+			heading: "General",
+			title: "Post title",
+			permalink: "Permalink",
+			permalink_placeholder: "/faithful32x/R1",
+			header_img: "Header image",
+			header_img_hint: "Note: This must be uploaded separately",
+			description: "Post description",
+			description_hint: "You can use HTML markup to improve the description",
+		},
+		download: {
+			heading: "Downloads",
+			add_group: "Add download group",
+			add_single_item: "Add single download",
+			category: "Download category name",
+			name: "Download name",
+			link: "Download link",
+			link_placeholder: "https://example.com",
+		},
+		changelog: {
+			heading: "Changelog",
 		},
 	},
 	statistics: {

@@ -2,11 +2,10 @@
 	<v-container>
 		<div class="text-h4 py-4">
 			{{ $root.lang().addons.titles.submissions }}
-			<v-progress-circular v-if="loading" indeterminate />
 		</div>
-
-		<div v-if="loading == false && addons.length == 0">
-			{{ $root.lang().global.no_results }}
+		<v-progress-circular v-if="loading" indeterminate />
+		<div v-else-if="addons.length === 0">
+			{{ error || $root.lang().global.no_results }}
 		</div>
 		<div v-else class="my-2 text-h5">
 			<v-row>
@@ -111,19 +110,13 @@ export default {
 				confirm: false,
 				data: {},
 			},
-			dialogAddon: {},
-			dialogOpen: false,
+			error: undefined,
 			loading: true,
 			failed: {},
 			timestamp: new Date().getTime(),
 		};
 	},
 	methods: {
-		closeDialog() {
-			this.dialogOpen = false;
-			this.dialogAddon = {};
-			this.update();
-		},
 		getStatusColor(status) {
 			switch (status) {
 				case "approved":
@@ -143,11 +136,14 @@ export default {
 				.get(`${this.$root.apiURL}/users/${authorID}/addons`, this.$root.apiOptions)
 				.then((res) => {
 					this.addons = res.data;
-					this.loading = false;
 					this.$forceUpdate();
 				})
-				.catch((err) => {
-					console.error(err);
+				.catch((e) => {
+					console.error(e);
+					this.error = `${e.statusCode}: ${e.response.value}`;
+				})
+				.finally(() => {
+					this.loading = false;
 				});
 		},
 		update() {
