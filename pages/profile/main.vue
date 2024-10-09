@@ -242,10 +242,11 @@ export default {
 			this.localUser.media.splice(index, 1);
 		},
 		validForm(scope, boolResult, sentence) {
-			if (scope.startsWith("username:") || scope.startsWith("uuid")) {
+			if (scope.startsWith("username:") || scope.startsWith("uuid:")) {
 				// socials are validated separately since there's multiple of them
-				this.validationObject[scope] = boolResult;
+				this.$set(this.validationObject, scope, boolResult);
 			}
+
 			if (boolResult) return true;
 			return sentence.toString();
 		},
@@ -320,10 +321,10 @@ export default {
 		canSubmit() {
 			// media handled separately since there's multiple
 			if (
-				!(this.localUser.media || []).every((m) => {
-					if (!this.validURL(m.link)) return false;
-					if (!this.mediaTypes.includes(m.type)) return false;
-					return true;
+				(this.localUser.media || []).some((m) => {
+					if (!this.validURL(m.link)) return true;
+					if (!this.mediaTypes.includes(m.type)) return true;
+					return false;
 				})
 			)
 				return false;
