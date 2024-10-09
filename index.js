@@ -39,7 +39,8 @@ import EditAddonPage from "./pages/addon/edit-addon-form.vue";
 import ReviewAddonsPage from "./pages/review/main.vue";
 import ReviewTranslationsPage from "./pages/translation/main.vue";
 import PostListPage from "./pages/post/post-grid.vue";
-import PostEditPage from "./pages/post/edit-post.vue";
+import EditPostPage from "./pages/post/edit-post.vue";
+import NewPostPage from "./pages/post/new-post.vue";
 import ContributionPage from "./pages/contribution/main.vue";
 import UsersPage from "./pages/users/main.vue";
 import TexturePage from "./pages/texture/main.vue";
@@ -349,11 +350,13 @@ const ALL_TABS = [
 				label: "create",
 				routes: [
 					{
-						path: "/posts/new"
+						path: "/posts/new",
+						component: NewPostPage,
+						name: "New post",
 					},
 					{
 						path: "/posts/edit/:id",
-						component: PostEditPage,
+						component: EditPostPage,
 						name: "Edit post",
 					},
 				],
@@ -909,4 +912,4 @@ const app = new Vue({
 	}),
 });
 
-if (Vue.config.devtools) window.v = app;
+if (Vue.config.devtools) window.app = app;

@@ -69,7 +69,11 @@ export default {
 	methods: {
 		onSubmit() {
 			// only send data back on submit (faster)
-			this.$emit("input", this.formData);
+			const formData = {
+				...this.formData,
+				downloads: this.convertDownloadsToObject(this.downloads),
+			};
+			this.$emit("input", formData);
 		},
 		convertDownloadsToArray(obj) {
 			return Object.entries(obj).map(([category, items]) => {
@@ -105,6 +109,7 @@ export default {
 		},
 		"formData.downloads": {
 			handler(n) {
+				if (!n) return;
 				this.downloads = this.convertDownloadsToArray(n);
 			},
 			deep: true,

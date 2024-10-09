@@ -15,15 +15,12 @@
 					v-model="formData.permalink"
 					:label="$root.lang().posts.general.permalink"
 					:placeholder="$root.lang().posts.general.permalink_placeholder"
+					persistent-placeholder
 				/>
 			</div>
-			<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
+			<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center" v-if="formData.header_img">
 				<div class="col">
-					<v-img
-						v-if="formData.header_img"
-						style="border-radius: 10px"
-						:src="formData.header_img"
-					/>
+					<v-img style="border-radius: 10px" :src="formData.header_img" />
 				</div>
 			</div>
 		</div>
@@ -42,6 +39,7 @@
 			v-model="formData.description"
 			:label="$root.lang().posts.general.description"
 			:hint="$root.lang().posts.general.description_hint"
+			persistent-hint
 		/>
 
 		<!-- eslint-disable vue/no-v-text-v-html-on-component -->

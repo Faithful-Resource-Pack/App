@@ -416,6 +416,7 @@ export default {
 	posts: {
 		grid_title: "All posts",
 		edit_title: "Edit post",
+		new_title: "Create new post",
 		status: {
 			published: "Published",
 			pending: "Pending",
@@ -429,16 +430,16 @@ export default {
 			header_img: "Header image",
 			header_img_hint: "Note: This must be uploaded separately",
 			description: "Post description",
-			description_hint: "You can use HTML markup to improve the description",
+			description_hint: "You can use HTML markup to improve your description!",
 		},
 		download: {
 			heading: "Downloads",
-			add_group: "Add download group",
+			add_category: "Add download category",
 			add_single_item: "Add single download",
 			category: "Download category name",
 			name: "Download name",
 			link: "Download link",
-			link_placeholder: "https://example.com",
+			link_placeholder: "https://www.example.com/",
 		},
 		changelog: {
 			heading: "Changelog",
