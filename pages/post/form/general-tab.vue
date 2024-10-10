@@ -6,15 +6,17 @@
 					required
 					clearable
 					v-model="formData.title"
-					:label="$root.lang().posts.general.title"
+					:label="$root.lang().posts.general.title.label"
+					:placeholder="$root.lang().posts.general.title.placeholder"
+					persistent-placeholder
 				/>
 
 				<v-text-field
 					required
 					clearable
 					v-model="formData.permalink"
-					:label="$root.lang().posts.general.permalink"
-					:placeholder="$root.lang().posts.general.permalink_placeholder"
+					:label="$root.lang().posts.general.permalink.label"
+					:placeholder="$root.lang().posts.general.permalink.placeholder"
 					persistent-placeholder
 				/>
 			</div>
@@ -29,16 +31,18 @@
 			required
 			clearable
 			v-model="formData.header_img"
-			:label="$root.lang().posts.general.header_img"
-			:hint="$root.lang().posts.general.header_img_hint"
+			:label="$root.lang().posts.general.header_img.label"
+			:hint="$root.lang().posts.general.header_img.hint"
+			:placeholder="$root.lang().posts.general.header_img.placeholder"
+			persistent-placeholder
 		/>
 
 		<v-text-field
 			required
 			clearable
 			v-model="formData.date"
-			:label="$root.lang().posts.general.date"
-			:placeholder="$root.lang().posts.general.date_placeholder"
+			:label="$root.lang().posts.general.date.label"
+			:placeholder="$root.lang().posts.general.date.placeholder"
 			persistent-placeholder
 		/>
 
@@ -46,9 +50,8 @@
 		<v-textarea
 			clearable
 			v-model="formData.description"
-			:label="$root.lang().posts.general.description"
-			:hint="$root.lang().posts.general.description_hint"
-			persistent-hint
+			:label="$root.lang().posts.general.description.label"
+			:hint="$root.lang().posts.general.description.hint"
 		/>
 
 		<!-- eslint-disable vue/no-v-text-v-html-on-component -->

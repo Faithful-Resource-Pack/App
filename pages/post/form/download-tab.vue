@@ -74,7 +74,11 @@
 
 <script>
 const emptySingleItem = () => ({ key: crypto.randomUUID(), name: "", link: "" });
-const emptyCategory = () => ({ key: crypto.randomUUID(), category: "", items: [emptySingleItem()] });
+const emptyCategory = () => ({
+	key: crypto.randomUUID(),
+	category: "",
+	items: [emptySingleItem()],
+});
 
 export default {
 	name: "download-tab",

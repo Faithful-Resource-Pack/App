@@ -1,7 +1,7 @@
 <template>
 	<v-container>
 		<div class="text-h4 py-4">
-			{{ $root.lang().posts.grid_title }}
+			{{ $root.lang().posts.titles.list }}
 		</div>
 
 		<v-progress-circular v-if="loading" indeterminate />

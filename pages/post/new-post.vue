@@ -1,7 +1,7 @@
 <template>
 	<div class="container">
 		<h4 class="text-h4 py-4">
-			{{ $root.lang().posts.new_title }}
+			{{ $root.lang().posts.titles.new }}
 		</h4>
 		<post-form v-model="post" />
 	</div>

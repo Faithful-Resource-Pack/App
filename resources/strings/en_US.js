@@ -415,9 +415,11 @@ export default {
 		},
 	},
 	posts: {
-		grid_title: "All posts",
-		edit_title: "Edit post",
-		new_title: "Create new post",
+		titles: {
+			list: "All posts",
+			edit: "Edit post",
+			new: "Create new post",
+		},
 		status: {
 			published: "Published",
 			pending: "Pending",
@@ -425,15 +427,27 @@ export default {
 		loading: "Loading post…",
 		general: {
 			heading: "General",
-			title: "Post title",
-			permalink: "Permalink",
-			permalink_placeholder: "/faithful32x/R1",
-			header_img: "Header image",
-			header_img_hint: "Note: This must be uploaded separately",
-			date: "Post release date",
-			date_placeholder: "YYYY-MM-DD",
-			description: "Post description",
-			description_hint: "You can use HTML markup to improve your description!",
+			title: {
+				label: "Post title",
+				placeholder: "Faithful Smart Fridge – Alpha 1",
+			},
+			permalink: {
+				label: "Permalink",
+				placeholder: "/faithfulsmartfridge/A1",
+			},
+			header_img: {
+				label: "Header image",
+				hint: "Note: This must be uploaded separately",
+				placeholder: "https://database.faithfulpack.net/images/website/posts/fridge/A1.jpg",
+			},
+			date: {
+				label: "Post release date",
+				placeholder: "YYYY-MM-DD",
+			},
+			description: {
+				label: "Post description",
+				hint: "You can use HTML markup to improve your description!",
+			},
 		},
 		download: {
 			heading: "Downloads",
