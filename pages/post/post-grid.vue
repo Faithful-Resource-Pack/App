@@ -29,7 +29,12 @@
 							"
 						>
 							<template #placeholder>
+								<v-img
+									v-if="!post.header_img"
+									src="https://database.faithfulpack.net/images/website/posts/placeholder.jpg"
+								/>
 								<v-row
+									v-else
 									class="fill-height ma-0"
 									align="center"
 									justify="center"
@@ -69,16 +74,33 @@
 				</v-col>
 			</v-row>
 		</div>
+
+		<post-remove-confirm
+			v-model="removeOpen"
+			:post="removeData"
+			@close="
+				() => {
+					removeOpen = false;
+					getPosts();
+				}
+			"
+		/>
 	</v-container>
 </template>
 
 <script>
 import axios from "axios";
+import PostRemoveConfirm from "./post-remove-confirm.vue";
 
 export default {
 	name: "post-grid",
+	components: {
+		PostRemoveConfirm,
+	},
 	data() {
 		return {
+			removeOpen: false,
+			removeData: {},
 			posts: [],
 			loading: true,
 			error: undefined,
@@ -99,6 +121,10 @@ export default {
 				.finally(() => {
 					this.loading = false;
 				});
+		},
+		deletePost(post) {
+			this.removeOpen = true;
+			this.removeData = post;
 		},
 	},
 	created() {
