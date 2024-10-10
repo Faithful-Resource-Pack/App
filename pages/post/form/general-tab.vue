@@ -33,6 +33,15 @@
 			:hint="$root.lang().posts.general.header_img_hint"
 		/>
 
+		<v-text-field
+			required
+			clearable
+			v-model="formData.date"
+			:label="$root.lang().posts.general.date"
+			:placeholder="$root.lang().posts.general.date_placeholder"
+			persistent-placeholder
+		/>
+
 		<!-- Addon description -->
 		<v-textarea
 			clearable

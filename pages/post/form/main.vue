@@ -21,17 +21,26 @@
 				:rounded="$vuetify.breakpoint.mdAndUp"
 				two-line
 			>
-				<v-tabs-items v-model="selectedTab" style="background-color: transparent">
+				<v-tabs-items v-model="selectedTab" style="background-color: transparent" class="pb-3">
 					<v-tab-item><general-tab v-model="formData" /></v-tab-item>
 					<v-tab-item><download-tab v-model="downloads" /></v-tab-item>
 					<v-tab-item><changelog-tab v-model="formData" /></v-tab-item>
 				</v-tabs-items>
+				<div class="d-flex justify-end pa-2">
+					<v-btn color="darken-1" text @click="() => onSubmit(false)">
+						{{ $root.lang().global.btn.save }}
+					</v-btn>
+					<v-btn color="primary" text @click="() => onSubmit(true)">
+						{{ $root.lang().global.btn.publish }}
+					</v-btn>
+				</div>
 			</v-list>
 		</template>
 	</v-container>
 </template>
 
 <script>
+import axios from "axios";
 import ChangelogTab from "./changelog-tab.vue";
 import DownloadTab from "./download-tab.vue";
 import GeneralTab from "./general-tab.vue";
@@ -58,6 +67,11 @@ export default {
 			required: false,
 			default: false,
 		},
+		add: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 	},
 	data() {
 		return {
@@ -67,13 +81,35 @@ export default {
 		};
 	},
 	methods: {
-		onSubmit() {
+		onSubmit(published) {
 			// only send data back on submit (faster)
 			const formData = {
 				...this.formData,
+				published,
 				downloads: this.convertDownloadsToObject(this.downloads),
 			};
-			this.$emit("input", formData);
+
+			if (!formData.header_img) delete formData.header_img;
+
+			let prom;
+			if (this.add) {
+				prom = axios.post(`${this.$root.apiURL}/posts`, formData, this.$root.apiOptions);
+			} else {
+				delete formData.id;
+				prom = axios.put(
+					`${this.$root.apiURL}/posts/${this.formData.id}`,
+					formData,
+					this.$root.apiOptions,
+				);
+			}
+			prom
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+				})
+				.catch((error) => {
+					console.error(error);
+					this.$root.showSnackBar(error, "error");
+				});
 		},
 		convertDownloadsToArray(obj) {
 			return Object.entries(obj).map(([category, items]) => {

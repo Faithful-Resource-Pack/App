@@ -17,6 +17,7 @@
 				>
 					<v-card style="background-color: rgba(255, 255, 255, 0.05)">
 						<v-img
+							v-if="post.header_img"
 							style="border-radius: 5px"
 							:src="post.header_img"
 							:aspect-ratio="16 / 9"
@@ -29,12 +30,7 @@
 							"
 						>
 							<template #placeholder>
-								<v-img
-									v-if="!post.header_img"
-									src="https://database.faithfulpack.net/images/website/posts/placeholder.jpg"
-								/>
 								<v-row
-									v-else
 									class="fill-height ma-0"
 									align="center"
 									justify="center"
@@ -45,6 +41,10 @@
 								</v-row>
 							</template>
 						</v-img>
+						<v-img
+							v-else
+							src="https://database.faithfulpack.net/images/website/posts/placeholder.jpg"
+						/>
 						<v-card-title>{{ post.title }}</v-card-title>
 						<v-card-subtitle>{{ post.permalink }}</v-card-subtitle>
 						<v-card-text style="height: 60px">
@@ -53,7 +53,7 @@
 							<v-btn
 								v-if="post.published"
 								color="blue"
-								:href="`https://faithfulpack.net/${post.permalink}`"
+								:href="`https://faithfulpack.net${post.permalink}`"
 								target="_blank"
 								icon
 								small

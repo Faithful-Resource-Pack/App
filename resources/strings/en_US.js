@@ -36,6 +36,7 @@ export default {
 			load_more: "Load More",
 			discard: "Discard",
 			confirm: "Confirm",
+			publish: "Publish",
 		},
 		tabs: {
 			general: {
@@ -429,6 +430,8 @@ export default {
 			permalink_placeholder: "/faithful32x/R1",
 			header_img: "Header image",
 			header_img_hint: "Note: This must be uploaded separately",
+			date: "Post release date",
+			date_placeholder: "YYYY-MM-DD",
 			description: "Post description",
 			description_hint: "You can use HTML markup to improve your description!",
 		},
