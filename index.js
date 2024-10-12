@@ -719,6 +719,11 @@ const app = new Vue({
 		},
 	},
 	methods: {
+		/** log reactive object */
+		log(...objs) {
+			const cleaned = JSON.parse(JSON.stringify(objs));
+			console.log(cleaned);
+		},
 		langToBCP47(lang) {
 			return LANGUAGES.find((l) => l.lang === lang)?.bcp47;
 		},
