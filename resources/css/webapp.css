@@ -115,12 +115,6 @@ a {
 	border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 }
 
-#app #banner-card {
-	background-image: url(https://database.faithfulpack.net/images/branding/backgrounds/forest.png?w=320);
-	background-position: center;
-	background-size: cover;
-}
-
 #app .v-tabs {
 	width: auto;
 }
@@ -189,7 +183,7 @@ div.tooltip.vue-tooltip-theme {
 	align-items: center;
 }
 
-.banner-btn span {
+.clean-shadow {
 	text-shadow: 2px 2px #000;
 }
 

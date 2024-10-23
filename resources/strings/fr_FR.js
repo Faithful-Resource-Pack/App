@@ -13,11 +13,14 @@ export default {
 		loading: "Chargement, veuillez patienter…",
 		no_results: "Aucun résultat n'a été trouvé",
 		nyi: "N'a pas encore été implémenté.",
+		translations: "Traductions",
 		snackbar_system_theme: {
 			sentence: "Thème système changé en %s",
 			themes: {
-				light: "clair",
-				dark: "sombre",
+				title: "Thème",
+				light: "Clair",
+				dark: "Sombre",
+				system: "Système",
 			},
 		},
 		btn: {
