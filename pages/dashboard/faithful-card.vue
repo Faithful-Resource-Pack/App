@@ -23,7 +23,7 @@
 
 			<v-btn
 				id="login-button"
-				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-2 blurple"
+				class="text-center d-flex justify-center align-center rounded-lg pa-3 my-2 blurple"
 				:href="$root.discordAuth.discordAuthURL"
 			>
 				{{ $root.lang().global.login }}
