@@ -168,7 +168,7 @@ const LANGUAGES = Object.entries(LANGUAGES_MODULES_MAP).map(([e, action]) => {
 		action,
 		bcp47: name.replace("_", "-"),
 		file: e,
-		iso3166: name.split("_")[1].toLowerCase()
+		iso3166: name.split("_")[1].toLowerCase(),
 	};
 });
 
@@ -679,6 +679,21 @@ const app = new Vue({
 		},
 		isDark() {
 			return this.$vuetify.theme.dark;
+		},
+		shortUsername() {
+			const username = this.user.username;
+			if (username.length < 15) return username;
+			return `${username.slice(0, 15)}…`;
+		},
+		bannerStyles() {
+			// this MUST be done through css, using an image does some really strange things with the padding
+			const DEFAULT_IMAGE =
+				"https://database.faithfulpack.net/images/branding/backgrounds/forest.png?w=320";
+			return {
+				backgroundImage: `url(${this.user.banner || DEFAULT_IMAGE})`,
+				backgroundPosition: "center",
+				backgroundSize: "cover",
+			};
 		},
 	},
 	methods: {

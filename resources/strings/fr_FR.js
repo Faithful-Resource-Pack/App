@@ -20,7 +20,7 @@ export default {
 				title: "Thème",
 				light: "Clair",
 				dark: "Sombre",
-				system: "Système"
+				system: "Système",
 			},
 		},
 		btn: {
