@@ -1,5 +1,17 @@
 <template>
-	<post-changelog v-model="changelog" />
+	<div>
+		<!-- root level object is an array so it must be iterated over -->
+		<post-changelog
+			v-for="(item, i) in changelog"
+			v-model="changelog[i]"
+			@delete="remove(i)"
+			:key="i"
+		/>
+		<!-- root level object is the only one that cannot contain string items -->
+		<v-btn class="ma-1" color="secondary" @click="addCategory()">
+			{{ $root.lang().posts.changelog.add_category }}
+		</v-btn>
+	</div>
 </template>
 
 <script>
@@ -12,7 +24,7 @@ export default {
 	},
 	props: {
 		value: {
-			type: Object,
+			type: Array,
 			required: false,
 		},
 	},
@@ -22,43 +34,22 @@ export default {
 		};
 	},
 	methods: {
-		// these parsers took me two days to write
-		convertChangelogToArray(obj, single = false) {
-			if (typeof obj === "string") return obj;
-			if (Array.isArray(obj)) {
-				const s = obj.some((v) => typeof v === "string");
-				return obj.map((v) => this.convertChangelogToArray(v, s));
-			}
-			if (single) {
-				const key = Object.keys(obj)[0];
-				return { category: key, items: this.convertChangelogToArray(obj[key]) };
-			}
-			return Object.entries(obj).map(([category, items]) => ({
-				category,
-				items: this.convertChangelogToArray(items),
-			}));
+		addCategory() {
+			this.$set(this.changelog, this.changelog.length, { category: "", items: [] });
 		},
-		convertChangelogToObject(arr) {
-			if (typeof arr === "string") return arr;
-			if (arr.category !== undefined)
-				return { [arr.category]: arr.items.map((v) => this.convertChangelogToObject(v)) };
-			if (arr.some((v) => typeof v === "string"))
-				return arr.map((v) => this.convertChangelogToObject(v));
-			return arr.reduce((acc, cur) => {
-				acc[cur.category] = this.convertChangelogToObject(cur.items);
-				return acc;
-			}, {});
+		remove(index) {
+			this.changelog.splice(index, 1);
 		},
-	},
-	created() {
-		this.changelog = this.convertChangelogToArray(this.value || { "": [] });
 	},
 	watch: {
-		changelog: {
+		value: {
 			handler(n) {
-				this.$emit("input", this.convertChangelogToObject(n));
+				this.changelog = n;
 			},
-			deep: true,
+			immediate: true,
+		},
+		changelog(n) {
+			this.$emit("input", n);
 		},
 	},
 };

@@ -31,7 +31,7 @@
 			<post-changelog
 				v-for="(el, i) in item.items"
 				v-model="item.items[i]"
-				@delete="remove(i, false)"
+				@delete="remove(i)"
 				:key="i"
 				:level="level + 1"
 				margin
@@ -40,35 +40,6 @@
 				{{ $root.lang().posts.changelog.add_item }}
 			</v-btn>
 			<v-btn class="ma-1" color="secondary" @click="addCategory()">
-				{{ $root.lang().posts.changelog.add_category }}
-			</v-btn>
-		</template>
-		<template v-else-if="item.some((v) => typeof v === 'string')">
-			<post-changelog
-				v-for="(el, i) in item"
-				v-model="item[i]"
-				@delete="remove(i, true)"
-				:key="i"
-				:level="level + 1"
-				margin
-			/>
-			<v-btn class="ma-1" color="secondary" @click="addItem()">
-				{{ $root.lang().posts.changelog.add_item }}
-			</v-btn>
-			<v-btn class="ma-1" color="secondary" @click="addCategory()">
-				{{ $root.lang().posts.changelog.add_category }}
-			</v-btn>
-		</template>
-		<template v-else>
-			<post-changelog
-				v-for="(el, i) in item"
-				v-model="item[i]"
-				@delete="remove(i, true)"
-				:key="i"
-				:level="level"
-				margin
-			/>
-			<v-btn class="ma-1" color="secondary" @click="addCategory(true)">
 				{{ $root.lang().posts.changelog.add_category }}
 			</v-btn>
 		</template>
@@ -118,9 +89,8 @@ export default {
 				});
 			}
 		},
-		remove(i, single = false) {
-			if (single) this.item.splice(i, 1);
-			else this.item.items.splice(i, 1);
+		remove(i) {
+			this.item.items.splice(i, 1);
 		},
 	},
 	computed: {

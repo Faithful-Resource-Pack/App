@@ -24,7 +24,7 @@
 				<v-tabs-items v-model="selectedTab" style="background-color: transparent" class="pb-3">
 					<v-tab-item><general-tab v-model="formData" /></v-tab-item>
 					<v-tab-item><download-tab v-model="downloads" /></v-tab-item>
-					<v-tab-item><changelog-tab v-model="formData.changelog" /></v-tab-item>
+					<v-tab-item><changelog-tab v-model="changelog" /></v-tab-item>
 				</v-tabs-items>
 				<div class="d-flex justify-end pa-2">
 					<v-btn color="darken-1" text @click="() => onSubmit(false)">
@@ -77,17 +77,20 @@ export default {
 		return {
 			formData: {},
 			downloads: [],
+			changelog: [],
 			selectedTab: null,
 		};
 	},
 	methods: {
 		onSubmit(published) {
-			// only send data back on submit (faster)
 			const formData = {
 				...this.formData,
 				published,
 				downloads: this.convertDownloadsToObject(this.downloads),
+				changelog: this.convertChangelogToObject(this.changelog),
 			};
+
+			console.log(JSON.stringify(formData.changelog, null, 4));
 
 			if (!formData.header_img) delete formData.header_img;
 
@@ -138,6 +141,32 @@ export default {
 				return acc;
 			}, {});
 		},
+		convertChangelogToArray(obj, single = false) {
+			if (typeof obj === "string") return obj;
+			if (Array.isArray(obj)) {
+				const s = obj.some((v) => typeof v === "string");
+				return obj.map((v) => this.convertChangelogToArray(v, s));
+			}
+			if (single) {
+				const key = Object.keys(obj)[0];
+				return { category: key, items: this.convertChangelogToArray(obj[key]) };
+			}
+			return Object.entries(obj).map(([category, items]) => ({
+				category,
+				items: this.convertChangelogToArray(items),
+			}));
+		},
+		convertChangelogToObject(arr) {
+			if (typeof arr === "string") return arr;
+			if (arr.category !== undefined)
+				return { [arr.category]: arr.items.map((v) => this.convertChangelogToObject(v)) };
+			if (arr.some((v) => typeof v === "string"))
+				return arr.map((v) => this.convertChangelogToObject(v));
+			return arr.reduce((acc, cur) => {
+				acc[cur.category] = this.convertChangelogToObject(cur.items);
+				return acc;
+			}, {});
+		},
 	},
 	watch: {
 		value(n) {
@@ -147,6 +176,13 @@ export default {
 			handler(n) {
 				if (!n) return;
 				this.downloads = this.convertDownloadsToArray(n);
+			},
+			deep: true,
+		},
+		"formData.changelog": {
+			handler(n) {
+				if (!n) return;
+				this.changelog = this.convertChangelogToArray(n);
 			},
 			deep: true,
 		},
