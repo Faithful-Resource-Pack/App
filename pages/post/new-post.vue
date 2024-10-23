@@ -3,7 +3,7 @@
 		<h4 class="text-h4 py-4">
 			{{ $root.lang().posts.titles.new }}
 		</h4>
-		<post-form v-model="post" />
+		<post-form v-model="post" add />
 	</div>
 </template>
 

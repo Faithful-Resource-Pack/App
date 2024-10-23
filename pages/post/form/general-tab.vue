@@ -30,7 +30,7 @@
 		<v-text-field
 			required
 			clearable
-			v-model="formData.header_img"
+			v-model.lazy="formData.header_img"
 			:label="$root.lang().posts.general.header_img.label"
 			:hint="$root.lang().posts.general.header_img.hint"
 			:placeholder="$root.lang().posts.general.header_img.placeholder"
