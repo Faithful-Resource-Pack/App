@@ -34,7 +34,7 @@ export default {
 				this.post = res.data;
 			})
 			.catch((err) => {
-				console.log(err);
+				console.error(err);
 				this.$root.showSnackBar(err, "error");
 			})
 			.finally(() => {

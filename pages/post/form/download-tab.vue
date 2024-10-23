@@ -3,18 +3,27 @@
 		<v-row dense v-for="(download, i) in downloads" :key="download.key">
 			<template v-if="download.category !== undefined">
 				<v-col cols="12" sm="3">
-					<v-text-field v-model="download.category" :label="$root.lang().posts.download.category" />
+					<v-text-field
+						v-model="download.category"
+						:label="$root.lang().posts.download.category"
+						hide-details
+					/>
 				</v-col>
 				<v-col cols="12" sm="9">
 					<v-row dense v-for="(item, j) in download.items" :key="item.key">
 						<v-col cols="12" sm="3">
-							<v-text-field v-model="item.name" :label="$root.lang().posts.download.name" />
+							<v-text-field
+								v-model="item.name"
+								:label="$root.lang().posts.download.name"
+								hide-details
+							/>
 						</v-col>
 						<v-col cols="12" :sm="j === 0 ? 7 : 8">
 							<v-text-field
 								v-model="item.link"
 								:label="$root.lang().posts.download.link"
 								:placeholder="$root.lang().posts.download.link_placeholder"
+								hide-details
 							/>
 						</v-col>
 						<template v-if="j === 0">

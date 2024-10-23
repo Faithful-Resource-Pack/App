@@ -2,9 +2,9 @@
 	<v-container>
 		<div class="text-h4 py-4">
 			{{ $root.lang().addons.titles.submissions }}
+			<v-progress-circular v-if="loading" indeterminate />
 		</div>
-		<v-progress-circular v-if="loading" indeterminate />
-		<div v-else-if="addons.length === 0">
+		<div v-if="!loading && addons.length === 0">
 			{{ error || $root.lang().global.no_results }}
 		</div>
 		<div v-else class="my-2 text-h5">
@@ -17,15 +17,7 @@
 					<v-card style="background-color: rgba(255, 255, 255, 0.05)">
 						<v-img
 							style="border-radius: 5px"
-							:src="
-								$root.apiURL +
-								'/addons/' +
-								addon.id +
-								'/header?discord=' +
-								$root.user.access_token +
-								'&t=' +
-								timestamp
-							"
+							:src="getHeaderImg(addon.id)"
 							:aspect-ratio="16 / 9"
 							@error="
 								() => {
@@ -145,6 +137,9 @@ export default {
 				.finally(() => {
 					this.loading = false;
 				});
+		},
+		getHeaderImg(id) {
+			return `${this.$root.apiURL}/addons/${id}/header?discord=${this.$root.user.access_token}&t=${this.timestamp}`;
 		},
 		update() {
 			this.getAddons(this.$root.user.id);

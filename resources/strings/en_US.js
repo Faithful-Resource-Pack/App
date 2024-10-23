@@ -436,7 +436,7 @@ export default {
 				placeholder: "/faithfulsmartfridge/A1",
 			},
 			header_img: {
-				label: "Header image",
+				label: "Header image (optional)",
 				hint: "Note: This must be uploaded separately",
 				placeholder: "https://database.faithfulpack.net/images/website/posts/fridge/A1.jpg",
 			},
@@ -460,6 +460,8 @@ export default {
 		},
 		changelog: {
 			heading: "Changelog",
+			add_category: "Add changelog category",
+			add_item: "Add changelog item",
 		},
 	},
 	statistics: {
