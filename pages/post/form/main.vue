@@ -90,8 +90,6 @@ export default {
 				changelog: this.convertChangelogToObject(this.changelog),
 			};
 
-			console.log(JSON.stringify(formData.changelog, null, 4));
-
 			if (!formData.header_img) delete formData.header_img;
 
 			let prom;
