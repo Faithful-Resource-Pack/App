@@ -36,12 +36,14 @@
 				:level="level + 1"
 				margin
 			/>
-			<v-btn class="ma-1" color="secondary" @click="addItem()">
-				{{ $root.lang().posts.changelog.add_item }}
-			</v-btn>
-			<v-btn class="ma-1" color="secondary" @click="addCategory()">
-				{{ $root.lang().posts.changelog.add_category }}
-			</v-btn>
+			<div class="ml-5">
+				<v-btn class="ma-1" color="secondary" @click="addItem">
+					{{ $root.lang().posts.changelog.add_item }}
+				</v-btn>
+				<v-btn class="ma-1" color="secondary" @click="addCategory">
+					{{ $root.lang().posts.changelog.add_category }}
+				</v-btn>
+			</div>
 		</template>
 	</div>
 </template>
@@ -72,22 +74,13 @@ export default {
 	},
 	methods: {
 		addItem() {
-			if (!this.item || !this.item.items) return;
 			this.$set(this.item.items, this.item.items.length, "");
 		},
-		addCategory(setDirectly = false) {
-			if (!this.item) return;
-			if (setDirectly) {
-				this.$set(this.item, this.item.length, {
-					category: "",
-					items: [],
-				});
-			} else {
-				this.$set(this.item.items, this.item.items.length, {
-					category: "",
-					items: [],
-				});
-			}
+		addCategory() {
+			this.$set(this.item.items, this.item.items.length, {
+				category: "",
+				items: [],
+			});
 		},
 		remove(i) {
 			this.item.items.splice(i, 1);
