@@ -8,7 +8,7 @@
 			:key="i"
 		/>
 		<!-- root level object is the only one that cannot contain string items -->
-		<v-btn class="ma-1" color="secondary" @click="addCategory()">
+		<v-btn class="ma-1" color="secondary" @click="addCategory">
 			{{ $root.lang().posts.changelog.add_category }}
 		</v-btn>
 	</div>

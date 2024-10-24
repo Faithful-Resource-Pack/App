@@ -53,11 +53,6 @@ export default {
 		ChangelogTab,
 	},
 	props: {
-		isNew: {
-			type: Boolean,
-			required: false,
-			default: false,
-		},
 		value: {
 			type: Object,
 			required: true,
@@ -139,6 +134,7 @@ export default {
 				return acc;
 			}, {});
 		},
+		// these parsers took me two days to write
 		convertChangelogToArray(obj, single = false) {
 			if (typeof obj === "string") return obj;
 			if (Array.isArray(obj)) {

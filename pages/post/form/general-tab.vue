@@ -46,7 +46,6 @@
 			persistent-placeholder
 		/>
 
-		<!-- Addon description -->
 		<v-textarea
 			clearable
 			v-model="formData.description"

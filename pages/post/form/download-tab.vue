@@ -117,6 +117,7 @@ export default {
 		},
 		removeItemInCategory(i, j) {
 			this.downloads[i].items.splice(j, 1);
+			// remove category if there's no items in it
 			if (!this.downloads[i].items.length) this.downloads.splice(i, 1);
 		},
 	},
