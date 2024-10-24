@@ -26,6 +26,8 @@ declare module "vue/types/vue" {
 		readonly isAdmin: boolean;
 		readonly isDark: boolean;
 
+		// log reactive vue object without all the ugly stuff
+		log(...objs: any[]): void;
 		lang(): typeof strings;
 		lang(key: string): string;
 		jsonSnackBar(json?: string): any;

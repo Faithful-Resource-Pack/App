@@ -39,6 +39,8 @@ export default {
 			load_more: "Load More",
 			discard: "Discard",
 			confirm: "Confirm",
+			publish: "Publish",
+			save_draft: "Save as draft",
 		},
 		tabs: {
 			general: {
@@ -57,18 +59,18 @@ export default {
 					upload: "upload",
 				},
 			},
-			modding: {
-				title: "modding",
-				subtabs: {
-					mod: "submit mod",
-					modpack: "submit modpack",
-				},
-			},
 			review: {
 				title: "reviews",
 				subtabs: {
 					addons: "add-ons",
 					translations: "translations",
+				},
+			},
+			posts: {
+				title: "posts",
+				subtabs: {
+					list: "list",
+					create: "create",
 				},
 			},
 			database: {
@@ -414,6 +416,56 @@ export default {
 			approved: "Approved",
 			denied: "Denied",
 			pending: "Pending",
+		},
+	},
+	posts: {
+		titles: {
+			list: "All posts",
+			edit: "Edit post",
+			new: "Create new post",
+		},
+		status: {
+			published: "Published",
+			pending: "Pending",
+		},
+		loading: "Loading post…",
+		general: {
+			heading: "General",
+			title: {
+				label: "Post title",
+				placeholder: "Faithful Smart Fridge – Alpha 1",
+			},
+			permalink: {
+				label: "Permalink",
+				placeholder: "/faithfulsmartfridge/A1",
+			},
+			header_img: {
+				label: "Header image (optional)",
+				hint: "Note: This must be uploaded separately",
+				placeholder: "https://database.faithfulpack.net/images/website/posts/fridge/A1.jpg",
+			},
+			date: {
+				label: "Post release date",
+				placeholder: "YYYY-MM-DD",
+			},
+			description: {
+				label: "Post description",
+				hint: "You can use HTML markup to improve your description!",
+			},
+		},
+		download: {
+			heading: "Downloads",
+			add_category: "Add download category",
+			add_single_item: "Add single download",
+			category: "Download category name",
+			name: "Download name",
+			link: "Download link",
+			link_placeholder: "https://www.example.com/",
+		},
+		changelog: {
+			heading: "Changelog",
+			add_category: "Add changelog category",
+			add_item: "Add changelog item",
 		},
 	},
 	statistics: {

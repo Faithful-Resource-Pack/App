@@ -29,20 +29,23 @@ Vue.component("tippy", TippyComponent);
 Vue.component("prism-editor", PrismEditor);
 
 // pages used in navbar
-import ContributionPage from "./pages/contribution/main.vue";
-import UsersPage from "./pages/users/main.vue";
-import ContributorStatsPage from "./pages/contribution-stats/main.vue";
-import TexturePage from "./pages/texture/main.vue";
-import PackPage from "./pages/pack/main.vue";
+import DashboardPage from "./pages/dashboard/main.vue";
 import ProfilePage from "./pages/profile/main.vue";
+import ContributorStatsPage from "./pages/contribution-stats/main.vue";
+import GalleryPage from "./pages/gallery/main.vue";
+import AddonSubmissionsPage from "./pages/addon/addon-submissions.vue";
 import NewAddonPage from "./pages/addon/new-addon-form.vue";
 import EditAddonPage from "./pages/addon/edit-addon-form.vue";
-import AddonSubmissionsPage from "./pages/addon/addon-submissions.vue";
 import ReviewAddonsPage from "./pages/review/main.vue";
 import ReviewTranslationsPage from "./pages/translation/main.vue";
-import GalleryPage from "./pages/gallery/main.vue";
+import PostListPage from "./pages/post/post-grid.vue";
+import EditPostPage from "./pages/post/edit-post.vue";
+import NewPostPage from "./pages/post/new-post.vue";
+import ContributionPage from "./pages/contribution/main.vue";
+import UsersPage from "./pages/users/main.vue";
+import TexturePage from "./pages/texture/main.vue";
+import PackPage from "./pages/pack/main.vue";
 import SettingsPage from "./pages/settings/main.vue";
-import DashboardPage from "./pages/dashboard/main.vue";
 import MissingPage from "./pages/404/main.vue";
 
 /**
@@ -321,6 +324,41 @@ const ALL_TABS = [
 						beforeEnter() {
 							location.href = "https://translate.faithfulpack.net/";
 						},
+					},
+				],
+			},
+		],
+		roles: ["Administrator"],
+	},
+	{
+		label: "posts",
+		subtabs: [
+			{
+				enabled: true,
+				icon: "mdi-format-list-bulleted-square",
+				label: "list",
+				routes: [
+					{
+						path: "/posts/list",
+						component: PostListPage,
+						name: "All posts",
+					},
+				],
+			},
+			{
+				enabled: true,
+				icon: "mdi-post",
+				label: "create",
+				routes: [
+					{
+						path: "/posts/new",
+						component: NewPostPage,
+						name: "New post",
+					},
+					{
+						path: "/posts/edit/:id",
+						component: EditPostPage,
+						name: "Edit post",
 					},
 				],
 			},
@@ -697,6 +735,11 @@ const app = new Vue({
 		},
 	},
 	methods: {
+		/** log reactive object */
+		log(...objs) {
+			const cleaned = JSON.parse(JSON.stringify(objs));
+			console.log(cleaned);
+		},
 		langToBCP47(lang) {
 			return LANGUAGES.find((l) => l.lang === lang)?.bcp47;
 		},
@@ -890,4 +933,4 @@ const app = new Vue({
 	}),
 });
 
-if (Vue.config.devtools) window.v = app;
+if (Vue.config.devtools) window.app = app;
