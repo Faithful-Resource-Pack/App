@@ -8,68 +8,37 @@
 			{{ error || $root.lang().global.no_results }}
 		</div>
 		<div v-else class="my-2 text-h5">
-			<v-row>
-				<v-col
-					:cols="$vuetify.breakpoint.mdAndUp ? 4 : $vuetify.breakpoint.smAndUp ? 6 : 12"
-					v-for="addon in addons"
-					:key="addon.id"
-				>
-					<v-card style="background-color: rgba(255, 255, 255, 0.05)">
-						<v-img
-							style="border-radius: 5px"
-							:src="getHeaderImg(addon.id)"
-							:aspect-ratio="16 / 9"
-							@error="
-								() => {
-									failed[addon.id] = true;
-									$forceUpdate();
-									return false;
-								}
-							"
-						>
-							<template #placeholder>
-								<v-row
-									class="fill-height ma-0"
-									align="center"
-									justify="center"
-									style="background-color: rgba(255, 255, 255, 0.1)"
-								>
-									<v-icon v-if="failed[addon.id]" x-large>mdi-image-off</v-icon>
-									<v-progress-circular v-else indeterminate color="grey lighten-5" />
-								</v-row>
-							</template>
-						</v-img>
-						<v-card-title>{{ addon.name }}</v-card-title>
-						<v-card-subtitle>{{ addon.options.tags.join(", ") }}</v-card-subtitle>
-						<v-card-text style="height: 60px">
-							<v-badge dot inline :color="getStatusColor(addon.approval.status)" />
-							{{ $root.lang().addons.status[addon.approval.status] }}
-							<v-btn
-								v-if="addon.approval.status == 'approved'"
-								color="blue"
-								:href="`https://www.faithfulpack.net/addons/${addon.slug}`"
-								target="_blank"
-								icon
-								small
-							>
-								<v-icon small>mdi-open-in-new</v-icon>
-							</v-btn>
-							<div v-if="addon.approval.status === 'denied'">
-								{{ $root.lang().review.addon.labels.reason }}: {{ addon.approval.reason }}
-							</div>
-						</v-card-text>
-
-						<v-card-actions style="justify-content: flex-end">
-							<v-btn text :href="`/addons/edit/${addon.id}`">
-								{{ $root.lang().global.btn.edit }}
-							</v-btn>
-							<v-btn color="red" text @click="deleteAddon(addon)">
-								{{ $root.lang().global.btn.delete }}
-							</v-btn>
-						</v-card-actions>
-					</v-card>
-				</v-col>
-			</v-row>
+			<card-grid :items="addons" :getImage="(addon) => getHeaderImg(addon.id)">
+				<template #title="{ name, options }">
+					<v-card-title>{{ name }}</v-card-title>
+					<v-card-subtitle>{{ options.tags.join(", ") }}</v-card-subtitle>
+				</template>
+				<template #text="{ approval, slug }">
+					<v-badge dot inline :color="getStatusColor(approval.status)" />
+					{{ $root.lang().addons.status[approval.status] }}
+					<v-btn
+						v-if="approval.status == 'approved'"
+						color="blue"
+						:href="`https://www.faithfulpack.net/addons/${slug}`"
+						target="_blank"
+						icon
+						small
+					>
+						<v-icon small>mdi-open-in-new</v-icon>
+					</v-btn>
+					<div v-if="approval.status === 'denied'">
+						{{ $root.lang().review.addon.labels.reason }}: {{ approval.reason }}
+					</div>
+				</template>
+				<template #btns="addon">
+					<v-btn text :href="`/addons/edit/${addon.id}`">
+						{{ $root.lang().global.btn.edit }}
+					</v-btn>
+					<v-btn color="red" text @click="deleteAddon(addon)">
+						{{ $root.lang().global.btn.delete }}
+					</v-btn>
+				</template>
+			</card-grid>
 		</div>
 
 		<addon-remove-confirm
@@ -89,11 +58,13 @@
 import axios from "axios";
 
 import AddonRemoveConfirm from "./addon-remove-confirm.vue";
+import CardGrid from "@components/card-grid.vue";
 
 export default {
 	name: "addon-submissions",
 	components: {
 		AddonRemoveConfirm,
+		CardGrid,
 	},
 	data() {
 		return {

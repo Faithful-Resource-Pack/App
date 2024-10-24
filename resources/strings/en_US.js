@@ -40,6 +40,7 @@ export default {
 			discard: "Discard",
 			confirm: "Confirm",
 			publish: "Publish",
+			save_draft: "Save as draft",
 		},
 		tabs: {
 			general: {

@@ -50,21 +50,26 @@
 				<v-col cols="12" sm="3">
 					<v-text-field v-model="download.name" :label="$root.lang().posts.download.name" />
 				</v-col>
-				<v-col cols="12" sm="8">
-					<v-text-field
-						v-model="download.link"
-						:label="$root.lang().posts.download.link"
-						:placeholder="$root.lang().posts.download.link_placeholder"
-					/>
-				</v-col>
-				<v-col cols="12" sm="1">
-					<v-btn icon @click="removeItem(i)" color="red lighten-1">
-						<v-icon>mdi-minus</v-icon>
-					</v-btn>
+				<v-col cols="12" sm="9">
+					<!-- extra nesting required to align the delete buttons with categories -->
+					<v-row dense>
+						<v-col cols="12" sm="11">
+							<v-text-field
+								v-model="download.link"
+								:label="$root.lang().posts.download.link"
+								:placeholder="$root.lang().posts.download.link_placeholder"
+							/>
+						</v-col>
+						<v-col cols="12" sm="1">
+							<v-btn icon @click="removeItem(i)" color="red lighten-1">
+								<v-icon>mdi-minus</v-icon>
+							</v-btn>
+						</v-col>
+					</v-row>
 				</v-col>
 			</template>
 		</v-row>
-		<v-row>
+		<v-row dense>
 			<v-col>
 				<v-btn block color="secondary" @click="addSingleItem">
 					{{ $root.lang().posts.download.add_single_item }}

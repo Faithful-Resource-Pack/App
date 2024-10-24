@@ -53,9 +53,10 @@ export default {
 	name: "post-changelog",
 	props: {
 		value: {
-			type: [String, Object, Array],
+			type: [String, Object],
 			required: true,
 		},
+		// what size title to use (default h4)
 		level: {
 			type: Number,
 			required: false,
