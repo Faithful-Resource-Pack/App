@@ -5,7 +5,7 @@
 			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
 		</div>
 		<template v-else>
-			<v-tabs v-model="selectedTab" grow>
+			<v-tabs v-model="selectedTab" grow :class="[{ 'mx-n3': !$vuetify.breakpoint.mdAndUp }]">
 				<v-tab style="text-transform: uppercase">
 					{{ $root.lang().posts.general.heading }}
 				</v-tab>
