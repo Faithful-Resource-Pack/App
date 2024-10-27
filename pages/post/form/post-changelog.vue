@@ -2,7 +2,13 @@
 	<div :class="margin ? 'ml-5' : ''">
 		<v-row dense v-if="typeof item === 'string'">
 			<v-col cols="12" sm="11">
-				<v-text-field dense clearable v-model="item" hide-details />
+				<v-text-field
+					dense
+					clearable
+					v-model="item"
+					:placeholder="$root.lang().posts.changelog.form_levels.item"
+					hide-details
+				/>
 			</v-col>
 			<v-col cols="12" sm="1">
 				<v-btn icon :size="categoryHeight" @click="$emit('delete')">
@@ -18,6 +24,7 @@
 						clearable
 						hide-details
 						v-model="item.category"
+						:placeholder="categoryPlaceholder"
 						:class="classList"
 						:height="categoryHeight"
 					/>
@@ -38,10 +45,10 @@
 			/>
 			<div class="ml-5">
 				<v-btn class="ma-1" color="secondary" @click="addItem">
-					{{ $root.lang().posts.changelog.add_item }}
+					{{ $root.lang().posts.changelog.add_item }}<v-icon right>mdi-plus</v-icon>
 				</v-btn>
 				<v-btn class="ma-1" color="secondary" @click="addCategory">
-					{{ $root.lang().posts.changelog.add_category }}
+					{{ $root.lang().posts.changelog.add_category }}<v-icon right>mdi-plus</v-icon>
 				</v-btn>
 			</div>
 		</template>
@@ -98,6 +105,17 @@ export default {
 		categoryHeight() {
 			if (this.isNested) return "";
 			return `${this.level * 5 + 30}px`;
+		},
+		categoryPlaceholder() {
+			const levels = this.$root.lang().posts.changelog.form_levels;
+			switch (this.level) {
+				case 4:
+					return levels.primary;
+				case 5:
+					return levels.secondary;
+				default:
+					return levels.item_category;
+			}
 		},
 	},
 	watch: {

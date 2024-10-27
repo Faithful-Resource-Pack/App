@@ -7,9 +7,12 @@
 			@delete="remove(i)"
 			:key="i"
 		/>
+		<div class="py-5" v-if="changelog.length">
+			<v-divider />
+		</div>
 		<!-- root level object is the only one that cannot contain string items -->
-		<v-btn class="ma-1" color="secondary" @click="addCategory">
-			{{ $root.lang().posts.changelog.add_category }}
+		<v-btn class="my-1" block color="secondary" @click="addCategory">
+			{{ $root.lang().posts.changelog.add_category }}<v-icon right>mdi-plus</v-icon>
 		</v-btn>
 	</div>
 </template>

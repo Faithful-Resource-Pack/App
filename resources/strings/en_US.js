@@ -466,6 +466,12 @@ export default {
 			heading: "Changelog",
 			add_category: "Add changelog category",
 			add_item: "Add changelog item",
+			form_levels: {
+				primary: "Primary category",
+				secondary: "Secondary category",
+				item_category: "Item category (Authors)",
+				item: "Item (Authors)",
+			},
 		},
 	},
 	statistics: {

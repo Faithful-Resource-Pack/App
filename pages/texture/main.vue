@@ -87,7 +87,7 @@
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
-						{{ $root.lang().database.labels.add_texture }} <v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.labels.add_texture }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
