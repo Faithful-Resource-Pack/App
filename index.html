@@ -72,7 +72,7 @@
 
 				<v-spacer></v-spacer>
 				<v-menu left offset-y open-on-hover transition="slide-y-transition">
-					<template v-slot:activator="{ on, attrs }">
+					<template #activator="{ on, attrs }">
 						<v-btn min-width="0" class="px-1 ms-2" v-bind="attrs" v-on="on" elevation="0">
 							<v-icon>mdi-theme-light-dark</v-icon>
 							<v-icon small>mdi-chevron-down</v-icon>
@@ -93,16 +93,16 @@
 							dense
 						>
 							<v-list-item-icon class="me-4">
-								<v-icon v-text="icon"></v-icon>
+								<v-icon>{{ icon }}</v-icon>
 							</v-list-item-icon>
-							<v-list-item-title>{{
-								$root.lang().global.snackbar_system_theme.themes[key]
-							}}</v-list-item-title>
+							<v-list-item-title>
+								{{ $root.lang().global.snackbar_system_theme.themes[key] }}
+							</v-list-item-title>
 						</v-list-item>
 					</v-list>
 				</v-menu>
 				<v-menu right offset-y open-on-hover transition="slide-y-transition">
-					<template v-slot:activator="{ on, attrs }">
+					<template #activator="{ on, attrs }">
 						<v-btn min-width="0" class="px-1 ms-2" v-bind="attrs" v-on="on" elevation="0">
 							<v-icon>mdi-translate</v-icon>
 							<v-icon small>mdi-chevron-down</v-icon>
@@ -165,7 +165,7 @@
 									:alt="user.username.charAt(0)"
 									:src="user.avatar"
 								/>
-								<span class="text-center primary font-weight-bold" v-else>
+								<span v-else class="text-center primary font-weight-bold">
 									{{ user.username[0] }}
 								</span>
 							</v-avatar>
@@ -177,7 +177,7 @@
 							</v-btn>
 						</v-card-actions>
 					</div>
-					<div class="px-5 py-5" v-else>
+					<div v-else class="px-5 py-5">
 						<v-btn
 							block
 							class="blurple"

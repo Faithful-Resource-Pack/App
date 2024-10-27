@@ -59,14 +59,7 @@
 											class="mr-1 px-2"
 											x-small
 											v-for="(range, range_i) in form.texture"
-											:key="
-												'item-' +
-												form.formId +
-												'-chip-' +
-												String(range).replace(',', '-') +
-												'+' +
-												range_i
-											"
+											:key="`item-${form.formId}-chip-${String(range).replace(',', '-')}+${range_i}`"
 										>
 											{{ "#" + (Array.isArray(range) ? range.join(" — #") : String(range)) }}
 										</v-chip>

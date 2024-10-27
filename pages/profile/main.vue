@@ -192,35 +192,35 @@ export default {
 			usernameMaxLength: 24,
 			mediaTypes: settings.socials,
 			validationObject: {},
-			urlRules: [(u) => this.validForm("social:exists", this.validURL(u), "URL must be valid.")],
+			urlRules: [(u) => this.validate("social:exists", this.validURL(u), "URL must be valid.")],
 			mediaTypeRules: [
 				(u) =>
-					this.validForm(
+					this.validate(
 						"social:exists",
 						u && typeof u === "string" && u.trim().length > 0,
 						"Social type is required.",
 					),
 				(u) =>
-					this.validForm("social:valid", this.mediaTypes.includes(u), "Social type must be valid."),
+					this.validate("social:valid", this.mediaTypes.includes(u), "Social type must be valid."),
 			],
 			uuidRules: [
 				(u) =>
-					this.validForm(
+					this.validate(
 						"uuid:length",
 						(u && u.length === this.uuidMaxLength) || !u,
 						"UUID needs to be 36 characters long.",
 					),
 			],
 			usernameRules: [
-				(u) => this.validForm("username:exists", !!u, "Username is required."),
+				(u) => this.validate("username:exists", !!u, "Username is required."),
 				(u) =>
-					this.validForm(
+					this.validate(
 						"username:content",
 						u && typeof u === "string" && u.trim().length > 0,
 						`Username cannot be empty`,
 					),
 				(u) =>
-					this.validForm(
+					this.validate(
 						"username:length",
 						u && u.length <= this.usernameMaxLength,
 						`Username must be less than ${this.usernameMaxLength} characters.`,
@@ -241,14 +241,14 @@ export default {
 		removeSocialMedia(index) {
 			this.localUser.media.splice(index, 1);
 		},
-		validForm(scope, boolResult, sentence) {
+		validate(scope, value, msg) {
 			if (scope.startsWith("username:") || scope.startsWith("uuid:")) {
 				// socials are validated separately since there's multiple of them
-				this.$set(this.validationObject, scope, boolResult);
+				this.$set(this.validationObject, scope, value);
 			}
 
-			if (boolResult) return true;
-			return sentence.toString();
+			if (value) return true;
+			return msg.toString();
 		},
 		send() {
 			if (!this.$root.isUserLogged) return;

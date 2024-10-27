@@ -11,7 +11,7 @@
 			<card-grid :items="posts" :getImage="(post) => post.header_img">
 				<template #title="{ title, permalink }">
 					<v-card-title style="word-break: break-word">{{ title }}</v-card-title>
-					<v-card-subtitle class="text-truncate">{{ permalink }}</v-card-subtitle>
+					<v-card-subtitle>{{ permalink }}</v-card-subtitle>
 				</template>
 				<template #text="{ published, permalink }">
 					<v-badge dot inline :color="published ? 'green' : 'yellow'" />
