@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		:title="$root.lang('dashboard.titles.users')"
-		href="/users"
+		to="/users"
 		:clickable="$root.isAdmin"
 	>
 		<v-card-text class="pb-3">

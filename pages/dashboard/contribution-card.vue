@@ -2,7 +2,7 @@
 	<dashboard-card
 		id="contribution-card"
 		:title="$root.lang('dashboard.titles.contribution_activity')"
-		href="/contributions"
+		to="/contributions"
 		:clickable="$root.isAdmin"
 		class="d-flex flex-column"
 	>

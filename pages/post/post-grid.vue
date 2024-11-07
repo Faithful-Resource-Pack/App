@@ -28,7 +28,7 @@
 					</v-btn>
 				</template>
 				<template #btns="post">
-					<v-btn text :href="`/posts/edit/${post.id}`">
+					<v-btn text :to="`/posts/edit/${post.id}`">
 						{{ $root.lang().global.btn.edit }}
 					</v-btn>
 					<v-btn color="red" text @click="deletePost(post)">

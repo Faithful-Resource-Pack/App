@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		:title="$root.lang('dashboard.titles.profile')"
-		href="/profile"
+		to="/profile"
 		clickable
 		class="d-flex flex-column"
 	>

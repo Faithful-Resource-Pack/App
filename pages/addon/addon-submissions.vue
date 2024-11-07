@@ -31,7 +31,7 @@
 					</div>
 				</template>
 				<template #btns="addon">
-					<v-btn text :href="`/addons/edit/${addon.id}`">
+					<v-btn text :to="`/addons/edit/${addon.id}`">
 						{{ $root.lang().global.btn.edit }}
 					</v-btn>
 					<v-btn color="red" text @click="deleteAddon(addon)">

@@ -17,7 +17,7 @@
 				</h3>
 
 				<div class="text-center pt-2">
-					<a href="https://twitter.com/faithfulpack" target="href">@FaithfulPack</a>
+					<a href="https://twitter.com/faithfulpack" target="_blank">@FaithfulPack</a>
 				</div>
 			</div>
 

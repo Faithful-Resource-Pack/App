@@ -95,7 +95,7 @@
 		<smart-grid v-if="search.search_results.length" :items="search.search_results" track="id">
 			<template #default="{ item }">
 				<v-list-item-avatar tile class="texture-preview">
-					<a :href="`/gallery?show=${item.texture}`">
+					<a :href="`/gallery?show=${item.texture}`" target="_blank">
 						<v-img class="texture-img" :src="item.url" :lazy-src="logos[item.pack]" />
 					</a>
 				</v-list-item-avatar>

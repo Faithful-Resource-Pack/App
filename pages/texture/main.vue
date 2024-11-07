@@ -120,7 +120,7 @@
 			track="id"
 		>
 			<template #default="{ item }">
-				<a :href="`/gallery?show=${item.id}`">
+				<a :href="`/gallery?show=${item.id}`" target="_blank">
 					<v-list-item-avatar tile class="database-list-avatar text--primary">
 						{{ item.id }}
 					</v-list-item-avatar>
