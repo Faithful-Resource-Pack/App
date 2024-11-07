@@ -13,11 +13,20 @@
 
 			<div class="mt-2 mx-auto" id="connect-title">
 				<h3 class="faithful-font uppercase-unsized text-center text--primary card-text-shadow">
-					{{ $root.lang("global.name") }}
+					{{ $root.lang().global.name }}
 				</h3>
 
-				<div class="text-center pt-2">
-					<a href="https://twitter.com/faithfulpack" target="_blank">@FaithfulPack</a>
+				<div class="d-flex mt-3 justify-center">
+					<v-btn
+						v-for="listing in listings"
+						:key="listing.name"
+						:href="listing.href"
+						target="_blank"
+						class="text--secondary"
+						icon
+					>
+						<v-icon>{{ listing.icon }}</v-icon>
+					</v-btn>
 				</div>
 			</div>
 
@@ -39,6 +48,16 @@ export default {
 	name: "faithful-card",
 	components: {
 		DashboardCard,
+	},
+	data() {
+		return {
+			listings: [
+				{ icon: "mdi-cube", href: "https://faithfulpack.net/news" },
+				{ icon: "mdi-twitter", href: "https://twitter.com/faithfulpack" },
+				{ icon: "mdi-reddit", href: "https://reddit.com/r/faithfulpack" },
+				{ icon: "mdi-github", href: "https://github.com/faithful-resource-pack" },
+			],
+		};
 	},
 };
 </script>

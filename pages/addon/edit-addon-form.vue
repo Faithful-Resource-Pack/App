@@ -1,10 +1,12 @@
 <template>
 	<div class="container">
 		<h4 class="text-h4 py-4">
-			{{ $root.lang().addons.titles.edit }} <span id="addon-id">#{{ this.id }}</span>
+			<v-btn large icon class="ml-4" to="/addons/submissions">
+				<v-icon>mdi-chevron-left</v-icon>
+			</v-btn>
+			{{ $root.lang().addons.titles.edit }} <span class="thin-text">#{{ this.id }}</span>
 		</h4>
 		<addon-form
-			class="pa-0"
 			:addon-new="false"
 			:loading="loading"
 			:addon-data="addonData"

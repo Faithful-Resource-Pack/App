@@ -8,7 +8,7 @@
 		</div>
 		<v-list
 			v-else
-			:class="['main-container', 'my-2 pa-4', { 'mx-n3': !$vuetify.breakpoint.mdAndUp }]"
+			:class="['main-container', 'mb-2 pa-4', { 'mx-n3': !$vuetify.breakpoint.mdAndUp }]"
 			:rounded="$vuetify.breakpoint.mdAndUp"
 			two-line
 		>

@@ -9,7 +9,11 @@
 			<div v-if="user.roles.length === 0" />
 
 			<div class="text-center">
-				<v-list-item-avatar tile class="rounded-lg my-3 mr-0 primary" size="120">
+				<v-list-item-avatar
+					tile
+					:class="['rounded-lg', 'my-3', 'mr-0', user.avatar ? 'transparent' : 'primary']"
+					size="120"
+				>
 					<v-img :src="user.avatar" v-if="user.avatar" />
 					<div class="text-h5 text-center text--primary font-weight-medium" v-else>
 						{{ user.username[0] }}
@@ -18,11 +22,11 @@
 			</div>
 
 			<div class="my-2">
-				<div class="text-h5 text-center text--primary" id="user-username">
+				<div class="text-h5 text-center text--primary mb-2" id="user-username">
 					{{ user.username }}
 				</div>
 
-				<div class="font-weight-light text--secondary text-center">
+				<div class="text--secondary text-center">
 					{{ user.id }}
 				</div>
 			</div>

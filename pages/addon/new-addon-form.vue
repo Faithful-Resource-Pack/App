@@ -2,7 +2,6 @@
 	<div class="container">
 		<h4 class="text-h4 py-4">{{ $root.lang().addons.titles.submit }}</h4>
 		<addon-form
-			class="pa-0"
 			addon-new
 			:screen-sources="screenSources"
 			:screen-ids="screenshotIds"

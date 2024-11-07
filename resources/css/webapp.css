@@ -447,7 +447,7 @@ blockquote {
 	text-align: center;
 }
 
-#addon-id {
+.thin-text {
 	font-weight: 300;
 	opacity: 0.7;
 }
