@@ -158,6 +158,18 @@ String.urlRegex = new RegExp(
 );
 
 /**
+ * PWA REGISTRATION
+ */
+
+if ("serviceWorker" in navigator) {
+	navigator.serviceWorker
+		.register("/service-worker.js")
+		.catch((err) => {
+			console.error("Failed to register PWA Service Worker:", err);
+		});
+}
+
+/**
  * LANGUAGES
  */
 

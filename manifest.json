@@ -1,0 +1,17 @@
+{
+	"short_name": "Faithful App",
+	"start_url": "/",
+	"display": "minimal-ui",
+	"icons": [
+		{
+			"src": "https://faithfulpack.net/image/pwa/app-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "https://faithfulpack.net/image/pwa/app-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
