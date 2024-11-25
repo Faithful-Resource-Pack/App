@@ -2,8 +2,6 @@
 	"short_name": "Faithful",
 	"start_url": "/",
 	"display": "minimal-ui",
-	"background_color": "#22202C",
-	"theme_color": "#76C945",
 	"icons": [
 		{
 			"src": "https://faithfulpack.net/image/pwa/app-192x192.png",
