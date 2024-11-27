@@ -1,7 +1,8 @@
 {
+	"name": "Faithful Web Application",
 	"short_name": "Faithful",
 	"start_url": "/",
-	"display": "minimal-ui",
+	"display": "fullscreen",
 	"icons": [
 		{
 			"src": "https://faithfulpack.net/image/pwa/app-192x192.png",

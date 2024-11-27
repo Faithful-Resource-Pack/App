@@ -82,7 +82,7 @@ export default {
 
 			e.preventDefault();
 			const files = e.dataTransfer.files;
-			if (!Array.from(files).every((file) => this.accept.includes(file.type_))) {
+			if (!Array.from(files).every((file) => this.accept.includes(file.type))) {
 				this.$root.showSnackBar(this.$root.lang().addons.images.header.rules.jpeg, "error");
 				this.isDragging = false;
 				return;
