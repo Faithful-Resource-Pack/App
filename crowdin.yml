@@ -1,0 +1,3 @@
+files:
+  - source: /resources/strings/*.js
+    translation: /resources/strings/%locale_with_underscore%.js
