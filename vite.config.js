@@ -4,7 +4,7 @@ import { defineConfig, loadEnv } from "vite";
 
 export default defineConfig(({ mode }) => {
 	const env = loadEnv(mode, process.cwd(), "");
-	/** @type{import('vite').UserConfig}*/
+	/** @type {import('vite').UserConfig} */
 	return {
 		plugins: [vue()],
 		// custom port instead of 5173 always
