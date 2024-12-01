@@ -1,6 +1,8 @@
 <!doctype html>
-<html lang="EN">
+<html lang="en">
 	<head>
+		<meta charset="utf-8">
+
 		<title>Faithful Web Application</title>
 		<meta name="theme-color" content="#76C945" />
 		<link
@@ -8,10 +10,7 @@
 			href="https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/site/favicon.ico"
 		/>
 
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui"
-		/>
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 		<!-- HTML Meta Tags -->
 		<meta name="description" content="The official web application for the Faithful website." />
@@ -70,6 +69,7 @@
 		<link rel="stylesheet" href="./resources/css/webapp.css" />
 	</head>
 	<body>
+		<!-- HTML parsing rules apply here; no auto-closing tags -->
 		<v-app id="app" ref="app" :dark="dark" :light="!dark">
 			<v-app-bar flat dense bar app class="small-app-bar">
 				<span class="mr-2 d-flex noselect">
@@ -255,11 +255,10 @@
 							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0
 						"
 					>
-						<!-- auto-closing tags break here for some reason -->
 					</v-divider>
 				</div>
 
-				<!-- Fix problem on firefox on mobile where bar disappears and elements fixed are hidden -->
+				<!-- Fix problem on firefox on mobile where bar disappears and fixed elements are hidden -->
 				<div class="py-8" v-if="!isDesktop"></div>
 			</v-navigation-drawer>
 
