@@ -3,7 +3,6 @@ import VueRouter from "vue-router";
 import Vuetify from "vuetify";
 import VueTippy, { TippyComponent } from "vue-tippy";
 import { PrismEditor } from "vue-prism-editor";
-import VueGraph from "vue-graph";
 import VueCalendarHeatmap from "vue-calendar-heatmap";
 
 import axios from "axios";
@@ -22,7 +21,6 @@ import { appUserStore } from "./stores/appUserStore.js";
 Vue.config.devtools = import.meta.env.MODE === "development";
 Vue.use(Vuetify);
 Vue.use(VueRouter);
-Vue.use(VueGraph);
 Vue.use(VueTippy);
 Vue.use(VueCalendarHeatmap);
 Vue.component("tippy", TippyComponent);

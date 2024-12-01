@@ -60,8 +60,15 @@
 </template>
 
 <script>
+import GraphTreemap from "vue-graph/src/components/treemap.js";
+import Tooltip from "vue-graph/src/widgets/tooltip.js";
+
 export default {
 	name: "roles-graph",
+	components: {
+		GraphTreemap,
+		Tooltip,
+	},
 	props: {
 		series: {
 			required: true,
