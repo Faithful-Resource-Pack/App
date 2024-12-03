@@ -542,9 +542,6 @@ const app = new Vue({
 			axios.get(`${this.apiURL}/${url}`, this.apiOptions).then((r) => {
 				this.$set(this.badges, url, r.data.length || 0);
 			});
-
-			// 30 seconds
-			setInterval(() => this.loadBadge(url), 30000);
 		},
 		jsonSnackBar(json = undefined) {
 			return {
@@ -848,7 +845,8 @@ const app = new Vue({
 				.filter((s) => !s.unlogged);
 
 			subtabs.forEach((s) => {
-				if (s.badge) this.loadBadge(s.badge);
+				// 30 seconds
+				if (s.badge) setInterval(() => this.loadBadge(s.badge), 30000);
 			});
 
 			subtabs
