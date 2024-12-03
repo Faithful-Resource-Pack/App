@@ -615,6 +615,7 @@ code {
 	position: relative;
 	background-size: cover;
 	background-position: center;
+	aspect-ratio: 1 !important;
 }
 
 .gallery-texture-in-container .gallery-share {

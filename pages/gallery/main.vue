@@ -7,7 +7,7 @@
 		<v-row class="my-2">
 			<v-col cols="12" sm="6">
 				<v-slider
-					:label="$root.lang('gallery.max_items_per_row')"
+					:label="$root.lang().gallery.max_items_per_row"
 					v-model="columns"
 					step="1"
 					thumb-label
@@ -19,7 +19,7 @@
 				/>
 			</v-col>
 			<v-col cols="12" :sm="$root.isAdmin ? 3 : 6">
-				<v-switch :label="$root.lang('gallery.stretched_switcher')" v-model="stretched" />
+				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
 			<v-col cols="12" sm="3" v-if="$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
@@ -62,6 +62,7 @@
 				/>
 			</v-col>
 		</v-row>
+		<!-- prop drilling mostly to save requests -->
 		<gallery-grid
 			v-model="columns"
 			:loading="loading"

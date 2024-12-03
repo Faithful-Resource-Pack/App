@@ -15,7 +15,6 @@
 				v-for="(texture, index) in sortedTextures"
 				v-if="index <= displayedResults"
 				:key="sort + texture.textureID"
-				:style="styles.cell"
 				class="gallery-texture-in-container"
 				@click.exact.stop="$emit('open', texture.textureID)"
 				@click.middle.stop="$emit('openNewTab', texture.textureID)"
@@ -122,8 +121,6 @@ export default {
 			displayedResults: 1,
 			// styles
 			styles: {
-				// gallery cell styles
-				cell: { "aspect-ratio": "1" },
 				// grid styles
 				grid: undefined,
 				// placeholder font size styles
@@ -229,7 +226,7 @@ export default {
 	},
 	watch: {
 		pack(n, o) {
-			if (n === o || !Object.keys(this.loadedContributions)) return;
+			if (n === o || !Object.keys(this.loadedContributions),length) return;
 			this.lastContributions = this.getLastContributions(n);
 		},
 		value(newValue) {
