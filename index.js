@@ -543,7 +543,7 @@ const app = new Vue({
 				this.$set(this.badges, url, r.data.length || 0);
 			});
 			// since it's recursive you don't need setInterval
-			return setTimeout(() => loadBadge(url), 30000);
+			return setTimeout(() => this.loadBadge(url), 30000);
 		},
 		jsonSnackBar(json = undefined) {
 			return {
