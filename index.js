@@ -542,6 +542,8 @@ const app = new Vue({
 			axios.get(`${this.apiURL}/${url}`, this.apiOptions).then((r) => {
 				this.$set(this.badges, url, r.data.length || 0);
 			});
+			// since it's recursive you don't need setInterval
+			return setTimeout(() => loadBadge(url), 30000);
 		},
 		jsonSnackBar(json = undefined) {
 			return {
@@ -846,7 +848,7 @@ const app = new Vue({
 
 			subtabs.forEach((s) => {
 				// 30 seconds
-				if (s.badge) setInterval(() => this.loadBadge(s.badge), 30000);
+				if (s.badge) this.loadBadge(s.badge);
 			});
 
 			subtabs

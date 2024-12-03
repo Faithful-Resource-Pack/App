@@ -1114,15 +1114,11 @@ body .database-list-avatar {
 	overflow-y: auto;
 }
 
-#review-content #preview-here {
-	height: 100%;
-}
-
 #review-content #review-list {
 	width: 40%;
 }
 
-#review-content #review-previewer {
+#review-content #review-preview-container {
 	width: 60%;
 }
 

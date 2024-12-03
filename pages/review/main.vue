@@ -44,8 +44,8 @@ d88   888  888    888 d88   888
 							:empty="empty"
 						/>
 					</div>
-					<div id="review-previewer">
-						<review-preview :addonId="selectedAddonId" color="#9575cd" />
+					<div id="review-preview-container">
+						<review-preview :addonId="selectedAddonId" />
 					</div>
 				</template>
 				<template v-else>
@@ -80,7 +80,7 @@ import ExpansionPanel from "./expansion-panel.vue";
 import DenyPopup from "./deny-popup.vue";
 import ReviewCategories from "./review-categories.vue";
 import ReviewList from "./review-list.vue";
-import ReviewPreview from "./review-previewer.vue";
+import ReviewPreview from "./review-preview.vue";
 
 const searchMixin = {
 	methods: {

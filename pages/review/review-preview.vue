@@ -13,7 +13,11 @@
 							<span class="text--secondary font-weight-regular">{{ `#${addonInPanel.id}` }}</span>
 						</h2>
 						<div class="text--secondary subtitle-2 mt-1" style="line-height: 14px">
-							{{ ([...addonInPanel.options.tags] || []).sort().join(" • ") }}
+							{{
+								Array.from(addonInPanel.options.tags || [])
+									.sort()
+									.join(" • ")
+							}}
 						</div>
 					</div>
 					<v-btn id="edit-btn" icon class="ml-auto" :href="`/addons/edit/${addonInPanel.id}`">
@@ -89,7 +93,7 @@
 							>
 								<li>
 									{{ file.name }} -
-									<a :href="file.source" class="text--secondary">
+									<a :href="file.source" target="_blank" class="text--secondary">
 										{{ $root.lang().review.addon.labels.link }}
 										<v-icon small color="light-blue">mdi-open-in-new</v-icon>
 									</a>

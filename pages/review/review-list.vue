@@ -6,7 +6,7 @@
 				v-for="(item, i) in items"
 				:key="item.key"
 				:class="classes[i]"
-				@click="() => onClick(item.key)"
+				@click="$emit('input', item.key)"
 			>
 				<v-list-item-content>
 					<v-list-item-title>{{ item.primary }}</v-list-item-title>
@@ -39,11 +39,6 @@ export default {
 		activeColor: {
 			type: String,
 			required: true,
-		},
-	},
-	methods: {
-		onClick(key) {
-			this.$emit("input", key);
 		},
 	},
 	computed: {
