@@ -317,7 +317,8 @@ const ALL_TABS = [
 				enabled: true,
 				icon: "mdi-puzzle",
 				label: "addons",
-				badge: "/addons/pending",
+				// api url to get badge data from
+				badge: "addons/pending",
 				routes: [{ path: "/review/addons", component: ReviewAddonsPage, name: "Add-on Review" }],
 			},
 			{
@@ -502,119 +503,121 @@ const app = new Vue({
 			atl: [],
 		};
 	},
-	watch: {
-		selectedLang: {
-			handler(newValue, oldValue) {
-				_set_lang(newValue);
-				if (Object.keys(this.langs).includes(newValue)) {
-					if (Object.keys(this.langs).includes(oldValue)) {
-						moment.locale(this.langBCP47);
+	methods: {
+		/** log reactive object */
+		log(...objs) {
+			const cleaned = JSON.parse(JSON.stringify(objs));
+			console.log(cleaned);
+		},
+		langToBCP47(lang) {
+			return LANGUAGES.find((l) => l.lang === lang)?.bcp47;
+		},
+		loadLanguage(language) {
+			const lang = this.languages.find((l) => l.lang === language);
+			if (!lang) return;
 
+			moment.locale(lang.bcp47);
+
+			if (this.langs[lang.lang]) {
+				return; // everything will update
+			}
+
+			lang
+				.action()
+				.then((r) => {
+					r = r.default;
+					this.langs[lang.lang] = Object.merge({}, en_US, r);
+					// we need to wait for this.langs to be updated
+					this.$nextTick(() => {
 						// the next line would force this.lang to update
 						this.refreshKey++;
-					}
-				} else {
-					this.loadLanguage(newValue);
-				}
-			},
-			immediate: true,
+					});
+				})
+				.catch((e) => {
+					this.showSnackBar(e.toString(), "error");
+				});
 		},
-		dark: {
-			handler(n, o) {
-				if (o == undefined) {
-					const isDark = window.localStorage.getItem("DARK_THEME");
-					this.dark = isDark === null ? true : isDark === "true";
-					this.$vuetify.theme.dark = this.dark;
-				} else {
-					if (n === false || n === true) {
-						this.$vuetify.theme.dark = n;
-						window.localStorage.setItem("DARK_THEME", String(n));
-					}
-				}
-			},
-			immediate: true,
-		},
-		theme: {
-			handler(n) {
-				const availableThemes = Object.keys(this.themes);
-				if (n == undefined) {
-					let theme = window.localStorage.getItem("THEME");
-
-					if (!availableThemes.includes(theme)) theme = availableThemes[0];
-
-					this.theme = theme;
-					return;
-				}
-				if (!availableThemes.includes(n)) {
-					this.theme = availableThemes[0];
-					return;
-				}
-
-				window.localStorage.setItem("THEME", String(n));
-				const isDark =
-					n != "light" &&
-					(n == "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches);
-				this.$vuetify.theme.dark = isDark;
-			},
-			immediate: true,
-		},
-		isDark: {
-			handler(n) {
-				const arr = ["theme--light", "theme--dark"];
-				if (n) arr.reverse();
-
-				const html = document.querySelector("html");
-
-				html.classList.add(arr[0]);
-				html.classList.remove(arr[1]);
-			},
-			immediate: true,
-		},
-		drawer(n) {
-			localStorage.setItem(MENU_KEY, String(n));
-		},
-		isUserLogged(n) {
-			if (!n) return;
-
-			// add all routes with no role
-			ALL_TABS.filter((t) => t.roles === undefined)
-				.map((t) => t.subtabs)
-				.flat(1)
-				.filter((s) => !s.unlogged)
-				.map((s) => s.routes)
-				.flat(1)
-				.forEach((r) => router.addRoute(r));
-
-			// add missing route last (prevents some weird fallback shenanigans)
-			router.addRoute(missingRoute);
-		},
-		userRoles(n, o) {
-			if (o === undefined || o.length === undefined) return;
-			if (n.length === undefined) return;
-			// only update routes based on your roles fetched (role list is longer)
-			// leave if new role list is shorter or equal
-			if (n.length <= o.length) return;
-
-			// add all routes with matching roles
-			const subtabs = ALL_TABS.filter((t) => {
-				if (t.roles === undefined) return false;
-				return t.roles.some((role) => n.includes(role));
-			})
-				.map((t) => t.subtabs)
-				.flat(1)
-				.filter((s) => !s.unlogged);
-
-			subtabs.forEach((s) => {
-				if (s.badge) this.loadBadge(s.badge);
+		loadBadge(url) {
+			if (!this.isAdmin) return;
+			axios.get(`${this.apiURL}/${url}`, this.apiOptions).then((r) => {
+				this.$set(this.badges, url, r.data.length || 0);
 			});
 
-			subtabs
-				.map((s) => s.routes)
-				.flat(1)
-				.forEach((r) => router.addRoute(r));
+			// 30 seconds
+			setInterval(() => this.loadBadge(url), 30000);
+		},
+		jsonSnackBar(json = undefined) {
+			return {
+				showSnackBar: (...allArgs) => {
+					if (allArgs.length < 2) allArgs.push("#222");
+					if (allArgs.length < 3) allArgs.push(4000);
+					allArgs.push(json);
 
-			// add missing route last (prevents some weird fallback shenanigans)
-			router.addRoute(missingRoute);
+					return this.showSnackBar(...allArgs);
+				},
+			};
+		},
+		showSnackBar(message, color = "#222", timeout = 4000, json = undefined) {
+			this.snackbar.submessage = "";
+			if (typeof message === "string") {
+				const newline = message.indexOf("\n");
+				if (newline !== -1) {
+					this.snackbar.message = `${message.substring(0, newline)}:`;
+					this.snackbar.submessage = message.substring(newline + 1);
+				} else {
+					this.snackbar.message = message;
+				}
+			} else {
+				this.snackbar.message = message?.message;
+
+				if (message.response && message.response.data) {
+					const submessage = message.response.data.error || message.response.data.message;
+					this.snackbar.message += ":";
+					this.snackbar.submessage = submessage;
+				}
+			}
+
+			this.snackbar.json = json;
+			this.snackbar.color = color;
+			this.snackbar.timeout = timeout;
+			this.snackbar.show = true;
+		},
+		logout() {
+			this.discordAuth.logout();
+		},
+		/** For debugging in sub-components */
+		checkPermissions() {
+			console.log(this.$route);
+			console.log(this.$router.options.routes);
+		},
+		compiledMarkdown(rawText) {
+			if (!rawText) return "";
+			return DOMPurify.sanitize(marked(rawText));
+		},
+		addToken(data) {
+			data.token = this.user.access_token;
+			return data;
+		},
+		emitConnected() {
+			this.atl.forEach((lis) => lis(this.user.access_token));
+		},
+		addAccessTokenListener(listener) {
+			this.atl.push(listener);
+			if (this.isUserLogged) listener(this.user.access_token);
+		},
+		onMediaChange(isDark) {
+			// only if system theme
+			if (this.theme === "system") {
+				this.$vuetify.theme.dark = isDark;
+
+				// nice snackbar sentence
+				const notify = this.lang().global.snackbar_system_theme;
+				this.showSnackBar(
+					notify.sentence.replace("%s", isDark ? notify.themes.dark : notify.themes.light),
+					"success",
+					2000,
+				);
+			}
 		},
 	},
 	computed: {
@@ -742,131 +745,119 @@ const app = new Vue({
 			};
 		},
 	},
-	methods: {
-		/** log reactive object */
-		log(...objs) {
-			const cleaned = JSON.parse(JSON.stringify(objs));
-			console.log(cleaned);
-		},
-		langToBCP47(lang) {
-			return LANGUAGES.find((l) => l.lang === lang)?.bcp47;
-		},
-		loadLanguage(language) {
-			const lang = this.languages.find((l) => l.lang === language);
-			if (!lang) return;
+	watch: {
+		selectedLang: {
+			handler(newValue, oldValue) {
+				_set_lang(newValue);
+				if (Object.keys(this.langs).includes(newValue)) {
+					if (Object.keys(this.langs).includes(oldValue)) {
+						moment.locale(this.langBCP47);
 
-			moment.locale(lang.bcp47);
-
-			if (this.langs[lang.lang]) {
-				return; // everything will update
-			}
-
-			lang
-				.action()
-				.then((r) => {
-					r = r.default;
-					this.langs[lang.lang] = Object.merge({}, en_US, r);
-					// we need to wait for this.langs to be updated
-					this.$nextTick(() => {
 						// the next line would force this.lang to update
 						this.refreshKey++;
-					});
-				})
-				.catch((e) => {
-					this.showSnackBar(e.toString(), "error");
-				});
+					}
+				} else {
+					this.loadLanguage(newValue);
+				}
+			},
+			immediate: true,
 		},
-		loadBadge(url) {
-			axios.get(this.apiURL + url, this.apiOptions).then((r) => {
-				const res = r.data;
-				let val;
-				if (Array.isArray(res) && res.length) val = res.length;
-				else if (res.length) val = res.length;
-				else val = 0;
+		dark: {
+			handler(n, o) {
+				if (o == undefined) {
+					const isDark = localStorage.getItem("DARK_THEME");
+					this.dark = isDark === null ? true : isDark === "true";
+					this.$vuetify.theme.dark = this.dark;
+				} else {
+					if (n === false || n === true) {
+						this.$vuetify.theme.dark = n;
+						localStorage.setItem("DARK_THEME", String(n));
+					}
+				}
+			},
+			immediate: true,
+		},
+		theme: {
+			handler(n) {
+				const availableThemes = Object.keys(this.themes);
+				if (n == undefined) {
+					let theme = localStorage.getItem("THEME");
 
-				this.$set(this.badges, url, val);
+					if (!availableThemes.includes(theme)) theme = availableThemes[0];
+
+					this.theme = theme;
+					return;
+				}
+				if (!availableThemes.includes(n)) {
+					this.theme = availableThemes[0];
+					return;
+				}
+
+				localStorage.setItem("THEME", String(n));
+				const isDark =
+					n != "light" &&
+					(n == "dark" || window.matchMedia("(prefers-color-scheme: dark)").matches);
+				this.$vuetify.theme.dark = isDark;
+			},
+			immediate: true,
+		},
+		isDark: {
+			handler(n) {
+				const arr = ["theme--light", "theme--dark"];
+				if (n) arr.reverse();
+
+				const html = document.querySelector("html");
+
+				html.classList.add(arr[0]);
+				html.classList.remove(arr[1]);
+			},
+			immediate: true,
+		},
+		drawer(n) {
+			localStorage.setItem(MENU_KEY, String(n));
+		},
+		isUserLogged(n) {
+			if (!n) return;
+
+			// add all routes with no role
+			ALL_TABS.filter((t) => t.roles === undefined)
+				.map((t) => t.subtabs)
+				.flat(1)
+				.filter((s) => !s.unlogged)
+				.map((s) => s.routes)
+				.flat(1)
+				.forEach((r) => router.addRoute(r));
+
+			// add missing route last (prevents some weird fallback shenanigans)
+			router.addRoute(missingRoute);
+		},
+		userRoles(n, o) {
+			if (o === undefined || o.length === undefined) return;
+			if (n.length === undefined) return;
+			// only update routes based on your roles fetched (role list is longer)
+			// leave if new role list is shorter or equal
+			if (n.length <= o.length) return;
+
+			// add all routes with matching roles
+			const subtabs = ALL_TABS.filter((t) => {
+				if (t.roles === undefined) return false;
+				return t.roles.some((role) => n.includes(role));
+			})
+				.map((t) => t.subtabs)
+				.flat(1)
+				.filter((s) => !s.unlogged);
+
+			subtabs.forEach((s) => {
+				if (s.badge) this.loadBadge(s.badge);
 			});
 
-			if (this.isAdmin) {
-				setTimeout(() => {
-					this.loadBadge(url);
-				}, 15000);
-			}
-		},
-		jsonSnackBar(json = undefined) {
-			const that = this;
-			return {
-				showSnackBar() {
-					const allArgs = [...arguments];
-					if (allArgs.length < 2) allArgs.push("#222");
-					if (allArgs.length < 3) allArgs.push(4000);
-					allArgs.push(json);
+			subtabs
+				.map((s) => s.routes)
+				.flat(1)
+				.forEach((r) => router.addRoute(r));
 
-					return that.showSnackBar(...allArgs);
-				},
-			};
-		},
-		showSnackBar(message, color = "#222", timeout = 4000, json = undefined) {
-			this.snackbar.submessage = "";
-			if (typeof message === "string") {
-				const newline = message.indexOf("\n");
-				if (newline !== -1) {
-					this.snackbar.message = `${message.substring(0, newline)}:`;
-					this.snackbar.submessage = message.substring(newline + 1);
-				} else {
-					this.snackbar.message = message;
-				}
-			} else {
-				this.snackbar.message = message?.message;
-
-				if (message.response && message.response.data) {
-					const submessage = message.response.data.error || message.response.data.message;
-					this.snackbar.message += ":";
-					this.snackbar.submessage = submessage;
-				}
-			}
-
-			this.snackbar.json = json;
-			this.snackbar.color = color;
-			this.snackbar.timeout = timeout;
-			this.snackbar.show = true;
-		},
-		logout() {
-			this.discordAuth.logout();
-		},
-		/** For debugging in sub-components */
-		checkPermissions() {
-			console.log(this.$route);
-			console.log(this.$router.options.routes);
-		},
-		compiledMarkdown(rawText) {
-			if (!rawText) return "";
-			return DOMPurify.sanitize(marked(rawText));
-		},
-		addToken(data) {
-			data.token = this.user.access_token;
-			return data;
-		},
-		emitConnected() {
-			this.atl.forEach((lis) => lis(this.user.access_token));
-		},
-		addAccessTokenListener(listener) {
-			this.atl.push(listener);
-			if (this.isUserLogged) listener(this.user.access_token);
-		},
-		onMediaChange(isDark) {
-			// only if system theme
-			if (this.theme === "system") {
-				this.$vuetify.theme.dark = isDark;
-
-				// nice snackbar sentence
-				const notify = this.lang().global.snackbar_system_theme;
-				this.showSnackBar(
-					notify.sentence.replace("%s", isDark ? notify.themes.dark : notify.themes.light),
-					"success",
-					2000,
-				);
-			}
+			// add missing route last (prevents some weird fallback shenanigans)
+			router.addRoute(missingRoute);
 		},
 	},
 	beforeCreate() {
@@ -896,7 +887,7 @@ const app = new Vue({
 		this.discordAuth.$subscribe(() => {
 			if (this.discordAuth.access_token === undefined) {
 				// remove
-				window.localStorage.removeItem(AUTH_STORAGE_KEY);
+				localStorage.removeItem(AUTH_STORAGE_KEY);
 				this.emitConnected();
 			} else {
 				if (Vue.config.devtools) console.log(`Discord Token: ${this.discordAuth.access_token}`);
