@@ -169,14 +169,16 @@ export default {
 			const width = this.$el.clientWidth - MARGIN * 2;
 
 			if (baseColumns != 1) {
-				// * We want to solve n * MIN_WIDTH + (n - 1) * A = width
-				// * where A = 200 / (1.5 * n)
-				// * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
-				// * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
-				// * multiply by n
-				// * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-				// * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
-				// * solve that and keep positive value
+				/**
+				 *  We want to solve n * MIN_WIDTH + (n - 1) * A = width
+				 * where A = 200 / (1.5 * n)
+				 * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
+				 * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
+				 * multiply by n
+				 * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
+				 * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
+				 * solve that and keep positive value
+				 */
 				const a = MIN_WIDTH;
 				const b = 200 / 1.5 - width;
 				const c = -200 / 1.5;
@@ -226,7 +228,7 @@ export default {
 	},
 	watch: {
 		pack(n, o) {
-			if (n === o || !Object.keys(this.loadedContributions),length) return;
+			if (n === o || !Object.keys(this.loadedContributions).length) return;
 			this.lastContributions = this.getLastContributions(n);
 		},
 		value(newValue) {
