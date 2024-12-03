@@ -148,6 +148,8 @@ import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
 import UserSelect from "@components/user-select.vue";
 import SmartGrid from "@components/smart-grid.vue";
 
+import generateRange from "@helpers/generateRange";
+
 export default {
 	components: {
 		SmartGrid,
@@ -308,11 +310,11 @@ export default {
 			if (!Array.isArray(entries)) return;
 
 			// prepare final data
-			let final_contributions = [];
+			const finalContributions = [];
 			for (const entry of entries) {
-				const generated_range = window.generateRange(entry.texture);
+				const generatedRange = generateRange(entry.texture);
 
-				if (generated_range.length === 0) {
+				if (generatedRange.length === 0) {
 					this.$root
 						.jsonSnackBar(entry)
 						.showSnackBar(this.$root.lang("database.labels.id_field_errors.one_required"), "error");
@@ -328,40 +330,32 @@ export default {
 					return false;
 				}
 
-				for (const texture_id of generated_range) {
-					const new_contribution = {
+				for (const textureID of generatedRange) {
+					const newContribution = {
 						date: new Date(entry.date).getTime(),
 						pack: entry.pack,
 						authors: entry.authors,
-						texture: String(texture_id),
+						texture: String(textureID),
 					};
-					final_contributions.push(new_contribution);
+					finalContributions.push(newContribution);
 				}
 			}
 
-			let i = 0;
-			let went_well = true;
-			while (went_well && i < final_contributions.length) {
-				went_well = await axios
-					.post(`${this.$root.apiURL}/contributions`, final_contributions[i], this.$root.apiOptions)
-					.then((_created_contribution) => {
-						return true;
-					})
-					.catch((err) => {
-						this.$root.showSnackBar(err, "error");
-						console.error(final_contributions[i]);
-						return false;
-					});
+			const wentWell = await axios
+				.post(`${this.$root.apiURL}/contributions`, finalContributions, this.$root.apiOptions)
+				.then(() => true)
+				.catch((err) => {
+					this.$root.showSnackBar(err, "error");
+					console.error(err);
+					return false;
+				});
 
-				i++;
-			}
-
-			if (went_well) {
+			if (wentWell) {
 				this.$root.showSnackBar(this.$root.lang("global.ends_success"), "success");
 				this.getAuthors();
 			}
 
-			return went_well;
+			return wentWell;
 		},
 		onPackChange(selected, key) {
 			if (key === this.all_packs) {

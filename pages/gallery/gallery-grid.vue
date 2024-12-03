@@ -168,7 +168,7 @@ export default {
 			// real content width
 			const width = this.$el.clientWidth - MARGIN * 2;
 
-			if (baseColumns != 1) {
+			if (baseColumns !== 1) {
 				/**
 				 *  We want to solve n * MIN_WIDTH + (n - 1) * A = width
 				 * where A = 200 / (1.5 * n)
@@ -176,7 +176,7 @@ export default {
 				 * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
 				 * multiply by n
 				 * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-				 * => n² * MIN_WITH + n * (200/1.5 - width) - 200/1.5 = 0
+				 * => n² * MIN_WIDTH + n * (200/1.5 - width) - 200/1.5 = 0
 				 * solve that and keep positive value
 				 */
 				const a = MIN_WIDTH;
