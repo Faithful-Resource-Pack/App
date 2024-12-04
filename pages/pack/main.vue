@@ -103,6 +103,8 @@ import SmartGrid from "@components/smart-grid.vue";
 import PackModal from "./pack-modal.vue";
 import PackRemoveConfirm from "./pack-remove-confirm.vue";
 
+import { updatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "pack-page",
 	components: {
@@ -193,7 +195,7 @@ export default {
 	mounted() {
 		axios.get(`${this.$root.apiURL}/packs/tags`).then((res) => (this.tags = res.data));
 		this.startSearch();
-		window.updatePageStyles(this);
+		updatePageStyles(this);
 	},
 	watch: {
 		"$route.params": {

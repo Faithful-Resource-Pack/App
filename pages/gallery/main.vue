@@ -284,9 +284,7 @@ export default {
 			const ignoreList = Array.from(this.ignoredTextures.modded);
 			// add all editions to ignore list
 			if (this.current.edition === "all")
-				ignoreList.push(
-					...settings.editions.map((edition) => this.ignoredTextures[edition]).flat(),
-				);
+				ignoreList.push(...settings.editions.flatMap((edition) => this.ignoredTextures[edition]));
 			else ignoreList.push(...this.ignoredTextures[this.current.edition]);
 			return ignoreList;
 		},

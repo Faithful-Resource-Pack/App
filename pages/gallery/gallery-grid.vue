@@ -20,7 +20,7 @@
 				@click.middle.stop="$emit('openNewTab', texture.textureID)"
 				@click.meta.stop="$emit('openNewTab', texture.textureID)"
 			>
-				<tippy :to="texture.id" placement="right-start" theme="" maxWidth="350px">
+				<tippy-component :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 					<template #trigger>
 						<gallery-image
 							:src="texture.url"
@@ -52,7 +52,7 @@
 						:discordIDtoName="discordIDtoName"
 						:ignoreList="ignoreList"
 					/>
-				</tippy>
+				</tippy-component>
 			</div>
 		</div>
 		<div ref="bottomElement" />
@@ -64,6 +64,7 @@ import axios from "axios";
 
 import GalleryTooltip from "./gallery-tooltip.vue";
 import GalleryImage from "./gallery-image.vue";
+import { TippyComponent } from "vue-tippy";
 
 const MIN_ROW_DISPLAYED = 5;
 
@@ -72,6 +73,7 @@ export default {
 	components: {
 		GalleryTooltip,
 		GalleryImage,
+		TippyComponent,
 	},
 	props: {
 		value: {

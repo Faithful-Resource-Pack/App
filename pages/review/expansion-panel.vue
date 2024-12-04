@@ -81,7 +81,11 @@
 					</div>
 
 					<v-list-item-title class="uppercase mt-2">
-						{{ $root.lang().review.addon.titles.authors }}
+						{{
+							$root.lang().review.addon.titles[
+								addonInPanel.authors.length === 1 ? "author_singular" : "author_plural"
+							]
+						}}
 					</v-list-item-title>
 					<div class="text--secondary mb-2">
 						{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
@@ -132,9 +136,7 @@
 					<!-- eslint-disable vue/no-v-text-v-html-on-component -->
 					<v-container
 						class="markdown"
-						:style="{
-							'background-color': 'rgba(0,0,0, ' + String($root.isDark ? 0.2 : 0.05) + ')',
-						}"
+						:style="{ backgroundColor: `rgba(0, 0, 0, ${$root.isDark ? 0.2 : 0.05})` }"
 						v-html="$root.compiledMarkdown(addonInPanel.description)"
 					/>
 

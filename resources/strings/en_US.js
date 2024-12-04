@@ -284,7 +284,8 @@ export default {
 		},
 		addon: {
 			titles: {
-				authors: "Author(s)",
+				author_singular: "Author",
+				author_plural: "Authors",
 				description: "Description",
 				links: "Links",
 				options: "Options",

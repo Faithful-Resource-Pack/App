@@ -251,7 +251,7 @@ export default {
 			return msg.toString();
 		},
 		send() {
-			if (!this.$root.isUserLogged) return;
+			if (!this.$root.isLoggedIn) return;
 
 			// fix if new user
 			const data = {
@@ -287,7 +287,7 @@ export default {
 				});
 		},
 		getUserInfo() {
-			if (!this.$root.isUserLogged) return;
+			if (!this.$root.isLoggedIn) return;
 
 			axios
 				.get(`${this.$root.apiURL}/users/profile/`, this.$root.apiOptions)

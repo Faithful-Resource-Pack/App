@@ -21,8 +21,13 @@
 import axios from "axios";
 import Prism from "prismjs";
 
+import { PrismEditor } from "vue-prism-editor";
+
 export default {
 	name: "settings-page",
+	components: {
+		PrismEditor,
+	},
 	data() {
 		return {
 			panels: 1,

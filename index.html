@@ -70,10 +70,10 @@
 	</head>
 	<body>
 		<!-- HTML parsing rules apply here; no auto-closing tags -->
-		<v-app id="app" ref="app" :dark="dark" :light="!dark">
+		<v-app id="app" ref="app">
 			<v-app-bar flat dense bar app class="small-app-bar">
 				<span class="mr-2 d-flex noselect">
-					<v-app-bar-nav-icon small @click="drawer = !drawer" />
+					<v-app-bar-nav-icon small @click="drawerOpen = !drawerOpen" />
 				</span>
 
 				<v-spacer></v-spacer>
@@ -121,10 +121,14 @@
 							{{ $root.lang().global.translations }}
 						</v-subheader>
 						<v-list-item
-							v-for="language in languages"
-							:key="language.bcp47"
-							:class="{ 'v-list-item--active': language.lang == selectedLang, 'text-center': true }"
-							@click="() => (selectedLang = language.lang)"
+							v-for="lang in availableLangs"
+							:key="lang.bcp47"
+							:class="{ 'v-list-item--active': lang.id === selectedLang, 'text-center': true }"
+							@click="
+								() => {
+									selectedLang = lang.id;
+								}
+							"
 							style="cursor: pointer"
 							dense
 						>
@@ -136,15 +140,15 @@
 								class="rounded-0"
 							>
 								<v-img
-									:src="`https://flagcdn.com/24x18/${language.iso3166}.png`"
+									:src="`https://flagcdn.com/24x18/${lang.iso3166}.png`"
 									:srcset="`
-										https://flagcdn.com/32x24/${language.iso3166}.png 2x,
-										https://flagcdn.com/48x36${language.iso3166}.png 3x`"
+										https://flagcdn.com/32x24/${lang.iso3166}.png 2x,
+										https://flagcdn.com/48x36${lang.iso3166}.png 3x`"
 									width="24"
 									height="18"
 								/>
 							</v-list-item-avatar>
-							<v-list-item-title class="uppercase">{{ language.lang }}</v-list-item-title>
+							<v-list-item-title class="uppercase">{{ lang.id }}</v-list-item-title>
 						</v-list-item>
 					</v-list>
 				</v-menu>
@@ -160,9 +164,9 @@
 				</span>
 			</v-app-bar>
 
-			<v-navigation-drawer width="320" fixed app v-model="drawer">
+			<v-navigation-drawer width="320" fixed app v-model="drawerOpen">
 				<v-card :style="bannerStyles" class="rounded-t-0">
-					<div v-if="isUserLogged" class="py-2">
+					<div v-if="isLoggedIn" class="py-2">
 						<v-card-title class="pl-2">
 							<v-avatar size="48" style="margin-right: 10px">
 								<img
@@ -202,8 +206,8 @@
 						dense
 						nav
 						v-if="
-							isUserLogged ||
-							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0
+							isLoggedIn ||
+							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.public || 0), 0)) > 0
 						"
 					>
 						<v-list-item>
@@ -214,11 +218,11 @@
 
 						<v-list-item
 							link
-							v-if="tab.subtabs && (isUserLogged || subtab.unlogged)"
+							v-if="tab.subtabs && (isLoggedIn || subtab.public)"
 							v-for="(subtab, subtabIndex) in tab.subtabs"
 							:key="subtab.label"
 							:to="subtab.to"
-							:disabled="!subtab.enabled"
+							:disabled="subtab.disabled"
 							class="uppercase-unsized"
 						>
 							<v-list-item-icon v-if="subtab.icon" style="margin-right: 5px">
@@ -226,8 +230,8 @@
 							</v-list-item-icon>
 							<v-list-item-title class="uppercase">{{ subtab.labelText }}</v-list-item-title>
 
-							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.label]">
-								<span class="nav-badge-inner error">{{ badges[subtab.label] }}</span>
+							<v-list-item-action class="nav-badge" v-if="subtab.badge && badgeData[subtab.label]">
+								<span class="nav-badge-inner error">{{ badgeData[subtab.label] }}</span>
 							</v-list-item-action>
 						</v-list-item>
 
@@ -235,7 +239,7 @@
 							link
 							v-if="tab.to"
 							:to="tab.to"
-							:disabled="!tab.enabled"
+							:disabled="tab.disabled"
 							class="uppercase-unsized"
 						>
 							<v-list-item-icon v-if="tab.icon" style="margin-right: 5px">
@@ -251,15 +255,15 @@
 					<v-divider
 						style="margin-bottom: 10px"
 						v-if="
-							isUserLogged ||
-							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.unlogged || 0), 0)) > 0
+							isLoggedIn ||
+							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.public || 0), 0)) > 0
 						"
 					>
 					</v-divider>
 				</div>
 
 				<!-- Fix problem on firefox on mobile where bar disappears and fixed elements are hidden -->
-				<div class="py-8" v-if="!isDesktop"></div>
+				<div class="py-8" v-if="!$vuetify.breakpoint.lgAndUp"></div>
 			</v-navigation-drawer>
 
 			<v-main>

@@ -110,6 +110,8 @@ import UserModal from "./user-modal.vue";
 import UserRemoveConfirm from "./user-remove-confirm.vue";
 import SmartGrid from "@components/smart-grid.vue";
 
+import { updatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "users-page",
 	components: {
@@ -242,7 +244,7 @@ export default {
 	},
 	mounted() {
 		this.getRoles();
-		window.updatePageStyles(this);
+		updatePageStyles(this);
 	},
 };
 </script>

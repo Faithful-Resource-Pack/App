@@ -10,7 +10,7 @@
 
 		<v-row id="dashboard-row">
 			<v-col cols="12" sm="3">
-				<profile-card v-if="$root.isUserLogged" />
+				<profile-card v-if="$root.isLoggedIn" />
 				<faithful-card v-else />
 			</v-col>
 			<v-col cols="12" sm="9">

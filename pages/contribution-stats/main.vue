@@ -59,7 +59,7 @@ export default {
 				.then((data) => {
 					this.contributionsCount = data.length;
 
-					const authors = data.map((el) => el.authors).flat();
+					const authors = data.flatMap((el) => el.authors);
 					const textures = data.map((el) => el.texture);
 					const packs = data.map((el) => el.pack);
 

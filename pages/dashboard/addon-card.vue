@@ -74,7 +74,7 @@
 			</v-row>
 		</v-card-text>
 
-		<v-card-actions class="d-flex mt-0 px-4 pt-1" v-if="$root.isUserLogged">
+		<v-card-actions class="d-flex mt-0 px-4 pt-1" v-if="$root.isLoggedIn">
 			<v-row dense>
 				<v-col>
 					<v-btn block text color="primary" to="/addons/submissions">

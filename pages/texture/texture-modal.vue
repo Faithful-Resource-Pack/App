@@ -237,7 +237,7 @@ export default {
 			this.$forceUpdate();
 		},
 		send() {
-			if (!this.$root.isUserLogged) return;
+			if (!this.$root.isLoggedIn) return;
 
 			const data = {
 				name: this.formData.name,

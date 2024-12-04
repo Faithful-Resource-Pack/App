@@ -23,7 +23,7 @@ declare module "vue/types/vue" {
 		readonly apiURL: string;
 		readonly apiOptions: AxiosRequestConfig;
 		readonly user: DiscordUser;
-		readonly isUserLogged: boolean;
+		readonly isLoggedIn: boolean;
 		readonly isAdmin: boolean;
 		readonly isDark: boolean;
 
@@ -48,18 +48,10 @@ declare module "vue/types/vue" {
 
 // add global methods
 declare global {
-	const colors: Record<string, Record<string, string>>;
-	function colorToHex(color: string): string;
-
-	declare function updatePageStyles(cmp: Vue): void;
 	declare const settings: Record<string, any>;
 	declare const apiURL: string;
 
 	interface Window {
-		// aliases
-		readonly colors: typeof colors;
-		colorToHex: typeof colorToHex;
-		updatePageStyles: typeof updatePageStyles;
 		readonly settings: typeof settings;
 		readonly apiURL: typeof apiURL;
 	}
@@ -90,12 +82,12 @@ interface SidebarTab {
 }
 
 interface SidebarSubtab {
-	enabled: boolean;
-	icon: string;
 	// untranslated key (not actually used in UI)
 	label: string;
+	icon: string;
 	// not included when false
-	unlogged?: true;
+	public?: true;
+	disabled?: true;
 	routes: RouteConfig[];
 	// takes a vue instance and returns what to display in the badge
 	// not done with `this` binding so arrow functions can be used

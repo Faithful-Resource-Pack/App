@@ -24,9 +24,10 @@
 export default {
 	name: "review-list",
 	props: {
+		// throws error on initial load when required since it takes a second to fetch results
 		value: {
 			type: String,
-			required: true,
+			required: false,
 		},
 		items: {
 			type: Array, // [{ primary: String, secondary: String, key: Number }]

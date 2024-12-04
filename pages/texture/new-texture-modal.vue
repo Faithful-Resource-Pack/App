@@ -243,6 +243,8 @@ import {
 } from "@helpers/paths";
 import MinecraftSorter from "@helpers/MinecraftSorter";
 
+import { PrismEditor } from "vue-prism-editor";
+
 const emptyPath = () => ({
 	// has problems with v-for otherwise
 	key: crypto.randomUUID(),
@@ -271,6 +273,7 @@ export default {
 	name: "new-texture-modal",
 	components: {
 		FullscreenModal,
+		PrismEditor,
 	},
 	props: {
 		value: {

@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { updatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "fullscreen-modal",
 	props: {

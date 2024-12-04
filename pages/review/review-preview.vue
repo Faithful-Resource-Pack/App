@@ -77,7 +77,11 @@
 					</v-col>
 					<v-col cols="12" sm="5">
 						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.titles.authors }}
+							{{
+								$root.lang().review.addon.titles[
+									addonInPanel.authors.length === 1 ? "author_singular" : "author_plural"
+								]
+							}}
 						</v-list-item-title>
 						<div class="text--secondary" style="margin-bottom: 10px">
 							{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
@@ -129,7 +133,7 @@
 				</v-list-item-title>
 				<v-container
 					class="markdown"
-					:style="{ 'background-color': 'rgba(0,0,0, ' + String($root.isDark ? 0.2 : 0.05) + ')' }"
+					:style="{ backgroundColor: `rgba(0, 0, 0, ${$root.isDark ? 0.2 : 0.05})` }"
 					v-html="$root.compiledMarkdown(addonInPanel.description)"
 				/>
 			</template>

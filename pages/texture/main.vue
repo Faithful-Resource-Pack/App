@@ -159,6 +159,8 @@ import ModifyVersionModal from "./modify-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
+import { updatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "texture-page",
 	components: {
@@ -334,7 +336,7 @@ export default {
 	},
 	mounted() {
 		this.update(false);
-		window.updatePageStyles(this);
+		updatePageStyles(this);
 	},
 };
 </script>

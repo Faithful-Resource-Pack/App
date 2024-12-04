@@ -82,6 +82,8 @@ import ReviewCategories from "./review-categories.vue";
 import ReviewList from "./review-list.vue";
 import ReviewPreview from "./review-preview.vue";
 
+import { updatePageStyles } from "@helpers/colors.js";
+
 const searchMixin = {
 	methods: {
 		/**
@@ -213,7 +215,7 @@ export default {
 	methods: {
 		reviewAddon(addon, status, reason = null) {
 			const id = typeof addon === "object" ? addon.id : addon;
-			if (!this.$root.isUserLogged) return;
+			if (!this.$root.isLoggedIn) return;
 
 			const data = {
 				status: status,
@@ -294,7 +296,7 @@ export default {
 	},
 	mounted() {
 		this.update();
-		window.updatePageStyles(this);
+		updatePageStyles(this);
 
 		this.$root.$on("openDenyPopup", (args) => {
 			this.openDenyPopup(...args);
