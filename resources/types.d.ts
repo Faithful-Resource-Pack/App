@@ -4,6 +4,7 @@
 import Vue from "vue";
 import strings from "./strings/en_US.js";
 import type { AxiosRequestConfig, AxiosResponse } from "axios";
+import type { RouteConfig } from "vue-router";
 
 // Vue has the constructor type in types/vue.d.ts
 declare module "vue/types/vue" {
@@ -79,4 +80,24 @@ declare global {
 		/** Check if two objects are exactly equal */
 		equals(x: Object, y: Object): boolean;
 	}
+}
+
+interface SidebarTab {
+	label: string;
+	subtabs: SidebarSubtab[];
+	// defaults to all public
+	roles?: string[];
+}
+
+interface SidebarSubtab {
+	enabled: boolean;
+	icon: string;
+	// untranslated key (not actually used in UI)
+	label: string;
+	// not included when false
+	unlogged?: true;
+	routes: RouteConfig[];
+	// takes a vue instance and returns what to display in the badge
+	// not done with `this` binding so arrow functions can be used
+	badge?: (app: Vue) => any;
 }

@@ -226,8 +226,8 @@
 							</v-list-item-icon>
 							<v-list-item-title class="uppercase">{{ subtab.labelText }}</v-list-item-title>
 
-							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.badge]">
-								<span class="nav-badge-inner error">{{ badges[subtab.badge] }}</span>
+							<v-list-item-action class="nav-badge" v-if="subtab.badge && badges[subtab.label]">
+								<span class="nav-badge-inner error">{{ badges[subtab.label] }}</span>
 							</v-list-item-action>
 						</v-list-item>
 

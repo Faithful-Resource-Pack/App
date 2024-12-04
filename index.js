@@ -238,6 +238,7 @@ router.beforeEach((to, _from, next) => {
 });
 
 // `to` field in subtab will be the first route path
+/** @type {import("resources/types.d.ts").SidebarTab[]} */
 const ALL_TABS = [
 	{
 		label: "general",
@@ -317,8 +318,8 @@ const ALL_TABS = [
 				enabled: true,
 				icon: "mdi-puzzle",
 				label: "addons",
-				// api url to get badge data from
-				badge: "addons/pending",
+				badge: (app) =>
+					axios.get(`${app.apiURL}/addons/pending`, app.apiOptions).then((r) => r.data.length || 0),
 				routes: [{ path: "/review/addons", component: ReviewAddonsPage, name: "Add-on Review" }],
 			},
 			{
@@ -537,13 +538,13 @@ const app = new Vue({
 					this.showSnackBar(e.toString(), "error");
 				});
 		},
-		loadBadge(url) {
+		async loadBadge(cb, key) {
 			if (!this.isAdmin) return;
-			axios.get(`${this.apiURL}/${url}`, this.apiOptions).then((r) => {
-				this.$set(this.badges, url, r.data.length || 0);
-			});
+			// use await to prevent sync callbacks not having a then() method
+			const value = await cb(this);
+			this.$set(this.badges, key, value);
 			// since it's recursive you don't need setInterval
-			return setTimeout(() => this.loadBadge(url), 30000);
+			return setTimeout(() => this.loadBadge(cb, key), 30000);
 		},
 		jsonSnackBar(json = undefined) {
 			return {
@@ -848,7 +849,7 @@ const app = new Vue({
 
 			subtabs.forEach((s) => {
 				// 30 seconds
-				if (s.badge) this.loadBadge(s.badge);
+				if (s.badge) this.loadBadge(s.badge, s.label);
 			});
 
 			subtabs
