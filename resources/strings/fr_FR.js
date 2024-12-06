@@ -1,10 +1,5 @@
-/**
- * French translation
- * - Translated by:
- * - @author Juknum // GitHub: https://github.com/Juknum
- */
-
 export default {
+	credits: ["Juknum"],
 	global: {
 		name: "Application Web Faithful",
 		logout: "Déconnexion",

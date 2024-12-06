@@ -1,8 +1,5 @@
-/**
- * This file is the template for all other languages
- */
-
 export default {
+	credits: ["Put your name here on your respective language's file if you've translated!"],
 	global: {
 		name: "Faithful Web Application",
 		logout: "Log Out",

@@ -1,10 +1,5 @@
-/**
- * Brazilian translation:
- * - Translated by:
- * - @author PedroESP_01#4432 // Discord: <@316356926701043712>
- */
-
 export default {
+	credits: ["PedroESP_01"],
 	global: {
 		name: "Faithful Web Application",
 		logout: "Sair",

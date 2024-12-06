@@ -1,10 +1,5 @@
-/**
- * German translation
- * - Translated by:
- * - @author RobertR11 // GitHub: https://github.com/RobertRR11
- */
-
 export default {
+	credits: ["RobertR11"],
 	global: {
 		name: "Faithful Webanwendung",
 		logout: "Abmelden",

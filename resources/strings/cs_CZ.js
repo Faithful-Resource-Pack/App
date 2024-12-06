@@ -1,4 +1,5 @@
 export default {
+	credits: ["Pomi108"],
 	global: {
 		name: "Webová aplikace Faithful",
 		logout: "Odhlásit se",
