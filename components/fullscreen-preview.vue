@@ -2,13 +2,12 @@
 	<v-dialog v-model="modalOpened" :width="`${this.aspectRatio * 90}vh`" height="90vh">
 		<v-card>
 			<v-img
-				ref="image-ref"
 				:style="styles"
 				:src="src"
 				alt="fullscreen preview"
 				:aspect-ratio="aspectRatio"
 				contain
-				@click="() => (modalOpened = false)"
+				@click="() => { modalOpened = false }"
 			/>
 		</v-card>
 	</v-dialog>
