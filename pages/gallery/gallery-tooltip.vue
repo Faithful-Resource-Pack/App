@@ -31,9 +31,7 @@
 				</div>
 			</div>
 			<div class="texture-tags-container">
-				<span class="encased" v-for="tag in texture.tags" :key="tag">
-					{{ `${tag}` }}
-				</span>
+				<span class="encased" v-for="tag in texture.tags" :key="tag">{{ tag }}</span>
 			</div>
 		</div>
 	</div>

@@ -157,6 +157,7 @@ export default {
 			ignoredTextures: {},
 			// go to the top arrow
 			scrollY: 0,
+			abortController: new AbortController(),
 		};
 	},
 	methods: {
@@ -219,9 +220,11 @@ export default {
 			if (this.$route.path === route) return; // new search is the same as before
 			this.$router.push(route);
 		},
-		updateSearch() {
+		searchGallery() {
 			// prevent concurrency issues
-			if (this.loading) return;
+			if (this.loading) this.abortController.abort();
+			// cancel request and set loading true no matter what
+			this.abortController = new AbortController();
 			this.loading = true;
 			this.timer.start = Date.now();
 			this.textures = [];
@@ -232,17 +235,17 @@ export default {
 
 			// /gallery/{pack}/{edition}/{mc_version}/{tag}
 			axios
-				.get(url)
+				.get(url, { signal: this.abortController.signal })
 				.then((res) => {
 					this.textures = res.data;
 					this.timer.end = Date.now();
+					this.loading = false;
 				})
-				.catch((e) => {
-					console.error(e);
-					this.error = `${e.statusCode}: ${e.response.value}`;
-				})
-				.finally(() => {
-					// no matter what it's not loading anymore
+				.catch((err) => {
+					// new search started before old one finished, cancel
+					if (err.code === "ERR_CANCELED") return;
+					console.error(err);
+					this.error = `${err.statusCode}: ${err.response.value}`;
 					this.loading = false;
 				});
 		},
@@ -311,7 +314,7 @@ export default {
 				} else this.current.pack = params.pack;
 
 				// wait until version/edition watcher sync has been done
-				this.$nextTick(() => this.updateSearch());
+				this.$nextTick(() => this.searchGallery());
 			},
 			deep: true,
 			immediate: true,

@@ -7,7 +7,11 @@
 				alt="fullscreen preview"
 				:aspect-ratio="aspectRatio"
 				contain
-				@click="() => { modalOpened = false }"
+				@click="
+					() => {
+						modalOpened = false;
+					}
+				"
 			/>
 		</v-card>
 	</v-dialog>
