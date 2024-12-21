@@ -1,5 +1,5 @@
 export default {
-	credits: ["Zeuselpro"],
+	credits: ["Zesuelpro"],
 	global: {
 		name: "Aplicación Web Faithful",
 		logout: "Cerrar Sesión",
