@@ -87,8 +87,8 @@ const PACK_SLIDER_ORDER = [
 	"faithful_32x",
 	"faithful_64x",
 	"classic_faithful_32x",
-	"classic_faithful_32x_progart",
 	"classic_faithful_64x",
+	"classic_faithful_32x_progart",
 	"classic_faithful_64x_progart"
 ];
 
