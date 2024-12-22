@@ -57,7 +57,7 @@ export default {
 				},
 				{
 					category: "Classic Faithful Programmer Art",
-					packs: ["classic_faithful_32x_progart"],
+					packs: ["classic_faithful_32x_progart", "classic_faithful_64x_progart"],
 				},
 			],
 			headers: [
