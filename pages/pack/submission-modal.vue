@@ -220,30 +220,23 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			this.$nextTick(() => {
-				if (!this.first) {
-					for (const [k, v] of Object.entries(this.data)) {
-						if (this.formData[k] === undefined) continue;
-						this.formData[k] = v;
-					}
-				} else {
-					// reset form on init
-					this.formData = {
-						id: null,
-						reference: null,
-						council_enabled: null,
-						channels: {
-							submit: null,
-							council: null,
-							results: null,
-						},
-						time_to_council: null,
-						time_to_results: null,
-						contributor_role: null,
-					};
-					if (this.data.id) this.formData.id = this.data.id;
-				}
-			});
+			if (this.first) {
+				// reset form on init
+				this.formData = {
+					id: null,
+					reference: null,
+					council_enabled: null,
+					channels: {
+						submit: null,
+						council: null,
+						results: null,
+					},
+					time_to_council: null,
+					time_to_results: null,
+					contributor_role: null,
+				};
+				if (this.data.id) this.formData.id = this.data.id;
+			} else this.formData = this.data;
 
 			this.$emit("input", newValue);
 		},

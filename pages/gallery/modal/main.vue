@@ -89,7 +89,7 @@ const PACK_SLIDER_ORDER = [
 	"classic_faithful_32x",
 	"classic_faithful_64x",
 	"classic_faithful_32x_progart",
-	"classic_faithful_64x_progart"
+	"classic_faithful_64x_progart",
 ];
 
 export default {
