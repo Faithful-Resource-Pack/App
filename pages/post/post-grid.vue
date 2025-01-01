@@ -8,7 +8,7 @@
 			{{ error || $root.lang().global.no_results }}
 		</div>
 		<div v-else class="my-2 text-h5">
-			<card-grid :items="posts" :getImage="(post) => post.header_img">
+			<card-grid :items="posts" :getImage="(post) => post.header_img || 'https://database.faithfulpack.net/images/website/posts/placeholder.jpg'">
 				<template #title="{ title, permalink }">
 					<v-card-title style="word-break: break-word">{{ title }}</v-card-title>
 					<v-card-subtitle>{{ permalink }}</v-card-subtitle>

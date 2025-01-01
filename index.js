@@ -397,12 +397,16 @@ const app = new Vue({
 		bannerStyles() {
 			// MUST be done through css, using an image element does strange things with the padding
 			const DEFAULT_IMAGE =
-				"https://database.faithfulpack.net/images/branding/backgrounds/forest.png?w=320";
+				"https://database.faithfulpack.net/images/branding/backgrounds/main_background.png?w=320";
 			return {
 				backgroundImage: `url(${this.user.banner || DEFAULT_IMAGE})`,
 				backgroundPosition: "center",
 				backgroundSize: "cover",
 			};
+		},
+		monochromeLogo() {
+			const filename = this.isDark ? "white" : "black";
+			return `https://database.faithfulpack.net/images/branding/logos/transparent/hd/${filename}.png`;
 		},
 	},
 	watch: {

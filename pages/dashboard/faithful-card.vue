@@ -7,7 +7,7 @@
 					aspect-ratio="1"
 					max-width="100%"
 					width="200px"
-					src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png"
+					src="https://database.faithfulpack.net/images/branding/logos/transparent/hd/main_logo.png"
 				/>
 			</div>
 

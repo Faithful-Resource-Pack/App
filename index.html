@@ -5,10 +5,7 @@
 
 		<title>Faithful Web Application</title>
 		<meta name="theme-color" content="#76C945" />
-		<link
-			rel="icon"
-			href="https://raw.githubusercontent.com/Faithful-Resource-Pack/Branding/main/site/favicon.ico"
-		/>
+		<link rel="icon" href="https://database.faithfulpack.net/images/branding/logos/favicon.ico" />
 
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -24,7 +21,7 @@
 		/>
 		<meta
 			property="og:image"
-			content="https://database.faithfulpack.net/images/branding/site/banners/universal_banner.png"
+			content="https://database.faithfulpack.net/images/branding/social_media/banners/universal_banner.png"
 		/>
 
 		<!-- Twitter Meta Tags -->
@@ -35,12 +32,12 @@
 		/>
 		<meta
 			name="twitter:image"
-			content="https://database.faithfulpack.net/images/branding/site/banners/universal_banner.png"
+			content="https://database.faithfulpack.net/images/branding/social_media/banners/universal_banner.png"
 		/>
 
 		<!-- PWA -->
 		<link rel="manifest" href="/manifest.json" />
-		<!-- these should probably be moved to the image database -->
+		<!-- these should probably be moved to the branding repo -->
 		<link rel="icon" sizes="192x192" href="https://faithfulpack.net/image/pwa/app-192x192.png" />
 		<link rel="icon" sizes="512x512" href="https://faithfulpack.net/image/pwa/app-512x512.png" />
 
@@ -156,7 +153,7 @@
 				<span class="monochrome-logo mx-2 d-flex noselect">
 					<a href="https://faithfulpack.net" title="Return to main site">
 						<img
-							src="https://database.faithfulpack.net/images/branding/logos/transparent/512/plain_logo.png?w=60"
+							:src="`${monochromeLogo}?w=60`"
 							width="30"
 							alt="logo"
 						/>
