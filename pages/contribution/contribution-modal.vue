@@ -58,8 +58,8 @@
 										<v-chip
 											class="mr-1 px-2"
 											x-small
-											v-for="(range, range_i) in form.texture"
-											:key="`item-${form.formId}-chip-${String(range).replace(',', '-')}+${range_i}`"
+											v-for="range in form.texture"
+											:key="Array.isArray(range) ? range.join() : String(range)"
 										>
 											{{ "#" + (Array.isArray(range) ? range.join(" — #") : String(range)) }}
 										</v-chip>
@@ -148,34 +148,6 @@ export default {
 			openedFormId: undefined,
 		};
 	},
-	computed: {
-		activeForm() {
-			if (this.openedFormId === undefined) return undefined;
-
-			const formObj = this.formRecords[this.openedFormId];
-			if (formObj === undefined) return undefined;
-
-			const res = JSON.parse(JSON.stringify(formObj));
-			return res;
-		},
-		formRecordsList() {
-			return Object.values(this.formRecords);
-		},
-		formRecordsLength() {
-			return this.formRecordsList.length;
-		},
-		panelLabels() {
-			return Object.entries(this.formRecords)
-				.map(([formID, form]) => [
-					formID,
-					`${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`,
-				])
-				.reduce((acc, [formID, formLabel]) => {
-					acc[formID] = formLabel;
-					return acc;
-				}, {});
-		},
-	},
 	methods: {
 		addNewForm() {
 			// create new form
@@ -224,7 +196,7 @@ export default {
 			if (!authorIds || authorIds.length === 0) return "";
 
 			const contributorNames = this.contributors
-				.filter((c) => authorIds.indexOf(c.id) !== -1)
+				.filter((c) => authorIds.includes(c.id))
 				.map((c) => c.username);
 
 			const total = contributorNames.length;
@@ -312,6 +284,32 @@ export default {
 			const newFormRecords = Object.assign({}, this.formRecords); // clean
 			delete newFormRecords[formId]; // delete
 			this.$set(this, "formRecords", newFormRecords); // affect
+		},
+	},
+	computed: {
+		activeForm() {
+			if (this.openedFormId === undefined) return undefined;
+
+			const formObj = this.formRecords[this.openedFormId];
+			if (formObj === undefined) return undefined;
+
+			const res = JSON.parse(JSON.stringify(formObj));
+			return res;
+		},
+		formRecordsList() {
+			return Object.values(this.formRecords);
+		},
+		formRecordsLength() {
+			return this.formRecordsList.length;
+		},
+		panelLabels() {
+			// faster than using Object.entries + reduce
+			const acc = {};
+			for (const formID of Object.keys(this.formRecords)) {
+				const form = this.formRecords[formID];
+				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
+			}
+			return acc;
 		},
 	},
 };

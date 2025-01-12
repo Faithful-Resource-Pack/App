@@ -45,24 +45,10 @@
 						min="0"
 						v-model="content.texture"
 					/>
-					<v-btn
-						icon
-						@click="
-							() => {
-								content.texture = String(Number.parseInt(content.texture, 10) + 1);
-							}
-						"
-					>
+					<v-btn icon @click="incrementTextureID">
 						<v-icon>mdi-chevron-up</v-icon>
 					</v-btn>
-					<v-btn
-						icon
-						@click="
-							() => {
-								content.texture = String(Math.max(Number.parseInt(content.texture - 1, 10), 0));
-							}
-						"
-					>
+					<v-btn icon @click="decrementTextureID">
 						<v-icon>mdi-chevron-down</v-icon>
 					</v-btn>
 				</div>
@@ -122,6 +108,17 @@ export default {
 			content: this.value,
 			months: moment.monthsShort(),
 		};
+	},
+	methods: {
+		incrementTextureID() {
+			const incremented = Number(this.content.texture) + 1;
+			this.content.texture = String(incremented);
+		},
+		decrementTextureID() {
+			const decremented = Number(this.content.texture) - 1;
+			// min zero
+			this.content.texture = String(Math.max(decremented, 0));
+		},
 	},
 	watch: {
 		value: {
