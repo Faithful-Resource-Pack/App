@@ -174,20 +174,17 @@ export default {
 			return Object.entries(this.formRecords).map(([formID, form]) => ([ formID, form.authors ]));
 		},
 		panelLabels() {
-			return Object.entries(this.formRecords)
-				.map(([formID, form]) => [
-					formID,
-					`${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`,
-				])
-				.reduce((acc, [formID, formLabel]) => {
-					acc[formID] = formLabel;
-					return acc;
-				}, {});
+			const acc = {};
+			for (const formID of Object.keys(this.formRecords)) {
+				const form = this.formRecords[formID];
+				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
+			}
+			return acc;
 		}
 	},
 	watch: {
 		formRecordsAuthors: {
-			handler: function(formEntriesAuthorIds) {
+			handler(formEntriesAuthorIds) {
 				Promise.all(formEntriesAuthorIds.map(async ([formID, formAuthorsIDs]) => [
 						formID, await this.contributorsFromIds(formAuthorsIDs)
 				])).then((allAuthorNames) => {
@@ -249,16 +246,16 @@ export default {
 
 			const total = authorIds.length;
 
-			const alreadyAuthors = this.contributors.filter((c) => authorIds.indexOf(c.id) !== -1);
+			const alreadyAuthors = this.contributors.filter((c) => authorIds.includes(c.id));
 			const alreadyAuthorsIds = alreadyAuthors.map(c => c.id);
-			const notAlreadyAuthorsIds = authorIds.filter((id) => alreadyAuthorsIds.indexOf(id) === -1);
+			const notAlreadyAuthorsIds = authorIds.filter((id) => !alreadyAuthorsIds.includes(id));
 			const searchIDsparam = notAlreadyAuthorsIds.join(',')
 			const notAlreadyAuthorsFound = (!searchIDsparam) ? [] :
 				await axios.get(`${this.$root.apiURL}/users/${searchIDsparam}`)
 					.then((res) => res.data)
 					.then((data) => Array.isArray(data) ? data : [data]);
 
-			const allAuthorsFound = [...alreadyAuthors, ...notAlreadyAuthorsFound].filter((v, i, a) => a.indexOf(v) === i);
+			const allAuthorsFound = Array.from(new Set([...alreadyAuthors, ...notAlreadyAuthorsFound]));
 			const anonymousTotal = allAuthorsFound.filter(a => !a.username).length;
 			const notAnonymous = allAuthorsFound.filter(a => !!a.username);
 			const notAnonymousNames = notAnonymous.map(user => user.username);
@@ -269,7 +266,7 @@ export default {
 				allNames.splice(0, 0, anonymousStr); // insert first anonymous
 			}
 
-			allNames = allNames.filter((v, i, a) => a.indexOf(v) === i);
+			allNames = Array.from(new Set(allNames));
 			return `[${total}]: ${allNames.join(", ")}`;
 		},
 		changeOpenedForm(formId) {
