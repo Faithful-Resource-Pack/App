@@ -118,7 +118,7 @@ export default {
 		return {
 			loadedContributions: {},
 			lastContributions: {},
-			columns: 7,
+			columns: this.value,
 			// number of displayed results
 			displayedResults: 1,
 			// styles
