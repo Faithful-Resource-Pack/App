@@ -118,7 +118,7 @@ export default {
 		return {
 			loadedContributions: {},
 			lastContributions: {},
-			columns: this.value,
+			columns: 7,
 			// number of displayed results
 			displayedResults: 1,
 			// styles
@@ -172,7 +172,7 @@ export default {
 
 			if (baseColumns !== 1) {
 				/**
-				 *  We want to solve n * MIN_WIDTH + (n - 1) * A = width
+				 * We want to solve n * MIN_WIDTH + (n - 1) * A = width
 				 * where A = 200 / (1.5 * n)
 				 * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
 				 * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
@@ -233,8 +233,12 @@ export default {
 			if (n === o || !Object.keys(this.loadedContributions).length) return;
 			this.lastContributions = this.getLastContributions(n);
 		},
-		value(newValue) {
-			this.columns = newValue;
+		value: {
+			handler(newValue) {
+				this.columns = newValue;
+			},
+			// load from localStorage as soon as possible
+			immediate: true,
 		},
 		columns(n) {
 			this.computeGrid();
