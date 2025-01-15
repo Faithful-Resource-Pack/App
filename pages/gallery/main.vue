@@ -126,7 +126,7 @@ export default {
 			error: undefined,
 			// search values
 			current: {
-				pack: "faithful_32x",
+				pack: "default",
 				tag: "all",
 				version: "latest",
 				edition: "java",

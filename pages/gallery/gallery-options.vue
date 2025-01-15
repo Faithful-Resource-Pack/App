@@ -85,7 +85,7 @@ export default {
 
 			// check if pack exist
 			if (!Object.keys(this.packToName).includes(this.current.pack))
-				this.current.pack = "faithful_32x";
+				this.current.pack = "default";
 
 			// actual updating is handled from main page
 			this.$emit("updateRoute");

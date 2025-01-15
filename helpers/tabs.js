@@ -51,7 +51,7 @@ export default [
 				routes: [
 					{
 						path: "/gallery",
-						redirect: "/gallery/java/faithful_32x/latest/all/",
+						redirect: "/gallery/java/default/latest/all/",
 					},
 					{
 						path: "/gallery/:edition/:pack/:version/:tag/:search*",
