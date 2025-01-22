@@ -84,8 +84,7 @@ export default {
 			this.current[type] = data;
 
 			// check if pack exist
-			if (!Object.keys(this.packToName).includes(this.current.pack))
-				this.current.pack = "default";
+			if (!Object.keys(this.packToName).includes(this.current.pack)) this.current.pack = "default";
 
 			// actual updating is handled from main page
 			this.$emit("updateRoute");
