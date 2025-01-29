@@ -24,7 +24,10 @@
 				<v-tabs-items v-model="selectedTab" style="background-color: transparent" class="pb-3">
 					<v-tab-item><general-tab v-model="formData" /></v-tab-item>
 					<v-tab-item><download-tab v-model="downloads" /></v-tab-item>
-					<v-tab-item><changelog-tab v-model="changelog" /></v-tab-item>
+					<v-tab-item>
+						<!-- need extra prop for the json modal (easier than tracking it here) -->
+						<changelog-tab v-model="changelog" :convert="convertChangelogToArray" />
+					</v-tab-item>
 				</v-tabs-items>
 				<div class="d-flex justify-end pa-2">
 					<v-btn color="darken-1" text @click="() => onSubmit(false)">
