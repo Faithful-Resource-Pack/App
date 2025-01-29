@@ -79,7 +79,7 @@
 		/>
 
 		<gallery-modal
-			v-model="modalOpen"
+			v-model="modalOpened"
 			:textureID="modalTextureID"
 			:discordIDtoName="discordIDtoName"
 			:packToName="packToName"
@@ -150,7 +150,7 @@ export default {
 			// loaded contributors
 			authors: {},
 			// whether modal is opened
-			modalOpen: false,
+			modalOpened: false,
 			// object of pack id -> pack display name
 			packToName: {},
 			// json of ignored textures (used in gallery images for fallbacks)
@@ -195,7 +195,7 @@ export default {
 		},
 		openModal() {
 			// router has already been triggered at this point
-			this.modalOpen = true;
+			this.modalOpened = true;
 		},
 		closeModal() {
 			this.$router.push({ query: null });

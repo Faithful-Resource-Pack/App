@@ -8,22 +8,7 @@
 		<template #toolbar>
 			<v-btn icon @click="copyData"><v-icon>mdi-content-copy</v-icon></v-btn>
 			<v-btn icon @click="openJSONModal"><v-icon>mdi-code-json</v-icon></v-btn>
-			<v-dialog v-model="jsonModalOpened" content-class="colored" max-width="800">
-				<v-card>
-					<h2 class="title text--secondary ma-2">
-						{{ $root.lang().database.subtitles.import_json_data }}
-					</h2>
-					<prism-editor
-						class="my-editor texture-json-editor"
-						v-model="importJSON"
-						:highlight="highlighter"
-						line-numbers
-					/>
-					<v-btn block @click="parseJSON" :color="color" class="white--text">
-						{{ $root.lang().database.labels.parse_json }}
-					</v-btn>
-				</v-card>
-			</v-dialog>
+			<json-modal v-model="jsonModalOpened" :color="color" initialValue="[]" @data="parseJSON" />
 		</template>
 		<div class="px-10 py-5">
 			<v-row>
@@ -232,7 +217,6 @@
 
 <script>
 import axios from "axios";
-import Prism from "prismjs";
 import FullscreenModal from "@components/fullscreen-modal.vue";
 import { formatTag, sortTags } from "@helpers/textures";
 import {
@@ -243,7 +227,7 @@ import {
 } from "@helpers/paths";
 import MinecraftSorter from "@helpers/MinecraftSorter";
 
-import { PrismEditor } from "vue-prism-editor";
+import JsonModal from "@components/json-modal.vue";
 
 const emptyPath = () => ({
 	// has problems with v-for otherwise
@@ -273,7 +257,7 @@ export default {
 	name: "new-texture-modal",
 	components: {
 		FullscreenModal,
-		PrismEditor,
+		JsonModal,
 	},
 	props: {
 		value: {
@@ -311,17 +295,12 @@ export default {
 			modalOpened: false,
 			selectedTab: null,
 			textures: [emptyTexture()],
-			importJSON: "[]",
 			jsonModalOpened: false,
 			clearOnSave: localStorage.getItem(CLOSE_ON_SAVE_KEY) === "true",
 		};
 	},
 	methods: {
 		sortTags,
-		highlighter(code) {
-			// js highlight example
-			return Prism.highlight(code, Prism.languages.js, "json");
-		},
 		summaryString(tex) {
 			const labels = this.$root.lang().database.labels;
 			// bit cleaner than using a ton of nested ternaries
@@ -437,35 +416,29 @@ export default {
 		openJSONModal() {
 			this.jsonModalOpened = true;
 		},
-		parseJSON() {
-			try {
-				let data = JSON.parse(this.importJSON);
-				if (!data || !data.length) data = [emptyTexture()];
-				// validate parsed data
-				const cleaned = data.map((tex) => {
-					tex.key = crypto.randomUUID();
-					tex.name ||= "";
-					tex.tags ||= [];
-					if (!tex.uses || !tex.uses.length) tex.uses = [emptyUse()];
-					tex.uses = tex.uses.map((use) => {
-						use.key = crypto.randomUUID();
-						use.edition ||= "";
-						if (!use.paths || !use.paths.length) use.paths = [emptyPath()];
-						use.paths = use.paths.map((path) => {
-							path.name ||= "";
-							path.versions ||= [];
-							path.mcmeta ||= false;
-							return path;
-						});
-						return use;
+		parseJSON(data) {
+			if (typeof data === "object" && !Array.isArray(data)) data = [data];
+			// validate parsed data
+			const cleaned = data.map((tex) => {
+				tex.key = crypto.randomUUID();
+				tex.name ||= "";
+				tex.tags ||= [];
+				if (!tex.uses || !tex.uses.length) tex.uses = [emptyUse()];
+				tex.uses = tex.uses.map((use) => {
+					use.key = crypto.randomUUID();
+					use.edition ||= "";
+					if (!use.paths || !use.paths.length) use.paths = [emptyPath()];
+					use.paths = use.paths.map((path) => {
+						path.name ||= "";
+						path.versions ||= [];
+						path.mcmeta ||= false;
+						return path;
 					});
-					return tex;
+					return use;
 				});
-				this.textures = cleaned;
-			} catch (err) {
-				console.error(err);
-				this.$root.showSnackBar(err, "error");
-			}
+				return tex;
+			});
+			this.textures = cleaned;
 			this.jsonModalOpened = false;
 		},
 		copyData() {
