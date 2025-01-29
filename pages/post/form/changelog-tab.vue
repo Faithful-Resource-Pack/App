@@ -13,14 +13,14 @@
 		</div>
 		<v-row dense>
 			<!-- root level object is the only one that cannot contain string items -->
-			<v-col>
+			<v-col cols="12" sm="11">
 				<v-btn class="my-1" block color="secondary" @click="addCategory">
 					{{ $root.lang().posts.changelog.add_category }}<v-icon right>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
-			<v-col>
+			<v-col cols="12" sm="1">
 				<v-btn class="my-1" block color="secondary" @click="openJSONModal">
-					{{ $root.lang().database.subtitles.import_json_data }}<v-icon right>mdi-plus</v-icon>
+					<v-icon>mdi-code-json</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>
