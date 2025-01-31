@@ -127,9 +127,9 @@ export default {
 			pageStyles: "",
 			textColorOnPage: "white--text",
 			colors: {
+				approved: "green",
 				pending: "yellow",
 				denied: "red",
-				approved: "teal",
 				archived: "grey",
 			},
 			addons: {
