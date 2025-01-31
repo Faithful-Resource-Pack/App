@@ -414,6 +414,7 @@ export default {
 			approved: "Approved",
 			denied: "Denied",
 			pending: "Pending",
+			archived: "Archived",
 		},
 	},
 	posts: {
