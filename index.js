@@ -463,6 +463,8 @@ const app = new Vue({
 			immediate: true,
 		},
 		drawerOpen(n) {
+			// don't set preference on small screens (pointless)
+			if (this.$vuetify.breakpoint.mobile) return;
 			localStorage.setItem(MENU_KEY, String(n));
 		},
 		isLoggedIn(n) {

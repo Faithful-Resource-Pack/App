@@ -269,6 +269,7 @@ export default {
 		},
 		deny_window: {
 			title: "Deny add-on",
+			archive_title: "Archive add-on",
 			label: "Write a reason…",
 			rule: "Any reason can be given",
 		},

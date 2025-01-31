@@ -1,10 +1,10 @@
 <template>
 	<modal-form
 		v-model="modalOpened"
-		:title="$root.lang().review.deny_window.title"
+		:title="title"
 		:disabled="!denyReason || (denyReason && denyReason.length == 0)"
-		@close="$emit('close', false, denyReason)"
-		@submit="$emit('close', true, denyReason)"
+		@close="interacted"
+		@submit="interacted"
 	>
 		<v-text-field
 			required
@@ -24,6 +24,11 @@ export default {
 		ModalForm,
 	},
 	props: {
+		archive: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 		value: {
 			type: Boolean,
 			required: true,
@@ -35,6 +40,18 @@ export default {
 			denyReason: "",
 			reasonRules: [(u) => !u || u?.length > 0 || this.$root.lang().review.deny_window.rule],
 		};
+	},
+	methods: {
+		interacted(submit = false) {
+			this.$emit("close", submit, this.denyReason);
+		},
+	},
+	computed: {
+		title() {
+			const strings = this.$root.lang().review.deny_window;
+			if (this.archive) return strings.archive_title;
+			return strings.title;
+		},
 	},
 	watch: {
 		value(newValue) {
