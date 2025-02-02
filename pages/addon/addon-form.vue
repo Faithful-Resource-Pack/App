@@ -286,10 +286,10 @@
 						text
 						@click="() => onSubmit(true)"
 					>
-						{{ $root.lang("global.btn.submit_and_approve") }}
+						{{ $root.lang().global.btn.submit_and_approve }}
 					</v-btn>
 					<v-btn :disabled="!validForm" color="darken-1" text @click="() => onSubmit(false)">
-						{{ $root.lang().global.btn.submit }}
+						{{ $root.lang().global.btn.submit_for_review }}
 					</v-btn>
 				</div>
 			</v-form>

@@ -22,6 +22,7 @@ export default {
 			add: "Add",
 			add_download: "Add Download",
 			submit: "Submit",
+			submit_for_review: "Submit for review",
 			submit_and_approve: "Submit and approve",
 			cancel: "Cancel",
 			close: "Close",
