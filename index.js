@@ -259,7 +259,7 @@ const app = new Vue({
 			console.log(this.$route);
 			console.log(this.$router.options.routes);
 		},
-		compiledMarkdown(rawText) {
+		compileMarkdown(rawText) {
 			if (!rawText) return "";
 			return DOMPurify.sanitize(marked(rawText));
 		},

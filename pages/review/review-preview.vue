@@ -134,7 +134,7 @@
 				<v-container
 					class="markdown"
 					:style="{ backgroundColor: `rgba(0, 0, 0, ${$root.isDark ? 0.2 : 0.05})` }"
-					v-html="$root.compiledMarkdown(addonInPanel.description)"
+					v-html="$root.compileMarkdown(addonInPanel.description)"
 				/>
 			</template>
 		</v-card>

@@ -39,7 +39,7 @@ declare module "vue/types/vue" {
 			json?: any,
 		): void;
 		logout(): void;
-		compiledMarkdown(rawText: string): string;
+		compileMarkdown(rawText: string): string;
 		addAccessTokenListener(listener: (token: string) => any): void;
 
 		// there's more methods but none of them are used publicly

@@ -149,7 +149,7 @@
 					v-if="submittedForm.description && submittedForm.description.length > 0"
 					class="pa-3"
 					:elevation="0"
-					v-html="$root.compiledMarkdown(submittedForm.description)"
+					v-html="$root.compileMarkdown(submittedForm.description)"
 				/>
 				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
 
