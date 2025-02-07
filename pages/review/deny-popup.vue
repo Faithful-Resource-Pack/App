@@ -3,8 +3,8 @@
 		v-model="modalOpened"
 		:title="title"
 		:disabled="!denyReason || (denyReason && denyReason.length == 0)"
-		@close="interacted"
-		@submit="interacted"
+		@close="interacted(false)"
+		@submit="interacted(true)"
 	>
 		<v-text-field
 			required
