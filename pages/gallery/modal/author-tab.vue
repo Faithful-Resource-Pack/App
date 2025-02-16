@@ -97,7 +97,7 @@ export default {
 	},
 	computed: {
 		packs() {
-			return this.authorCategories.flatMap((v) => v.packs);
+			return this.authorCategories.flatMap(({ packs }) => packs);
 		},
 	},
 };

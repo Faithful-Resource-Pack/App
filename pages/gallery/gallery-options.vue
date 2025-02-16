@@ -105,6 +105,7 @@ export default {
 		},
 		versionList() {
 			return this.options.versions.map((v) => {
+				// nested ternary is really ugly
 				if (v === "latest")
 					return {
 						label: this.$root.lang().gallery.latest,

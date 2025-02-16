@@ -50,8 +50,8 @@ export default {
 	},
 	computed: {
 		classes() {
-			return this.categories.map((v) =>
-				v.value === this.value ? `${this.activeColor} selected` : "",
+			return this.categories.map((c) =>
+				c.value === this.value ? `${this.activeColor} selected` : "",
 			);
 		},
 	},

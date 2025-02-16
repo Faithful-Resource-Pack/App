@@ -262,7 +262,7 @@ export default {
 				this.$root.apiOptions,
 			),
 		])
-			.then((res) => res.map((v) => v.data))
+			.then((res) => res.map(({ data }) => data))
 			.then(([addon, downloads]) => {
 				const loadedAddon = {
 					...addon,

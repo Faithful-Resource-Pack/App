@@ -100,7 +100,7 @@ router.beforeEach((to, _from, next) => {
 		return;
 	}
 	// replace hash router (legacy urls) with history router
-	if (["/#", "/?#"].some((v) => to.fullPath.startsWith(v))) {
+	if (["/#", "/?#"].some((p) => to.fullPath.startsWith(p))) {
 		const path = to.fullPath.replace("/#", "").replace("/?#", "");
 		next(path);
 		return;

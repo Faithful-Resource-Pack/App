@@ -269,7 +269,7 @@ export default {
 				.get(`${this.$root.apiURL}/textures/${this.formData.id}/paths`, this.$root.apiOptions)
 				.then((res) => {
 					this.formData.tags = sortTags([
-						...Object.values(this.formData.uses).map((v) => v.edition.toTitleCase()),
+						...Object.values(this.formData.uses).map(({ edition }) => edition.toTitleCase()),
 						...(res.data || []).map((path) => formatTag(getTagFromPath(path.name))),
 					]);
 				})

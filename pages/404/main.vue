@@ -4,11 +4,11 @@
 		<p class="text-body-1 mb-0 mt-7">{{ $root.lang("missing_page.description") }}</p>
 		<p class="text-body-1 mt-0">
 			<!-- horrible hack for hrefs -->
-			<span v-for="(v, i) in $root.lang('missing_page.main_page').split('%')" :key="v">
+			<span v-for="(str, i) in $root.lang('missing_page.main_page').split('%')" :key="str">
 				<router-link v-if="i % 2 !== 0" to="/dashboard">
-					{{ v }}
+					{{ str }}
 				</router-link>
-				<span v-else>{{ v }}</span>
+				<span v-else>{{ str }}</span>
 			</span>
 		</p>
 	</div>

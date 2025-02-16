@@ -171,7 +171,7 @@ export default {
 			this.openedFormId = newFormId;
 		},
 		formatPack(packId) {
-			return this.packsList.find((v) => v.value === packId)?.label || packId;
+			return this.packsList.find(({ value }) => value === packId)?.label || packId;
 		},
 		open(inputDataObj, inputPacksList, closeOnSubmit = true) {
 			this.packsList = inputPacksList;

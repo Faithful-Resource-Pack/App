@@ -215,7 +215,7 @@ export default {
 				this.form.packs
 					.filter((entry) => entry.key !== this.all_packs)
 					// format into list-suitable format
-					.map((v) => ({ label: v.value, value: v.key }))
+					.map(({ value, key }) => ({ label: value, value: key }))
 			);
 		},
 		onModalSubmit() {

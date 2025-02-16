@@ -17,7 +17,7 @@ export function getNameFromPath(path) {
  */
 export function getTagFromPath(path) {
 	const split = path.split("/");
-	const textureFolderIndex = split.findIndex((v) => v == "textures");
+	const textureFolderIndex = split.findIndex((dir) => dir === "textures");
 	const tagName = textureFolderIndex == -1 ? null : split[textureFolderIndex + 1]?.toTitleCase();
 	return formatTag(tagName);
 }
