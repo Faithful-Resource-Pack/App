@@ -202,7 +202,7 @@ export default {
 			const knownNames = contributorNames.filter((username) => username);
 
 			if (anonymousTotal > 0) {
-				const anonymousStr = `${anonymousTotal} ${this.$root.lang("database.anonymous")}`;
+				const anonymousStr = `${anonymousTotal} ${this.$root.lang().database.anonymous}`;
 				knownNames.splice(0, 0, anonymousStr);
 			}
 

@@ -16,7 +16,7 @@
 				<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules" target="_blank">
 					<v-alert type="warning" class="pb-4" color="orange darken-3">
 						<span style="color: inherit; text-decoration: underline">
-							{{ $root.lang("addons.general.rules") }}
+							{{ $root.lang().addons.general.rules }}
 						</span>
 						<v-icon small>mdi-open-in-new</v-icon>
 					</v-alert>

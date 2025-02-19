@@ -3,8 +3,8 @@
 		<div class="text-h4 py-4">
 			{{
 				$root.user.username
-					? $root.lang("dashboard.welcome_user").replace("%USER%", $root.user.username)
-					: $root.lang("dashboard.welcome")
+					? $root.lang().dashboard.welcome_user.replace("%USER%", $root.user.username)
+					: $root.lang().dashboard.welcome
 			}}
 		</div>
 

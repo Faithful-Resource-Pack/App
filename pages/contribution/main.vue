@@ -354,7 +354,7 @@ export default {
 				});
 
 			if (wentWell) {
-				this.$root.showSnackBar(this.$root.lang("global.ends_success"), "success");
+				this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 				this.getAuthors();
 			}
 

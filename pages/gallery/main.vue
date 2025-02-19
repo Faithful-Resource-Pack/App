@@ -187,7 +187,7 @@ export default {
 		copyShareURL(id) {
 			const url = this.newShareURL(id, false);
 			navigator.clipboard.writeText(url);
-			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
+			this.$root.showSnackBar(this.$root.lang().gallery.share_link_copied_to_clipboard, "success");
 		},
 		openModalInNewTab(id) {
 			const url = this.newShareURL(id, false);

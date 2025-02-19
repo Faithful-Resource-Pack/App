@@ -7,7 +7,7 @@
 					item-text="label"
 					item-value="value"
 					:value="current.pack"
-					:label="$root.lang('gallery.category.pack')"
+					:label="$root.lang().gallery.category.pack"
 					@change="updateRoute($event, 'pack')"
 				/>
 			</v-col>
@@ -18,7 +18,7 @@
 					item-text="label"
 					item-value="value"
 					:value="current.edition"
-					:label="$root.lang('gallery.category.edition')"
+					:label="$root.lang().gallery.category.edition"
 					@change="updateRoute($event, 'edition')"
 				/>
 			</v-col>
@@ -31,7 +31,7 @@
 					:value="current.version"
 					item-text="label"
 					item-value="value"
-					:label="$root.lang('gallery.category.mc_version')"
+					:label="$root.lang().gallery.category.mc_version"
 					@change="updateRoute($event, 'version')"
 				/>
 			</v-col>
@@ -42,7 +42,7 @@
 					item-text="label"
 					item-value="value"
 					:value="current.tag"
-					:label="$root.lang('gallery.category.tag')"
+					:label="$root.lang().gallery.category.tag"
 					@change="updateRoute($event, 'tag')"
 				/>
 			</v-col>

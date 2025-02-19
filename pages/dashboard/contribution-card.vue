@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		id="contribution-card"
-		:title="$root.lang('dashboard.titles.contribution_activity')"
+		:title="$root.lang().dashboard.titles.contribution_activity"
 		to="/contributions"
 		:clickable="$root.isAdmin"
 		class="d-flex flex-column"
@@ -23,7 +23,7 @@
 							:values="values"
 							:end-date="today"
 							:max="data.percentiles[activity]"
-							:tooltip-unit="$root.lang('dashboard.totals.contributions')"
+							:tooltip-unit="$root.lang().dashboard.totals.contributions"
 							:locale="locale"
 							:range-color="colors"
 						/>

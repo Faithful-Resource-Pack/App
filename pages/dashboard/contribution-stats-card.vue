@@ -2,7 +2,7 @@
 	<dashboard-card
 		clickable
 		id="contribution-stats-card"
-		:title="$root.lang('dashboard.titles.contribution_stats')"
+		:title="$root.lang().dashboard.titles.contribution_stats"
 		to="/contribution-stats"
 		class="d-flex flex-column"
 	>

@@ -1,6 +1,6 @@
 <template>
 	<dashboard-card
-		:title="$root.lang('dashboard.titles.users')"
+		:title="$root.lang().dashboard.titles.users"
 		to="/users"
 		:clickable="$root.isAdmin"
 	>
