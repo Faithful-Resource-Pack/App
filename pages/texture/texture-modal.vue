@@ -19,18 +19,18 @@
 				:disabled="!add"
 				:color="color"
 				persistent-hint
-				:hint="'⚠️' + $root.lang().database.hints.texture_id"
+				:hint="'⚠️' + $root.lang().database.textures.modal.id_hint"
 				required
 				:readonly="add == false"
 				v-model="formData.id"
-				:label="$root.lang().database.labels.texture_id"
+				:label="$root.lang().database.textures.modal.id"
 			/>
 			<v-text-field
 				:color="color"
 				required
 				clearable
 				v-model="formData.name"
-				:label="$root.lang().database.labels.texture_name"
+				:label="$root.lang().database.textures.modal.name"
 			/>
 			<v-combobox
 				:color="color"
@@ -46,14 +46,11 @@
 				"
 				v-model="formData.tags"
 				:items="tags"
-				:label="$root.lang().database.labels.texture_tags"
+				:label="$root.lang().database.textures.modal.tags"
 			/>
 
-			<h2 class="title">{{ $root.lang().database.subtitles.uses }}</h2>
-			<v-list
-				v-if="Object.keys(formData.uses).length"
-				:label="$root.lang().database.labels.texture_uses"
-			>
+			<h2 class="title">{{ $root.lang().database.textures.uses.title }}</h2>
+			<v-list v-if="Object.keys(formData.uses).length">
 				<v-list-item class="list-item-inline" v-for="(use, index) in formData.uses" :key="index">
 					<v-list-item-avatar
 						tile
@@ -72,7 +69,7 @@
 							<v-list-item style="display: inline; padding: 0 0 0 5px">
 								<template v-if="use.name">{{ use.name }}</template>
 								<template v-else>
-									<i>{{ $root.lang().database.labels.nameless }}</i>
+									<i>{{ $root.lang().database.nameless }}</i>
 								</template>
 							</v-list-item>
 							<v-list-item-subtitle style="display: block; padding: 0 0 0 5px">
@@ -91,10 +88,10 @@
 					</v-list-item-action>
 				</v-list-item>
 			</v-list>
-			<div v-else>{{ $root.lang().database.labels.no_use_found }}</div>
+			<div v-else>{{ $root.lang().database.textures.uses.no_use_found }}</div>
 
 			<v-btn block style="margin-top: 10px" color="secondary" @click="openUseModal(null, true)">
-				{{ $root.lang().database.labels.add_new_use }}
+				{{ $root.lang().database.textures.uses.add_use }}
 				<v-icon right>mdi-plus</v-icon>
 			</v-btn>
 			<v-btn
@@ -179,15 +176,15 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_texture
-				: this.$root.lang().database.titles.change_texture;
+				? this.$root.lang().database.textures.add_texture
+				: this.$root.lang().database.textures.change_texture;
 		},
 		addEditionUseLabel() {
 			if (!Object.keys(this.formData).length) return;
 			const newEdition = this.getCorrespondingEdition(Object.values(this.formData.uses)[0].edition);
 			return this.$root
 				.lang()
-				.database.labels.add_edition_use.replace("%edition%", newEdition.toTitleCase());
+				.database.textures.uses.add_edition_use.replace("%edition%", newEdition.toTitleCase());
 		},
 	},
 	methods: {
@@ -304,8 +301,7 @@ export default {
 		modalOpened(newValue) {
 			this.$nextTick(() => {
 				if (this.add) this.$refs.form.reset();
-
-				if (!this.add) {
+				else {
 					this.formData.name = this.data.name;
 					this.formData.tags = this.data.tags;
 					this.formData.id = this.data.id;

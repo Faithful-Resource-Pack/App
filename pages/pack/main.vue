@@ -25,18 +25,18 @@
 		<v-row no-gutters class="py-0 mb-0" align="center">
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
 				<div class="text-h4 py-4">
-					{{ $root.lang().database.titles.packs }}
+					{{ $root.lang().database.packs.title }}
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
 				<v-btn block :color="pageColor" @click="openDialog()">
-					{{ $root.lang("database.labels.add_new_pack") }}<v-icon right dark>mdi-plus</v-icon>
+					{{ $root.lang().database.packs.modal.add_pack }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>
 
 		<!-- tag switcher -->
-		<div class="my-2 text-h5">{{ $root.lang().database.labels.select_pack_tag }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.packs.tag_filter }}</div>
 		<div class="selector">
 			<v-btn
 				v-for="tag in packTags"
@@ -50,7 +50,7 @@
 		</div>
 
 		<!-- results -->
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.pack_result }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.packs.pack_result }}</div>
 		<smart-grid
 			v-if="packs.length"
 			:items="packs"
@@ -179,7 +179,7 @@ export default {
 			this.remove.id = data.id;
 			this.remove.label = this.$root
 				.lang()
-				.database.labels.ask_deletion.replace("%s", data.name)
+				.database.ask_deletion.replace("%s", data.name)
 				.replace("%d", data.id);
 			this.remove.confirm = true;
 		},

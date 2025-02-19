@@ -1,7 +1,7 @@
 <template>
 	<fullscreen-modal
 		v-model="modalOpened"
-		:title="$root.lang().database.labels.add_texture"
+		:title="$root.lang().database.textures.add_multiple"
 		:pageColor="color"
 		@close="closeModal"
 	>
@@ -21,7 +21,7 @@
 							append
 						>
 							<span v-if="texture.name">{{ texture.name }}</span>
-							<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+							<i v-else>{{ $root.lang().database.nameless }}</i>
 							<v-btn :color="color" icon @click="deleteTexture(ti)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>
@@ -40,7 +40,7 @@
 										clearable
 										:color="color"
 										v-model="texture.name"
-										:label="$root.lang().database.labels.texture_name"
+										:label="$root.lang().database.textures.modal.name"
 									/>
 								</v-col>
 								<v-col cols="12" sm="6">
@@ -58,7 +58,7 @@
 										"
 										v-model="texture.tags"
 										:items="tags"
-										:label="$root.lang().database.labels.texture_tags"
+										:label="$root.lang().database.textures.modal.tags"
 									/>
 								</v-col>
 							</v-row>
@@ -81,7 +81,7 @@
 											<v-text-field
 												:color="color"
 												v-model="use.name"
-												:label="$root.lang().database.labels.use_name"
+												:label="$root.lang().database.textures.uses.name"
 											/>
 										</v-col>
 										<v-col cols="12" sm="6">
@@ -91,7 +91,7 @@
 												:items="editions"
 												v-model="use.edition"
 												@change="(e) => onEditionChange(e, use, texture)"
-												:label="$root.lang().database.labels.use_edition"
+												:label="$root.lang().database.textures.uses.edition"
 											/>
 										</v-col>
 										<v-col cols="12" sm="1">
@@ -106,11 +106,11 @@
 												<v-text-field
 													:color="color"
 													v-model="path.name"
-													:label="$root.lang().database.labels.path"
+													:label="$root.lang().database.textures.paths.name"
 													clearable
 													@change="(e) => pathAdded(e, path, use, texture)"
 													persistent-hint
-													:hint="$root.lang().database.hints.path_prefill"
+													:hint="$root.lang().database.textures.paths.name_prefill"
 												/>
 											</v-col>
 											<v-col cols="12" sm="4">
@@ -119,7 +119,7 @@
 													:item-color="color"
 													:items="sortedVersions"
 													v-model="path.versions"
-													:label="$root.lang().database.labels.versions"
+													:label="$root.lang().database.textures.paths.versions"
 													multiple
 													hide-details
 													clearable
@@ -130,7 +130,7 @@
 												<v-checkbox
 													:color="color"
 													v-model="path.mcmeta"
-													:label="$root.lang().database.labels.mcmeta"
+													:label="$root.lang().database.textures.paths.mcmeta"
 												/>
 											</v-col>
 											<v-col cols="12" sm="1">
@@ -141,12 +141,13 @@
 										</v-row>
 									</div>
 									<v-btn block class="my-5" color="secondary" @click="addPath(ti, ui)">
-										{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
+										{{ $root.lang().database.textures.paths.add_path }}
+										<v-icon right>mdi-plus</v-icon>
 									</v-btn>
 								</v-timeline-item>
 							</v-timeline>
 							<v-btn block class="my-5" color="secondary" @click="addUse(ti)">
-								{{ $root.lang().database.labels.add_new_use }} <v-icon right>mdi-plus</v-icon>
+								{{ $root.lang().database.textures.uses.add_use }} <v-icon right>mdi-plus</v-icon>
 							</v-btn>
 							<!-- one use and one path are essentially guaranteed by the modal setup -->
 							<v-btn
@@ -169,18 +170,18 @@
 				<v-col>
 					<v-list>
 						<div class="font-weight-medium text--secondary my-2">
-							{{ $root.lang().database.titles.textures }}
+							{{ $root.lang().database.textures.title }}
 						</div>
 						<v-list-item class="pl-0" v-for="(tex, i) in textures" :key="tex.key">
 							<v-list-item-content>
 								<v-list-item-title :class="summaryStyles">
 									<template v-if="tex.name">{{ tex.name }}</template>
-									<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+									<i v-else>{{ $root.lang().database.nameless }}</i>
 									• {{ summaryString(tex) }}
 								</v-list-item-title>
 								<v-list-item-subtitle>
 									<span v-if="tex.tags.length">{{ tex.tags.join(", ") }}</span>
-									<i v-else>{{ $root.lang().database.labels.tagless }}</i>
+									<i v-else>{{ $root.lang().database.textures.modal.tagless }}</i>
 								</v-list-item-subtitle>
 							</v-list-item-content>
 							<v-list-item-action>
@@ -195,7 +196,7 @@
 								:color="color"
 								v-model="clearOnSave"
 								hide-details
-								:label="$root.lang('database.labels.clear_on_save')"
+								:label="$root.lang().database.textures.modal.clear_on_save"
 							/>
 						</v-col>
 						<v-col cols="12" sm="3">
@@ -251,7 +252,7 @@ const emptyTexture = () => ({
 	uses: [emptyUse()],
 });
 
-const CLOSE_ON_SAVE_KEY = "new_textures_close";
+const CLEAR_ON_SAVE_KEY = "new_textures_clear";
 
 export default {
 	name: "new-texture-modal",
@@ -296,19 +297,19 @@ export default {
 			selectedTab: null,
 			textures: [emptyTexture()],
 			jsonModalOpened: false,
-			clearOnSave: localStorage.getItem(CLOSE_ON_SAVE_KEY) === "true",
+			clearOnSave: localStorage.getItem(CLEAR_ON_SAVE_KEY) === "true",
 		};
 	},
 	methods: {
 		sortTags,
 		summaryString(tex) {
-			const labels = this.$root.lang().database.labels;
+			const texStrings = this.$root.lang().database.textures;
 			// bit cleaner than using a ton of nested ternaries
 			let strBuilder = `${tex.uses.length} `;
-			strBuilder += tex.uses.length === 1 ? labels.use_singular : labels.use_plural;
+			strBuilder += tex.uses.length === 1 ? texStrings.uses.singular : texStrings.uses.plural;
 			const pathCount = tex.uses.reduce((acc, cur) => acc + cur.paths.length, 0);
 			strBuilder += `, ${pathCount} `;
-			strBuilder += pathCount === 1 ? labels.path_singular : labels.path_plural;
+			strBuilder += pathCount === 1 ? texStrings.paths.singular : texStrings.paths.plural;
 			return strBuilder;
 		},
 		addTexture() {
@@ -411,7 +412,7 @@ export default {
 			const newEdition = this.getCorrespondingEdition(uses[0].edition);
 			return this.$root
 				.lang()
-				.database.labels.add_edition_use.replace("%edition%", newEdition.toTitleCase());
+				.database.textures.uses.add_edition_use.replace("%edition%", newEdition.toTitleCase());
 		},
 		openJSONModal() {
 			this.jsonModalOpened = true;
@@ -444,7 +445,7 @@ export default {
 		copyData() {
 			const data = JSON.stringify(this.cleanedData, null, 2);
 			navigator.clipboard.writeText(data);
-			this.$root.showSnackBar(this.$root.lang("database.labels.copy_json_data"), "success");
+			this.$root.showSnackBar(this.$root.lang().database.textures.modal.copy_json_data, "success");
 		},
 		resetModal() {
 			this.textures = [emptyTexture()];
@@ -457,10 +458,7 @@ export default {
 			axios
 				.post(`${this.$root.apiURL}/textures/multiple`, this.cleanedData, this.$root.apiOptions)
 				.then(() => {
-					this.$root.showSnackBar(
-						this.$root.lang().database.labels.add_textures_success,
-						"success",
-					);
+					this.$root.showSnackBar(this.$root.lang().database.textures.add_success, "success");
 					if (this.clearOnSave) this.resetModal();
 				})
 				.catch((err) => {
@@ -501,7 +499,7 @@ export default {
 			this.$emit("input", n);
 		},
 		clearOnSave(n) {
-			localStorage.setItem(CLOSE_ON_SAVE_KEY, n);
+			localStorage.setItem(CLEAR_ON_SAVE_KEY, n);
 		},
 	},
 };

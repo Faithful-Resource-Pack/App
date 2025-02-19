@@ -6,23 +6,23 @@
 				v-if="add == false"
 				disabled
 				persistent-hint
-				:hint="'⚠️' + $root.lang().database.hints.path_id"
+				:hint="'⚠️' + $root.lang().database.textures.paths.id_hint"
 				v-model="formData.id"
-				:label="$root.lang().database.labels.path_id"
+				:label="$root.lang().database.textures.paths.id"
 			/>
 			<v-text-field
 				:color="color"
 				v-if="add == false"
-				:hint="'⚠️' + $root.lang().database.hints.use_id"
+				:hint="'⚠️' + $root.lang().database.textures.uses.id_hint"
 				v-model="formData.use"
-				:label="$root.lang().database.labels.use_id"
+				:label="$root.lang().database.textures.uses.id"
 			/>
 			<v-text-field
 				:color="color"
-				:hint="$root.lang().database.hints.path"
+				:hint="$root.lang().database.textures.paths.name_hint"
 				v-model="formData.name"
 				@change="(e) => formatPath(e)"
-				:label="$root.lang().database.labels.path"
+				:label="$root.lang().database.textures.paths.name"
 			/>
 			<v-select
 				:color="color"
@@ -32,12 +32,12 @@
 				small-chips
 				v-model="formData.versions"
 				:items="sortedVersions"
-				:label="$root.lang().database.labels.versions"
+				:label="$root.lang().database.textures.paths.versions"
 			/>
 			<v-checkbox
 				:color="color"
 				v-model="formData.mcmeta"
-				:label="$root.lang().database.labels.mcmeta"
+				:label="$root.lang().database.textures.paths.mcmeta"
 			/>
 		</v-form>
 	</modal-form>
@@ -148,8 +148,8 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_path
-				: this.$root.lang().database.titles.change_path;
+				? this.$root.lang().database.textures.paths.add_path
+				: this.$root.lang().database.textures.paths.change_path;
 		},
 		sortedVersions() {
 			return (
@@ -163,16 +163,16 @@ export default {
 		},
 		modalOpened(newValue) {
 			this.$nextTick(() => {
-				if (!this.add) {
+				if (this.add) {
+					this.$refs.form.reset();
+					// autofill bedrock paths
+					if (this.sortedVersions.length === 1) this.formData.versions = this.sortedVersions;
+				} else {
 					this.formData.versions = this.data.versions.sort(MinecraftSorter);
 					this.formData.id = this.data.id;
 					this.formData.name = this.data.name;
 					this.formData.use = this.data.use;
 					this.formData.mcmeta = this.data.mcmeta;
-				} else {
-					this.$refs.form.reset();
-					// autofill bedrock paths
-					if (this.sortedVersions.length === 1) this.formData.versions = this.sortedVersions;
 				}
 			});
 			this.$emit("input", newValue);

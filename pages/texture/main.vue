@@ -51,9 +51,9 @@
 		/>
 
 		<div class="text-h4 py-4">
-			{{ $root.lang().database.titles.textures }}
+			{{ $root.lang().database.textures.title }}
 		</div>
-		<div class="my-2 text-h5">{{ $root.lang().database.labels.select_texture_tag }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.textures.tag_filter }}</div>
 		<div class="selector">
 			<v-btn
 				v-for="tag in textureTags"
@@ -65,7 +65,7 @@
 				{{ tag }}
 			</v-btn>
 		</div>
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
 		<div class="my-2">
 			<v-text-field
 				v-model="search"
@@ -74,7 +74,7 @@
 				clear-icon="mdi-close"
 				clearable
 				:color="pageColor"
-				:placeholder="$root.lang().database.labels.search_texture"
+				:placeholder="$root.lang().database.textures.search_texture"
 				type="text"
 				hide-details
 				@keyup.enter="startSearch"
@@ -87,7 +87,7 @@
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
-						{{ $root.lang().database.labels.add_texture }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.add_multiple }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -95,7 +95,7 @@
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openAddVersionModal">
-						{{ $root.lang().database.labels.add_mc_version }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.add_version.title }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 				<v-col>
@@ -105,13 +105,13 @@
 						:class="[textColorOnPage]"
 						@click="openModifyVersionModal"
 					>
-						{{ $root.lang().database.labels.edit_mc_version }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.modify_version.title }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
 		</div>
 
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.texture_result }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.textures.texture_result }}</div>
 		<smart-grid
 			v-if="Object.keys(textures).length"
 			:pageColor="pageColor"

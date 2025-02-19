@@ -26,7 +26,7 @@
 				<!-- use names can be empty/null -->
 				<template #item.name="{ value }">
 					<template v-if="value">{{ value }}</template>
-					<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+					<i v-else>{{ $root.lang().database.nameless }}</i>
 				</template>
 			</v-data-table>
 		</div>

@@ -34,7 +34,7 @@
 			clear-icon="mdi-close"
 			clearable
 			hide-details
-			:placeholder="$root.lang().database.labels.search_texture"
+			:placeholder="$root.lang().database.textures.search_texture"
 			type="text"
 			@keyup.enter="startSearch"
 			@click:append="startSearch"

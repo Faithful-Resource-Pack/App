@@ -1,16 +1,16 @@
 <template>
 	<modal-form
 		v-model="modalOpened"
-		:title="$root.lang().database.titles.change_mc_version"
+		:title="$root.lang().database.textures.modify_version.title"
 		@close="$emit('close')"
 		@submit="send"
 	>
 		<v-form ref="form">
 			<v-row>
 				<v-col class="col-12" sm="12">
-					<p>{{ $root.lang().database.hints.example_scenario }}</p>
+					<p>{{ $root.lang().database.textures.modify_version.example }}</p>
 					<v-alert type="warning" class="px-2" outlined dense>
-						{{ $root.lang().database.hints.example_scenario_warn }}
+						{{ $root.lang().database.textures.modify_version.warning }}
 					</v-alert>
 				</v-col>
 			</v-row>
@@ -21,13 +21,13 @@
 							:color="color"
 							required
 							v-model="form.old"
-							:label="$root.lang().database.labels.current_mc_version"
+							:label="$root.lang().database.textures.modify_version.current_version"
 						/>
 						<v-text-field
 							:color="color"
 							required
 							v-model="form.new"
-							:label="$root.lang().database.labels.new_mc_version"
+							:label="$root.lang().database.textures.modify_version.new_version"
 						/>
 					</v-form>
 				</v-col>

@@ -1,7 +1,7 @@
 <template>
 	<modal-form
 		v-model="modalOpened"
-		:title="$root.lang().database.titles.contributions"
+		:title="$root.lang().database.contributions.title"
 		max-width="800"
 		@close="closeAndCancel"
 		@submit="closeOrAndSubmit"
@@ -30,7 +30,7 @@
 				:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
 			>
 				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang("database.titles.contributions") }}
+					{{ $root.lang().database.contributions.title }}
 				</div>
 				<v-list
 					id="contribution-form-list"
@@ -52,7 +52,7 @@
 										<span v-if="form.authors.length">
 											{{ contributorsFromIds(form.authors) }}
 										</span>
-										<i v-else>{{ $root.lang("database.subtitles.no_contributor_yet") }}</i>
+										<i v-else>{{ $root.lang().database.contributions.no_contributor_yet }}</i>
 									</v-list-item-subtitle>
 									<v-list-item-subtitle v-if="form.texture && form.texture.length">
 										<v-chip
@@ -87,9 +87,7 @@
 					@click.stop.prevent="addNewForm"
 				>
 					{{
-						$root.lang(
-							`database.subtitles.${openedFormId ? "clone_contribution" : "add_new_contribution"}`,
-						)
+						$root.lang().database.contributions.modal[openedFormId ? "clone_contribution" : "add_new_contribution"],
 					}}
 				</v-btn>
 			</v-col>
@@ -204,7 +202,7 @@ export default {
 			const knownNames = contributorNames.filter((username) => username);
 
 			if (anonymousTotal > 0) {
-				const anonymousStr = `${anonymousTotal} ${this.$root.lang("database.labels.anonymous")}`;
+				const anonymousStr = `${anonymousTotal} ${this.$root.lang("database.anonymous")}`;
 				knownNames.splice(0, 0, anonymousStr);
 			}
 

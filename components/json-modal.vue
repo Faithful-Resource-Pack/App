@@ -2,7 +2,7 @@
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="800">
 		<v-card>
 			<h2 class="title text--secondary ma-2">
-				{{ $root.lang().database.subtitles.import_json_data }}
+				{{ $root.lang().global.json_editor.import_data }}
 			</h2>
 			<prism-editor
 				class="my-editor json-modal-editor"
@@ -11,7 +11,7 @@
 				line-numbers
 			/>
 			<v-btn block @click="parseJSON" :color="color" class="white--text">
-				{{ $root.lang().database.labels.parse_json }}
+				{{ $root.lang().global.json_editor.parse_json }}
 			</v-btn>
 		</v-card>
 	</v-dialog>

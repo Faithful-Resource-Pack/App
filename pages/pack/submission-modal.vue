@@ -7,15 +7,16 @@
 		@close="$emit('close')"
 		@submit="send"
 	>
-		<v-form ref="form" v-model="formValid" lazy-validation>
+		<!-- only render form if there's keys to render (prevents nullish errors) -->
+		<v-form ref="form" v-model="formValid" v-if="Object.keys(formData).length" lazy-validation>
 			<v-row>
 				<v-col v-if="!first">
 					<v-text-field
 						:color="color"
 						persistent-hint
-						:hint="$root.lang().database.hints.pack_id_editing"
+						:hint="$root.lang().database.packs.modal.id_editing_hint"
 						v-model="formData.id"
-						:label="$root.lang().database.labels.pack_id"
+						:label="$root.lang().database.pack_id"
 					/>
 				</v-col>
 				<v-col>
@@ -23,12 +24,12 @@
 						:color="color"
 						:item-color="color"
 						required
-						:hint="$root.lang().database.hints.pack_reference"
+						:hint="$root.lang().database.packs.submissions.reference_hint"
 						v-model="formData.reference"
 						:items="computePacks"
 						item-text="label"
 						item-value="value"
-						:label="$root.lang().database.labels.submission_reference"
+						:label="$root.lang().database.packs.submissions.reference_pack"
 					/>
 				</v-col>
 			</v-row>
@@ -39,9 +40,9 @@
 						persistent-hint
 						clearable
 						required
-						:hint="$root.lang().database.hints.submission_timings"
+						:hint="$root.lang().database.packs.submissions.time_hint"
 						v-model="formData.time_to_results"
-						:label="$root.lang().database.labels.time_to_results"
+						:label="$root.lang().database.packs.submissions.time_to_results"
 					/>
 				</v-col>
 				<v-col v-if="formData.council_enabled">
@@ -50,9 +51,9 @@
 						persistent-hint
 						clearable
 						required
-						:hint="$root.lang().database.hints.submission_timings"
+						:hint="$root.lang().database.packs.submissions.time_hint"
 						v-model="formData.time_to_council"
-						:label="$root.lang().database.labels.time_to_council"
+						:label="$root.lang().database.packs.submissions.time_to_council"
 					/>
 				</v-col>
 			</v-row>
@@ -61,7 +62,7 @@
 					<v-checkbox
 						:color="color"
 						v-model="formData.council_enabled"
-						:label="$root.lang().database.labels.council_enabled"
+						:label="$root.lang().database.packs.submissions.council_enabled"
 					/>
 				</v-col>
 				<v-col>
@@ -69,12 +70,12 @@
 						:color="color"
 						clearable
 						v-model="formData.contributor_role"
-						:label="$root.lang().database.labels.contributor_role"
+						:label="$root.lang().database.packs.submissions.contributor_role"
 					/>
 				</v-col>
 			</v-row>
-			<h2 class="title">{{ $root.lang().database.subtitles.channels }}</h2>
-			<p class="text-caption">{{ $root.lang().database.hints.channel_ids }}</p>
+			<h2 class="title">{{ $root.lang().database.packs.submissions.channels.title }}</h2>
+			<p class="text-caption">{{ $root.lang().database.packs.submissions.channels.title_hint }}</p>
 			<v-row>
 				<v-col>
 					<v-text-field
@@ -82,7 +83,7 @@
 						required
 						clearable
 						v-model="formData.channels.submit"
-						:label="$root.lang().database.labels.channels.submit"
+						:label="$root.lang().database.packs.submissions.channels.submit"
 					/>
 				</v-col>
 				<v-col v-if="formData.council_enabled">
@@ -91,7 +92,7 @@
 						required
 						clearable
 						v-model="formData.channels.council"
-						:label="$root.lang().database.labels.channels.council"
+						:label="$root.lang().database.packs.submissions.channels.council"
 					/>
 				</v-col>
 				<v-col>
@@ -100,7 +101,7 @@
 						required
 						clearable
 						v-model="formData.channels.results"
-						:label="$root.lang().database.labels.channels.results"
+						:label="$root.lang().database.packs.submissions.channels.results"
 					/>
 				</v-col>
 			</v-row>
@@ -203,8 +204,8 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_submission
-				: this.$root.lang().database.titles.edit_submission;
+				? this.$root.lang().database.packs.submissions.add_submission
+				: this.$root.lang().database.packs.submissions.edit_submission;
 		},
 		computePacks() {
 			return this.packs.map((p) => ({ label: p.name, value: p.id }));
@@ -220,23 +221,12 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			if (this.first) {
-				// reset form on init
-				this.formData = {
-					id: null,
-					reference: null,
-					council_enabled: null,
-					channels: {
-						submit: null,
-						council: null,
-						results: null,
-					},
-					time_to_council: null,
-					time_to_results: null,
-					contributor_role: null,
-				};
-				if (this.data.id) this.formData.id = this.data.id;
-			} else this.formData = this.data;
+			this.$nextTick(() => {
+				this.$refs.form.reset();
+				for (const [k, v] of Object.entries(this.data)) {
+					this.formData[k] = v;
+				}
+			});
 
 			this.$emit("input", newValue);
 		},
