@@ -25,7 +25,7 @@
 			<v-col cols="12" sm="12">
 				<contribution-card
 					:colors="colors"
-					:statsListener="
+					@stats="
 						(t) => {
 							$refs.cs.onTotals(t);
 						}

@@ -62,10 +62,6 @@ export default {
 			required: true,
 			type: Array,
 		},
-		statsListener: {
-			required: true,
-			type: Function,
-		},
 	},
 	data() {
 		return {
@@ -113,7 +109,7 @@ export default {
 			if (!o.length) return; // o is empty
 
 			// run
-			this.statsListener(n);
+			this.$emit("stats", n);
 		},
 	},
 };
