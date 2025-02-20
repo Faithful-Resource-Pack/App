@@ -336,6 +336,7 @@ export default {
 					mcmeta: false,
 				})),
 			});
+			this.addEditionTag(this.textures[index], newEdition);
 		},
 		canAddEditionUse(texture) {
 			// must have only one use to select from
@@ -374,6 +375,9 @@ export default {
 				// add latest version if nothing added yet
 				if (!path.versions.length) path.versions.push(settings.versions[edition][0]);
 			});
+			this.addEditionTag(texture, edition);
+		},
+		addEditionTag(texture, edition) {
 			if (!texture.tags.includes(edition.toTitleCase()))
 				texture.tags = sortTags([edition.toTitleCase(), ...texture.tags]);
 		},
