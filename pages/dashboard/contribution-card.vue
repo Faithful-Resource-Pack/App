@@ -81,9 +81,7 @@ export default {
 					};
 				});
 		},
-		today() {
-			return new Date();
-		},
+		today: () => new Date(),
 		locale() {
 			return {
 				months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),

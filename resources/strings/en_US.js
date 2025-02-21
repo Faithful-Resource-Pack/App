@@ -173,6 +173,8 @@ export default {
 			search_texture: "Search texture name",
 			add_success: "Added texture(s) successfully",
 			modal: {
+				title: "Textures",
+				subtitle: "Uses and Paths",
 				tagless: "No tags added",
 				copy_json_data: "Copied JSON data to clipboard",
 				clear_on_save: "Clear on save",

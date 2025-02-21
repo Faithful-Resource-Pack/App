@@ -52,7 +52,6 @@ export default {
 	},
 	methods: {
 		highlighter(code) {
-			// js highlight example
 			return Prism.highlight(code, Prism.languages.js, "json");
 		},
 		parseJSON() {
