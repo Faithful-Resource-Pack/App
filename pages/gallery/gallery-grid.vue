@@ -45,7 +45,7 @@
 					</template>
 
 					<gallery-tooltip
-						:mojang="isMojang(pack)"
+						:mojang="isMojang"
 						:texture="texture"
 						:contributions="loadedContributions"
 						:pack="pack"
@@ -124,11 +124,8 @@ export default {
 		};
 	},
 	methods: {
-		isMojang(packID) {
-			return ["default", "progart"].includes(packID);
-		},
 		getLastContributions(pack) {
-			if (this.isMojang(this.pack)) return this.loadedContributions;
+			if (this.isMojang) return this.loadedContributions;
 			return Object.entries(this.loadedContributions[pack])
 				.map(([key, contrib]) => {
 					return [key, contrib.sort((a, b) => b.date - a.date)?.[0]];
@@ -146,6 +143,9 @@ export default {
 		},
 	},
 	computed: {
+		isMojang() {
+			return ["default", "progart"].includes(this.pack);
+		},
 		sortedTextures() {
 			return Array.from(this.textures).sort(this.sortMethods[this.sort]);
 		},
