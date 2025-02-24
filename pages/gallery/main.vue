@@ -87,10 +87,6 @@
 			@share="copyShareURL"
 			@close="closeModal"
 		/>
-
-		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
-			<v-icon>mdi-arrow-up</v-icon>
-		</v-btn>
 	</v-container>
 </template>
 
@@ -155,8 +151,6 @@ export default {
 			packToName: {},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
-			// go to the top arrow
-			scrollY: 0,
 			abortController: new AbortController(),
 		};
 	},
@@ -248,12 +242,6 @@ export default {
 					this.error = `${err.statusCode}: ${err.response.value}`;
 					this.loading = false;
 				});
-		},
-		toTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
 		},
 		clearCache() {
 			axios

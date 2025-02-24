@@ -27,9 +27,9 @@
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
 						>
-							<h1 :style="notDoneStyles.texture_id">#{{ texture.textureID }}</h1>
-							<h3 :style="notDoneStyles.texture_name">{{ texture.name }}</h3>
-							<p :style="notDoneStyles.message">
+							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
+							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
+							<p :style="missingTextStyles.message">
 								{{ $root.lang().gallery.error_message.texture_not_done }}
 							</p>
 						</gallery-image>
@@ -55,6 +55,11 @@
 				</tippy-component>
 			</div>
 		</div>
+
+		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
+			<v-icon>mdi-arrow-up</v-icon>
+		</v-btn>
+
 		<div ref="bottomElement" />
 	</v-list>
 </template>
@@ -121,19 +126,27 @@ export default {
 			columns: 7,
 			// number of displayed results
 			displayedResults: 1,
+			// go to the top arrow
+			scrollY: 0,
 		};
 	},
 	methods: {
+		toTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
+		},
 		getLastContributions(pack) {
 			if (this.isMojang) return this.loadedContributions;
-			return Object.entries(this.loadedContributions[pack])
-				.map(([key, contrib]) => {
-					return [key, contrib.sort((a, b) => b.date - a.date)?.[0]];
-				})
-				.reduce((acc, [k, cur]) => {
-					acc[k] = cur;
-					return acc;
-				}, {});
+
+			// faster than map and fromEntries
+			const acc = {};
+			for (const [key, contrib] of Object.entries(this.loadedContributions[pack])) {
+				acc[key] = contrib.sort((a, b) => b.date - a.date)?.[0];
+			}
+
+			return acc;
 		},
 		isScrolledIntoView(el, margin = 0) {
 			const rect = el.getBoundingClientRect();
@@ -179,7 +192,20 @@ export default {
 		shownColumns() {
 			return Math.min(this.columns, this.maxColumns);
 		},
-		notDoneStyles() {
+		// how much to increment shown results by when scrolling
+		pageLength() {
+			return this.shownColumns * MIN_ROW_DISPLAYED;
+		},
+		gridStyles() {
+			// bigger images -> smaller gaps
+			const gap = this.$vuetify.breakpoint.mobile ? 8 : Math.round(100 / this.shownColumns);
+
+			return {
+				gap: `${gap}px`,
+				gridTemplateColumns: `repeat(${this.shownColumns}, 1fr)`,
+			};
+		},
+		missingTextStyles() {
 			const CONTAINER_PADDING = 20; // .container padding (12px) + .v-list.main-container padding (8px)
 
 			// double padding for each side
@@ -193,15 +219,6 @@ export default {
 				texture_id: { fontSize: `${fontSize * 4}px` },
 				texture_name: { fontSize: `${fontSize * 2}px` },
 				message: { fontSize: `${fontSize * 1.2}px` },
-			};
-		},
-		gridStyles() {
-			// bigger images -> smaller gaps
-			const gap = this.$vuetify.breakpoint.mobile ? 8 : Math.round(100 / this.shownColumns);
-
-			return {
-				gap: `${gap}px`,
-				gridTemplateColumns: `repeat(${this.shownColumns}, 1fr)`,
 			};
 		},
 	},
@@ -239,16 +256,17 @@ export default {
 			this.lastContributions = this.getLastContributions(this.pack);
 		});
 
-		this.displayedResults = this.shownColumns * MIN_ROW_DISPLAYED;
+		this.displayedResults = this.pageLength;
 	},
 	mounted() {
+		const el = this.$refs.bottomElement;
 		document.addEventListener("scroll", () => {
 			this.scrollY = document.firstElementChild.scrollTop;
-			const el = this.$refs.bottomElement;
 
 			if (!el || !this.isScrolledIntoView(el, 600)) return;
-			this.displayedResults += this.shownColumns * MIN_ROW_DISPLAYED;
-			this.$forceUpdate();
+
+			// add more results when near bottom
+			this.displayedResults += this.pageLength;
 		});
 	},
 };
