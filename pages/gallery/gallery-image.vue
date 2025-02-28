@@ -84,21 +84,30 @@ export default {
 	},
 	methods: {
 		textureNotFound() {
-			if (this.ignoreList.some((el) => this.src.includes(el)))
-				// fall back to default if ignored (simulates default behavior)
+			// fall back to default if ignored (simulates default behavior)
+			if (this.ignoreList.some((el) => this.src.includes(el))) {
 				this.imageURL = `${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`;
-			// if not ignored, texture hasn't been made
-			else this.exists = false;
-		},
-		async fetchAnimation() {
-			try {
-				const res = await axios.get(`${this.imageURL}.mcmeta`);
-
-				this.hasAnimation = true;
-				this.animation = res.data;
-			} catch {
-				this.hasAnimation = false;
+				return;
 			}
+
+			// if not ignored, texture hasn't been made
+			this.exists = false;
+		},
+		fetchAnimation() {
+			void axios.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
+				.then((res) => {
+					if (res.data.animation) {
+						this.hasAnimation = true;
+						this.animation = res.data;
+						return;
+					}
+
+					this.hasAnimation = false;
+				})
+				.catch((err) => {
+					this.hasAnimation = false;
+					console.error(err);
+				});
 		},
 	},
 	created() {
@@ -106,11 +115,7 @@ export default {
 		image.src = this.src;
 
 		image.onload = () => {
-			// avoid (almost all) unnecessary requests
-			// and make sure the image is square
-			if (image.height % image.width === 0 && image.height !== image.width) {
-				this.fetchAnimation();
-			}
+			this.fetchAnimation();
 		};
 		image.onerror = () => {
 			this.textureNotFound();
