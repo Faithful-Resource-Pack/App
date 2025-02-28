@@ -1,13 +1,17 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
 		<div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
 
-		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
+		<gallery-options 
+			v-model="current"
+			:packToName="packToName" 
+			@updateRoute="updateRoute" 
+		/>
 
-		<v-row class="my-2">
-			<v-col cols="12" sm="6">
+		<v-row class="pl-3 mt-0">
+			<v-col cols="12" :sm="stretched ? 3 : 4">
 				<v-slider
-					:label="$root.lang().gallery.max_items_per_row"
 					v-model="columns"
 					step="1"
 					thumb-label
@@ -16,34 +20,24 @@
 					hide-details
 					min="1"
 					max="16"
+					prepend-icon="mdi-grid"
 				/>
 			</v-col>
-			<v-col cols="12" :sm="$root.isAdmin ? 3 : 6">
+
+			<v-col cols="12" :sm="2" p="0" class="py-0">
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
-			<v-col cols="12" sm="3" v-if="$root.isAdmin">
+			<v-col cols="12" :sm="3" p="0" class="py-0">
+				<v-switch :label="$root.lang().gallery.animations_switcher" v-model="animated" />
+			</v-col>
+			<v-col class="ml-auto" cols="12" sm="3" v-if="!$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
 			</v-col>
 		</v-row>
 
-		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
-		<v-text-field
-			v-model="current.search"
-			:append-icon="current.search ? 'mdi-send' : undefined"
-			filled
-			clear-icon="mdi-close"
-			clearable
-			hide-details
-			:placeholder="$root.lang().database.textures.search_texture"
-			type="text"
-			@keyup.enter="startSearch"
-			@click:append="startSearch"
-			@click:clear="clearSearch"
-		/>
-
-		<v-row class="py-3 pb-0">
-			<v-col cols="12" sm="9" v-if="requestTime > 0 && textures.length">
-				<p class="text--secondary">
+		<v-row class="pb-0">
+			<v-col cols="12" sm="9"v-if="requestTime > 0 && textures.length">
+				<p class="text--secondary pl-2 mb-0">
 					{{ resultMessage }}
 				</p>
 			</v-col>
@@ -67,6 +61,7 @@
 			v-model="columns"
 			:loading="loading"
 			:stretched="stretched"
+			:animated="animated"
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
@@ -100,6 +95,7 @@ import GalleryModal from "./modal/index.vue";
 
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
+const ANIMATED_KEY = "gallery_animated";
 const SORT_KEY = "gallery_sort";
 
 export default {
@@ -114,6 +110,8 @@ export default {
 		return {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
+			// whether to show animated textures
+			animated: localStorage.getItem(ANIMATED_KEY) === "true",
 			// number of columns you want to display
 			columns: Number(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -191,15 +189,6 @@ export default {
 		},
 		discordIDtoName(d) {
 			return this.authors[d]?.username || this.$root.lang().gallery.error_message.user_anonymous;
-		},
-		startSearch() {
-			this.updateRoute();
-		},
-		clearSearch() {
-			// avoid restarting search if there's already nothing there
-			if (this.current.search === null) return;
-			this.current.search = null;
-			this.updateRoute();
 		},
 		updateRoute() {
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;
@@ -326,6 +315,9 @@ export default {
 		},
 		stretched(n) {
 			localStorage.setItem(STRETCHED_KEY, n);
+		},
+		animated(n) {
+			localStorage.setItem(ANIMATED_KEY, n);
 		},
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);

@@ -5,7 +5,7 @@
 	>
 		<!-- send click events back to caller -->
 		<gallery-animation
-			v-if="exists && hasAnimation"
+			v-if="animated && exists && hasAnimation"
 			class="gallery-texture-image"
 			:src="imageURL"
 			:mcmeta="animation"
@@ -18,7 +18,7 @@
 			ref="imageRef"
 			:style="{ 
 				aspectRatio: 1, 
-				opacity: hasAnimation ? 0 : 1 // allow the texture to be copied even if animation is present
+				opacity: hasAnimation && animated ? 0 : 1 // allow the texture to be copied even if animation is present
 			}"
 			@error="textureNotFound"
 			@click="$emit('click')"
@@ -55,6 +55,11 @@ export default {
 		textureID: {
 			type: String,
 			required: true,
+		},
+		animated: {
+			type: Boolean,
+			required: false,
+			default: true,
 		},
 		modal: {
 			type: Boolean,
