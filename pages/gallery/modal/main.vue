@@ -22,6 +22,7 @@
 							:src="url.image"
 							:textureID="textureID"
 							:ignoreList="ignoreList"
+							:mcmeta="textureObj.mcmeta"
 							@click="openFullscreenPreview(url.image)"
 						>
 							<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>

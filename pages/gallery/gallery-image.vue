@@ -61,6 +61,11 @@ export default {
 			required: false,
 			default: true,
 		},
+		mcmeta: {
+			type: Object,
+			required: false,
+			default: null,
+		},
 		modal: {
 			type: Boolean,
 			required: false,
@@ -85,8 +90,10 @@ export default {
 	methods: {
 		textureNotFound() {
 			// fall back to default if ignored (simulates default behavior)
+			// + fetch animation if it exists
 			if (this.ignoreList.some((el) => this.src.includes(el))) {
 				this.imageURL = `${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`;
+				this.fetchAnimation();
 				return;
 			}
 
@@ -94,6 +101,13 @@ export default {
 			this.exists = false;
 		},
 		fetchAnimation() {
+			// avoid fetching if already provided
+			if (this.mcmeta && this.mcmeta.animation) {
+				this.hasAnimation = true;
+				this.animation = this.mcmeta;
+				return;
+			}
+
 			void axios.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
 				.then((res) => {
 					if (res.data.animation) {
