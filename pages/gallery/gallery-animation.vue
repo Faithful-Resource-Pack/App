@@ -17,6 +17,7 @@ export default defineComponent({
 	props: {
 		src: { type: String, required: true },
 		mcmeta: { type: Object as () => { animation?: Animation }, default: () => ({ animation: {} }) },
+		// Determine if the image is a tiled texture (used for flowing fluids which are 2x2 textures)
 		isTiled: { type: Boolean, default: false },
 	},
 	data() {

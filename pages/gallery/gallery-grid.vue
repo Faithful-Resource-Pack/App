@@ -26,6 +26,7 @@
 							:src="texture.url"
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
+							:animated="animated"
 						>
 							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
 							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
@@ -90,6 +91,10 @@ export default {
 			required: true,
 		},
 		stretched: {
+			type: Boolean,
+			required: true,
+		},
+		animated: {
 			type: Boolean,
 			required: true,
 		},
