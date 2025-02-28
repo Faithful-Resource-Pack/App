@@ -12,14 +12,15 @@
 		<v-row class="pl-3 mt-0">
 			<v-col cols="12" :sm="stretched ? 3 : 4">
 				<v-slider
+					v-if="maxColumns > 2"
+					hide-details
 					v-model="columns"
 					step="1"
 					thumb-label
 					ticks="always"
 					tick-size="4"
-					hide-details
-					min="1"
-					max="16"
+					min="2"
+					:max="maxColumns"
 					prepend-icon="mdi-grid"
 				/>
 			</v-col>
@@ -276,6 +277,17 @@ export default {
 		},
 		modalTextureID() {
 			return this.$route.query.show;
+		},
+		maxColumns() {
+			const { xs, sm, md, lg, xl } = this.$vuetify.breakpoint;
+
+			// completely arbitrary values, feel free to change these
+			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
+			if (xs) return 2;
+			if (sm) return 4;
+			if (md) return 8;
+			if (lg) return 12;
+			if (xl) return 16;
 		},
 	},
 	watch: {
