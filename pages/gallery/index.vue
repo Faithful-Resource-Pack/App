@@ -10,7 +10,7 @@
 		/>
 
 		<v-row class="pl-3 mt-0">
-			<v-col cols="12" :sm="stretched ? 3 : 4">
+			<v-col cols="12" :sm="stretched ? 3 : (isAbleToStretch ? 3 : 4)">
 				<v-slider
 					v-if="maxColumns > 2"
 					hide-details
@@ -25,13 +25,13 @@
 				/>
 			</v-col>
 
-			<v-col cols="12" :sm="2" p="0" class="py-0">
+			<v-col cols="12" :sm="2" p="0" v-if="isAbleToStretch">
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
-			<v-col cols="12" :sm="3" p="0" class="py-0">
+			<v-col cols="12" :sm="isAbleToStretch ? 3 : 4" p="0" :class="this.$vuetify.breakpoint.xs ? 'py-0' : ''">
 				<v-switch :label="$root.lang().gallery.animations_switcher" v-model="isPlaying" />
 			</v-col>
-			<v-col class="ml-auto" cols="12" sm="3" v-if="!$root.isAdmin">
+			<v-col class="ml-auto" cols="12" :sm="isAbleToStretch ? 3 : 4" v-if="!$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
 			</v-col>
 		</v-row>
@@ -291,6 +291,10 @@ export default {
 			if (md) return 8;
 			if (lg) return 12;
 			if (xl) return 16;
+		},
+		// hide the stretched switcher when the screen is smaller than the size when not stretched
+		isAbleToStretch() {
+			return this.$vuetify.breakpoint.width > 1056;
 		},
 	},
 	watch: {
