@@ -5,7 +5,7 @@
 	>
 		<!-- send click events back to caller -->
 		<gallery-animation
-			v-if="animated && exists && hasAnimation"
+			v-if="isPlaying && exists && hasAnimation"
 			class="gallery-texture-image"
 			:src="imageURL"
 			:mcmeta="animation"
@@ -18,7 +18,7 @@
 			ref="imageRef"
 			:style="{ 
 				aspectRatio: 1, 
-				opacity: hasAnimation && animated ? 0 : 1 // allow the texture to be copied even if animation is present
+				opacity: hasAnimation && isPlaying ? 0 : 1 // allow the texture to be copied even if animation is present
 			}"
 			@error="textureNotFound"
 			@click="$emit('click')"
@@ -56,7 +56,7 @@ export default {
 			type: String,
 			required: true,
 		},
-		animated: {
+		isPlaying: {
 			type: Boolean,
 			required: false,
 			default: true,
@@ -77,6 +77,12 @@ export default {
 			required: false,
 			default: () => [],
 		},
+		// used to determine if the texture is animated thus fetching the mcmeta if not provided
+		animatedTextures: {
+			type: Array as () => string[],
+			required: false,
+			default: () => [],
+		},
 	},
 	data() {
 		return {
@@ -86,6 +92,11 @@ export default {
 			hasAnimation: false,
 			animation: {},
 		};
+	},
+	watch: {
+		animatedTextures() {
+			this.fetchAnimation();
+		},
 	},
 	methods: {
 		textureNotFound() {
@@ -105,6 +116,11 @@ export default {
 			if (this.mcmeta && this.mcmeta.animation) {
 				this.hasAnimation = true;
 				this.animation = this.mcmeta;
+				return;
+			}
+
+			if (this.animatedTextures.length > 0 && !this.animatedTextures.includes(this.textureID)) {
+				this.hasAnimation = false;
 				return;
 			}
 

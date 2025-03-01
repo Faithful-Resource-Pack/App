@@ -29,7 +29,7 @@
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
 			<v-col cols="12" :sm="3" p="0" class="py-0">
-				<v-switch :label="$root.lang().gallery.animations_switcher" v-model="animated" />
+				<v-switch :label="$root.lang().gallery.animations_switcher" v-model="isPlaying" />
 			</v-col>
 			<v-col class="ml-auto" cols="12" sm="3" v-if="!$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
@@ -62,10 +62,11 @@
 			v-model="columns"
 			:loading="loading"
 			:stretched="stretched"
-			:animated="animated"
+			:isPlaying="isPlaying"
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
+			:animatedTextures="animatedTextures"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
 			:error="error"
@@ -112,7 +113,9 @@ export default {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
 			// whether to show animated textures
-			animated: localStorage.getItem(ANIMATED_KEY) === "true",
+			isPlaying: localStorage.getItem(ANIMATED_KEY) === "true",
+			// list of animated textures ids
+			animatedTextures: [],
 			// number of columns you want to display
 			columns: Number(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -328,7 +331,7 @@ export default {
 		stretched(n) {
 			localStorage.setItem(STRETCHED_KEY, n);
 		},
-		animated(n) {
+		isPlaying(n) {
 			localStorage.setItem(ANIMATED_KEY, n);
 		},
 		currentSort(n) {
@@ -336,26 +339,31 @@ export default {
 		},
 	},
 	created() {
-		axios
-			.get(
-				"https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json",
-			)
+		axios.get(`${this.$root.apiURL}/textures/animated`)
+			.then((res) => {
+				this.animatedTextures = res.data.map((el) => el.toString());
+			});
+
+		axios.get("https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json")
 			.then((res) => {
 				this.ignoredTextures = res.data;
 			});
 
-		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
-			this.packToName = Object.values(res.data).reduce((acc, cur) => {
-				acc[cur.id] = cur.name;
-				return acc;
-			}, {});
-		});
-		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
-			this.authors = res.data.reduce((acc, cur) => {
-				acc[cur.id] = cur;
-				return acc;
-			}, {});
-		});
+		axios.get(`${this.$root.apiURL}/packs/raw`)
+			.then((res) => {
+				this.packToName = Object.values(res.data).reduce((acc, cur) => {
+					acc[cur.id] = cur.name;
+					return acc;
+				}, {});
+			});
+
+		axios.get(`${this.$root.apiURL}/contributions/authors`)
+			.then((res) => {
+				this.authors = res.data.reduce((acc, cur) => {
+					acc[cur.id] = cur;
+					return acc;
+				}, {});
+			});
 	},
 };
 </script>
