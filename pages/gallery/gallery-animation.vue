@@ -28,6 +28,7 @@ export default defineComponent({
 			frames: {} as Record<number, [AnimationFrame, number][]>,
 			currentTick: 1,
 			tickingRef: null as ReturnType<typeof setInterval> | null,
+			updateCanvasTimeout:  null as ReturnType<typeof setTimeout> | null,
 		};
 	},
 	methods: {
@@ -93,7 +94,10 @@ export default defineComponent({
 		updateCanvas() {
 			if (Object.keys(this.frames).length === 0) return;
 
-			setTimeout(() => {
+			// make sure the canvas is updated at most 20 times per second (50ms)
+			if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
+
+			this.updateCanvasTimeout = setTimeout(() => {
 				let next = this.currentTick + 1;
 				if (this.frames[next] === undefined) next = 1;
 				this.currentTick = next;
@@ -148,6 +152,11 @@ export default defineComponent({
 	},
 	mounted() {
 		this.loadImage();
+	},
+	beforeUnmount() {
+		// clear all intervals and timeouts to prevent memory leaks
+		if (this.tickingRef) clearInterval(this.tickingRef);
+		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
 });
 </script>
