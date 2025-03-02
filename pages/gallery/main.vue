@@ -149,23 +149,18 @@ export default {
 			modalOpened: false,
 			// object of pack id -> pack display name
 			packToName: {},
+			// for legacy url support
+			resToPack: {
+				"16x": "default",
+				"32x": "faithful_32x",
+				"64x": "faithful_64x",
+			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
 			abortController: new AbortController(),
 		};
 	},
 	methods: {
-		resToPackID(res) {
-			// for legacy url support
-			switch (res) {
-				case "16x":
-					return "default";
-				case "32x":
-					return "faithful_32x";
-				case "64x":
-					return "faithful_64x";
-			}
-		},
 		newShareURL(id, update = true) {
 			if (update && id !== undefined) this.$router.push({ query: { show: id } });
 
@@ -296,8 +291,8 @@ export default {
 				this.current.search = params.search;
 
 				// convert legacy urls to modern format
-				if (["16x", "32x", "64x"].includes(params.pack)) {
-					this.current.pack = this.resToPackID(params.pack);
+				if (Object.keys(this.resToPack).includes(params.pack)) {
+					this.current.pack = this.resToPack[params.pack];
 					this.updateRoute();
 				} else this.current.pack = params.pack;
 
