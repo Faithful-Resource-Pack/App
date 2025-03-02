@@ -1,27 +1,25 @@
 <template>
 	<div>
-		<template v-for="{ category, packs } in authorCategories">
-			<div class="gallery-info">
-				<h2>{{ category }}</h2>
-				<div class="double-table">
-					<div v-for="pack in packs">
-						<div class="title text-button text--secondary">
-							{{ packToName[pack] }}
-						</div>
-						<v-data-table
-							dense
-							:headers="headers"
-							:items="getContributions(pack)"
-							class="elevation-1"
-							style="margin-top: 10px"
-							hide-default-footer
-							disable-pagination
-							:no-data-text="$root.lang().gallery.modal.no_contributions"
-						/>
-					</div>
-				</div>
-			</div>
-		</template>
+		<div v-for="{ category, packs } in authorCategories" class="py-3">
+			<h2>{{ category }}</h2>
+			<v-row>
+				<v-col v-for="pack in packs" cols="12" sm="6" class="ma-0">
+					<p class="title text-button text--secondary">
+						{{ packToName[pack] }}
+					</p>
+					<v-data-table
+						dense
+						:headers="headers"
+						:items="getContributions(pack)"
+						class="elevation-1"
+						style="margin-top: 10px"
+						hide-default-footer
+						disable-pagination
+						:no-data-text="$root.lang().gallery.modal.no_contributions"
+					/>
+				</v-col>
+			</v-row>
+		</div>
 	</div>
 </template>
 

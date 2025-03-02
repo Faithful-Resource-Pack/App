@@ -1,6 +1,6 @@
 <template>
 	<div
-		:class="modal ? 'gallery-dialog-texture' : undefined"
+		:class="modal ? 'gallery-modal-texture' : undefined"
 		:style="exists ? {} : { background: 'rgba(0,0,0,0.3)' }"
 	>
 		<!-- send click events back to caller -->
