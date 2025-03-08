@@ -18,7 +18,7 @@ import { appUserStore } from "./stores/appUserStore.js";
 
 // sidebar and routing stuff
 import ALL_TABS from "@helpers/tabs.js";
-import MissingPage from "./pages/404/main.vue";
+import MissingPage from "./pages/404/index.vue";
 
 Vue.config.devtools = import.meta.env.MODE === "development";
 Vue.use(Vuetify);

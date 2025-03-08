@@ -154,7 +154,7 @@ import axios from "axios";
 import SmartGrid from "@components/smart-grid.vue";
 
 import TextureModal from "./texture-modal.vue";
-import NewTextureModal from "./new-texture-modal/main.vue";
+import NewTextureModal from "./new-texture-modal/index.vue";
 import ModifyVersionModal from "./modify-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
