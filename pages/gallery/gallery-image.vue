@@ -4,13 +4,25 @@
 		:style="exists ? {} : { background: 'rgba(0,0,0,0.3)' }"
 	>
 		<!-- send click events back to caller -->
+		<gallery-animation
+			v-if="isPlaying && exists && hasAnimation"
+			class="gallery-texture-image"
+			:src="imageURL"
+			:mcmeta="animation"
+			:isTiled="imageURL.includes('_flow')"
+			@click="$emit('click')"
+		/>
 		<img
 			v-if="exists"
 			class="gallery-texture-image"
-			:src="imageURL"
-			style="aspect-ratio: 1"
+			ref="imageRef"
+			:style="{ 
+				aspectRatio: 1, 
+				opacity: hasAnimation && isPlaying ? 0 : 1 // allow the texture to be copied even if animation is present
+			}"
 			@error="textureNotFound"
 			@click="$emit('click')"
+			:src="imageURL"
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
 		/>
 		<div v-else class="not-done">
@@ -23,10 +35,18 @@
 	</div>
 </template>
 
-<script>
+<script lang="ts">
+/* global settings */
+import axios from "axios";
+
+import GalleryAnimation from "./gallery-animation.vue";
+
 // separate component to track state more easily
 export default {
-	name: "gallery-image",
+	name: "gallery-image", 
+	components: {
+		GalleryAnimation,
+	},
 	props: {
 		src: {
 			type: String,
@@ -36,6 +56,16 @@ export default {
 			type: String,
 			required: true,
 		},
+		isPlaying: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
+		mcmeta: {
+			type: Object,
+			required: false,
+			default: null,
+		},
 		modal: {
 			type: Boolean,
 			required: false,
@@ -43,7 +73,13 @@ export default {
 		},
 		// saves a request on every gallery image to provide it once
 		ignoreList: {
-			type: Array,
+			type: Array as () => string[],
+			required: false,
+			default: () => [],
+		},
+		// used to determine if the texture is animated thus fetching the mcmeta if not provided
+		animatedTextures: {
+			type: Array as () => string[],
 			required: false,
 			default: () => [],
 		},
@@ -51,20 +87,69 @@ export default {
 	data() {
 		return {
 			exists: true,
-			imageURL: "",
+			imageURL: this.src,
+			imageRef: null as HTMLImageElement | null,
+			hasAnimation: false,
+			animation: {},
 		};
+	},
+	watch: {
+		animatedTextures() {
+			this.fetchAnimation();
+		},
 	},
 	methods: {
 		textureNotFound() {
-			if (this.ignoreList.some((el) => this.src.includes(el)))
-				// fall back to default if ignored (simulates default behavior)
+			// fall back to default if ignored (simulates default behavior)
+			// + fetch animation if it exists
+			if (this.ignoreList.some((el) => this.src.includes(el))) {
 				this.imageURL = `${this.$root.apiURL}/textures/${this.textureID}/url/default/latest`;
+				this.fetchAnimation();
+				return;
+			}
+
 			// if not ignored, texture hasn't been made
-			else this.exists = false;
+			this.exists = false;
+		},
+		fetchAnimation() {
+			// avoid fetching if already provided
+			if (this.mcmeta && this.mcmeta.animation) {
+				this.hasAnimation = true;
+				this.animation = this.mcmeta;
+				return;
+			}
+
+			if (this.animatedTextures.length > 0 && !this.animatedTextures.includes(this.textureID)) {
+				this.hasAnimation = false;
+				return;
+			}
+
+			void axios.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
+				.then((res) => {
+					if (res.data.animation) {
+						this.hasAnimation = true;
+						this.animation = res.data;
+						return;
+					}
+
+					this.hasAnimation = false;
+				})
+				.catch((err) => {
+					this.hasAnimation = false;
+					console.error(err);
+				});
 		},
 	},
 	created() {
-		this.imageURL = this.src;
+		const image = new Image() as HTMLImageElement;
+		image.src = this.src;
+
+		image.onload = () => {
+			this.fetchAnimation();
+		};
+		image.onerror = () => {
+			this.textureNotFound();
+		};
 	},
 };
 </script>

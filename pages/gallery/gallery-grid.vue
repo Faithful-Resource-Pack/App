@@ -26,6 +26,8 @@
 							:src="texture.url"
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
+							:isPlaying="isPlaying"
+							:animatedTextures="animatedTextures"
 						>
 							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
 							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
@@ -91,6 +93,14 @@ export default {
 		},
 		stretched: {
 			type: Boolean,
+			required: true,
+		},
+		isPlaying: {
+			type: Boolean,
+			required: true,
+		},
+		animatedTextures: {
+			type: Array,
 			required: true,
 		},
 		textures: {
@@ -185,7 +195,7 @@ export default {
 
 			// completely arbitrary values, feel free to change these
 			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
-			if (xs) return 1;
+			if (xs) return 2;
 			if (sm) return 4;
 			if (md) return 8;
 			if (lg) return 12;
