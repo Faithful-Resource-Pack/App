@@ -1,7 +1,7 @@
 <template>
 	<modal-form
 		v-model="modalOpened"
-		:title="$root.lang().database.titles.add_mc_version"
+		:title="$root.lang().database.textures.add_version.title"
 		@close="$emit('close')"
 		@submit="send"
 	>
@@ -12,7 +12,7 @@
 				class="mb-0"
 				:items="editions"
 				v-model="form.edition"
-				:placeholder="$root.lang().database.labels.new_mc_version_edition"
+				:placeholder="$root.lang().database.textures.add_version.new_edition"
 			/>
 			<v-select
 				:color="color"
@@ -20,13 +20,13 @@
 				class="mb-0"
 				:items="versions"
 				v-model="form.version"
-				:placeholder="$root.lang().database.labels.new_mc_version_path"
+				:placeholder="$root.lang().database.textures.add_version.template_version"
 			/>
 			<v-text-field
 				class="mb-0"
 				:color="color"
 				v-model="form.newVersion"
-				:placeholder="$root.lang().database.labels.new_mc_version_name"
+				:placeholder="$root.lang().database.textures.add_version.new_version"
 			/>
 		</v-form>
 	</modal-form>
@@ -77,7 +77,10 @@ export default {
 			axios
 				.post(`${this.$root.apiURL}/paths/versions/add`, this.form, this.$root.apiOptions)
 				.then(() => {
-					this.$root.showSnackBar(this.$root.lang().database.labels.add_version_success, "success");
+					this.$root.showSnackBar(
+						this.$root.lang().database.textures.add_version.success,
+						"success",
+					);
 					this.$emit("close");
 				})
 				.catch((err) => {

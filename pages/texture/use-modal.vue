@@ -32,24 +32,24 @@
 				disabled
 				required
 				persistent-hint
-				:hint="'⚠️ ' + $root.lang().database.hints.use_id"
+				:hint="'⚠️ ' + $root.lang().database.textures.uses.id_hint"
 				v-model="formData.id"
-				:label="$root.lang().database.labels.use_id"
+				:label="$root.lang().database.textures.uses.id"
 			/>
 			<v-text-field
 				:color="color"
 				v-model="formData.name"
-				:label="$root.lang().database.labels.use_name"
+				:label="$root.lang().database.textures.uses.name"
 			/>
 			<v-text-field
 				:color="color"
 				v-if="add == false"
 				persistent-hint
-				:hint="'⚠️ ' + $root.lang().database.hints.texture_id"
+				:hint="'⚠️ ' + $root.lang().database.textures.modal.id_hint"
 				required
 				clearable
 				v-model="formData.texture"
-				:label="$root.lang().database.labels.texture_id"
+				:label="$root.lang().database.textures.modal.id"
 			/>
 			<v-select
 				required
@@ -57,9 +57,9 @@
 				:item-color="color"
 				v-model="formData.edition"
 				:items="editions"
-				:label="$root.lang().database.labels.use_edition"
+				:label="$root.lang().database.textures.uses.edition"
 			/>
-			<h2 class="title">{{ $root.lang().database.subtitles.paths }}</h2>
+			<h2 class="title">{{ $root.lang().database.textures.paths.title }}</h2>
 			<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
 				<v-list-item class="list-item-inline" v-for="(path, index) in formData.paths" :key="index">
 					<v-list-item-content>
@@ -81,11 +81,11 @@
 			</v-list>
 
 			<div v-else>
-				{{ $root.lang().database.labels.no_path_found }}
+				{{ $root.lang().database.textures.paths.no_path_found }}
 			</div>
 
 			<v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openPathModal()">
-				{{ $root.lang().database.labels.add_new_path }} <v-icon right>mdi-plus</v-icon>
+				{{ $root.lang().database.textures.paths.add_path }} <v-icon right>mdi-plus</v-icon>
 			</v-btn>
 		</v-form>
 	</modal-form>
@@ -161,8 +161,8 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_use
-				: this.$root.lang().database.titles.change_use;
+				? this.$root.lang().database.textures.uses.add_use
+				: this.$root.lang().database.textures.uses.change_use;
 		},
 	},
 	methods: {

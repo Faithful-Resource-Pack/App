@@ -14,14 +14,14 @@
 						required
 						:readonly="add == false"
 						v-model="formData.id"
-						:label="$root.lang().database.labels.discord_id"
+						:label="$root.lang().database.users.modal.id"
 					/>
 					<v-text-field
 						:color="color"
 						required
 						clearable
 						v-model="formData.username"
-						:label="$root.lang().database.labels.username"
+						:label="$root.lang().database.users.modal.username"
 					/>
 					<v-select
 						:color="color"
@@ -31,22 +31,22 @@
 						small-chips
 						v-model="formData.roles"
 						:items="roles"
-						:label="$root.lang().database.labels.user_role"
+						:label="$root.lang().database.users.modal.roles"
 					/>
 					<v-text-field
 						:color="color"
 						clearable
 						v-model="formData.uuid"
-						:label="$root.lang().database.labels.uuid"
+						:label="$root.lang().database.users.modal.uuid"
 					/>
 					<v-checkbox
 						:color="color"
 						required
 						clearable
 						v-model="formData.anonymous"
-						:label="$root.lang().database.labels.anonymous"
+						:label="$root.lang().database.users.modal.anonymous"
 					/>
-					<p v-if="formData.anonymous">{{ $root.lang().database.labels.anonymous_explain }}</p>
+					<p v-if="formData.anonymous">{{ $root.lang().database.users.modal.anonymous_hint }}</p>
 				</v-form>
 			</v-col>
 		</v-row>
@@ -108,8 +108,8 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_user
-				: this.$root.lang().database.titles.change_user;
+				? this.$root.lang().database.users.modal.add_user
+				: this.$root.lang().database.users.modal.change_user;
 		},
 		avatarSrc() {
 			const baseURL = this.$vuetify.breakpoint.mdAndUp

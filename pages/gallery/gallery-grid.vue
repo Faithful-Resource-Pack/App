@@ -9,7 +9,7 @@
 				{{ error || $root.lang().global.no_results }}
 			</div>
 		</div>
-		<div class="gallery-textures-container mx-auto" :style="styles.grid">
+		<div class="gallery-textures-container mx-auto" :style="gridStyles">
 			<!-- sort method in key ensures rerenders change the image (this took me an hour) -->
 			<div
 				v-for="(texture, index) in sortedTextures"
@@ -27,9 +27,9 @@
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
 						>
-							<h1 :style="styles.not_done.texture_id">#{{ texture.textureID }}</h1>
-							<h3 :style="styles.not_done.texture_name">{{ texture.name }}</h3>
-							<p :style="styles.not_done.message">
+							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
+							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
+							<p :style="missingTextStyles.message">
 								{{ $root.lang().gallery.error_message.texture_not_done }}
 							</p>
 						</gallery-image>
@@ -45,7 +45,7 @@
 					</template>
 
 					<gallery-tooltip
-						:mojang="isMojang(pack)"
+						:mojang="isMojang"
 						:texture="texture"
 						:contributions="loadedContributions"
 						:pack="pack"
@@ -55,6 +55,11 @@
 				</tippy-component>
 			</div>
 		</div>
+
+		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
+			<v-icon>mdi-arrow-up</v-icon>
+		</v-btn>
+
 		<div ref="bottomElement" />
 	</v-list>
 </template>
@@ -121,33 +126,27 @@ export default {
 			columns: 7,
 			// number of displayed results
 			displayedResults: 1,
-			// styles
-			styles: {
-				// grid styles
-				grid: undefined,
-				// placeholder font size styles
-				not_done: {
-					texture_id: "font-size: 2em;",
-					texture_name: "font-size: 1.17em;",
-					message: "font-size: 16px",
-				},
-			},
+			// go to the top arrow
+			scrollY: 0,
 		};
 	},
 	methods: {
-		isMojang(packID) {
-			return ["default", "progart"].includes(packID);
+		toTop() {
+			window.scrollTo({
+				top: 0,
+				behavior: "smooth",
+			});
 		},
 		getLastContributions(pack) {
-			if (this.isMojang(this.pack)) return this.loadedContributions;
-			return Object.entries(this.loadedContributions[pack])
-				.map(([key, contrib]) => {
-					return [key, contrib.sort((a, b) => b.date - a.date)?.[0]];
-				})
-				.reduce((acc, [k, cur]) => {
-					acc[k] = cur;
-					return acc;
-				}, {});
+			if (this.isMojang) return this.loadedContributions;
+
+			// faster than map and fromEntries
+			const acc = {};
+			for (const [key, contrib] of Object.entries(this.loadedContributions[pack])) {
+				acc[key] = contrib.sort((a, b) => b.date - a.date)?.[0];
+			}
+
+			return acc;
 		},
 		isScrolledIntoView(el, margin = 0) {
 			const rect = el.getBoundingClientRect();
@@ -155,59 +154,11 @@ export default {
 			const elemBottom = rect.bottom;
 			return elemTop < window.innerHeight + margin && elemBottom >= 0;
 		},
-		computeGrid() {
-			const breakpoints = this.$root.$vuetify.breakpoint;
-			let gap;
-			let number;
-
-			let baseColumns = this.columns;
-			if (breakpoints.smAndDown) baseColumns = breakpoints.smOnly ? 2 : 1;
-
-			// constants
-			const MIN_WIDTH = 110;
-			const MARGIN = 20; // .container padding (12px) + .v-list.main-container padding (8px)
-
-			// real content width
-			const width = this.$el.clientWidth - MARGIN * 2;
-
-			if (baseColumns !== 1) {
-				/**
-				 *  We want to solve n * MIN_WIDTH + (n - 1) * A = width
-				 * where A = 200 / (1.5 * n)
-				 * => n * MIN_WIDTH + ((n*200)/(1.5*n)) - 1*200/(1.5*n) = width
-				 * => n * MIN_WIDTH + 200/1.5 - 200/(1.5*n) = width
-				 * multiply by n
-				 * => n² * MIN_WIDTH + 200n/1.5 - 200/1.5 = width*n
-				 * => n² * MIN_WIDTH + n * (200/1.5 - width) - 200/1.5 = 0
-				 * solve that and keep positive value
-				 */
-				const a = MIN_WIDTH;
-				const b = 200 / 1.5 - width;
-				const c = -200 / 1.5;
-				const delta = b * b - 4 * a * c;
-				const n = (-b + Math.sqrt(delta)) / (2 * a);
-				gap = 200 / (n * 1.5);
-				number = Math.min(baseColumns, Math.floor(n));
-			} else {
-				gap = 8;
-				number = 1;
-			}
-
-			const fontSize = width / number / 20;
-
-			this.styles.not_done = {
-				texture_id: { "font-size": `${fontSize * 4}px` },
-				texture_name: { "font-size": `${fontSize * 2}px` },
-				message: { "font-size": `${fontSize * 1.2}px` },
-			};
-
-			this.styles.grid = {
-				gap: `${gap}px`,
-				"grid-template-columns": `repeat(${number}, 1fr)`,
-			};
-		},
 	},
 	computed: {
+		isMojang() {
+			return ["default", "progart"].includes(this.pack);
+		},
 		sortedTextures() {
 			return Array.from(this.textures).sort(this.sortMethods[this.sort]);
 		},
@@ -227,21 +178,64 @@ export default {
 				},
 			};
 		},
+		maxColumns() {
+			const { xs, sm, md, lg, xl } = this.$vuetify.breakpoint;
+
+			// completely arbitrary values, feel free to change these
+			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
+			if (xs) return 1;
+			if (sm) return 4;
+			if (md) return 8;
+			if (lg) return 12;
+			if (xl) return 16;
+		},
+		shownColumns() {
+			return Math.min(this.columns, this.maxColumns);
+		},
+		// how much to increment shown results by when scrolling
+		pageLength() {
+			return this.shownColumns * MIN_ROW_DISPLAYED;
+		},
+		gridStyles() {
+			// bigger images -> smaller gaps
+			const gap = this.$vuetify.breakpoint.mobile ? 8 : Math.round(100 / this.shownColumns);
+
+			return {
+				gap: `${gap}px`,
+				gridTemplateColumns: `repeat(${this.shownColumns}, 1fr)`,
+			};
+		},
+		missingTextStyles() {
+			const CONTAINER_PADDING = 20; // .container padding (12px) + .v-list.main-container padding (8px)
+
+			// double padding for each side
+			const gridWidth = this.$el.clientWidth - CONTAINER_PADDING * 2;
+			const imgWidth = gridWidth / this.shownColumns;
+
+			// arbitrary scaling factor, seems to look pretty good
+			const fontSize = imgWidth / 20;
+
+			return {
+				texture_id: { fontSize: `${fontSize * 4}px` },
+				texture_name: { fontSize: `${fontSize * 2}px` },
+				message: { fontSize: `${fontSize * 1.2}px` },
+			};
+		},
 	},
 	watch: {
 		pack(n, o) {
 			if (n === o || !Object.keys(this.loadedContributions).length) return;
 			this.lastContributions = this.getLastContributions(n);
 		},
-		value(newValue) {
-			this.columns = newValue;
+		value: {
+			handler(newValue) {
+				this.columns = newValue;
+			},
+			// load from localStorage as soon as possible
+			immediate: true,
 		},
 		columns(n) {
-			this.computeGrid();
 			this.$emit("input", n);
-		},
-		stretched() {
-			this.$nextTick(() => this.computeGrid());
 		},
 	},
 	created() {
@@ -262,20 +256,18 @@ export default {
 			this.lastContributions = this.getLastContributions(this.pack);
 		});
 
-		this.displayedResults = this.columns * MIN_ROW_DISPLAYED;
+		this.displayedResults = this.pageLength;
 	},
 	mounted() {
+		const el = this.$refs.bottomElement;
 		document.addEventListener("scroll", () => {
 			this.scrollY = document.firstElementChild.scrollTop;
-			const scrolledTo = this.$refs.bottomElement;
 
-			if (scrolledTo && this.isScrolledIntoView(scrolledTo, 600)) {
-				this.displayedResults += this.columns * MIN_ROW_DISPLAYED;
-				this.$forceUpdate();
-			}
+			if (!el || !this.isScrolledIntoView(el, 600)) return;
+
+			// add more results when near bottom
+			this.displayedResults += this.pageLength;
 		});
-		window.addEventListener("resize", () => void this.computeGrid());
-		this.computeGrid();
 	},
 };
 </script>

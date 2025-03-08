@@ -33,3 +33,25 @@ export function sortTags(input) {
 	if (arr.includes("Java")) arr = ["Java", ...arr.filter((i) => i !== "Java")];
 	return arr;
 }
+
+export const emptyPath = () => ({
+	// has problems with v-for otherwise
+	key: crypto.randomUUID(),
+	name: "",
+	versions: [],
+	mcmeta: false,
+});
+
+export const emptyUse = () => ({
+	key: crypto.randomUUID(),
+	name: "",
+	edition: "",
+	paths: [emptyPath()],
+});
+
+export const emptyTexture = () => ({
+	key: crypto.randomUUID(),
+	name: "",
+	tags: [],
+	uses: [emptyUse()],
+});

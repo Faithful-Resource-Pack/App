@@ -16,7 +16,7 @@
 				<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules" target="_blank">
 					<v-alert type="warning" class="pb-4" color="orange darken-3">
 						<span style="color: inherit; text-decoration: underline">
-							{{ $root.lang("addons.general.rules") }}
+							{{ $root.lang().addons.general.rules }}
 						</span>
 						<v-icon small>mdi-open-in-new</v-icon>
 					</v-alert>
@@ -149,7 +149,7 @@
 					v-if="submittedForm.description && submittedForm.description.length > 0"
 					class="pa-3"
 					:elevation="0"
-					v-html="$root.compiledMarkdown(submittedForm.description)"
+					v-html="$root.compileMarkdown(submittedForm.description)"
 				/>
 				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
 
@@ -286,10 +286,10 @@
 						text
 						@click="() => onSubmit(true)"
 					>
-						{{ $root.lang("global.btn.submit_and_approve") }}
+						{{ $root.lang().global.btn.submit_and_approve }}
 					</v-btn>
 					<v-btn :disabled="!validForm" color="darken-1" text @click="() => onSubmit(false)">
-						{{ $root.lang().global.btn.submit }}
+						{{ $root.lang().global.btn.submit_for_review }}
 					</v-btn>
 				</div>
 			</v-form>

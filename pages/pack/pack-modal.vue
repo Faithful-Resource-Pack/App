@@ -3,7 +3,7 @@
 		<submission-modal
 			:color="color"
 			v-model="submissionOpen"
-			@close="disableSubmission"
+			@close="closeSubmissionModal"
 			:data="submissionData"
 			:add="submissionAdd"
 			:first="add"
@@ -26,18 +26,18 @@
 				:color="color"
 				:hint="
 					add
-						? $root.lang().database.hints.pack_id_creation
-						: $root.lang().database.hints.pack_id_editing
+						? $root.lang().database.packs.modal.id_creation_hint
+						: $root.lang().database.packs.modal.id_editing_hint
 				"
 				v-model="formData.id"
-				:label="$root.lang().database.labels.pack_id"
+				:label="$root.lang().database.packs.modal.id"
 			/>
 			<v-text-field
 				:color="color"
 				required
 				clearable
 				v-model="formData.name"
-				:label="$root.lang().database.labels.pack_name"
+				:label="$root.lang().database.packs.modal.name"
 			/>
 			<v-combobox
 				:color="color"
@@ -48,53 +48,54 @@
 				small-chips
 				v-model="formData.tags"
 				:items="tags"
-				:label="$root.lang().database.labels.pack_tags"
+				:label="$root.lang().database.packs.modal.tags"
 			/>
 			<v-text-field
 				:color="color"
 				required
 				type="number"
 				v-model="formData.resolution"
-				:label="$root.lang().database.labels.pack_resolution"
+				:label="$root.lang().database.packs.modal.resolution"
 			/>
 			<v-text-field
 				:color="color"
 				:rules="downloadLinkRules"
 				clearable
 				v-model="formData.logo"
-				:label="$root.lang().database.labels.pack_logo"
+				:label="$root.lang().database.packs.modal.logo"
 			/>
-			<h2 class="title">{{ $root.lang().database.subtitles.github }}</h2>
-			<p class="text-caption">{{ $root.lang().database.hints.github_required }}</p>
+			<h2 class="title">{{ $root.lang().database.packs.modal.github.title }}</h2>
+			<p class="text-caption">{{ $root.lang().database.packs.modal.github.title_hint }}</p>
 			<div v-for="edition in editions" :key="edition">
 				<p class="text-body-1">{{ edition.toTitleCase() }}</p>
 				<v-row>
 					<v-col>
 						<v-text-field
 							:color="color"
-							:label="$root.lang().database.labels.github_org"
+							:label="$root.lang().database.packs.modal.github.organization"
 							v-model="(formData.github[edition] || createNewGithub(edition)).org"
 						/>
 					</v-col>
 					<v-col>
 						<v-text-field
 							:color="color"
-							:label="$root.lang().database.labels.github_repo"
+							:label="$root.lang().database.packs.modal.github.repository"
 							v-model="(formData.github[edition] || createNewGithub(edition)).repo"
 						/>
 					</v-col>
 				</v-row>
 			</div>
-			<h2 class="title">{{ $root.lang().database.subtitles.submissions }}</h2>
+			<h2 class="title">{{ $root.lang().database.packs.submissions.title }}</h2>
 			<v-row v-if="Object.keys(formData.submission).length">
 				<v-col>
 					<v-btn
 						block
 						:style="{ 'margin-top': '10px' }"
 						color="secondary"
-						@click="submissionModal(formData, false)"
+						@click="openSubmissionModal(formData, false)"
 					>
-						{{ $root.lang().database.labels.edit_submission }}<v-icon right>mdi-pencil</v-icon>
+						{{ $root.lang().database.packs.submissions.edit_submission
+						}}<v-icon right>mdi-pencil</v-icon>
 					</v-btn>
 				</v-col>
 				<v-col cols="2">
@@ -113,9 +114,9 @@
 				block
 				:style="{ 'margin-top': '10px' }"
 				color="secondary"
-				@click="submissionModal(formData, true)"
+				@click="openSubmissionModal(formData, true)"
 			>
-				{{ $root.lang().database.labels.new_submission }}
+				{{ $root.lang().database.packs.submissions.add_submission }}
 				<v-icon right>mdi-plus</v-icon>
 			</v-btn>
 		</v-form>
@@ -173,7 +174,7 @@ export default {
 				submission: {},
 			},
 			editions: [],
-			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().database.labels.invalid_url],
+			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().global.invalid_url],
 			submissionOpen: false,
 			submissionData: {},
 			submissionAdd: false,
@@ -185,7 +186,7 @@ export default {
 		};
 	},
 	methods: {
-		submissionModal(data, add) {
+		openSubmissionModal(data, add) {
 			this.submissionOpen = true;
 			this.submissionAdd = add;
 			if (add)
@@ -194,7 +195,7 @@ export default {
 				};
 			else this.submissionData = data.submission;
 		},
-		disableSubmission() {
+		closeSubmissionModal() {
 			this.submissionOpen = false;
 			// clear form
 			this.submissionData = {};
@@ -220,7 +221,7 @@ export default {
 			this.remove.id = this.data.id;
 			this.remove.label = this.remove.name = this.$root
 				.lang()
-				.database.labels.ask_submission_deletion.replace("%s", this.data.name)
+				.database.packs.submissions.ask_submission_deletion.replace("%s", this.data.name)
 				.replace("%d", this.data.id);
 			this.remove.confirm = true;
 		},
@@ -249,7 +250,7 @@ export default {
 
 			if (!Object.keys(data.github).length)
 				return this.$root.showSnackBar(
-					"At least one GitHub repository needs to be present.",
+					this.$root.lang().database.packs.modal.github.length_notice,
 					"error",
 				);
 
@@ -292,8 +293,8 @@ export default {
 	computed: {
 		dialogTitle() {
 			return this.add
-				? this.$root.lang().database.titles.add_pack
-				: this.$root.lang().database.titles.change_pack;
+				? this.$root.lang().database.packs.modal.add_pack
+				: this.$root.lang().database.packs.modal.change_pack;
 		},
 	},
 	watch: {

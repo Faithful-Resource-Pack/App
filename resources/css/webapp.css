@@ -663,35 +663,19 @@ code {
 	background-size: auto;
 }
 
-.gallery-dialog-container {
-	flex-direction: row;
-	width: 100%;
-	overflow: auto;
-}
-
-.gallery-dialog-textures {
+.gallery-modal-container {
 	display: flex;
-	flex-grow: 0;
-	flex-shrink: 0;
-}
-
-.gallery-dialog-textures + * {
-	flex-grow: 1;
-	flex-shrink: 0;
-}
-
-.gallery-dialog-texture-container {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	text-align: center;
+	flex-flow: row wrap;
+	justify-content: space-between;
+	align-items: flex-start;
+	gap: 8px; /* equivalent to mx-2 */
 }
 
 :root {
 	--modal-image-size: 160px;
 }
 
-.gallery-dialog-texture {
+.gallery-modal-texture {
 	height: var(--modal-image-size);
 	width: var(--modal-image-size);
 	position: relative;
@@ -699,17 +683,17 @@ code {
 	background-position: center;
 }
 
-.gallery-dialog-texture-container h2 {
+.gallery-modal-image-caption {
 	max-width: var(--modal-image-size);
 	height: 48px;
 	font-size: 1em;
 }
 
-.theme--dark .gallery-dialog-texture {
+.theme--dark .gallery-modal-texture {
 	background: url(/resources/transparency.png) center;
 }
 
-.gallery-dialog-texture > * {
+.gallery-modal-texture > * {
 	position: absolute;
 	height: var(--modal-image-size);
 	width: var(--modal-image-size);
@@ -719,24 +703,12 @@ code {
 	display: none;
 }
 
-.gallery-dialog-container .info-table .gallery-info {
-	padding: 15px 0;
-}
-
 .theme--dark.v-data-table {
 	background-color: rgba(0, 0, 0, 0.2);
+}
+
+.v-data-table {
 	padding: 5px;
-}
-
-.double-table {
-	display: flex;
-	flex-direction: row;
-	flex-wrap: wrap;
-	gap: 30px;
-}
-
-.double-table > div {
-	flex-grow: 1;
 }
 
 .go-up-btn {
@@ -987,7 +959,7 @@ body .database-list-avatar {
 .theme--light .database-list-avatar {
 	background: white;
 }
-.theme--light .gallery-dialog-texture, .theme--light .gallery-texture-in-container {
+.theme--light .gallery-modal-texture, .theme--light .gallery-texture-in-container {
 	background-image: url(/resources/transparency-light.png);
 }
 
@@ -1229,7 +1201,7 @@ body .database-list-avatar {
 	border-radius: 4px;
 }
 
-.texture-json-editor {
+.json-modal-editor {
 	min-height: 20em;
 }
 

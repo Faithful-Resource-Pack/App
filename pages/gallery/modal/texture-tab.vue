@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<div class="gallery-info">
+		<div class="py-3">
 			<h2>{{ $root.lang().gallery.modal.info.texture }}</h2>
 			<v-data-table
 				dense
@@ -12,7 +12,7 @@
 				disable-pagination
 			/>
 		</div>
-		<div class="gallery-info">
+		<div class="py-3">
 			<h2>{{ $root.lang().gallery.modal.info.uses }}</h2>
 			<v-data-table
 				dense
@@ -26,11 +26,11 @@
 				<!-- use names can be empty/null -->
 				<template #item.name="{ value }">
 					<template v-if="value">{{ value }}</template>
-					<i v-else>{{ $root.lang().database.labels.nameless }}</i>
+					<i v-else>{{ $root.lang().database.nameless }}</i>
 				</template>
 			</v-data-table>
 		</div>
-		<div class="gallery-info">
+		<div class="py-3">
 			<h2>{{ $root.lang().gallery.modal.info.paths }}</h2>
 			<v-data-table
 				dense
@@ -119,6 +119,7 @@ export default {
 	methods: {
 		formatPathVersions(versions) {
 			if (versions.length === 1) return versions[0];
+			// use nbsp to prevent weirdness on mobile
 			return `${versions[0]} – ${versions[versions.length - 1]}`;
 		},
 	},

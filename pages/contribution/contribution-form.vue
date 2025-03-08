@@ -14,7 +14,7 @@
 			</v-col>
 			<v-col cols="12" :sm="multiple ? false : 6">
 				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang("database.subtitles.pack") }}
+					{{ $root.lang().database.contributions.modal.pack }}
 				</div>
 				<v-select
 					class="mt-0 pt-0 mb-2"
@@ -26,14 +26,14 @@
 					v-model="content.pack"
 				/>
 				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang("database.labels.texture_id") }}
+					{{ $root.lang().database.textures.modal.id }}
 				</div>
 				<multi-range-input
 					v-if="multiple && Array.isArray(content.texture)"
 					v-model="content.texture"
 					:disabled="disabled"
 					:multiple="multiple"
-					:labels="$root.lang('database.labels.id_field_errors', true)"
+					:labels="$root.lang().database.contributions.modal.id_field_errors"
 				/>
 				<div class="d-flex align-center mb-2" v-else>
 					<v-text-field
@@ -53,7 +53,7 @@
 					</v-btn>
 				</div>
 				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang().database.titles.contributors }}
+					{{ $root.lang().database.contributions.contributors }}
 				</div>
 				<user-select
 					dense
@@ -61,9 +61,9 @@
 					v-model="content.authors"
 					class="my-0"
 					:limit="3"
-					:placeholder="$root.lang().database.labels.one_contributor"
+					:placeholder="$root.lang().database.contributions.modal.one_contributor"
 					:error-messages="
-						content.length === 0 ? [$root.lang('database.subtitles.no_contributor_yet')] : []
+						content.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
 					"
 					@newUsers="(l) => this.$emit('newUser', l) "
 				/>

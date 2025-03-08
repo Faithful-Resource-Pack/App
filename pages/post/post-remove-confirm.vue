@@ -2,16 +2,13 @@
 	<modal-form
 		v-model="modalOpened"
 		danger
-		:title="$root.lang().database.titles.confirm_deletion"
+		:title="$root.lang().database.confirm_deletion"
 		@close="$emit('close')"
 		@submit="deletePost"
 	>
 		<p>
 			{{
-				$root
-					.lang()
-					.database.labels.ask_deletion.replace("%s", post.title)
-					.replace("%d", post.permalink)
+				$root.lang().database.ask_deletion.replace("%s", post.title).replace("%d", post.permalink)
 			}}
 		</p>
 	</modal-form>

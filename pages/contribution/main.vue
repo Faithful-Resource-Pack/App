@@ -16,18 +16,18 @@
 		<v-row no-gutters class="py-0 mb-0" align="center">
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
 				<div class="text-h4 py-4">
-					{{ $root.lang().database.titles.contributions }}
+					{{ $root.lang().database.contributions.title }}
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
 				<v-btn block color="primary" @click="openAdd()">
-					{{ $root.lang("database.subtitles.add_manually") }}<v-icon right dark>mdi-plus</v-icon>
+					{{ $root.lang().database.contributions.add_manually }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>
 
 		<!-- Pack selection -->
-		<h2 class="my-2 text-h5">{{ $root.lang().database.subtitles.resource_packs }}</h2>
+		<h2 class="my-2 text-h5">{{ $root.lang().database.contributions.pack_filter }}</h2>
 		<div class="d-flex flex-wrap ma-n1">
 			<v-card
 				v-for="packObj in form.packs"
@@ -46,16 +46,16 @@
 		</div>
 
 		<!-- Contribution search -->
-		<h2 class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</h2>
+		<h2 class="my-2 text-h5">{{ $root.lang().database.search }}</h2>
 		<v-row align="stretch" class="my-2">
 			<v-col cols="12" sm="6" class="pt-0 py-sm-0">
 				<user-select
 					persistent-placeholder
-					:label="$root.lang('database.titles.users')"
+					:label="$root.lang().database.contributions.user_filter"
 					outlined
 					v-model="selectedContributors"
 					:users="contributors"
-					:placeholder="$root.lang().database.labels.select_user"
+					:placeholder="$root.lang().database.contributions.select_user"
 					hide-details
 					class="my-0 pt-0"
 					small-chips
@@ -70,14 +70,14 @@
 			<v-col cols="12" sm="6" class="pb-0 py-sm-0">
 				<v-text-field
 					persistent-placeholder
-					:label="$root.lang('database.titles.textures')"
+					:label="$root.lang().database.contributions.texture_filter"
 					outlined
 					style="height: 100%"
 					type="search"
 					v-model="textureSearch"
 					class="pt-0 my-0"
 					height="100%"
-					:placeholder="$root.lang().database.labels.search_texture"
+					:placeholder="$root.lang().database.textures.search_texture"
 					@keyup.enter="startSearch()"
 					hide-details
 				/>
@@ -86,11 +86,11 @@
 
 		<!-- Search button -->
 		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="my-6">
-			{{ $root.lang().database.labels.search_contributions }}
+			{{ $root.lang().database.contributions.search_contributions }}
 			<v-icon right dark>mdi-magnify</v-icon>
 		</v-btn>
 
-		<div class="mb-2 text-h5">{{ $root.lang().database.subtitles.contribution_result }}</div>
+		<div class="mb-2 text-h5">{{ $root.lang().database.contributions.contribution_result }}</div>
 
 		<smart-grid v-if="search.search_results.length" :items="search.search_results" track="id">
 			<template #default="{ item }">
@@ -215,7 +215,7 @@ export default {
 				this.form.packs
 					.filter((entry) => entry.key !== this.all_packs)
 					// format into list-suitable format
-					.map((v) => ({ label: v.value, value: v.key }))
+					.map(({ value, key }) => ({ label: value, value: key }))
 			);
 		},
 		onModalSubmit() {
@@ -317,7 +317,10 @@ export default {
 				if (generatedRange.length === 0) {
 					this.$root
 						.jsonSnackBar(entry)
-						.showSnackBar(this.$root.lang("database.labels.id_field_errors.one_required"), "error");
+						.showSnackBar(
+							this.$root.lang().database.contributions.modal.id_field_errors.one_required,
+							"error",
+						);
 					console.error(entry);
 					return false;
 				}
@@ -325,7 +328,7 @@ export default {
 				if (entry.authors.length === 0) {
 					this.$root
 						.jsonSnackBar(entry)
-						.showSnackBar(this.$root.lang("database.subtitles.no_contributor_yet"), "error");
+						.showSnackBar(this.$root.lang().database.contributions.no_contributor_yet, "error");
 					console.error(entry);
 					return false;
 				}
@@ -351,7 +354,7 @@ export default {
 				});
 
 			if (wentWell) {
-				this.$root.showSnackBar(this.$root.lang("global.ends_success"), "success");
+				this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 				this.getAuthors();
 			}
 

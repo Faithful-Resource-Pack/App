@@ -2,17 +2,12 @@
 	<modal-form
 		v-model="modalOpened"
 		danger
-		:title="$root.lang().database.titles.confirm_deletion"
+		:title="$root.lang().database.confirm_deletion"
 		@close="$emit('close')"
 		@submit="deleteUser"
 	>
 		<p>
-			{{
-				$root
-					.lang()
-					.database.labels.ask_deletion.replace("%s", data.username)
-					.replace("%d", data.id)
-			}}
+			{{ $root.lang().database.ask_deletion.replace("%s", data.username).replace("%d", data.id) }}
 		</p>
 	</modal-form>
 </template>

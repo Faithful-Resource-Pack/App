@@ -24,7 +24,10 @@
 				<v-tabs-items v-model="selectedTab" style="background-color: transparent" class="pb-3">
 					<v-tab-item><general-tab v-model="formData" /></v-tab-item>
 					<v-tab-item><download-tab v-model="downloads" /></v-tab-item>
-					<v-tab-item><changelog-tab v-model="changelog" /></v-tab-item>
+					<v-tab-item>
+						<!-- need extra prop for the json modal (easier than tracking it here) -->
+						<changelog-tab v-model="changelog" :convert="convertChangelogToArray" />
+					</v-tab-item>
 				</v-tabs-items>
 				<div class="d-flex justify-end pa-2">
 					<v-btn color="darken-1" text @click="() => onSubmit(false)">
@@ -127,8 +130,8 @@ export default {
 				// single
 				if (!cur.category) acc[cur.name] = cur.link;
 				else
-					acc[cur.category] = cur.items.reduce((a, c) => {
-						a[c.name] = c.link;
+					acc[cur.category] = cur.items.reduce((a, { name, link }) => {
+						a[name] = link;
 						return a;
 					}, {});
 				return acc;
@@ -138,8 +141,8 @@ export default {
 		convertChangelogToArray(obj, single = false) {
 			if (typeof obj === "string") return obj;
 			if (Array.isArray(obj)) {
-				const s = obj.some((v) => typeof v === "string");
-				return obj.map((v) => this.convertChangelogToArray(v, s));
+				const s = obj.some((item) => typeof item === "string");
+				return obj.map((item) => this.convertChangelogToArray(item, s));
 			}
 			if (single) {
 				const key = Object.keys(obj)[0];
@@ -153,9 +156,9 @@ export default {
 		convertChangelogToObject(arr) {
 			if (typeof arr === "string") return arr;
 			if (arr.category !== undefined)
-				return { [arr.category]: arr.items.map((v) => this.convertChangelogToObject(v)) };
-			if (arr.some((v) => typeof v === "string"))
-				return arr.map((v) => this.convertChangelogToObject(v));
+				return { [arr.category]: arr.items.map((item) => this.convertChangelogToObject(item)) };
+			if (arr.some((item) => typeof item === "string"))
+				return arr.map((item) => this.convertChangelogToObject(item));
 			return arr.reduce((acc, cur) => {
 				acc[cur.category] = this.convertChangelogToObject(cur.items);
 				return acc;

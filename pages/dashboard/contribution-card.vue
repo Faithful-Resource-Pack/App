@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		id="contribution-card"
-		:title="$root.lang('dashboard.titles.contribution_activity')"
+		:title="$root.lang().dashboard.titles.contribution_activity"
 		to="/contributions"
 		:clickable="$root.isAdmin"
 		class="d-flex flex-column"
@@ -23,7 +23,7 @@
 							:values="values"
 							:end-date="today"
 							:max="data.percentiles[activity]"
-							:tooltip-unit="$root.lang('dashboard.totals.contributions')"
+							:tooltip-unit="$root.lang().dashboard.totals.contributions"
 							:locale="locale"
 							:range-color="colors"
 						/>
@@ -62,10 +62,6 @@ export default {
 			required: true,
 			type: Array,
 		},
-		statsListener: {
-			required: true,
-			type: Function,
-		},
 	},
 	data() {
 		return {
@@ -85,9 +81,7 @@ export default {
 					};
 				});
 		},
-		today() {
-			return new Date();
-		},
+		today: () => new Date(),
 		locale() {
 			return {
 				months: moment.monthsShort().map((e) => e[0].toUpperCase() + e.slice(1)),
@@ -113,7 +107,7 @@ export default {
 			if (!o.length) return; // o is empty
 
 			// run
-			this.statsListener(n);
+			this.$emit("stats", n);
 		},
 	},
 };

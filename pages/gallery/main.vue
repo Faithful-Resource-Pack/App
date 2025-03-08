@@ -34,7 +34,7 @@
 			clear-icon="mdi-close"
 			clearable
 			hide-details
-			:placeholder="$root.lang().database.labels.search_texture"
+			:placeholder="$root.lang().database.textures.search_texture"
 			type="text"
 			@keyup.enter="startSearch"
 			@click:append="startSearch"
@@ -79,7 +79,7 @@
 		/>
 
 		<gallery-modal
-			v-model="modalOpen"
+			v-model="modalOpened"
 			:textureID="modalTextureID"
 			:discordIDtoName="discordIDtoName"
 			:packToName="packToName"
@@ -87,10 +87,6 @@
 			@share="copyShareURL"
 			@close="closeModal"
 		/>
-
-		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
-			<v-icon>mdi-arrow-up</v-icon>
-		</v-btn>
 	</v-container>
 </template>
 
@@ -126,7 +122,7 @@ export default {
 			error: undefined,
 			// search values
 			current: {
-				pack: "faithful_32x",
+				pack: "default",
 				tag: "all",
 				version: "latest",
 				edition: "java",
@@ -150,28 +146,21 @@ export default {
 			// loaded contributors
 			authors: {},
 			// whether modal is opened
-			modalOpen: false,
+			modalOpened: false,
 			// object of pack id -> pack display name
 			packToName: {},
+			// for legacy url support
+			resToPack: {
+				"16x": "default",
+				"32x": "faithful_32x",
+				"64x": "faithful_64x",
+			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
-			// go to the top arrow
-			scrollY: 0,
 			abortController: new AbortController(),
 		};
 	},
 	methods: {
-		resToPackID(res) {
-			// for legacy url support
-			switch (res) {
-				case "16x":
-					return "default";
-				case "32x":
-					return "faithful_32x";
-				case "64x":
-					return "faithful_64x";
-			}
-		},
 		newShareURL(id, update = true) {
 			if (update && id !== undefined) this.$router.push({ query: { show: id } });
 
@@ -187,7 +176,7 @@ export default {
 		copyShareURL(id) {
 			const url = this.newShareURL(id, false);
 			navigator.clipboard.writeText(url);
-			this.$root.showSnackBar(this.$root.lang("gallery.share_link_copied_to_clipboard"), "success");
+			this.$root.showSnackBar(this.$root.lang().gallery.share_link_copied_to_clipboard, "success");
 		},
 		openModalInNewTab(id) {
 			const url = this.newShareURL(id, false);
@@ -195,7 +184,7 @@ export default {
 		},
 		openModal() {
 			// router has already been triggered at this point
-			this.modalOpen = true;
+			this.modalOpened = true;
 		},
 		closeModal() {
 			this.$router.push({ query: null });
@@ -248,12 +237,6 @@ export default {
 					this.error = `${err.statusCode}: ${err.response.value}`;
 					this.loading = false;
 				});
-		},
-		toTop() {
-			window.scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
 		},
 		clearCache() {
 			axios
@@ -308,8 +291,8 @@ export default {
 				this.current.search = params.search;
 
 				// convert legacy urls to modern format
-				if (["16x", "32x", "64x"].includes(params.pack)) {
-					this.current.pack = this.resToPackID(params.pack);
+				if (Object.keys(this.resToPack).includes(params.pack)) {
+					this.current.pack = this.resToPack[params.pack];
 					this.updateRoute();
 				} else this.current.pack = params.pack;
 

@@ -21,14 +21,14 @@
 		<modal-form
 			v-model="reasonDialog"
 			button-type="submit"
-			:title="this.$root.lang('addons.general.reason.title')"
+			:title="this.$root.lang().addons.general.reason.title"
 			@close="() => handleReasonDialog(false)"
 			@submit="handleReasonDialog(true)"
 		>
 			<v-form lazy-validation v-model="validForm" ref="reasonForm">
-				<p>{{ this.$root.lang("addons.general.reason.text") }}</p>
+				<p>{{ this.$root.lang().addons.general.reason.text }}</p>
 				<v-text-field
-					:label="$root.lang('addons.general.reason.title')"
+					:label="$root.lang().addons.general.reason.title"
 					required
 					:rules="reasonRules"
 					v-model="reason"
@@ -57,14 +57,13 @@ export default {
 			reasonData: undefined,
 			reasonRules: [
 				() =>
-					!!(this.reason && this.reason.trim()) ||
-					this.$root.lang("addons.general.reason.required"),
+					!!(this.reason && this.reason.trim()) || this.$root.lang().addons.general.reason.required,
 				() =>
 					this.reason.trim().length < this.reasonCounter.min ||
 					this.reason.trim().length > this.reasonCounter.max
 						? this.$root
-								.lang("addons.general.reason.bounds")
-								.replace("%s", this.reasonCounter.min)
+								.lang()
+								.addons.general.reason.bounds.replace("%s", this.reasonCounter.min)
 								.replace("%s", this.reasonCounter.max)
 						: true,
 			],
@@ -262,7 +261,7 @@ export default {
 				this.$root.apiOptions,
 			),
 		])
-			.then((res) => res.map((v) => v.data))
+			.then((res) => res.map(({ data }) => data))
 			.then(([addon, downloads]) => {
 				const loadedAddon = {
 					...addon,

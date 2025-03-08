@@ -14,7 +14,7 @@
 					<v-card-subtitle>{{ options.tags.join(", ") }}</v-card-subtitle>
 				</template>
 				<template #text="{ approval, slug }">
-					<v-badge dot inline :color="getStatusColor(approval.status)" />
+					<v-badge dot inline :color="colors[approval.status]" />
 					{{ $root.lang().addons.status[approval.status] }}
 					<v-btn
 						v-if="approval.status == 'approved'"
@@ -73,6 +73,12 @@ export default {
 				confirm: false,
 				data: {},
 			},
+			colors: {
+				approved: "green",
+				pending: "yellow",
+				denied: "red",
+				archived: "grey",
+			},
 			error: undefined,
 			loading: true,
 			failed: {},
@@ -80,16 +86,6 @@ export default {
 		};
 	},
 	methods: {
-		getStatusColor(status) {
-			switch (status) {
-				case "approved":
-					return "green";
-				case "pending":
-					return "yellow";
-				default:
-					return "red";
-			}
-		},
 		deleteAddon(addon) {
 			this.remove.data = addon;
 			this.remove.confirm = true;

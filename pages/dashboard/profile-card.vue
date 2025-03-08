@@ -1,6 +1,6 @@
 <template>
 	<dashboard-card
-		:title="$root.lang('dashboard.titles.profile')"
+		:title="$root.lang().dashboard.titles.profile"
 		to="/profile"
 		clickable
 		class="d-flex flex-column"

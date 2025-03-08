@@ -50,9 +50,7 @@
 			<template v-else>
 				<v-list-item-content>
 					<v-list-item-title>
-						{{
-							data.item.username || $root.lang().database.labels.anonymous + ` (${data.item.id})`
-						}}
+						{{ data.item.username || $root.lang().database.anonymous + ` (${data.item.id})` }}
 					</v-list-item-title>
 					<v-list-item-subtitle v-if="data.item.contributions">
 						{{ `${data.item.contributions} contribution${data.item.contributions > 1 ? "s" : ""}` }}
@@ -68,7 +66,7 @@
 		</template>
 		<template #no-data>
 			<v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
-				{{ $root.lang("database.subtitles.search") }} <v-icon right dark>mdi-magnify</v-icon>
+				{{ $root.lang().database.search }} <v-icon right dark>mdi-magnify</v-icon>
 			</v-btn>
 		</template>
 	</v-autocomplete>

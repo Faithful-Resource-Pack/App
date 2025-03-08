@@ -21,11 +21,11 @@
 		/>
 
 		<div class="text-h4 py-4">
-			{{ $root.lang().database.titles.users }}
+			{{ $root.lang().database.users.title }}
 		</div>
 
 		<!-- role switcher -->
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.select_user_role }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.users.role_filter }}</div>
 		<div class="selector">
 			<v-btn
 				v-for="role in usersRoles"
@@ -39,7 +39,7 @@
 		</div>
 
 		<!-- search -->
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.search }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
 		<div class="my-2">
 			<v-text-field
 				v-model="search"
@@ -47,7 +47,7 @@
 				filled
 				clear-icon="mdi-close"
 				clearable
-				:placeholder="$root.lang().database.labels.search_username"
+				:placeholder="$root.lang().database.users.search_username"
 				type="text"
 				hide-details
 				:color="pageColor"
@@ -59,11 +59,11 @@
 
 		<!-- main buttons -->
 		<v-btn block @click="openDialog()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
-			{{ $root.lang().database.labels.add_new_user }}<v-icon right dark>mdi-plus</v-icon>
+			{{ $root.lang().database.users.modal.add_user }}<v-icon right dark>mdi-plus</v-icon>
 		</v-btn>
 
 		<!-- results -->
-		<div class="my-2 text-h5">{{ $root.lang().database.subtitles.user_result }}</div>
+		<div class="my-2 text-h5">{{ $root.lang().database.users.user_result }}</div>
 		<div v-if="loading" class="text-center">
 			<v-progress-circular indeterminate :color="pageColor" />
 		</div>

@@ -2,13 +2,13 @@
 	<modal-form
 		v-model="modalOpened"
 		danger
-		:title="$root.lang().database.titles.confirm_deletion"
+		:title="$root.lang().database.confirm_deletion"
 		@close="$emit('close')"
 		@submit="deleteData"
 	>
 		<p>Do you want to delete this {{ type }}?</p>
 		<v-alert v-if="type == 'use'" type="warning" class="px-2" outlined dense>
-			{{ $root.lang("database.messages.deleting_use_will_delete_paths") }}
+			{{ $root.lang().database.textures.deleting_use_will_delete_paths }}
 		</v-alert>
 		<blockquote v-if="type == 'use'">
 			<v-btn text @click="getPaths(data.id)"> See affected paths </v-btn>

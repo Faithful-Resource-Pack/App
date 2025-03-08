@@ -11,47 +11,36 @@
 			</v-btn>
 		</template>
 		<fullscreen-preview v-model="previewOpen" :src="clickedImage" :aspect-ratio="1 / 1" texture />
-		<div
-			v-if="Object.keys(textureObj).length > 0"
-			class="gallery-dialog-container d-sm-flex flex-column flex-sm-row pa-2 pa-sm-7"
-		>
+
+		<div class="gallery-modal-container pa-5" v-if="Object.keys(textureObj).length > 0">
 			<!-- image display -->
-			<div
-				class="gallery-dialog-textures d-sm-flex flex-row flex-sm-column overflow-auto mb-2 mb-sm-0 mx-n1 mx-sm-0"
-			>
-				<template v-for="group in grouped">
-					<div class="d-flex flex-row pb-2 pb-sm-0">
-						<div
-							v-for="url in group"
-							class="gallery-dialog-texture-container px-2 pb-sm-2"
-							:key="url.name"
+			<div class="mx-auto overflow-auto pa-2">
+				<div v-for="(group, i) in grouped" :key="i" class="d-flex flex-row pb-2 pb-sm-0">
+					<div v-for="url in group" :key="url.name" class="px-2 pb-sm-2">
+						<gallery-image
+							modal
+							:src="url.image"
+							:textureID="textureID"
+							:ignoreList="ignoreList"
+							@click="openFullscreenPreview(url.image)"
 						>
-							<gallery-image
-								modal
-								:src="url.image"
-								:textureID="textureID"
-								:ignoreList="ignoreList"
-								@click="openFullscreenPreview(url.image)"
-							>
-								<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
-							</gallery-image>
-							<h2>{{ packToName[url.name] }}</h2>
-						</div>
+							<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
+						</gallery-image>
+						<h2 class="text-center gallery-modal-image-caption">{{ packToName[url.name] }}</h2>
 					</div>
-				</template>
+				</div>
 			</div>
 
 			<!-- texture details -->
-			<div class="pl-sm-7">
+			<div class="flex-grow-1 pa-2">
 				<v-tabs id="info-tabs" v-model="selectedTab" :show-arrows="false">
 					<v-tabs-slider />
-
 					<v-tab v-for="tab in tabs" :key="tab" style="text-transform: uppercase">
 						{{ tab }}
 					</v-tab>
 				</v-tabs>
 
-				<v-tabs-items v-model="selectedTab" class="info-table">
+				<v-tabs-items v-model="selectedTab">
 					<v-tab-item v-for="tab in tabs" :key="tab">
 						<texture-tab v-if="tab === tabs.information" :textureObj="textureObj" />
 						<author-tab
@@ -86,10 +75,10 @@ const PACK_SLIDER_ORDER = [
 	"progart",
 	"faithful_32x",
 	"faithful_64x",
-	"classic_faithful_32x",
-	"classic_faithful_64x",
 	"classic_faithful_32x_progart",
 	"classic_faithful_64x_progart",
+	"classic_faithful_32x",
+	"classic_faithful_64x",
 ];
 
 export default {
@@ -151,7 +140,7 @@ export default {
 			if (!this.textureObj) return [];
 
 			// don't display duplicates on mobile
-			if (this.$vuetify.breakpoint.xsOnly)
+			if (this.$vuetify.breakpoint.mdAndDown)
 				return [
 					PACK_SLIDER_ORDER.map((pack) => ({ name: pack, image: this.textureObj.urls[pack] })),
 				];

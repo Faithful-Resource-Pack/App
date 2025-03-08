@@ -3,8 +3,8 @@
 		<div class="text-h4 py-4">
 			{{
 				$root.user.username
-					? $root.lang("dashboard.welcome_user").replace("%USER%", $root.user.username)
-					: $root.lang("dashboard.welcome")
+					? $root.lang().dashboard.welcome_user.replace("%USER%", $root.user.username)
+					: $root.lang().dashboard.welcome
 			}}
 		</div>
 
@@ -25,7 +25,7 @@
 			<v-col cols="12" sm="12">
 				<contribution-card
 					:colors="colors"
-					:statsListener="
+					@stats="
 						(t) => {
 							$refs.cs.onTotals(t);
 						}

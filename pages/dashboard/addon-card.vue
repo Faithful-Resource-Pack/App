@@ -1,7 +1,7 @@
 <template>
 	<dashboard-card
 		id="addon-card"
-		:title="$root.lang('dashboard.titles.addons')"
+		:title="$root.lang().dashboard.titles.addons"
 		to="/review/addons"
 		:clickable="$root.isAdmin"
 		class="d-flex flex-column justify-space-between"

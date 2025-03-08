@@ -100,7 +100,7 @@ router.beforeEach((to, _from, next) => {
 		return;
 	}
 	// replace hash router (legacy urls) with history router
-	if (["/#", "/?#"].some((v) => to.fullPath.startsWith(v))) {
+	if (["/#", "/?#"].some((p) => to.fullPath.startsWith(p))) {
 		const path = to.fullPath.replace("/#", "").replace("/?#", "");
 		next(path);
 		return;
@@ -259,7 +259,7 @@ const app = new Vue({
 			console.log(this.$route);
 			console.log(this.$router.options.routes);
 		},
-		compiledMarkdown(rawText) {
+		compileMarkdown(rawText) {
 			if (!rawText) return "";
 			return DOMPurify.sanitize(marked(rawText));
 		},
@@ -463,6 +463,8 @@ const app = new Vue({
 			immediate: true,
 		},
 		drawerOpen(n) {
+			// don't set preference on small screens (pointless)
+			if (this.$vuetify.breakpoint.mobile) return;
 			localStorage.setItem(MENU_KEY, String(n));
 		},
 		isLoggedIn(n) {

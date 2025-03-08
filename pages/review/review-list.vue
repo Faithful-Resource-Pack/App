@@ -44,7 +44,9 @@ export default {
 	},
 	computed: {
 		classes() {
-			return this.items.map((v) => (v.key === this.value ? `${this.activeColor} selected` : ""));
+			return this.items.map(({ key }) =>
+				key === this.value ? `${this.activeColor} selected` : "",
+			);
 		},
 	},
 };

@@ -5,7 +5,7 @@
 			{{ $root.lang().review.titles.addons }}
 		</div>
 
-		<deny-popup v-model="showDenyPopup" @close="closeDenyPopup" />
+		<deny-popup v-model="showDenyPopup" :archive="archive" @close="closeDenyPopup" />
 
 		<review-categories
 			:categories="categories"
@@ -127,9 +127,9 @@ export default {
 			pageStyles: "",
 			textColorOnPage: "white--text",
 			colors: {
+				approved: "green",
 				pending: "yellow",
 				denied: "red",
-				approved: "teal",
 				archived: "grey",
 			},
 			addons: {
