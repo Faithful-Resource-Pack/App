@@ -50,7 +50,7 @@
 									<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
 									<v-list-item-subtitle class="text-truncate">
 										<span v-if="form.authors.length">
-											{{ contributorsFromIds(form.authors) }}
+											{{ formAuthorNames[form.formId] || '...' }}
 										</span>
 										<i v-else>{{ $root.lang().database.contributions.no_contributor_yet }}</i>
 									</v-list-item-subtitle>
@@ -99,11 +99,17 @@
 			:disabled="activeForm === undefined"
 			:contributors="contributors"
 			:multiple="multiple"
+			@newUser="
+				(l) => {
+					this.contributors = l;
+				}
+			"
 		/>
 	</modal-form>
 </template>
 
 <script>
+import axios from "axios";
 import moment from "moment";
 
 import ModalForm from "@components/modal-form.vue";
@@ -141,10 +147,53 @@ export default {
 			modalOpened: false,
 			closeOnSubmit: true,
 			formRecords: {},
+			formAuthorNames: {},
 			packsList: [],
-			lastFormId: 0,
 			openedFormId: undefined,
 		};
+	},
+	computed: {
+		activeForm() {
+			if (this.openedFormId === undefined) return undefined;
+
+			const formObj = this.formRecords[this.openedFormId];
+			if (formObj === undefined) return undefined;
+
+			const res = JSON.parse(JSON.stringify(formObj));
+			return res;
+		},
+		formRecordsList() {
+			return Object.values(this.formRecords);
+		},
+		formRecordsLength() {
+			return this.formRecordsList.length;
+		},
+		formRecordsAuthors() {
+			return Object.entries(this.formRecords).map(([formID, form]) => ([ formID, form.authors ]));
+		},
+		panelLabels() {
+			const acc = {};
+			for (const formID of Object.keys(this.formRecords)) {
+				const form = this.formRecords[formID];
+				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
+			}
+			return acc;
+		}
+	},
+	watch: {
+		formRecordsAuthors: {
+			handler(formEntriesAuthorIds) {
+				Promise.all(formEntriesAuthorIds.map(async ([formID, formAuthorsIDs]) => [
+						formID, await this.contributorsFromIds(formAuthorsIDs)
+				])).then((allAuthorNames) => {
+					this.formAuthorNames = allAuthorNames.reduce((acc, [formID, formAuthorNames]) => {
+						acc[formID] = formAuthorNames;
+						return acc;
+					}, {});
+				})
+			},
+			deep: true
+		}
 	},
 	methods: {
 		addNewForm() {
@@ -190,23 +239,33 @@ export default {
 			this.openedFormId = createdFormObj.formId;
 			this.closeOnSubmit = !!closeOnSubmit;
 		},
-		contributorsFromIds(authorIds) {
+		async contributorsFromIds(authorIds) {
 			if (!authorIds || authorIds.length === 0) return "";
 
-			const contributorNames = this.contributors
-				.filter((c) => authorIds.includes(c.id))
-				.map((c) => c.username);
+			const total = authorIds.length;
 
-			const total = contributorNames.length;
-			const anonymousTotal = contributorNames.filter((username) => !username).length;
-			const knownNames = contributorNames.filter((username) => username);
+			const alreadyAuthors = this.contributors.filter((c) => authorIds.includes(c.id));
+			const alreadyAuthorsIds = alreadyAuthors.map(c => c.id);
+			const notAlreadyAuthorsIds = authorIds.filter((id) => !alreadyAuthorsIds.includes(id));
+			const searchIDsparam = notAlreadyAuthorsIds.join(',')
+			const notAlreadyAuthorsFound = (!searchIDsparam) ? [] :
+				await axios.get(`${this.$root.apiURL}/users/${searchIDsparam}`)
+					.then((res) => res.data)
+					.then((data) => Array.isArray(data) ? data : [data]);
+
+			const allAuthorsFound = Array.from(new Set([...alreadyAuthors, ...notAlreadyAuthorsFound]));
+			const anonymousTotal = allAuthorsFound.filter(a => !a.username).length;
+			const notAnonymous = allAuthorsFound.filter(a => !!a.username);
+			const notAnonymousNames = notAnonymous.map(user => user.username);
+			let allNames = notAnonymousNames;
 
 			if (anonymousTotal > 0) {
-				const anonymousStr = `${anonymousTotal} ${this.$root.lang().database.anonymous}`;
-				knownNames.splice(0, 0, anonymousStr);
+				const anonymousStr = `${anonymousTotal} ${this.$root.lang().database.labels.anonymous}`;
+				allNames.splice(0, 0, anonymousStr); // insert first anonymous
 			}
 
-			return `[${total}]: ${knownNames.join(", ")}`;
+			allNames = Array.from(new Set(allNames));
+			return `[${total}]: ${allNames.join(", ")}`;
 		},
 		changeOpenedForm(formId) {
 			if (this.openedFormId === formId) this.openedFormId = undefined;
@@ -246,8 +305,7 @@ export default {
 			};
 		},
 		getNewFormId() {
-			this.lastFormId++;
-			return String(this.lastFormId);
+			return crypto.randomUUID();
 		},
 		onFormInput(form) {
 			// stop undefined object
@@ -282,32 +340,6 @@ export default {
 			const newFormRecords = Object.assign({}, this.formRecords); // clean
 			delete newFormRecords[formId]; // delete
 			this.$set(this, "formRecords", newFormRecords); // affect
-		},
-	},
-	computed: {
-		activeForm() {
-			if (this.openedFormId === undefined) return undefined;
-
-			const formObj = this.formRecords[this.openedFormId];
-			if (formObj === undefined) return undefined;
-
-			const res = JSON.parse(JSON.stringify(formObj));
-			return res;
-		},
-		formRecordsList() {
-			return Object.values(this.formRecords);
-		},
-		formRecordsLength() {
-			return this.formRecordsList.length;
-		},
-		panelLabels() {
-			// faster than using Object.entries + reduce
-			const acc = {};
-			for (const formID of Object.keys(this.formRecords)) {
-				const form = this.formRecords[formID];
-				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
-			}
-			return acc;
 		},
 	},
 };
