@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<div v-for="{ category, packs } in authorCategories" class="py-3">
+		<div v-for="{ category, packs } in authorCategories" :key="category" class="py-3">
 			<h2>{{ category }}</h2>
 			<v-row>
-				<v-col v-for="pack in packs" cols="12" sm="6" class="ma-0">
+				<v-col v-for="pack in packs" :key="pack" cols="12" sm="6" class="ma-0">
 					<p class="title text-button text--secondary">
 						{{ packToName[pack] }}
 					</p>
