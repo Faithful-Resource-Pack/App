@@ -89,9 +89,11 @@
 
 <script>
 import { sortTags, emptyTexture } from "@helpers/textures";
-import axios from "axios";
-import FullscreenModal from "@components/fullscreen-modal.vue";
+import MinecraftSorter from "@helpers/MinecraftSorter";
 
+import axios from "axios";
+
+import FullscreenModal from "@components/fullscreen-modal.vue";
 import JsonModal from "@components/json-modal.vue";
 import TexturePanel from "./texture-panel.vue";
 import SummaryItem from "./summary-item.vue";
