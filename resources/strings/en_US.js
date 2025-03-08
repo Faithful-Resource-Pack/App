@@ -557,6 +557,7 @@ export default {
 			user_anonymous: "Anonymous",
 			user_not_found: "Unknown User",
 			contribution_not_found: "No contributions found in database!",
+			search_failed: "Failed to search",
 		},
 		category: {
 			search: "Search",

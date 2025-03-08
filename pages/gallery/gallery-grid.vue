@@ -136,6 +136,8 @@ export default {
 				top: 0,
 				behavior: "smooth",
 			});
+			// prevents page becoming really slow from too many displayed results after going up
+			this.displayedResults = this.pageLength;
 		},
 		getLastContributions(pack) {
 			if (this.isMojang) return this.loadedContributions;

@@ -234,7 +234,18 @@ export default {
 					// new search started before old one finished, cancel
 					if (err.code === "ERR_CANCELED") return;
 					console.error(err);
-					this.error = `${err.statusCode}: ${err.response.value}`;
+					let message;
+					if (err.response) {
+						// prefer data property from api response, then status response, then generic notice
+						message =
+							err.response.data?.message ||
+							err.response.statusText ||
+							this.$root.lang().gallery.error_message.search_failed;
+						this.error = `${err.response?.status}: ${message}`;
+					} else {
+						// todo: handle request errors better
+						this.error = this.$root.lang().gallery.error_message.search_failed;
+					}
 					this.loading = false;
 				});
 		},
