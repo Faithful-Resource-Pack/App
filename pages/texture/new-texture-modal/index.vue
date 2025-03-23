@@ -50,7 +50,7 @@
 				<v-col>
 					<v-list>
 						<div class="font-weight-medium text--secondary my-2">
-							{{ $root.lang().database.textures.title }}
+							{{ $root.lang().database.summary }}: [{{ textures.length }}]
 						</div>
 						<summary-item
 							v-for="(tex, i) in textures"

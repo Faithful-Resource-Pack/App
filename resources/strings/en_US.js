@@ -121,6 +121,7 @@ export default {
 		search: "Search",
 		anonymous: "Anonymous",
 		nameless: "Nameless",
+		summary: "Summary",
 		confirm_deletion: "Confirm deletion",
 		ask_deletion: "Do you want to delete %s (%d)?",
 		contributions: {

@@ -518,7 +518,10 @@ const app = new Vue({
 					location.search = "";
 				}
 			})
-			.catch((err) => this.showSnackBar(err, "error", 3000));
+			.catch((err) => {
+				console.error(err);
+				this.showSnackBar(err, "error", 3000);
+			});
 
 		this.discordUser.watchDiscordAuth(this.discordAuth, (err) =>
 			this.showSnackBar(err, "error", 3000),
