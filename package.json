@@ -32,7 +32,7 @@
 		"pinia": "^2.3.1",
 		"prettier": "^3.5.3",
 		"prismjs": "~1.30.0",
-		"vite": "^6.2.2",
+		"vite": "^6.2.3",
 		"vue": "^2.7.16",
 		"vue-calendar-heatmap": "0.8.4",
 		"vue-graph": "0.8.7",
