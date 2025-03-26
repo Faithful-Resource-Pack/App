@@ -166,7 +166,8 @@ export default {
 				if (this.add) {
 					this.$refs.form.reset();
 					// autofill bedrock paths
-					if (this.sortedVersions.length === 1) this.formData.versions = this.sortedVersions;
+					if (this.sortedVersions.length === 1)
+						this.formData.versions = Array.from(this.sortedVersions);
 				} else {
 					this.formData.versions = this.data.versions.sort(MinecraftSorter);
 					this.formData.id = this.data.id;
