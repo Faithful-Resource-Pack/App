@@ -97,7 +97,7 @@ import axios from "axios";
 import ModalForm from "@components/modal-form.vue";
 import PathModal from "./path-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 import { getNameFromPath } from "@helpers/paths";
 
 export default {
@@ -232,7 +232,7 @@ export default {
 					this.formData.paths = paths.map((p) => ({
 						...p,
 						use: p.use || useId,
-						versions: p.versions.sort(MinecraftSorter),
+						versions: p.versions.sort(versionSorter),
 					}));
 				})
 				.catch((err) => {

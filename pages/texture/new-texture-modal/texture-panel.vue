@@ -132,7 +132,7 @@ import {
 	convertEditionPath,
 } from "@helpers/paths";
 
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 export default {
 	name: "texture-panel",
@@ -253,7 +253,7 @@ export default {
 	},
 	computed: {
 		sortedVersions() {
-			return Array.from(this.versions).sort(MinecraftSorter).reverse();
+			return Array.from(this.versions).sort(versionSorter).reverse();
 		},
 		canAddEditionUse() {
 			// must have only one use to select from

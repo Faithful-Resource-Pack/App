@@ -45,7 +45,7 @@
 
 <script>
 import axios from "axios";
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 import ModalForm from "@components/modal-form.vue";
 
@@ -115,7 +115,7 @@ export default {
 				name: this.formData.name || "", // texture relative path
 				use: this.formData.use || "", // Use ID
 				mcmeta: this.formData.mcmeta || false, // is animated
-				versions: this.formData.versions.sort(this.MinecraftSorter), // ordered minecraft versions
+				versions: this.formData.versions.sort(versionSorter), // ordered minecraft versions
 			};
 
 			// all use/path info is added in one big request on creation so we "beam" it back
@@ -154,7 +154,7 @@ export default {
 		sortedVersions() {
 			return (
 				settings.versions[this.edition] || [...settings.versions.java, ...settings.versions.bedrock]
-			).sort(MinecraftSorter);
+			).sort(versionSorter);
 		},
 	},
 	watch: {
@@ -169,7 +169,7 @@ export default {
 					if (this.sortedVersions.length === 1)
 						this.formData.versions = Array.from(this.sortedVersions);
 				} else {
-					this.formData.versions = this.data.versions.sort(MinecraftSorter);
+					this.formData.versions = this.data.versions.sort(versionSorter);
 					this.formData.id = this.data.id;
 					this.formData.name = this.data.name;
 					this.formData.use = this.data.use;

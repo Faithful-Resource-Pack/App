@@ -89,7 +89,7 @@
 
 <script>
 import { sortTags, emptyTexture } from "@helpers/textures";
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 import axios from "axios";
 
@@ -225,7 +225,7 @@ export default {
 					edition: use.edition,
 					paths: use.paths.map((path) => ({
 						name: path.name,
-						versions: Array.from(path.versions).sort(MinecraftSorter),
+						versions: Array.from(path.versions).sort(versionSorter),
 						mcmeta: path.mcmeta || false,
 					})),
 				})),
