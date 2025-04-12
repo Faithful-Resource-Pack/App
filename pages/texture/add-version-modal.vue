@@ -9,24 +9,23 @@
 			<v-select
 				:color="color"
 				:item-color="color"
-				class="mb-0"
-				:items="editions"
+				:items="settings.editions"
 				v-model="form.edition"
-				:placeholder="$root.lang().database.textures.add_version.new_edition"
+				:label="$root.lang().database.textures.add_version.new_edition"
+				@change="form.version = settings.versions[form.edition][0]"
 			/>
 			<v-select
 				:color="color"
 				:item-color="color"
-				class="mb-0"
-				:items="versions"
+				:items="settings.versions[form.edition] || []"
+				:disabled="!form.edition"
 				v-model="form.version"
-				:placeholder="$root.lang().database.textures.add_version.template_version"
+				:label="$root.lang().database.textures.add_version.template_version"
 			/>
 			<v-text-field
-				class="mb-0"
 				:color="color"
 				v-model="form.newVersion"
-				:placeholder="$root.lang().database.textures.add_version.new_version"
+				:label="$root.lang().database.textures.add_version.new_version"
 			/>
 		</v-form>
 	</modal-form>
@@ -46,11 +45,6 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		editions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
 		versions: {
 			type: Array,
 			required: false,
@@ -63,11 +57,13 @@ export default {
 		},
 	},
 	data() {
+		const defaultEdition = settings.editions[0];
 		return {
 			modalOpened: false,
+			settings,
 			form: {
-				edition: "",
-				version: "",
+				edition: defaultEdition,
+				version: settings.versions[defaultEdition][0] || "",
 				newVersion: "",
 			},
 		};
@@ -81,6 +77,7 @@ export default {
 						this.$root.lang().database.textures.add_version.success,
 						"success",
 					);
+					this.$root.reloadSettings();
 					this.$emit("close");
 				})
 				.catch((err) => {
@@ -94,7 +91,6 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			this.$nextTick(() => this.$refs.form.reset());
 			this.$emit("input", newValue);
 		},
 	},

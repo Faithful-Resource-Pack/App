@@ -41,6 +41,7 @@ declare module "vue/types/vue" {
 		logout(): void;
 		compileMarkdown(rawText: string): string;
 		addAccessTokenListener(listener: (token: string) => any): void;
+		reloadSettings(): Promise<void>;
 
 		// there's more methods but none of them are used publicly
 	}

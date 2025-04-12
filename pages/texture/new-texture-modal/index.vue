@@ -15,14 +15,14 @@
 				<v-col cols="12" :md="$vuetify.breakpoint.lgAndUp ? 9 : 8">
 					<v-tabs :color="color" v-model="selectedTab" :show-arrows="false">
 						<v-tab
-							v-for="(texture, ti) in textures"
+							v-for="(texture, i) in textures"
 							:key="texture.key"
 							style="text-transform: uppercase"
 							append
 						>
 							<span v-if="texture.name">{{ texture.name }}</span>
 							<i v-else>{{ $root.lang().database.nameless }}</i>
-							<v-btn :color="color" icon @click="deleteTexture(ti)">
+							<v-btn :color="color" icon @click="deleteTexture(i)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>
 						</v-tab>
@@ -36,10 +36,8 @@
 							v-model="textures[i]"
 							:key="texture.key"
 							:color="color"
-							:textColor="textColor"
 							:tags="tags"
 							:versions="versions"
-							:editions="editions"
 						/>
 					</v-tabs-items>
 				</v-col>
@@ -118,22 +116,12 @@ export default {
 			required: false,
 			default: "primary",
 		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
-		},
 		tags: {
 			type: Array,
 			required: false,
 			default: () => [],
 		},
 		versions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
-		editions: {
 			type: Array,
 			required: false,
 			default: () => [],

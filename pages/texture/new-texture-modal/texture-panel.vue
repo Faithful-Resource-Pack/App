@@ -51,7 +51,7 @@
 							v-model="use.edition"
 							:color="color"
 							:item-color="color"
-							:items="editions"
+							:items="settings.editions"
 							@change="(e) => onEditionChange(e, use)"
 							:label="$root.lang().database.textures.uses.edition"
 						/>
@@ -146,11 +146,6 @@ export default {
 			required: false,
 			default: "primary",
 		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
-		},
 		tags: {
 			type: Array,
 			required: false,
@@ -161,15 +156,11 @@ export default {
 			required: false,
 			default: () => [],
 		},
-		editions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
 	},
 	data() {
 		return {
 			texture: {},
+			settings,
 		};
 	},
 	methods: {
