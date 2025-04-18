@@ -123,6 +123,21 @@ window.apiURL = import.meta.env.VITE_API_URL;
 // fix trailing slash
 if (apiURL.endsWith("/")) window.apiURL = window.apiURL.slice(0, -1);
 
+async function loadSettings() {
+	// set as global
+	window.settings = await axios
+		.get(`${window.apiURL}/settings/raw`)
+		.then((res) => res.data)
+		.catch((err) => {
+			console.error(err);
+			// don't completely break the webapp if settings can't be fetched
+			return {};
+		});
+}
+
+// start loading immediately (needed for some pages)
+await loadSettings();
+
 /**
  * VUE INITIALIZATION
  */
@@ -278,16 +293,8 @@ const app = new Vue({
 				);
 			}
 		},
-		async reloadSettings() {
-			// set as global
-			window.settings = await axios
-				.get(`${window.apiURL}/settings/raw`)
-				.then((res) => res.data)
-				.catch((err) => {
-					console.error(err);
-					// don't completely break the webapp if settings can't be fetched
-					return {};
-				});
+		reloadSettings() {
+			return loadSettings();
 		},
 	},
 	computed: {
@@ -509,9 +516,6 @@ const app = new Vue({
 	},
 	created() {
 		moment.locale(this.langToBCP47(_get_lang()));
-
-		// technically loading for first time but the name is nicer
-		this.reloadSettings();
 
 		this.discordAuth.apiURL = window.apiURL;
 		this.discordAuth
