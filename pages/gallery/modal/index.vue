@@ -164,7 +164,11 @@ export default {
 			return `[#${this.textureID}] ${this.textureObj.texture.name}`;
 		},
 		displayedTabs() {
-			const tabs = this.$root.lang().gallery.modal.tabs;
+			const tabs = {
+				information: this.$root.lang().gallery.modal.tabs.information,
+				animation: this.$root.lang().gallery.modal.tabs.animation,
+				authors: this.$root.lang().gallery.modal.tabs.authors,
+			};
 
 			// remove animation tab if there's no mcmeta data
 			if (!Object.keys(this.textureObj.mcmeta).length) delete tabs.animation;
