@@ -36,6 +36,21 @@
 			</v-col>
 		</v-row>
 
+		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
+		<v-text-field
+			v-model="current.search"
+			:append-icon="current.search ? 'mdi-send' : undefined"
+			filled
+			clear-icon="mdi-close"
+			clearable
+			hide-details
+			:placeholder="$root.lang().database.textures.search_texture"
+			type="text"
+			@keyup.enter="startSearch"
+			@click:append="startSearch"
+			@click:clear="clearSearch"
+		/>
+
 		<v-row class="pb-0">
 			<v-col cols="12" sm="9"v-if="requestTime > 0 && textures.length">
 				<p class="text--secondary pl-2 mb-0">
@@ -193,6 +208,15 @@ export default {
 		},
 		discordIDtoName(d) {
 			return this.authors[d]?.username || this.$root.lang().gallery.error_message.user_anonymous;
+		},
+		startSearch() {
+			this.updateRoute();
+		},
+		clearSearch() {
+			// avoid restarting search if there's already nothing there
+			if (this.current.search === null) return;
+			this.current.search = null;
+			this.updateRoute();
 		},
 		updateRoute() {
 			let route = `/gallery/${this.current.edition}/${this.current.pack}/${this.current.version}/${this.current.tag}`;

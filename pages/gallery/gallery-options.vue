@@ -1,72 +1,54 @@
 <template>
 	<div class="py-2">
 		<v-row class="mb-2">
-			<v-col cols="12" sm="3">
+			<v-col cols="12" sm="6">
 				<v-select
-					outlined dense
+					dense
 					:items="packList"
 					item-text="label"
 					item-value="value"
 					:value="current.pack"
 					:label="$root.lang().gallery.category.pack"
 					@change="updateRoute($event, 'pack')"
-					hide-details
 				/>
 			</v-col>
 
-			<v-col cols="12" sm="3">
+			<v-col cols="12" sm="6">
 				<v-select
-					outlined dense
+					dense
 					:items="editionList"
 					item-text="label"
 					item-value="value"
 					:value="current.edition"
 					:label="$root.lang().gallery.category.edition"
 					@change="updateRoute($event, 'edition')"
-					hide-details
 				/>
 			</v-col>
-
-			<v-col cols="12" sm="3">
+		</v-row>
+		<v-row>
+			<v-col cols="12" sm="6">
 				<v-select
-					outlined dense
+					dense
 					:items="versionList"
 					:value="current.version"
 					item-text="label"
 					item-value="value"
 					:label="$root.lang().gallery.category.mc_version"
 					@change="updateRoute($event, 'version')"
-					hide-details
 				/>
 			</v-col>
 
-			<v-col cols="12" sm="3">
+			<v-col cols="12" sm="6">
 				<v-select
-					outlined dense
+					dense
 					:items="tagList"
 					item-text="label"
 					item-value="value"
 					:value="current.tag"
 					:label="$root.lang().gallery.category.tag"
 					@change="updateRoute($event, 'tag')"
-					hide-details
 				/>
 			</v-col>
-		</v-row>
-
-		<v-row class="mb-1 px-3">
-			<v-text-field
-				v-model="current.search"
-				:append-icon="current.search ? 'mdi-send' : undefined"
-				outlined dense
-				clear-icon="mdi-close"
-				clearable
-				hide-details
-				type="text"
-				:label="$root.lang().database.textures.search_texture"
-				@keyup.enter="startSearch"
-				@click:append="startSearch"
-			/>
 		</v-row>
 	</div>
 </template>
@@ -109,15 +91,6 @@ export default {
 
 			// actual updating is handled from main page
 			this.$emit("updateRoute");
-		},
-		startSearch() {
-			this.$emit("updateRoute");
-		},
-		clearSearch() {
-			// avoid restarting search if there's already nothing there
-			if (this.current.search === null) return;
-			this.current.search = null;
-			this.updateRoute();
 		},
 	},
 	computed: {
