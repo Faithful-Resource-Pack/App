@@ -11,13 +11,12 @@
 	</div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script>
 import Prism from "prismjs";
 import { PrismEditor } from "vue-prism-editor";
 
-export default defineComponent({
-	name: 'AnimationTab',
+export default {
+	name: "animation-tab",
 	components: {
 		PrismEditor,
 	},
@@ -37,5 +36,5 @@ export default defineComponent({
 			return Prism.highlight(code, Prism.languages.js, "json");
 		},
 	},
-});
+};
 </script>

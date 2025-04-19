@@ -421,7 +421,7 @@ export default {
 		},
 	},
 	gallery: {
-		animations_switcher: "Jouer les animations",
+		animated_switcher: "Jouer les animations",
 		all: "Tout",
 		title: "Galerie",
 		loading_message: "Chargement…",

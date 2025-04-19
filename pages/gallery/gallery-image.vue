@@ -14,12 +14,9 @@
 		/>
 		<img
 			v-if="exists"
-			class="gallery-texture-image"
+			v-show="!hasAnimation || !isPlaying"
+			class="gallery-texture-image gallery-animated-image"
 			ref="imageRef"
-			:style="{ 
-				aspectRatio: 1, 
-				opacity: hasAnimation && isPlaying ? 0 : 1 // allow the texture to be copied even if animation is present
-			}"
 			@error="textureNotFound"
 			@click="$emit('click')"
 			:src="imageURL"
@@ -35,15 +32,14 @@
 	</div>
 </template>
 
-<script lang="ts">
-/* global settings */
+<script>
 import axios from "axios";
 
 import GalleryAnimation from "./gallery-animation.vue";
 
 // separate component to track state more easily
 export default {
-	name: "gallery-image", 
+	name: "gallery-image",
 	components: {
 		GalleryAnimation,
 	},
@@ -73,13 +69,13 @@ export default {
 		},
 		// saves a request on every gallery image to provide it once
 		ignoreList: {
-			type: Array as () => string[],
+			type: Array,
 			required: false,
 			default: () => [],
 		},
-		// used to determine if the texture is animated thus fetching the mcmeta if not provided
+		// used to determine if the texture is animated
 		animatedTextures: {
-			type: Array as () => string[],
+			type: Array,
 			required: false,
 			default: () => [],
 		},
@@ -88,15 +84,10 @@ export default {
 		return {
 			exists: true,
 			imageURL: this.src,
-			imageRef: null as HTMLImageElement | null,
+			imageRef: null,
 			hasAnimation: false,
 			animation: {},
 		};
-	},
-	watch: {
-		animatedTextures() {
-			this.fetchAnimation();
-		},
 	},
 	methods: {
 		textureNotFound() {
@@ -124,14 +115,14 @@ export default {
 				return;
 			}
 
-			void axios.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
+			axios
+				.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
 				.then((res) => {
 					if (res.data.animation) {
 						this.hasAnimation = true;
 						this.animation = res.data;
 						return;
 					}
-
 					this.hasAnimation = false;
 				})
 				.catch((err) => {
@@ -140,8 +131,13 @@ export default {
 				});
 		},
 	},
+	watch: {
+		animatedTextures() {
+			this.fetchAnimation();
+		},
+	},
 	created() {
-		const image = new Image() as HTMLImageElement;
+		const image = new Image();
 		image.src = this.src;
 
 		image.onload = () => {

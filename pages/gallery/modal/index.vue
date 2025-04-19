@@ -44,14 +44,8 @@
 
 				<v-tabs-items v-model="selectedTab">
 					<v-tab-item v-for="tab in displayedTabs" :key="tab">
-						<texture-tab 
-							v-if="tab === displayedTabs.information" 
-							:textureObj="textureObj" 
-						/>
-						<animation-tab
-							v-if="tab === displayedTabs.animation"
-							:mcmeta="textureObj.mcmeta"
-						/>
+						<texture-tab v-if="tab === displayedTabs.information" :textureObj="textureObj" />
+						<animation-tab v-if="tab === displayedTabs.animation" :mcmeta="textureObj.mcmeta" />
 						<author-tab
 							v-if="tab === displayedTabs.authors"
 							:contributions="textureObj.contributions"
@@ -170,19 +164,13 @@ export default {
 			return `[#${this.textureID}] ${this.textureObj.texture.name}`;
 		},
 		displayedTabs() {
-			const tabs = {
-				information: this.$root.lang().gallery.modal.tabs.information,
-				animation: this.$root.lang().gallery.modal.tabs.animation,
-				authors: this.$root.lang().gallery.modal.tabs.authors,
-			}
+			const tabs = this.$root.lang().gallery.modal.tabs;
 
-			// remove animation tab if no mcmeta data
-			if (Object.keys(this.textureObj.mcmeta).length === 0) {
-				delete tabs.animation;
-			}
-			
+			// remove animation tab if there's no mcmeta data
+			if (!Object.keys(this.textureObj.mcmeta).length) delete tabs.animation;
+
 			return tabs;
-		}
+		},
 	},
 	watch: {
 		textureID: {

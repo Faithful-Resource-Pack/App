@@ -1,40 +1,40 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<template>
+	<canvas ref="canvasRef"></canvas>
+</template>
 
-interface AnimationFrame {
-	index: number;
-	time: number;
-}
-
-interface Animation {
-	frames?: (number | AnimationFrame)[];
-	frametime?: number;
-	interpolate?: boolean;
-}
-
-export default defineComponent({
-	name: 'AnimationCanvas',
+<script>
+export default {
+	name: "gallery-animation",
 	props: {
-		src: { type: String, required: true },
-		mcmeta: { type: Object as () => { animation?: Animation }, default: () => ({ animation: {} }) },
+		src: {
+			type: String,
+			required: true,
+		},
+		mcmeta: {
+			type: Object,
+			default: () => ({ animation: {} }),
+		},
 		// Determine if the image is a tiled texture (used for flowing fluids which are 2x2 textures)
-		isTiled: { type: Boolean, default: false },
+		isTiled: {
+			type: Boolean,
+			default: false,
+		},
 	},
 	data() {
 		return {
-			canvasRef: null as HTMLCanvasElement | null,
-			image: null as HTMLImageElement | null,
-			sprites: [] as AnimationFrame[],
-			frames: {} as Record<number, [AnimationFrame, number][]>,
+			canvasRef: null,
+			image: null,
+			sprites: [],
+			frames: {},
 			currentTick: 1,
-			tickingRef: null as ReturnType<typeof setInterval> | null,
-			updateCanvasTimeout:  null as ReturnType<typeof setTimeout> | null,
+			tickingRef: null,
+			updateCanvasTimeout: null,
 		};
 	},
 	methods: {
 		loadImage() {
 			const img = new Image();
-			img.setAttribute('crossorigin', 'anonymous');
+			img.setAttribute("crossorigin", "anonymous");
 			img.src = this.src;
 
 			img.onload = () => {
@@ -54,11 +54,11 @@ export default defineComponent({
 			if (!this.image || !this.mcmeta) return;
 
 			const animation = this.mcmeta.animation ?? {};
-			const animationFrames: AnimationFrame[] = [];
+			const animationFrames = [];
 
 			if (animation.frames) {
 				for (const frame of animation.frames) {
-					if (typeof frame === 'object') {
+					if (typeof frame === "object") {
 						animationFrames.push({ index: frame.index, time: Math.max(frame.time, 1) });
 					} else {
 						animationFrames.push({ index: frame, time: animation.frametime ?? 1 });
@@ -73,7 +73,7 @@ export default defineComponent({
 				}
 			}
 
-			const framesToPlay: Record<number, [AnimationFrame, number][]> = {};
+			const framesToPlay = {};
 			let ticks = 1;
 			animationFrames.forEach((frame, index) => {
 				for (let t = 1; t <= frame.time; t++) {
@@ -105,16 +105,22 @@ export default defineComponent({
 				this.updateCanvas();
 			}, 1000 / 20);
 		},
-		drawFrame() {
+	},
+	watch: {
+		src: "loadImage",
+		mcmeta: "calculateFrames",
+		image: "calculateFrames",
+		frames: "updateCanvas",
+		currentTick() {
 			if (Object.keys(this.frames).length === 0) return;
 
 			const framesToDraw = this.frames[this.currentTick];
-			const canvas = this.$refs.canvasRef as HTMLCanvasElement;
-			const context = canvas?.getContext('2d');
+			const canvas = this.$refs.canvasRef;
+			const context = canvas?.getContext("2d");
 
 			if (!canvas || !context || !this.image || !framesToDraw) return;
 
-			canvas.style.width = '100%';
+			canvas.style.width = "100%";
 			canvas.width = canvas.offsetWidth;
 			canvas.height = canvas.offsetWidth;
 
@@ -132,23 +138,16 @@ export default defineComponent({
 				context.drawImage(
 					this.image,
 					padding,
-					padding + (width * data.index) * (this.isTiled ? 2 : 1),
+					padding + width * data.index * (this.isTiled ? 2 : 1),
 					width,
 					width,
 					0,
 					0,
 					canvas.width,
-					canvas.width
+					canvas.width,
 				);
 			}
 		},
-	},
-	watch: {
-		src: 'loadImage',
-		mcmeta: 'calculateFrames',
-		image: 'calculateFrames',
-		currentTick: 'drawFrame',
-		frames: 'updateCanvas',
 	},
 	mounted() {
 		this.loadImage();
@@ -158,9 +157,5 @@ export default defineComponent({
 		if (this.tickingRef) clearInterval(this.tickingRef);
 		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
-});
+};
 </script>
-
-<template>
-	<canvas ref="canvasRef"></canvas>
-</template>

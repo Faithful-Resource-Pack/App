@@ -1,35 +1,32 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
 		<div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
-		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
 
-		<gallery-options 
-			v-model="current"
-			:packToName="packToName" 
-			@updateRoute="updateRoute" 
-		/>
+		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
 
-		<v-row class="pl-3 mt-0">
-			<v-col cols="12" :sm="stretched ? 3 : (isAbleToStretch ? 3 : 4)">
+		<v-row class="my-2">
+			<v-col cols="12" :sm="stretched ? 3 : isAbleToStretch ? 3 : 4">
 				<v-slider
-					v-if="maxColumns > 2"
-					hide-details
 					v-model="columns"
 					step="1"
 					thumb-label
 					ticks="always"
 					tick-size="4"
+					hide-details
 					min="2"
 					:max="maxColumns"
-					prepend-icon="mdi-grid"
 				/>
 			</v-col>
 
 			<v-col cols="12" :sm="2" p="0" v-if="isAbleToStretch">
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
-			<v-col cols="12" :sm="isAbleToStretch ? 3 : 4" p="0" :class="this.$vuetify.breakpoint.xs ? 'py-0' : ''">
-				<v-switch :label="$root.lang().gallery.animations_switcher" v-model="isPlaying" />
+			<v-col
+				cols="12"
+				:sm="isAbleToStretch ? 3 : 4"
+				:class="this.$vuetify.breakpoint.xs ? 'py-0' : ''"
+			>
+				<v-switch :label="$root.lang().gallery.animated_switcher" v-model="isPlaying" />
 			</v-col>
 			<v-col class="ml-auto" cols="12" :sm="isAbleToStretch ? 3 : 4" v-if="!$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
@@ -51,11 +48,9 @@
 			@click:clear="clearSearch"
 		/>
 
-		<v-row class="pb-0">
-			<v-col cols="12" sm="9"v-if="requestTime > 0 && textures.length">
-				<p class="text--secondary pl-2 mb-0">
-					{{ resultMessage }}
-				</p>
+		<v-row class="py-3 pb-0">
+			<v-col cols="12" sm="9" v-if="requestTime > 0 && textures.length">
+				<p class="text--secondary">{{ resultMessage }}</p>
 			</v-col>
 			<v-col cols="12" sm="9" v-else>
 				<br />
@@ -367,31 +362,31 @@ export default {
 		},
 	},
 	created() {
-		axios.get(`${this.$root.apiURL}/textures/animated`)
-			.then((res) => {
-				this.animatedTextures = res.data.map((el) => el.toString());
-			});
+		axios.get(`${this.$root.apiURL}/textures/animated`).then((res) => {
+			this.animatedTextures = res.data.map((el) => el.toString());
+		});
 
-		axios.get("https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json")
+		axios
+			.get(
+				"https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json",
+			)
 			.then((res) => {
 				this.ignoredTextures = res.data;
 			});
 
-		axios.get(`${this.$root.apiURL}/packs/raw`)
-			.then((res) => {
-				this.packToName = Object.values(res.data).reduce((acc, cur) => {
-					acc[cur.id] = cur.name;
-					return acc;
-				}, {});
-			});
+		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
+			this.packToName = Object.values(res.data).reduce((acc, cur) => {
+				acc[cur.id] = cur.name;
+				return acc;
+			}, {});
+		});
 
-		axios.get(`${this.$root.apiURL}/contributions/authors`)
-			.then((res) => {
-				this.authors = res.data.reduce((acc, cur) => {
-					acc[cur.id] = cur;
-					return acc;
-				}, {});
-			});
+		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
+			this.authors = res.data.reduce((acc, cur) => {
+				acc[cur.id] = cur;
+				return acc;
+			}, {});
+		});
 	},
 };
 </script>

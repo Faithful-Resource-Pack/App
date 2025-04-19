@@ -549,7 +549,7 @@ export default {
 	gallery: {
 		stretched_switcher: "Full width view",
 		share_link_copied_to_clipboard: "Share link copied to clipboard",
-		animations_switcher: "Play animated textures",
+		animated_switcher: "Play animated textures",
 		title: "Gallery",
 		loading_message: "Loading…",
 		error_message: {

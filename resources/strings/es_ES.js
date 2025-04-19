@@ -539,7 +539,7 @@ export default {
 	gallery: {
 		stretched_switcher: "Vista de ancho completo",
 		share_link_copied_to_clipboard: "Enlace para compartir copiado al portapapeles",
-		animations_switcher: "Mostrar animaciones",
+		animated_switcher: "Mostrar animaciones",
 		title: "Galería",
 		loading_message: "Cargando…",
 		error_message: {

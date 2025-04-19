@@ -1,9 +1,8 @@
 <template>
-	<div class="py-2">
-		<v-row class="mb-2">
+	<div>
+		<v-row>
 			<v-col cols="12" sm="6">
 				<v-select
-					dense
 					:items="packList"
 					item-text="label"
 					item-value="value"
@@ -15,7 +14,6 @@
 
 			<v-col cols="12" sm="6">
 				<v-select
-					dense
 					:items="editionList"
 					item-text="label"
 					item-value="value"
@@ -25,10 +23,10 @@
 				/>
 			</v-col>
 		</v-row>
+
 		<v-row>
 			<v-col cols="12" sm="6">
 				<v-select
-					dense
 					:items="versionList"
 					:value="current.version"
 					item-text="label"
@@ -40,7 +38,6 @@
 
 			<v-col cols="12" sm="6">
 				<v-select
-					dense
 					:items="tagList"
 					item-text="label"
 					item-value="value"
@@ -123,14 +120,16 @@ export default {
 			});
 		},
 		tagList() {
-			return this.options.tags
-				// filter out java and bedrock tags as they're already covered by edition
-				.filter((t) => !['java', 'bedrock'].some(e => t.toLowerCase().includes(e)))
-				.map((t) => ({
-					// tags are already title cased
-					label: t === "all" ? this.$root.lang().gallery.all : t,
-					value: t,
-				}));
+			return (
+				this.options.tags
+					// filter out java and bedrock tags as they're already covered by edition
+					.filter((t) => !["java", "bedrock"].includes(t.toLowerCase()))
+					.map((t) => ({
+						// tags are already title cased
+						label: t === "all" ? this.$root.lang().gallery.all : t,
+						value: t,
+					}))
+			);
 		},
 	},
 	created() {
