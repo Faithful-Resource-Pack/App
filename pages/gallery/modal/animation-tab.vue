@@ -1,7 +1,8 @@
 <template>
-	<div class="gallery-info">
+	<div class="gallery-info py-3">
 		<h2>{{ $root.lang().gallery.modal.animation.texture_mcmeta }}</h2>
 		<prism-editor
+			style="margin-top: 10px"
 			class="my-editor"
 			v-model="jsonData"
 			:highlight="highlighter"

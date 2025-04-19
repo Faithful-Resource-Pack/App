@@ -421,6 +421,7 @@ export default {
 		},
 	},
 	gallery: {
+		max_items_per_row: "Maximum d'items par ligne",
 		animated_switcher: "Jouer les animations",
 		all: "Tout",
 		title: "Galerie",

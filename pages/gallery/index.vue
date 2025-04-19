@@ -1,35 +1,33 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
-		<div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
+		<v-row no-gutters class="text-h4 py-4">
+			<v-col cols="6">{{ $root.lang().gallery.title }}</v-col>
+			<v-col class="ml-auto" cols="6" v-if="$root.isAdmin">
+				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
+			</v-col>
+		</v-row>
 
 		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
 
 		<v-row class="my-2">
-			<v-col cols="12" :sm="stretched ? 3 : isAbleToStretch ? 3 : 4">
+			<v-col cols="12" sm="6">
 				<v-slider
+					:label="$root.lang().gallery.max_items_per_row"
 					v-model="columns"
 					step="1"
 					thumb-label
 					ticks="always"
 					tick-size="4"
 					hide-details
-					min="2"
+					min="1"
 					:max="maxColumns"
 				/>
 			</v-col>
-
-			<v-col cols="12" :sm="2" p="0" v-if="isAbleToStretch">
+			<v-col cols="12" v-if="stretchable" sm="3">
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
-			<v-col
-				cols="12"
-				:sm="isAbleToStretch ? 3 : 4"
-				:class="this.$vuetify.breakpoint.xs ? 'py-0' : ''"
-			>
-				<v-switch :label="$root.lang().gallery.animated_switcher" v-model="isPlaying" />
-			</v-col>
-			<v-col class="ml-auto" cols="12" :sm="isAbleToStretch ? 3 : 4" v-if="!$root.isAdmin">
-				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
+			<v-col cols="12" :sm="stretchable ? 3 : 6">
+				<v-switch :label="$root.lang().gallery.animated_switcher" v-model="animated" />
 			</v-col>
 		</v-row>
 
@@ -72,13 +70,14 @@
 			v-model="columns"
 			:loading="loading"
 			:stretched="stretched"
-			:isPlaying="isPlaying"
+			:isPlaying="animated"
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
 			:animatedTextures="animatedTextures"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
+			:maxColumns="maxColumns"
 			:error="error"
 			@open="newShareURL"
 			@openNewTab="openModalInNewTab"
@@ -123,9 +122,7 @@ export default {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
 			// whether to show animated textures
-			isPlaying: localStorage.getItem(ANIMATED_KEY) === "true",
-			// list of animated textures ids
-			animatedTextures: [],
+			animated: localStorage.getItem(ANIMATED_KEY) !== "false",
 			// number of columns you want to display
 			columns: Number(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -169,6 +166,8 @@ export default {
 			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
+			// list of animated textures ids
+			animatedTextures: [],
 			abortController: new AbortController(),
 		};
 	},
@@ -301,19 +300,19 @@ export default {
 			return this.$route.query.show;
 		},
 		maxColumns() {
-			const { xs, sm, md, lg, xl } = this.$vuetify.breakpoint;
+			const { xs, sm, md, lg } = this.$vuetify.breakpoint;
 
-			// completely arbitrary values, feel free to change these
+			// mostly arbitrary values, feel free to change these
 			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
-			if (xs) return 2;
+			if (xs) return 1; // one for mobile
 			if (sm) return 4;
 			if (md) return 8;
 			if (lg) return 12;
-			if (xl) return 16;
+			return 16;
 		},
 		// hide the stretched switcher when the screen is smaller than the size when not stretched
-		isAbleToStretch() {
-			return this.$vuetify.breakpoint.width > 1056;
+		stretchable() {
+			return this.$vuetify.breakpoint.lgAndUp;
 		},
 	},
 	watch: {
@@ -359,6 +358,10 @@ export default {
 		},
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);
+		},
+		stretchable(n) {
+			// turn off stretching if screen doesn't support it
+			if (!n) this.stretched = false;
 		},
 	},
 	created() {

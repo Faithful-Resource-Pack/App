@@ -537,9 +537,10 @@ export default {
 		},
 	},
 	gallery: {
+		max_items_per_row: "Máximo de artículos por fila",
 		stretched_switcher: "Vista de ancho completo",
-		share_link_copied_to_clipboard: "Enlace para compartir copiado al portapapeles",
 		animated_switcher: "Mostrar animaciones",
+		share_link_copied_to_clipboard: "Enlace para compartir copiado al portapapeles",
 		title: "Galería",
 		loading_message: "Cargando…",
 		error_message: {

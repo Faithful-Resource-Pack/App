@@ -547,9 +547,10 @@ export default {
 		},
 	},
 	gallery: {
+		max_items_per_row: "Max items per row",
 		stretched_switcher: "Full width view",
-		share_link_copied_to_clipboard: "Share link copied to clipboard",
 		animated_switcher: "Play animated textures",
+		share_link_copied_to_clipboard: "Share link copied to clipboard",
 		title: "Gallery",
 		loading_message: "Loading…",
 		error_message: {
@@ -587,8 +588,8 @@ export default {
 			no_contributions: "No contributions found",
 			tabs: {
 				information: "information",
-				animation: "animation",
 				authors: "authors",
+				animation: "animation",
 			},
 			info: {
 				texture: "Texture",

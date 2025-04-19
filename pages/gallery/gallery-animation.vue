@@ -107,10 +107,18 @@ export default {
 		},
 	},
 	watch: {
-		src: "loadImage",
-		mcmeta: "calculateFrames",
-		image: "calculateFrames",
-		frames: "updateCanvas",
+		src() {
+			return this.loadImage();
+		},
+		mcmeta() {
+			return this.calculateFrames();
+		},
+		image() {
+			return this.calculateFrames();
+		},
+		frames() {
+			return this.updateCanvas();
+		},
 		currentTick() {
 			if (Object.keys(this.frames).length === 0) return;
 

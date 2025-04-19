@@ -124,6 +124,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		maxColumns: {
+			type: Number,
+			required: true,
+		},
 		error: {
 			type: String,
 			required: false,
@@ -189,17 +193,6 @@ export default {
 					return bContrib - aContrib;
 				},
 			};
-		},
-		maxColumns() {
-			const { xs, sm, md, lg, xl } = this.$vuetify.breakpoint;
-
-			// completely arbitrary values, feel free to change these
-			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
-			if (xs) return 1;
-			if (sm) return 4;
-			if (md) return 8;
-			if (lg) return 12;
-			if (xl) return 16;
 		},
 		shownColumns() {
 			return Math.min(this.columns, this.maxColumns);
