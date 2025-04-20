@@ -2,19 +2,54 @@
 	<canvas ref="canvasRef"></canvas>
 </template>
 
-<script>
+<script lang="ts">
+interface Frame {
+	index: number;
+	frametime: number;
+
+	/** top left */
+	p0: { x: number; y: number };
+	/** top right */
+	p1: { x: number; y: number };
+	/** bottom right */
+	p2: { x: number; y: number };
+	/** bottom left */
+	p3: { x: number; y: number };
+}
+
+interface Animation {
+	frames?: (number | { index: number; time: number })[];
+	frametime?: number;
+	interpolate?: boolean;
+	height?: number;
+	width?: number;
+}
+
+class MCMETA {
+	animation: Animation = {};
+}
+
 export default {
 	name: "gallery-animation",
 	props: {
+		/**
+		 * The image URL for the animation
+		 */
 		src: {
 			type: String,
 			required: true,
 		},
+		/**
+		 * The MCMETA object for the animation
+		 */
 		mcmeta: {
-			type: Object,
-			default: () => ({ animation: {} }),
+			type: MCMETA,
+			default: () => new MCMETA(),
 		},
-		// Determine if the image is a tiled texture (used for flowing fluids which are 2x2 textures)
+		/**
+		 * Determine if the animation should be tiled
+		 * (used for flowing fluids which are 2x2 textures)
+		 */
 		isTiled: {
 			type: Boolean,
 			default: false,
@@ -22,84 +57,149 @@ export default {
 	},
 	data() {
 		return {
-			canvasRef: null,
-			image: null,
-			sprites: [],
-			frames: {},
+			canvasRef: null as HTMLCanvasElement | null,
+			image: null as HTMLImageElement | null,
+			/**
+			 * Frames for the animation (not interpolated)
+			 */
+			frames: [] as Frame[],
+			/**
+			 * The drawn frames with interpolation taken into account
+			 * key being the base frame index, value being an array of frames
+			 * with the first frame being the base frame and the rest being
+			 * the interpolated frames
+			 */
+			framesDrawn: {} as Record<number, { frame: Frame; alpha: number }[]>,
 			currentTick: 1,
-			tickingRef: null,
-			updateCanvasTimeout: null,
+			updateCanvasTimeout: null as ReturnType<typeof setTimeout> | null,
 		};
 	},
+	mounted() {
+		this.loadImage();
+	},
+	beforeUnmount() {
+		// clear all timeouts to prevent memory leaks
+		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
+	},
 	methods: {
-		loadImage() {
+		loadImage(): void {
 			const img = new Image();
 			img.setAttribute("crossorigin", "anonymous");
 			img.src = this.src;
 
 			img.onload = () => {
 				this.image = img;
-				this.tickingRef = setInterval(() => {}, 1000 / 20);
+				this.getFrames();
+				this.updateCanvas();
 			};
 
 			img.onerror = () => {
 				this.image = null;
-				if (this.tickingRef) {
-					clearInterval(this.tickingRef);
-					this.tickingRef = null;
-				}
 			};
 		},
-		calculateFrames() {
-			if (!this.image || !this.mcmeta) return;
+		/**
+		 * Use the loaded image and the given MCMETA
+		 * to create the frames for the animation with the texture
+		 * coordinates for each frame
+		 */
+		getFrames(): void {
+			if (!this.image || !this.mcmeta.animation) return;
 
-			const animation = this.mcmeta.animation ?? {};
-			const animationFrames = [];
+			const { animation } = this.mcmeta;
+
+			const frames: Frame[] = [];
+			const frametime = Math.min(300, animation.frametime ?? 1);
+
+			const width = animation.width ?? this.image.width;
+			const height = animation.height ?? this.image.width;
+
+			// get the four corners of the frame
+			const getPoints = (index: number): Omit<Frame, "index" | "frametime"> => {
+				// when tiled, we shift the upper half left corner to the center (width/4, height/4)
+				// then we shift using the index to get the right frame
+				if (this.isTiled)
+					return {
+						p0: { x: width / 4, y: height / 4 + height * index },
+						p1: { x: width / 4 + width / 2, y: height / 4 + height * index },
+						p2: { x: width / 4 + width / 2, y: height / 4 + height / 2 + height * index },
+						p3: { x: width / 4, y: height / 4 + height / 2 + height * index },
+					};
+
+				return {
+					p0: { x: 0, y: height * index },
+					p1: { x: width, y: height * index },
+					p2: { x: width, y: height * (index + 1) },
+					p3: { x: 0, y: height * (index + 1) },
+				};
+			};
 
 			if (animation.frames) {
 				for (const frame of animation.frames) {
-					if (typeof frame === "object") {
-						animationFrames.push({ index: frame.index, time: Math.max(frame.time, 1) });
-					} else {
-						animationFrames.push({ index: frame, time: animation.frametime ?? 1 });
+					const partialFrame: Pick<Frame, "frametime" | "index"> = {
+						frametime: 0,
+						index: 0,
+					};
+
+					switch (typeof frame) {
+						case "object":
+							partialFrame.index = frame.index;
+							partialFrame.frametime = Math.min(300, frame.time ?? 1);
+							break;
+
+						case "number":
+						default:
+							partialFrame.index = frame;
+							partialFrame.frametime = frametime;
+							break;
 					}
+
+					frames.push({ ...partialFrame, ...getPoints(partialFrame.index) });
 				}
 			} else {
-				const framesCount = this.isTiled
-					? this.image.height / 2 / (this.image.width / 2)
-					: this.image.height / this.image.width;
-				for (let fi = 0; fi < framesCount; fi++) {
-					animationFrames.push({ index: fi, time: animation.frametime ?? 1 });
+				const framesCount =
+					this.image.width === height
+						? // no custom size defined in mcmeta.animation.height/width
+							Math.floor(this.image.height / this.image.width)
+						: // custom size defined in mcmeta.animation.height/width
+							// => we have to calculate the number of frames and adjust the height
+							Math.floor(this.image.height / this.image.width) * (width / height);
+
+				for (let frame = 0; frame < framesCount; frame++) {
+					frames.push({ index: frame, frametime, ...getPoints(frame) });
 				}
 			}
 
-			const framesToPlay = {};
+			const framesToDraw: Record<number, { frame: Frame; alpha: number }[]> = {};
 			let ticks = 1;
-			animationFrames.forEach((frame, index) => {
-				for (let t = 1; t <= frame.time; t++) {
-					framesToPlay[ticks] = [[frame, 1]];
 
-					if (animation.interpolate) {
-						const nextFrame = animationFrames[index + 1] ?? animationFrames[0];
-						framesToPlay[ticks]?.push([nextFrame, t / nextFrame.time]);
+			frames.forEach((frame, index) => {
+				for (let t = 1; t <= frame.frametime; t++) {
+					framesToDraw[ticks] = [{ frame, alpha: 1 }];
+
+					if (this.mcmeta.animation.interpolate) {
+						const nextFrame = frames[index + 1] ?? frames[0]; // loop back to the first frame if we're at the last frame
+						framesToDraw[ticks].push({
+							frame: nextFrame,
+							alpha: t / frame.frametime,
+						});
 					}
 
 					ticks++;
 				}
 			});
 
-			this.sprites = animationFrames;
-			this.frames = framesToPlay;
+			this.frames = frames;
+			this.framesDrawn = framesToDraw;
 		},
-		updateCanvas() {
-			if (Object.keys(this.frames).length === 0) return;
+		updateCanvas(): void {
+			if (this.frames.length === 0) return;
 
 			// make sure the canvas is updated at most 20 times per second (50ms)
 			if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 
 			this.updateCanvasTimeout = setTimeout(() => {
 				let next = this.currentTick + 1;
-				if (this.frames[next] === undefined) next = 1;
+				if (this.framesDrawn[next] === undefined) next = 1;
 				this.currentTick = next;
 
 				this.updateCanvas();
@@ -107,63 +207,47 @@ export default {
 		},
 	},
 	watch: {
-		src() {
-			return this.loadImage();
-		},
-		mcmeta() {
-			return this.calculateFrames();
-		},
-		image() {
-			return this.calculateFrames();
-		},
-		frames() {
-			return this.updateCanvas();
-		},
-		currentTick() {
-			if (Object.keys(this.frames).length === 0) return;
+		currentTick(): void {
+			if (Object.keys(this.framesDrawn).length === 0) return;
 
-			const framesToDraw = this.frames[this.currentTick];
-			const canvas = this.$refs.canvasRef;
+			const framesDrawnAtTick = this.framesDrawn[this.currentTick];
+			if (!framesDrawnAtTick) return;
+
+			const canvas = this.$refs.canvasRef as HTMLCanvasElement | null;
 			const context = canvas?.getContext("2d");
 
-			if (!canvas || !context || !this.image || !framesToDraw) return;
+			if (!context || !canvas || !this.image) return;
 
 			canvas.style.width = "100%";
-			canvas.width = canvas.offsetWidth;
-			canvas.height = canvas.offsetWidth;
+			canvas.width = this.mcmeta.animation.width ?? canvas.offsetWidth;
+			canvas.height = this.mcmeta.animation.height ?? canvas.offsetHeight;
 
-			const padding = this.isTiled ? this.image.width / 4 : 0;
-			const width = this.isTiled ? this.image.width / 2 : this.image.width;
-
-			context.clearRect(0, 0, width, width);
+			context.clearRect(0, 0, canvas.width, canvas.height);
 			context.globalAlpha = 1;
 			context.imageSmoothingEnabled = false;
 
-			for (const frame of framesToDraw) {
-				const [data, alpha] = frame;
+			for (const frameDrawn of framesDrawnAtTick) {
+				const { frame: f, alpha } = frameDrawn;
 				context.globalAlpha = alpha;
 
 				context.drawImage(
 					this.image,
-					padding,
-					padding + width * data.index * (this.isTiled ? 2 : 1),
-					width,
-					width,
+
+					// source x, source y
+					f.p0.x,
+					f.p0.y,
+					// source width, source height
+					f.p1.x - f.p0.x,
+					f.p3.y - f.p0.y,
+
+					// dest x, dest y, dest width, dest height
 					0,
 					0,
 					canvas.width,
-					canvas.width,
+					canvas.height,
 				);
 			}
 		},
-	},
-	mounted() {
-		this.loadImage();
-	},
-	beforeUnmount() {
-		// clear all intervals and timeouts to prevent memory leaks
-		if (this.tickingRef) clearInterval(this.tickingRef);
-		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
 };
 </script>
