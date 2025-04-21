@@ -27,10 +27,10 @@ export default {
 			required: true,
 		},
 	},
-	data() {
-		return {
-			jsonData: JSON.stringify(this.mcmeta, null, 2),
-		};
+	computed: {
+		jsonData() {
+			return JSON.stringify(this.mcmeta, null, 2);
+		},
 	},
 	methods: {
 		highlighter(code) {
