@@ -30,7 +30,7 @@
 				:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
 			>
 				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang().database.contributions.title }}
+					{{ $root.lang().database.summary }}: [{{ formRecordsLength }}]
 				</div>
 				<v-list
 					id="contribution-form-list"

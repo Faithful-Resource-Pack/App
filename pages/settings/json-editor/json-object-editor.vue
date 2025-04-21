@@ -27,7 +27,7 @@
 
 <script>
 // fixes circular dependency error
-const JSONEditor = () => import("./main.vue");
+const JSONEditor = () => import("./index.vue");
 import JSONAddEditor from "./json-add-editor.vue";
 
 export default {

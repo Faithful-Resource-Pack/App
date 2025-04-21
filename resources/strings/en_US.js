@@ -121,6 +121,7 @@ export default {
 		search: "Search",
 		anonymous: "Anonymous",
 		nameless: "Nameless",
+		summary: "Summary",
 		confirm_deletion: "Confirm deletion",
 		ask_deletion: "Do you want to delete %s (%d)?",
 		contributions: {
@@ -215,16 +216,15 @@ export default {
 				title: "Add new Minecraft version",
 				success: "Added version successfully",
 				new_edition: "New version edition",
-				template_version: "Clone an existing version as a template",
+				template_version: "Template version",
 				new_version: "New version name",
 			},
-			modify_version: {
-				title: "Modify a Minecraft version",
-				current_version: "Current MC Version",
-				new_version: "New MC Version",
-				example:
-					"Changes all instances of a Minecraft version in the database to a different one. (ex. 1.17 → 1.17.1)",
-				warning: "Please don't forget to update all GitHub branch names as well!",
+			rename_version: {
+				title: "Rename Minecraft version",
+				current_version: "Current version name",
+				new_version: "New version name",
+				example: "Renames all instances of a Minecraft version in the database (ex. 1.17 → 1.17.1)",
+				warning: "Please don't forget to update all GitHub branch names!",
 			},
 		},
 		packs: {
@@ -557,6 +557,7 @@ export default {
 			user_anonymous: "Anonymous",
 			user_not_found: "Unknown User",
 			contribution_not_found: "No contributions found in database!",
+			search_failed: "Failed to search",
 		},
 		category: {
 			search: "Search",

@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import PostForm from "./form/main.vue";
+import PostForm from "./form/index.vue";
 
 export default {
 	name: "new-post",

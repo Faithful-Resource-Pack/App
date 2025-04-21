@@ -6,26 +6,25 @@
 			:textColor="textColorOnPage"
 			v-model="textureModalOpen"
 			@close="closeTextureModal"
-			:add="Object.keys(dialogData).length == 0"
+			:add="!Object.keys(dialogData).length"
 			:data="dialogData"
 			:tags="tags"
 		/>
 		<new-texture-modal
-			:textColor="textColorOnPage"
 			:color="pageColor"
 			v-model="newTextureModalOpen"
 			:tags="tags"
-			:editions="editions"
 			:versions="versions"
 		/>
-		<modify-version-modal
+		<rename-version-modal
 			:color="pageColor"
-			v-model="modifyVersionModalOpen"
+			v-model="renameVersionModalOpen"
 			@close="
 				() => {
-					modifyVersionModalOpen = false;
+					renameVersionModalOpen = false;
 				}
 			"
+			:versions="versions"
 		/>
 		<add-version-modal
 			:color="pageColor"
@@ -35,7 +34,6 @@
 					addVersionModalOpen = false;
 				}
 			"
-			:editions="editions"
 			:versions="versions"
 		/>
 		<texture-remove-confirm
@@ -103,9 +101,9 @@
 						block
 						:color="pageColor"
 						:class="[textColorOnPage]"
-						@click="openModifyVersionModal"
+						@click="openRenameVersionModal"
 					>
-						{{ $root.lang().database.textures.modify_version.title }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.rename_version.title }}<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -154,8 +152,8 @@ import axios from "axios";
 import SmartGrid from "@components/smart-grid.vue";
 
 import TextureModal from "./texture-modal.vue";
-import NewTextureModal from "./new-texture-modal/main.vue";
-import ModifyVersionModal from "./modify-version-modal.vue";
+import NewTextureModal from "./new-texture-modal/index.vue";
+import RenameVersionModal from "./rename-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
@@ -166,7 +164,7 @@ export default {
 	components: {
 		SmartGrid,
 		TextureModal,
-		ModifyVersionModal,
+		RenameVersionModal,
 		NewTextureModal,
 		AddVersionModal,
 		TextureRemoveConfirm,
@@ -180,12 +178,10 @@ export default {
 			newTextureModalOpen: false,
 			recompute: false,
 			tags: [],
-			editions: [],
-			versions: [],
 			textures: {},
 			search: "",
 			textureModalOpen: false,
-			modifyVersionModalOpen: false,
+			renameVersionModalOpen: false,
 			dialogData: {},
 			remove: {
 				confirm: false,
@@ -206,6 +202,10 @@ export default {
 		name() {
 			if (this.tag !== undefined) return this.$route.params.name;
 			return this.$route.params.tag;
+		},
+		versions() {
+			// saves a db request to reuse cached settings
+			return Object.values(settings.versions).flat();
 		},
 	},
 	methods: {
@@ -242,16 +242,14 @@ export default {
 			this.textureModalOpen = false;
 			if (refresh) {
 				this.getTags();
-				this.getEditions();
 				this.getTextures();
-				this.getVersions();
 			}
 		},
 		openAddVersionModal() {
 			this.addVersionModalOpen = true;
 		},
-		openModifyVersionModal() {
-			this.modifyVersionModalOpen = true;
+		openRenameVersionModal() {
+			this.renameVersionModalOpen = true;
 		},
 		openNewTextureModal() {
 			this.newTextureModalOpen = true;
@@ -275,32 +273,11 @@ export default {
 					});
 				});
 		},
-		getEditions() {
-			axios
-				.get(`${this.$root.apiURL}/textures/editions`)
-				.then((res) => {
-					this.editions = res.data;
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		},
-		getVersions() {
-			axios
-				.get(`${this.$root.apiURL}/textures/versions`)
-				.then((res) => {
-					this.versions = res.data;
-				})
-				.catch((err) => {
-					console.error(err);
-				});
-		},
 		getTextures() {
 			const url = new URL(`${this.$root.apiURL}/textures/search`);
-			if (this.$route.params.tag && this.$route.params.tag != "all")
-				url.searchParams.set("tag", this.$route.params.tag);
-			if (this.$route.params.name)
-				url.searchParams.set("name", this.$route.params.name.replace(/ /g, "_"));
+			const { tag, name } = this.$route.params;
+			if (tag && tag !== "all") url.searchParams.set("tag", tag);
+			if (name) url.searchParams.set("name", name.replace(/ /g, "_"));
 			axios
 				.get(url.toString())
 				.then((res) => {
@@ -309,18 +286,13 @@ export default {
 				.catch((err) => console.error(err));
 		},
 		update(textures = true) {
-			this.getTags();
 			if (textures) this.getTextures();
-			this.getEditions();
-			this.getVersions();
+			this.getTags();
 		},
-		removeTexture(data) {
+		async removeTexture(data) {
 			const textureId = data.id;
-			return axios
-				.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions)
-				.then(() => {
-					this.startSearch();
-				});
+			await axios.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions);
+			this.startSearch();
 		},
 	},
 	watch: {

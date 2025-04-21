@@ -1,23 +1,23 @@
 import axios from "axios";
 
 // pages used in sidebar
-import DashboardPage from "../pages/dashboard/main.vue";
-import ProfilePage from "../pages/profile/main.vue";
-import ContributorStatsPage from "../pages/contribution-stats/main.vue";
-import GalleryPage from "../pages/gallery/main.vue";
+import DashboardPage from "../pages/dashboard/index.vue";
+import ProfilePage from "../pages/profile/index.vue";
+import ContributorStatsPage from "../pages/contribution-stats/index.vue";
+import GalleryPage from "../pages/gallery/index.vue";
 import AddonSubmissionsPage from "../pages/addon/addon-submissions.vue";
 import NewAddonPage from "../pages/addon/new-addon-form.vue";
 import EditAddonPage from "../pages/addon/edit-addon-form.vue";
-import ReviewAddonsPage from "../pages/review/main.vue";
-import ReviewTranslationsPage from "../pages/translation/main.vue";
+import ReviewAddonsPage from "../pages/review/index.vue";
+import ReviewTranslationsPage from "../pages/translation/index.vue";
 import PostListPage from "../pages/post/post-grid.vue";
 import EditPostPage from "../pages/post/edit-post.vue";
 import NewPostPage from "../pages/post/new-post.vue";
-import ContributionPage from "../pages/contribution/main.vue";
-import UsersPage from "../pages/users/main.vue";
-import TexturePage from "../pages/texture/main.vue";
-import PackPage from "../pages/pack/main.vue";
-import SettingsPage from "../pages/settings/main.vue";
+import ContributionPage from "../pages/contribution/index.vue";
+import UsersPage from "../pages/users/index.vue";
+import TexturePage from "../pages/texture/index.vue";
+import PackPage from "../pages/pack/index.vue";
+import SettingsPage from "../pages/settings/index.vue";
 
 /** @type {import("resources/types.d.ts").SidebarTab[]} */
 export default [

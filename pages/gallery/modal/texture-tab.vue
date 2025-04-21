@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 export default {
 	name: "texture-tab",
@@ -139,7 +139,7 @@ export default {
 			return this.textureObj.paths.map((path) => ({
 				...path,
 				// sort() mutates the original array so we need to clone it
-				versions: Array.from(path.versions).sort(MinecraftSorter),
+				versions: Array.from(path.versions).sort(versionSorter),
 			}));
 		},
 	},

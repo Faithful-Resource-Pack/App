@@ -15,14 +15,14 @@
 				<v-col cols="12" :md="$vuetify.breakpoint.lgAndUp ? 9 : 8">
 					<v-tabs :color="color" v-model="selectedTab" :show-arrows="false">
 						<v-tab
-							v-for="(texture, ti) in textures"
+							v-for="(texture, i) in textures"
 							:key="texture.key"
 							style="text-transform: uppercase"
 							append
 						>
 							<span v-if="texture.name">{{ texture.name }}</span>
 							<i v-else>{{ $root.lang().database.nameless }}</i>
-							<v-btn :color="color" icon @click="deleteTexture(ti)">
+							<v-btn :color="color" icon @click="deleteTexture(i)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>
 						</v-tab>
@@ -36,10 +36,8 @@
 							v-model="textures[i]"
 							:key="texture.key"
 							:color="color"
-							:textColor="textColor"
 							:tags="tags"
 							:versions="versions"
-							:editions="editions"
 						/>
 					</v-tabs-items>
 				</v-col>
@@ -50,7 +48,7 @@
 				<v-col>
 					<v-list>
 						<div class="font-weight-medium text--secondary my-2">
-							{{ $root.lang().database.textures.title }}
+							{{ $root.lang().database.summary }}: [{{ textures.length }}]
 						</div>
 						<summary-item
 							v-for="(tex, i) in textures"
@@ -89,7 +87,7 @@
 
 <script>
 import { sortTags, emptyTexture } from "@helpers/textures";
-import MinecraftSorter from "@helpers/MinecraftSorter";
+import versionSorter from "@helpers/versionSorter";
 
 import axios from "axios";
 
@@ -118,22 +116,12 @@ export default {
 			required: false,
 			default: "primary",
 		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
-		},
 		tags: {
 			type: Array,
 			required: false,
 			default: () => [],
 		},
 		versions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
-		editions: {
 			type: Array,
 			required: false,
 			default: () => [],
@@ -225,7 +213,7 @@ export default {
 					edition: use.edition,
 					paths: use.paths.map((path) => ({
 						name: path.name,
-						versions: Array.from(path.versions).sort(MinecraftSorter),
+						versions: Array.from(path.versions).sort(versionSorter),
 						mcmeta: path.mcmeta || false,
 					})),
 				})),

@@ -18,7 +18,7 @@ import { appUserStore } from "./stores/appUserStore.js";
 
 // sidebar and routing stuff
 import ALL_TABS from "@helpers/tabs.js";
-import MissingPage from "./pages/404/main.vue";
+import MissingPage from "./pages/404/index.vue";
 
 Vue.config.devtools = import.meta.env.MODE === "development";
 Vue.use(Vuetify);
@@ -123,15 +123,20 @@ window.apiURL = import.meta.env.VITE_API_URL;
 // fix trailing slash
 if (apiURL.endsWith("/")) window.apiURL = window.apiURL.slice(0, -1);
 
-// set as global
-window.settings = await axios
-	.get(`${window.apiURL}/settings/raw`)
-	.then((res) => res.data)
-	.catch((err) => {
-		console.error(err);
-		// don't completely break the webapp if settings can't be fetched
-		return {};
-	});
+async function loadSettings() {
+	// set as global
+	window.settings = await axios
+		.get(`${window.apiURL}/settings/raw`)
+		.then((res) => res.data)
+		.catch((err) => {
+			console.error(err);
+			// don't completely break the webapp if settings can't be fetched
+			return {};
+		});
+}
+
+// start loading immediately (needed for some pages)
+await loadSettings();
 
 /**
  * VUE INITIALIZATION
@@ -287,6 +292,9 @@ const app = new Vue({
 					2000,
 				);
 			}
+		},
+		reloadSettings() {
+			return loadSettings();
 		},
 	},
 	computed: {
@@ -518,7 +526,10 @@ const app = new Vue({
 					location.search = "";
 				}
 			})
-			.catch((err) => this.showSnackBar(err, "error", 3000));
+			.catch((err) => {
+				console.error(err);
+				this.showSnackBar(err, "error", 3000);
+			});
 
 		this.discordUser.watchDiscordAuth(this.discordAuth, (err) =>
 			this.showSnackBar(err, "error", 3000),
