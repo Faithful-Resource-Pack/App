@@ -1,5 +1,5 @@
 <template>
-	<canvas ref="canvasRef"></canvas>
+	<canvas ref="canvasRef" @click="$emit('click')"></canvas>
 </template>
 
 <script lang="ts">
