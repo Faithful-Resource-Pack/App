@@ -50,7 +50,7 @@
 									<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
 									<v-list-item-subtitle class="text-truncate">
 										<span v-if="form.authors.length">
-											{{ formAuthorNames[form.formId] || '...' }}
+											{{ formAuthorNames[form.formId] || "…" }}
 										</span>
 										<i v-else>{{ $root.lang().database.contributions.no_contributor_yet }}</i>
 									</v-list-item-subtitle>
@@ -152,49 +152,6 @@ export default {
 			openedFormId: undefined,
 		};
 	},
-	computed: {
-		activeForm() {
-			if (this.openedFormId === undefined) return undefined;
-
-			const formObj = this.formRecords[this.openedFormId];
-			if (formObj === undefined) return undefined;
-
-			const res = JSON.parse(JSON.stringify(formObj));
-			return res;
-		},
-		formRecordsList() {
-			return Object.values(this.formRecords);
-		},
-		formRecordsLength() {
-			return this.formRecordsList.length;
-		},
-		formRecordsAuthors() {
-			return Object.entries(this.formRecords).map(([formID, form]) => ([ formID, form.authors ]));
-		},
-		panelLabels() {
-			const acc = {};
-			for (const formID of Object.keys(this.formRecords)) {
-				const form = this.formRecords[formID];
-				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
-			}
-			return acc;
-		}
-	},
-	watch: {
-		formRecordsAuthors: {
-			handler(formEntriesAuthorIds) {
-				Promise.all(formEntriesAuthorIds.map(async ([formID, formAuthorsIDs]) => [
-						formID, await this.contributorsFromIds(formAuthorsIDs)
-				])).then((allAuthorNames) => {
-					this.formAuthorNames = allAuthorNames.reduce((acc, [formID, formAuthorNames]) => {
-						acc[formID] = formAuthorNames;
-						return acc;
-					}, {});
-				})
-			},
-			deep: true
-		}
-	},
 	methods: {
 		addNewForm() {
 			// create new form
@@ -203,7 +160,7 @@ export default {
 			// match last opened form
 			if (this.openedFormId !== undefined) {
 				// make a copy
-				const newFormId = this.getNewFormId();
+				const newFormId = crypto.randomUUID();
 				form = JSON.parse(JSON.stringify(this.formRecords[this.openedFormId]));
 				form.formId = newFormId;
 			} else {
@@ -245,18 +202,20 @@ export default {
 			const total = authorIds.length;
 
 			const alreadyAuthors = this.contributors.filter((c) => authorIds.includes(c.id));
-			const alreadyAuthorsIds = alreadyAuthors.map(c => c.id);
+			const alreadyAuthorsIds = alreadyAuthors.map((c) => c.id);
 			const notAlreadyAuthorsIds = authorIds.filter((id) => !alreadyAuthorsIds.includes(id));
-			const searchIDsparam = notAlreadyAuthorsIds.join(',')
-			const notAlreadyAuthorsFound = (!searchIDsparam) ? [] :
-				await axios.get(`${this.$root.apiURL}/users/${searchIDsparam}`)
-					.then((res) => res.data)
-					.then((data) => Array.isArray(data) ? data : [data]);
+			const searchIDsparam = notAlreadyAuthorsIds.join(",");
+			const notAlreadyAuthorsFound = !searchIDsparam
+				? []
+				: await axios
+						.get(`${this.$root.apiURL}/users/${searchIDsparam}`)
+						.then((res) => res.data)
+						.then((data) => (Array.isArray(data) ? data : [data]));
 
 			const allAuthorsFound = Array.from(new Set([...alreadyAuthors, ...notAlreadyAuthorsFound]));
-			const anonymousTotal = allAuthorsFound.filter(a => !a.username).length;
-			const notAnonymous = allAuthorsFound.filter(a => !!a.username);
-			const notAnonymousNames = notAnonymous.map(user => user.username);
+			const anonymousTotal = allAuthorsFound.filter((a) => !a.username).length;
+			const notAnonymous = allAuthorsFound.filter((a) => !!a.username);
+			const notAnonymousNames = notAnonymous.map((user) => user.username);
 			let allNames = notAnonymousNames;
 
 			if (anonymousTotal > 0) {
@@ -301,11 +260,8 @@ export default {
 				pack: packList ? packList[0].value : null,
 				texture: this.multiple ? [] : 0,
 				authors: [],
-				formId: this.getNewFormId(),
+				formId: crypto.randomUUID(),
 			};
-		},
-		getNewFormId() {
-			return crypto.randomUUID();
 		},
 		onFormInput(form) {
 			// stop undefined object
@@ -340,6 +296,52 @@ export default {
 			const newFormRecords = Object.assign({}, this.formRecords); // clean
 			delete newFormRecords[formId]; // delete
 			this.$set(this, "formRecords", newFormRecords); // affect
+		},
+	},
+	computed: {
+		activeForm() {
+			if (this.openedFormId === undefined) return undefined;
+
+			const formObj = this.formRecords[this.openedFormId];
+			if (formObj === undefined) return undefined;
+
+			const res = JSON.parse(JSON.stringify(formObj));
+			return res;
+		},
+		formRecordsList() {
+			return Object.values(this.formRecords);
+		},
+		formRecordsLength() {
+			return this.formRecordsList.length;
+		},
+		formRecordsAuthors() {
+			return Object.entries(this.formRecords).map(([formID, form]) => [formID, form.authors]);
+		},
+		panelLabels() {
+			const acc = {};
+			for (const formID of Object.keys(this.formRecords)) {
+				const form = this.formRecords[formID];
+				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
+			}
+			return acc;
+		},
+	},
+	watch: {
+		formRecordsAuthors: {
+			handler(formEntriesAuthorIds) {
+				Promise.all(
+					formEntriesAuthorIds.map(async ([formID, formAuthorsIDs]) => [
+						formID,
+						await this.contributorsFromIds(formAuthorsIDs),
+					]),
+				).then((allAuthorNames) => {
+					this.formAuthorNames = allAuthorNames.reduce((acc, [formID, formAuthorNames]) => {
+						acc[formID] = formAuthorNames;
+						return acc;
+					}, {});
+				});
+			},
+			deep: true,
 		},
 	},
 };
