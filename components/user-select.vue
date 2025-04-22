@@ -182,7 +182,7 @@ export default {
 								{
 									username: "",
 									uuid: "",
-									type: [],
+									roles: [],
 									media: [],
 								},
 								result,
