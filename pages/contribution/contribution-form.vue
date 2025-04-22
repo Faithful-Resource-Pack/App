@@ -1,18 +1,18 @@
 <template>
-	<v-form :disabled="disabled" lazy-validation ref="contributionForm">
-		<v-row :no-gutters="multiple">
-			<v-col cols="12" :sm="multiple ? false : 6">
+	<!-- wrapped by contribution-modal -->
+	<v-form lazy-validation>
+		<v-row :no-gutters="add">
+			<v-col cols="12" :sm="add ? false : 6">
 				<quick-date-picker
-					:block="!multiple"
+					:block="!add"
 					flat
-					:disabled="disabled"
 					v-model="content.date"
 					:months="months"
 					:labels="$root.lang().datepicker"
 					style="margin-left: auto; margin-right: auto"
 				/>
 			</v-col>
-			<v-col cols="12" :sm="multiple ? false : 6">
+			<v-col cols="12" :sm="add ? false : 6">
 				<div class="font-weight-medium text--secondary my-2">
 					{{ $root.lang().database.contributions.modal.pack }}
 				</div>
@@ -29,10 +29,9 @@
 					{{ $root.lang().database.textures.modal.id }}
 				</div>
 				<multi-range-input
-					v-if="multiple && Array.isArray(content.texture)"
+					v-if="add && Array.isArray(content.texture)"
 					v-model="content.texture"
-					:disabled="disabled"
-					:multiple="multiple"
+					:multiple="add"
 					:labels="$root.lang().database.contributions.modal.id_field_errors"
 				/>
 				<div class="d-flex align-center mb-2" v-else>
@@ -88,20 +87,17 @@ export default {
 	},
 	props: {
 		contributors: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 		value: {
+			type: Object,
 			required: true,
 		},
-		disabled: {
+		add: {
 			type: Boolean,
 			required: false,
-			default: () => false,
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
+			default: false,
 		},
 	},
 	data() {

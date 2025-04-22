@@ -3,17 +3,20 @@
 		v-model="modalOpened"
 		:title="$root.lang().database.contributions.title"
 		max-width="800"
-		@close="closeAndCancel"
-		@submit="closeOrAndSubmit"
+		@close="close"
+		@submit="closeAndSubmit"
 	>
-		<v-row dense v-if="multiple">
+		<v-row dense v-if="add">
 			<v-col class="flex-grow-0 flex-shrink-1" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
 				<contribution-form
-					:value="activeForm"
-					@input="onFormInput"
-					:disabled="activeForm === undefined"
+					v-model="contribs[selectedContrib]"
 					:contributors="contributors"
-					:multiple="multiple"
+					add
+					@newUser="
+						(l) => {
+							searchedContributors = l;
+						}
+					"
 				/>
 			</v-col>
 			<v-col
@@ -30,27 +33,27 @@
 				:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
 			>
 				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang().database.summary }}: [{{ formRecordsLength }}]
+					{{ $root.lang().database.summary }}: [{{ contribs.length }}]
 				</div>
 				<v-list
 					id="contribution-form-list"
 					dense
 					flat
-					style="min-height: 300px"
+					style="min-height: 200px"
 					class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
 				>
 					<div>
-						<template v-for="(form, formIndex) in formRecordsList">
+						<template v-for="(form, i) in Object.entries(contribs)">
 							<v-list-item
-								:key="`item-${form.formId}`"
+								:key="form.formID"
 								class="pl-0"
-								@click.stop.prevent="() => changeOpenedForm(form.formId)"
+								@click.stop.prevent="() => changeOpenedForm(form.formID)"
 							>
-								<v-list-item-content :class="[openedFormId === form.formId ? 'primary--text' : '']">
-									<v-list-item-title>{{ panelLabels[form.formId] }}</v-list-item-title>
+								<v-list-item-content :class="[i === selectedContrib ? 'primary--text' : '']">
+									<v-list-item-title>{{ panelLabels[form.formID] }}</v-list-item-title>
 									<v-list-item-subtitle class="text-truncate">
 										<span v-if="form.authors.length">
-											{{ formAuthorNames[form.formId] || "…" }}
+											{{ formAuthorNames[form.formID] || "…" }}
 										</span>
 										<i v-else>{{ $root.lang().database.contributions.no_contributor_yet }}</i>
 									</v-list-item-subtitle>
@@ -66,17 +69,17 @@
 									</v-list-item-subtitle>
 								</v-list-item-content>
 
-								<v-list-item-action v-if="formIndex > 0">
+								<v-list-item-action v-if="i > 0">
 									<v-icon
-										@click.stop.prevent="() => removeForm(form.formId)"
-										:color="openedFormId === form.formId ? 'primary' : ''"
+										@click.stop.prevent="() => deleteContrib(i)"
+										:color="selectedContrib === form.formID ? 'primary' : ''"
 									>
 										mdi-delete
 									</v-icon>
 								</v-list-item-action>
 							</v-list-item>
 
-							<v-divider :key="`divider-${form.formId}`" v-if="formIndex < formRecordsLength - 1" />
+							<v-divider :key="`divider-${form.formID}`" v-if="i < contribs.length - 1" />
 						</template>
 					</div>
 				</v-list>
@@ -84,24 +87,19 @@
 					class="flex-grow-0 flex-shrink-1"
 					elevation="0"
 					block
-					@click.stop.prevent="addNewForm"
+					@click.stop.prevent="cloneContribution"
 				>
-					{{
-						$root.lang().database.contributions.modal[openedFormId ? "clone_contribution" : "add_new_contribution"],
-					}}
+					{{ $root.lang().database.contributions.modal.clone_contribution }}
 				</v-btn>
 			</v-col>
 		</v-row>
 		<contribution-form
 			v-else
-			:value="activeForm"
-			@input="onFormInput"
-			:disabled="activeForm === undefined"
+			v-model="contribs[selectedContrib]"
 			:contributors="contributors"
-			:multiple="multiple"
 			@newUser="
 				(l) => {
-					this.contributors = l;
+					searchedContributors = l;
 				}
 			"
 		/>
@@ -115,6 +113,14 @@ import moment from "moment";
 import ModalForm from "@components/modal-form.vue";
 import ContributionForm from "./contribution-form.vue";
 
+const emptyContrib = () => ({
+	formID: crypto.randomUUID(),
+	date: new Date(new Date().setHours(0, 0, 0, 0)),
+	texture: 0,
+	pack: "",
+	authors: [],
+});
+
 export default {
 	name: "contribution-modal",
 	components: {
@@ -122,79 +128,59 @@ export default {
 		ContributionForm,
 	},
 	props: {
-		contributors: {
-			required: true,
-			type: Array,
-		},
-		onCancel: {
-			required: false,
-			type: Function,
-			default() {},
-		},
-		onSubmit: {
-			required: false,
-			type: Function,
-			default() {},
-		},
-		multiple: {
-			required: false,
+		value: {
 			type: Boolean,
-			default: false,
+			required: true,
+		},
+		// only used for editing
+		data: {
+			type: Object,
+			required: false,
+		},
+		// whether it's a new contribution or editing existing one
+		add: {
+			type: Boolean,
+			required: true,
+		},
+		packs: {
+			type: Array,
+			required: true,
+		},
+		contributors: {
+			type: Array,
+			required: true,
 		},
 	},
 	data() {
 		return {
 			modalOpened: false,
-			closeOnSubmit: true,
-			formRecords: {},
+			contribs: [],
+			searchedContributors: [],
 			formAuthorNames: {},
-			packsList: [],
-			openedFormId: undefined,
+			selectedContrib: null,
+			closeOnSubmit: true,
 		};
 	},
 	methods: {
-		addNewForm() {
-			// create new form
-			let form;
-
-			// match last opened form
-			if (this.openedFormId !== undefined) {
-				// make a copy
-				const newFormId = crypto.randomUUID();
-				form = JSON.parse(JSON.stringify(this.formRecords[this.openedFormId]));
-				form.formId = newFormId;
-			} else {
-				form = this.defaultValue(this.packsList);
-			}
-
-			// add form
-			let newFormId = form.formId;
-			this.$set(this.formRecords, newFormId, form);
+		cloneContribution() {
+			const form = structuredClone(this.contribs[this.selectedContrib]);
+			form.formID = crypto.randomUUID();
+			const newLen = this.contribs.push(form);
 
 			// make the opened form our created form
-			this.openedFormId = newFormId;
-		},
-		formatPack(packId) {
-			return this.packsList.find(({ value }) => value === packId)?.label || packId;
-		},
-		open(inputDataObj, inputPacksList, closeOnSubmit = true) {
-			this.packsList = inputPacksList;
-			this.modalOpened = true;
-			this.openedFormId = undefined;
-
-			let createdFormObj;
-			if (inputDataObj !== undefined) {
-				createdFormObj = Object.assign({}, this.defaultValue(inputPacksList), inputDataObj);
-			} else {
-				// get one empty form
-				createdFormObj = this.defaultValue(inputPacksList);
-			}
-
-			this.$set(this, "formRecords", {
-				[createdFormObj.formId]: createdFormObj,
+			this.$nextTick(() => {
+				this.selectedContrib = newLen - 1;
 			});
-			this.openedFormId = createdFormObj.formId;
-			this.closeOnSubmit = !!closeOnSubmit;
+		},
+		deleteContrib(index) {
+			// do not continue if not found
+			if (!this.contribs[index]) return;
+
+			// do not delete if only one
+			if (this.contribs.length <= 1) return;
+
+			this.contribs.splice(index, 1);
+			if (this.contribs.length >= this.selectedContrib) --this.selectedContrib;
 		},
 		async contributorsFromIds(authorIds) {
 			if (!authorIds || authorIds.length === 0) return "";
@@ -226,20 +212,15 @@ export default {
 			allNames = Array.from(new Set(allNames));
 			return `[${total}]: ${allNames.join(", ")}`;
 		},
-		changeOpenedForm(formId) {
-			if (this.openedFormId === formId) this.openedFormId = undefined;
-			else this.openedFormId = formId;
+		changeOpenedForm(formID) {
+			this.selectedContrib = formID;
 		},
 		close() {
 			this.modalOpened = false;
 		},
-		closeAndCancel() {
-			this.close();
-			this.onCancel();
-		},
-		async closeOrAndSubmit() {
-			const resultDataList = Object.values(this.formRecords).map((f) => {
-				delete f.formId;
+		async closeAndSubmit() {
+			const resultDataList = Object.values(this.contribs).map((f) => {
+				delete f.formID;
 				return f;
 			});
 
@@ -253,95 +234,35 @@ export default {
 
 			if (this.closeOnSubmit) this.modalOpened = false;
 		},
-		defaultValue(packList) {
-			return {
-				date: new Date(new Date().setHours(0, 0, 0, 0)),
-				packs: packList,
-				pack: packList ? packList[0].value : null,
-				texture: this.multiple ? [] : 0,
-				authors: [],
-				formId: crypto.randomUUID(),
-			};
-		},
-		onFormInput(form) {
-			// stop undefined object
-			if (typeof form !== "object") return;
-			// stop non-form objects
-			if (!("formId" in form)) return;
-
-			form = JSON.parse(JSON.stringify(form));
-
-			// stop fake forms
-			const formId = form.formId;
-			if (!this.formRecords[formId]) return;
-
-			// now affect
-			this.$set(this.formRecords, formId, form);
-		},
-		removeForm(formId) {
-			// do not continue if not found
-			if (!this.formRecords[formId]) return;
-
-			const formIdList = Object.keys(this.formRecords);
-
-			// do not delete if only one
-			if (formIdList.length === 1) return;
-
-			// decide who will be the next form
-			const formIndex = formIdList.indexOf(formId);
-			const nextFormIndex = (formIndex + 1) % formIdList.length;
-			const nextFormId = formIdList[nextFormIndex];
-			this.openedFormId = nextFormId;
-
-			const newFormRecords = Object.assign({}, this.formRecords); // clean
-			delete newFormRecords[formId]; // delete
-			this.$set(this, "formRecords", newFormRecords); // affect
-		},
 	},
 	computed: {
-		activeForm() {
-			if (this.openedFormId === undefined) return undefined;
-
-			const formObj = this.formRecords[this.openedFormId];
-			if (formObj === undefined) return undefined;
-
-			const res = JSON.parse(JSON.stringify(formObj));
-			return res;
+		allContributors() {
+			return [...this.contributors, ...this.searchedContributors];
 		},
-		formRecordsList() {
-			return Object.values(this.formRecords);
-		},
-		formRecordsLength() {
-			return this.formRecordsList.length;
-		},
-		formRecordsAuthors() {
-			return Object.entries(this.formRecords).map(([formID, form]) => [formID, form.authors]);
+		packToName() {
+			return this.packs.reduce((acc, cur) => {
+				acc[cur.id] = cur.name;
+				return acc;
+			}, {});
 		},
 		panelLabels() {
+			// faster than using Object.entries + reduce
 			const acc = {};
-			for (const formID of Object.keys(this.formRecords)) {
-				const form = this.formRecords[formID];
-				acc[formID] = `${this.formatPack(form.pack)} • ${moment(new Date(form.date)).format("ll")}`;
+			for (const formID of Object.keys(this.contribs)) {
+				const form = this.contribs[formID];
+				acc[formID] = `${this.packToName[form.pack]} • ${moment(new Date(form.date)).format("ll")}`;
 			}
 			return acc;
 		},
 	},
 	watch: {
-		formRecordsAuthors: {
-			handler(formEntriesAuthorIds) {
-				Promise.all(
-					formEntriesAuthorIds.map(async ([formID, formAuthorsIDs]) => [
-						formID,
-						await this.contributorsFromIds(formAuthorsIDs),
-					]),
-				).then((allAuthorNames) => {
-					this.formAuthorNames = allAuthorNames.reduce((acc, [formID, formAuthorNames]) => {
-						acc[formID] = formAuthorNames;
-						return acc;
-					}, {});
-				});
-			},
-			deep: true,
+		value(newValue) {
+			this.modalOpened = newValue;
+		},
+		modalOpened(newValue) {
+			this.contribs = [this.add ? emptyContrib() : { ...this.data, formID: crypto.randomUUID() }];
+			this.selectedContrib = 0;
+			this.$emit("input", newValue);
 		},
 	},
 };
