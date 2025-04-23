@@ -1,7 +1,7 @@
 <template>
 	<!-- wrapped by contribution-modal -->
 	<v-form lazy-validation>
-		<v-row :no-gutters="add">
+		<v-row>
 			<v-col cols="12" :sm="add ? false : 6">
 				<quick-date-picker
 					:block="!add"
@@ -13,36 +13,37 @@
 				/>
 			</v-col>
 			<v-col cols="12" :sm="add ? false : 6">
-				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang().database.contributions.modal.pack }}
-				</div>
 				<v-select
+					:label="$root.lang().database.contributions.modal.pack"
 					:items="packList"
 					item-text="label"
 					item-value="value"
-					class="mt-0 pt-0"
 					hide-details
 					required
 					v-model="contrib.pack"
 				/>
-				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang().database.textures.modal.id }}
-				</div>
+				<!-- must manually handle v-model to prevent type errors -->
 				<multi-range-input
-					v-if="add && Array.isArray(contrib.texture)"
-					v-model="contrib.texture"
-					:multiple="add"
-					:labels="$root.lang().database.contributions.modal.id_field_errors"
+					v-if="add"
+					:value="Array.isArray(contrib.texture) ? contrib.texture : []"
+					@input="
+						(value) => {
+							contrib.texture = value;
+						}
+					"
+					:label="$root.lang().database.contributions.modal.texture_ids"
+					hide-details
+					:errors="$root.lang().database.contributions.modal.id_field_errors"
 				/>
-				<div class="d-flex align-center mb-2" v-else>
+				<div class="d-flex align-center" v-else>
 					<v-text-field
+						v-model="contrib.texture"
+						:label="$root.lang().database.contributions.modal.texture_id"
 						required
-						dense
 						type="number"
 						hide-details
-						class="mr-2 my-0 pt-0"
+						class="mr-2"
 						min="0"
-						v-model="contrib.texture"
 					/>
 					<v-btn icon @click="incrementTextureID">
 						<v-icon>mdi-chevron-up</v-icon>
@@ -51,15 +52,12 @@
 						<v-icon>mdi-chevron-down</v-icon>
 					</v-btn>
 				</div>
-				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang().database.contributions.contributors }}
-				</div>
 				<user-select
-					dense
 					:users="contributors"
 					v-model="contrib.authors"
-					class="my-0"
+					:label="$root.lang().database.contributions.contributors"
 					:limit="3"
+					small-chips
 					:placeholder="$root.lang().database.contributions.modal.one_contributor"
 					:error-messages="
 						contrib.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []

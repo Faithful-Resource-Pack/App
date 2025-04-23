@@ -1,7 +1,7 @@
 /**
  * Generate a range from a series of endpoints
  * @param {[number, number][]} ranges
- * @returns number[]
+ * @returns {number[]}
  */
 export default function generateRange(ranges) {
 	// flatMap is the "one to many" array method, which is needed for a range

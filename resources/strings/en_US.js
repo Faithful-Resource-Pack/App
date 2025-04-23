@@ -140,6 +140,8 @@ export default {
 				clone_contribution: "Clone the contribution",
 				one_contributor: "Select at least one contributor",
 				pack: "Resource Pack",
+				texture_id: "Texture ID",
+				texture_ids: "Texture IDs",
 				id_field_errors: {
 					one_required: "At least one texture ID or an ID range is required",
 					incorrect_value: "Incorrect texture %value% ID or ID range",

@@ -4,17 +4,16 @@
 			v-model="ranges"
 			:items="undefined"
 			:rules="getRules()"
-			:multiple="multiple"
-			:clearable="multiple"
+			multiple
+			clearable
 			required
-			:label="multiple ? '5 20 15-32' : '30'"
-			single-line
+			:label="label"
+			placeholder="5 20 15-32"
 			append-icon=""
 			small-chips
-			:deletable-chips="multiple"
+			deletable-chips
 			v-bind="$attrs"
 			@keydown="onInput"
-			class="my-0 pt-0"
 		/>
 	</v-form>
 </template>
@@ -26,18 +25,20 @@ export default {
 	name: "multi-range-input",
 	props: {
 		value: {
+			type: Array,
 			required: true,
 		},
-		labels: {
+		label: {
+			type: String,
+			required: false,
+			default: "",
+		},
+		errors: {
 			required: false,
 			default: () => ({
 				one_required: "One value required",
 				incorrect_value: "%value% value incorrect",
 			}),
-		},
-		multiple: {
-			type: Boolean,
-			required: true,
 		},
 	},
 	data() {
@@ -74,11 +75,10 @@ export default {
 		},
 		getRules() {
 			return [
-				(list) => !!list.length || this.labels.one_required,
+				(list) => !!list.length || this.errors.one_required,
 				(list) => {
 					let incorrectValue;
-					let i = 0;
-					while (incorrectValue === undefined && i < list.length) {
+					for (let i = 0; incorrectValue === undefined && i < list.length; ++i) {
 						const s = list[i];
 						const correct = (() => {
 							if (String(Number.parseInt(s, 10)) === s) return true;
@@ -90,10 +90,9 @@ export default {
 							);
 						})();
 						if (!correct) incorrectValue = s;
-						i += 1;
 					}
 					return incorrectValue
-						? this.labels.incorrect_value.replace("%value%", incorrectValue)
+						? this.errors.incorrect_value.replace("%value%", incorrectValue)
 						: true;
 				},
 			];
@@ -126,7 +125,7 @@ export default {
 			handler(n, o) {
 				if (n === undefined || JSON.stringify(n) === JSON.stringify(o)) return;
 
-				const transformedValue = this.multiple ? this.transformToRaw(n) : [String(n)];
+				const transformedValue = this.transformToRaw(n);
 
 				if (JSON.stringify(this.ranges) === JSON.stringify(transformedValue)) return;
 
@@ -136,9 +135,8 @@ export default {
 			deep: true,
 		},
 		styledRanges: {
-			handler(n, o) {
-				const sent = this.multiple ? n : n.flat()[0];
-				this.$emit("input", sent);
+			handler(n) {
+				this.$emit("input", n);
 			},
 			immediate: true,
 			deep: true,
