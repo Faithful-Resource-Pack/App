@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="dialogTitle" @close="$emit('close')" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="$emit('close')" @submit="send">
 		<submission-modal
 			:color="color"
 			v-model="submissionOpen"
@@ -291,7 +291,7 @@ export default {
 		});
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.packs.modal.add_pack
 				: this.$root.lang().database.packs.modal.change_pack;

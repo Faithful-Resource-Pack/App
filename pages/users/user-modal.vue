@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="dialogTitle" @close="$emit('close')" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="$emit('close')" @submit="send">
 		<v-row>
 			<v-col v-if="formData.uuid" class="col-2" :sm="$vuetify.breakpoint.mdAndUp ? 3 : 2">
 				<img alt="avatar" style="width: 100%; max-width: 250" :src="avatarSrc" />
@@ -106,7 +106,7 @@ export default {
 		};
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.users.modal.add_user
 				: this.$root.lang().database.users.modal.change_user;

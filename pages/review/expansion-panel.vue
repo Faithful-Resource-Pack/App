@@ -249,8 +249,8 @@ export default {
 	data() {
 		return {
 			imagePreview: "",
-			dialogAddon: {},
-			dialogOpen: false,
+			modalData: {},
+			modalOpen: false,
 			previewOpen: false,
 			addonInPanelLoading: true,
 			addonInPanel: {},
@@ -291,13 +291,13 @@ export default {
 				else this.addonInPanelHeaderURL = null;
 			});
 		},
-		openDialog() {
-			this.dialogAddon = this.addonInPanel;
-			this.dialogOpen = true;
+		openModal() {
+			this.modalData = this.addonInPanel;
+			this.modalOpen = true;
 		},
-		closeDialog() {
-			this.dialogOpen = false;
-			this.dialogAddon = {};
+		closeModal() {
+			this.modalOpen = false;
+			this.modalData = {};
 			this.update();
 		},
 		getUsername(id) {

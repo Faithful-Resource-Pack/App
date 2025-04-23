@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="dialogTitle" @close="onCancel" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
 		<v-form ref="form">
 			<v-text-field
 				:color="color"
@@ -146,7 +146,7 @@ export default {
 		},
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.textures.paths.add_path
 				: this.$root.lang().database.textures.paths.change_path;

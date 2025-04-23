@@ -3,10 +3,10 @@
 		<div class="styles" v-html="pageStyles" />
 		<pack-modal
 			:color="pageColor"
-			v-model="dialogOpen"
+			v-model="modalOpen"
 			@close="close"
-			:data="dialogData"
-			:add="dialogDataAdd"
+			:data="modalData"
+			:add="modalAdd"
 			:tags="tags"
 		/>
 		<pack-remove-confirm
@@ -29,7 +29,7 @@
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
-				<v-btn block :color="pageColor" @click="openDialog()">
+				<v-btn block :color="pageColor" @click="openModal()">
 					{{ $root.lang().database.packs.modal.add_pack }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
@@ -80,7 +80,7 @@
 
 				<!-- action buttons -->
 				<v-list-item-action class="merged">
-					<v-btn icon @click="openDialog(item)">
+					<v-btn icon @click="openModal(item)">
 						<v-icon color="lighten-1">mdi-pencil</v-icon>
 					</v-btn>
 					<v-btn icon @click="askRemove(item)">
@@ -120,9 +120,9 @@ export default {
 			textColorOnPage: "white--text",
 			tags: [],
 			packs: [],
-			dialogOpen: false,
-			dialogData: {},
-			dialogDataAdd: false,
+			modalOpen: false,
+			modalData: {},
+			modalAdd: false,
 			remove: {
 				id: "",
 				label: "",
@@ -164,15 +164,15 @@ export default {
 				.map((p) => (p == "progart" ? "Programmer Art" : p.toTitleCase()))
 				.join(" ");
 		},
-		openDialog(data = undefined) {
-			this.dialogData = data;
-			this.dialogDataAdd = data === undefined;
-			this.dialogOpen = true;
+		openModal(data = undefined) {
+			this.modalData = data;
+			this.modalAdd = data === undefined;
+			this.modalOpen = true;
 		},
 		close(refresh = false) {
-			this.dialogOpen = false;
+			this.modalOpen = false;
 			// clear form
-			this.dialogData = {};
+			this.modalData = {};
 			if (refresh) this.startSearch();
 		},
 		askRemove(data) {
