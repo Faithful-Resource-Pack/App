@@ -3,10 +3,10 @@
 		<div class="styles" v-html="pageStyles" />
 		<user-modal
 			:color="pageColor"
-			v-model="dialogOpen"
+			v-model="modalOpen"
 			@close="closeUserModal"
-			:add="dialogDataAdd"
-			:data="dialogData"
+			:add="modalAdd"
+			:data="modalData"
 			:roles="roles"
 		/>
 		<user-remove-confirm
@@ -58,7 +58,7 @@
 		</div>
 
 		<!-- main buttons -->
-		<v-btn block @click="openDialog()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
+		<v-btn block @click="openModal()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
 			{{ $root.lang().database.users.modal.add_user }}<v-icon right dark>mdi-plus</v-icon>
 		</v-btn>
 
@@ -87,7 +87,7 @@
 
 				<!-- action buttons -->
 				<v-list-item-action class="merged">
-					<v-btn icon @click="openDialog(item)">
+					<v-btn icon @click="openModal(item)">
 						<v-icon color="lighten-1">mdi-pencil</v-icon>
 					</v-btn>
 					<v-btn icon @click="askRemove(item)">
@@ -130,9 +130,9 @@ export default {
 			searchPromise: undefined,
 			users: [],
 			loading: false,
-			dialogOpen: false,
-			dialogData: {},
-			dialogDataAdd: false,
+			modalOpen: false,
+			modalData: {},
+			modalAdd: false,
 			remove: {
 				confirm: false,
 				data: {},
@@ -211,15 +211,15 @@ export default {
 			this.search = "";
 			this.startSearch();
 		},
-		openDialog(data = undefined) {
-			this.dialogData = data;
-			this.dialogDataAdd = data === undefined;
-			this.dialogOpen = true;
+		openModal(data = undefined) {
+			this.modalData = data;
+			this.modalAdd = data === undefined;
+			this.modalOpen = true;
 		},
 		closeUserModal(refresh = false) {
-			this.dialogOpen = false;
-			this.dialogData = {};
-			this.dialogDataAdd = false;
+			this.modalOpen = false;
+			this.modalData = {};
+			this.modalAdd = false;
 
 			if (refresh) this.update();
 		},

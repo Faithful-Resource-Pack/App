@@ -3,7 +3,7 @@
 		v-model="modalOpened"
 		max-width="800"
 		:disabled="!formValid"
-		:title="dialogTitle"
+		:title="modalTitle"
 		@close="$emit('close')"
 		@submit="send"
 	>
@@ -202,7 +202,7 @@ export default {
 		},
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.packs.submissions.add_submission
 				: this.$root.lang().database.packs.submissions.edit_submission;

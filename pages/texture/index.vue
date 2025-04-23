@@ -6,8 +6,8 @@
 			:textColor="textColorOnPage"
 			v-model="textureModalOpen"
 			@close="closeTextureModal"
-			:add="!Object.keys(dialogData).length"
-			:data="dialogData"
+			:add="!Object.keys(modalData).length"
+			:data="modalData"
 			:tags="tags"
 		/>
 		<new-texture-modal
@@ -182,31 +182,13 @@ export default {
 			search: "",
 			textureModalOpen: false,
 			renameVersionModalOpen: false,
-			dialogData: {},
+			modalData: {},
 			remove: {
 				confirm: false,
 				data: {},
 			},
 			selectTextureTag: "all",
 		};
-	},
-	computed: {
-		textureTags() {
-			return ["all", ...this.tags];
-		},
-		tag() {
-			if (this.$route.params.tag && this.textureTags.includes(this.$route.params.tag))
-				return this.$route.params.tag;
-			return undefined;
-		},
-		name() {
-			if (this.tag !== undefined) return this.$route.params.name;
-			return this.$route.params.tag;
-		},
-		versions() {
-			// saves a db request to reuse cached settings
-			return Object.values(settings.versions).flat();
-		},
 	},
 	methods: {
 		activeTag(t) {
@@ -236,7 +218,7 @@ export default {
 		},
 		openTextureModal(data = {}) {
 			this.textureModalOpen = true;
-			this.dialogData = data;
+			this.modalData = data;
 		},
 		closeTextureModal(refresh = false) {
 			this.textureModalOpen = false;
@@ -293,6 +275,24 @@ export default {
 			const textureId = data.id;
 			await axios.delete(`${this.$root.apiURL}/textures/${textureId}`, this.$root.apiOptions);
 			this.startSearch();
+		},
+	},
+	computed: {
+		textureTags() {
+			return ["all", ...this.tags];
+		},
+		tag() {
+			if (this.$route.params.tag && this.textureTags.includes(this.$route.params.tag))
+				return this.$route.params.tag;
+			return undefined;
+		},
+		name() {
+			if (this.tag !== undefined) return this.$route.params.name;
+			return this.$route.params.tag;
+		},
+		versions() {
+			// saves a db request to reuse cached settings
+			return Object.values(settings.versions).flat();
 		},
 	},
 	watch: {

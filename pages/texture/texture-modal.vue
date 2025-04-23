@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="dialogTitle" @close="onCancel" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
 		<use-modal
 			:color="color"
 			v-model="useModalOpen"
@@ -174,7 +174,7 @@ export default {
 		};
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.textures.add_texture
 				: this.$root.lang().database.textures.change_texture;

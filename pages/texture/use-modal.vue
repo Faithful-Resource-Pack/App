@@ -3,7 +3,7 @@
 		v-model="modalOpened"
 		max-width="800"
 		:disabled="!formValid"
-		:title="dialogTitle"
+		:title="modalTitle"
 		@close="$emit('close')"
 		@submit="send"
 	>
@@ -157,7 +157,7 @@ export default {
 		};
 	},
 	computed: {
-		dialogTitle() {
+		modalTitle() {
 			return this.add
 				? this.$root.lang().database.textures.uses.add_use
 				: this.$root.lang().database.textures.uses.change_use;

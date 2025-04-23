@@ -19,11 +19,11 @@
 			@screenshot="handleScreenshot"
 		/>
 		<modal-form
-			v-model="reasonDialog"
+			v-model="reasonModalOpen"
 			button-type="submit"
 			:title="this.$root.lang().addons.general.reason.title"
-			@close="() => handleReasonDialog(false)"
-			@submit="handleReasonDialog(true)"
+			@close="() => handleReasonModal(false)"
+			@submit="handleReasonModal(true)"
 		>
 			<v-form lazy-validation v-model="validForm" ref="reasonForm">
 				<p>{{ this.$root.lang().addons.general.reason.text }}</p>
@@ -53,7 +53,7 @@ export default {
 	data() {
 		return {
 			hidisabled: false,
-			reasonDialog: false,
+			reasonModalOpen: false,
 			reasonData: undefined,
 			reasonRules: [
 				() =>
@@ -88,18 +88,18 @@ export default {
 		},
 	},
 	methods: {
-		handleReasonDialog(submitted) {
+		handleReasonModal(submitted) {
 			const valid = this.$refs.reasonForm.validate();
 			if (!valid) return;
 
-			this.reasonDialog = false;
+			this.reasonModalOpen = false;
 			if (submitted) this.confirmSubmit(this.reasonData, false);
 			else this.reason = "";
 		},
 		handleSubmit(data, approve) {
 			if (!approve) {
 				this.reasonData = data;
-				this.reasonDialog = true;
+				this.reasonModalOpen = true;
 			} else {
 				this.confirmSubmit(data, approve);
 			}
