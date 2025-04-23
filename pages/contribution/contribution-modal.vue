@@ -10,6 +10,7 @@
 			<v-col class="flex-grow-0 flex-shrink-1" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
 				<contribution-form
 					v-model="contribs[selectedContrib]"
+					:packs="packs"
 					:contributors="contributors"
 					add
 					@newUser="
@@ -43,44 +44,16 @@
 					class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
 				>
 					<div>
-						<template v-for="(form, i) in Object.entries(contribs)">
-							<v-list-item
-								:key="form.formID"
-								class="pl-0"
-								@click.stop.prevent="() => changeOpenedForm(form.formID)"
-							>
-								<v-list-item-content :class="[i === selectedContrib ? 'primary--text' : '']">
-									<v-list-item-title>{{ panelLabels[form.formID] }}</v-list-item-title>
-									<v-list-item-subtitle class="text-truncate">
-										<span v-if="form.authors.length">
-											{{ formAuthorNames[form.formID] || "…" }}
-										</span>
-										<i v-else>{{ $root.lang().database.contributions.no_contributor_yet }}</i>
-									</v-list-item-subtitle>
-									<v-list-item-subtitle v-if="form.texture && form.texture.length">
-										<v-chip
-											class="mr-1 px-2"
-											x-small
-											v-for="range in form.texture"
-											:key="Array.isArray(range) ? range.join() : String(range)"
-										>
-											{{ "#" + (Array.isArray(range) ? range.join(" — #") : String(range)) }}
-										</v-chip>
-									</v-list-item-subtitle>
-								</v-list-item-content>
-
-								<v-list-item-action v-if="i > 0">
-									<v-icon
-										@click.stop.prevent="() => deleteContrib(i)"
-										:color="selectedContrib === form.formID ? 'primary' : ''"
-									>
-										mdi-delete
-									</v-icon>
-								</v-list-item-action>
-							</v-list-item>
-
-							<v-divider :key="`divider-${form.formID}`" v-if="i < contribs.length - 1" />
-						</template>
+						<summary-item
+							v-for="(contrib, i) in contribs"
+							:key="contrib.key"
+							:contrib="contrib"
+							:selected="selectedContrib === i"
+							:packToName="packToName"
+							:contributors="allContributors"
+							@select="changeOpenedForm(i)"
+							@delete="deleteContrib(i)"
+						/>
 					</div>
 				</v-list>
 				<v-btn
@@ -96,6 +69,7 @@
 		<contribution-form
 			v-else
 			v-model="contribs[selectedContrib]"
+			:packs="packs"
 			:contributors="contributors"
 			@newUser="
 				(l) => {
@@ -107,17 +81,15 @@
 </template>
 
 <script>
-import axios from "axios";
-import moment from "moment";
-
 import ModalForm from "@components/modal-form.vue";
 import ContributionForm from "./contribution-form.vue";
+import SummaryItem from "./summary-item.vue";
 
 const emptyContrib = () => ({
-	formID: crypto.randomUUID(),
+	key: crypto.randomUUID(),
 	date: new Date(new Date().setHours(0, 0, 0, 0)),
-	texture: 0,
-	pack: "",
+	texture: [],
+	pack: "faithful_32x",
 	authors: [],
 });
 
@@ -126,6 +98,7 @@ export default {
 	components: {
 		ModalForm,
 		ContributionForm,
+		SummaryItem,
 	},
 	props: {
 		value: {
@@ -154,17 +127,18 @@ export default {
 	data() {
 		return {
 			modalOpened: false,
-			contribs: [],
+			// need to initialize to prevent contribution-form reading empty array
+			contribs: [emptyContrib()],
+			selectedContrib: 0,
 			searchedContributors: [],
 			formAuthorNames: {},
-			selectedContrib: null,
 			closeOnSubmit: true,
 		};
 	},
 	methods: {
 		cloneContribution() {
 			const form = structuredClone(this.contribs[this.selectedContrib]);
-			form.formID = crypto.randomUUID();
+			form.key = crypto.randomUUID();
 			const newLen = this.contribs.push(form);
 
 			// make the opened form our created form
@@ -180,47 +154,19 @@ export default {
 			if (this.contribs.length <= 1) return;
 
 			this.contribs.splice(index, 1);
-			if (this.contribs.length >= this.selectedContrib) --this.selectedContrib;
+
+			// if we deleted the opened form, change it to the previous one
+			if (this.contribs.length === this.selectedContrib) --this.selectedContrib;
 		},
-		async contributorsFromIds(authorIds) {
-			if (!authorIds || authorIds.length === 0) return "";
-
-			const total = authorIds.length;
-
-			const alreadyAuthors = this.contributors.filter((c) => authorIds.includes(c.id));
-			const alreadyAuthorsIds = alreadyAuthors.map((c) => c.id);
-			const notAlreadyAuthorsIds = authorIds.filter((id) => !alreadyAuthorsIds.includes(id));
-			const searchIDsparam = notAlreadyAuthorsIds.join(",");
-			const notAlreadyAuthorsFound = !searchIDsparam
-				? []
-				: await axios
-						.get(`${this.$root.apiURL}/users/${searchIDsparam}`)
-						.then((res) => res.data)
-						.then((data) => (Array.isArray(data) ? data : [data]));
-
-			const allAuthorsFound = Array.from(new Set([...alreadyAuthors, ...notAlreadyAuthorsFound]));
-			const anonymousTotal = allAuthorsFound.filter((a) => !a.username).length;
-			const notAnonymous = allAuthorsFound.filter((a) => !!a.username);
-			const notAnonymousNames = notAnonymous.map((user) => user.username);
-			let allNames = notAnonymousNames;
-
-			if (anonymousTotal > 0) {
-				const anonymousStr = `${anonymousTotal} ${this.$root.lang().database.labels.anonymous}`;
-				allNames.splice(0, 0, anonymousStr); // insert first anonymous
-			}
-
-			allNames = Array.from(new Set(allNames));
-			return `[${total}]: ${allNames.join(", ")}`;
-		},
-		changeOpenedForm(formID) {
-			this.selectedContrib = formID;
+		changeOpenedForm(index) {
+			this.selectedContrib = index;
 		},
 		close() {
 			this.modalOpened = false;
 		},
 		async closeAndSubmit() {
 			const resultDataList = Object.values(this.contribs).map((f) => {
-				delete f.formID;
+				delete f.key;
 				return f;
 			});
 
@@ -245,23 +191,16 @@ export default {
 				return acc;
 			}, {});
 		},
-		panelLabels() {
-			// faster than using Object.entries + reduce
-			const acc = {};
-			for (const formID of Object.keys(this.contribs)) {
-				const form = this.contribs[formID];
-				acc[formID] = `${this.packToName[form.pack]} • ${moment(new Date(form.date)).format("ll")}`;
-			}
-			return acc;
-		},
 	},
 	watch: {
 		value(newValue) {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			this.contribs = [this.add ? emptyContrib() : { ...this.data, formID: crypto.randomUUID() }];
-			this.selectedContrib = 0;
+			this.$nextTick(() => {
+				this.selectedContrib = 0;
+				this.contribs = [this.add ? emptyContrib() : { ...this.data, key: crypto.randomUUID() }];
+			});
 			this.$emit("input", newValue);
 		},
 	},

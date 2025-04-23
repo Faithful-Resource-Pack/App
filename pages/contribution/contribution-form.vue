@@ -6,7 +6,7 @@
 				<quick-date-picker
 					:block="!add"
 					flat
-					v-model="content.date"
+					v-model="contrib.date"
 					:months="months"
 					:labels="$root.lang().datepicker"
 					style="margin-left: auto; margin-right: auto"
@@ -17,20 +17,20 @@
 					{{ $root.lang().database.contributions.modal.pack }}
 				</div>
 				<v-select
+					:items="packList"
+					item-text="label"
+					item-value="value"
 					class="mt-0 pt-0 mb-2"
 					hide-details
 					required
-					:items="content.packs"
-					item-text="label"
-					item-value="value"
-					v-model="content.pack"
+					v-model="contrib.pack"
 				/>
 				<div class="font-weight-medium text--secondary my-2">
 					{{ $root.lang().database.textures.modal.id }}
 				</div>
 				<multi-range-input
-					v-if="add && Array.isArray(content.texture)"
-					v-model="content.texture"
+					v-if="add && Array.isArray(contrib.texture)"
+					v-model="contrib.texture"
 					:multiple="add"
 					:labels="$root.lang().database.contributions.modal.id_field_errors"
 				/>
@@ -42,7 +42,7 @@
 						hide-details
 						class="mr-2 my-0 pt-0"
 						min="0"
-						v-model="content.texture"
+						v-model="contrib.texture"
 					/>
 					<v-btn icon @click="incrementTextureID">
 						<v-icon>mdi-chevron-up</v-icon>
@@ -57,12 +57,12 @@
 				<user-select
 					dense
 					:users="contributors"
-					v-model="content.authors"
+					v-model="contrib.authors"
 					class="my-0"
 					:limit="3"
 					:placeholder="$root.lang().database.contributions.modal.one_contributor"
 					:error-messages="
-						content.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
+						contrib.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
 					"
 					@newUser="(l) => this.$emit('newUser', l)"
 				/>
@@ -86,10 +86,6 @@ export default {
 		MultiRangeInput,
 	},
 	props: {
-		contributors: {
-			type: Array,
-			required: true,
-		},
 		value: {
 			type: Object,
 			required: true,
@@ -99,33 +95,49 @@ export default {
 			required: false,
 			default: false,
 		},
+		packs: {
+			type: Array,
+			required: true,
+		},
+		contributors: {
+			type: Array,
+			required: true,
+		},
 	},
 	data() {
 		return {
-			content: this.value,
+			contrib: this.value,
 			months: moment.monthsShort(),
 		};
 	},
 	methods: {
 		incrementTextureID() {
-			const incremented = Number(this.content.texture) + 1;
-			this.content.texture = String(incremented);
+			const incremented = Number(this.contrib.texture) + 1;
+			this.contrib.texture = String(incremented);
 		},
 		decrementTextureID() {
-			const decremented = Number(this.content.texture) - 1;
+			const decremented = Number(this.contrib.texture) - 1;
 			// min zero
-			this.content.texture = String(Math.max(decremented, 0));
+			this.contrib.texture = String(Math.max(decremented, 0));
+		},
+	},
+	computed: {
+		packList() {
+			return this.packs.map((p) => ({
+				label: p.name,
+				value: p.id,
+			}));
 		},
 	},
 	watch: {
 		value: {
 			handler(n, o) {
-				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
+				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.contrib = n;
 			},
 			immediate: true,
 			deep: true,
 		},
-		content: {
+		contrib: {
 			handler(n) {
 				this.$emit("input", n);
 			},
