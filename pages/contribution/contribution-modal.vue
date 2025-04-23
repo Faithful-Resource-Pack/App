@@ -4,7 +4,7 @@
 		:title="$root.lang().database.contributions.title"
 		max-width="800"
 		@close="close"
-		@submit="closeAndSubmit"
+		@submit="handleSubmit"
 	>
 		<v-row dense v-if="add">
 			<v-col class="flex-grow-0 flex-shrink-1" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
@@ -81,9 +81,12 @@
 </template>
 
 <script>
+import axios from "axios";
+
 import ModalForm from "@components/modal-form.vue";
 import ContributionForm from "./contribution-form.vue";
 import SummaryItem from "./summary-item.vue";
+import generateRange from "@helpers/generateRange";
 
 const emptyContrib = () => ({
 	key: crypto.randomUUID(),
@@ -162,23 +165,86 @@ export default {
 			this.selectedContrib = index;
 		},
 		close() {
-			this.modalOpened = false;
+			this.$emit("close", false);
 		},
-		async closeAndSubmit() {
-			const resultDataList = Object.values(this.contribs).map((f) => {
-				delete f.key;
-				return f;
-			});
+		handleSubmit() {
+			// the code is different enough for adding/creating it's worth having two functions
+			return this.add ? this.addContributions() : this.editContribution();
+		},
+		async addContributions() {
+			let success = true;
+			const finalContributions = [];
+			// can't use map since errors can be thrown
+			for (const contrib of this.contribs) {
+				// convert ranges into actual texture IDs
+				const generatedRange = generateRange(contrib.texture);
 
-			const dataPurified = JSON.parse(
-				JSON.stringify(this.multiple ? resultDataList : resultDataList[0]),
-			);
+				if (!generatedRange.length) {
+					this.$root
+						.jsonSnackBar(contrib)
+						.showSnackBar(
+							this.$root.lang().database.contributions.modal.id_field_errors.one_required,
+							"error",
+						);
+					console.error(contrib);
+					success = false;
+					break;
+				}
 
-			const wentWell = await this.onSubmit(dataPurified);
+				if (contrib.authors.length === 0) {
+					this.$root
+						.jsonSnackBar(contrib)
+						.showSnackBar(this.$root.lang().database.contributions.no_contributor_yet, "error");
+					console.error(contrib);
+					success = false;
+					break;
+				}
 
-			if (!wentWell) return; // do not close some data may be incorrect or one contribution failed to be sent
+				finalContributions.push(
+					// sanitizes + removes key
+					...generatedRange.map((textureID) => ({
+						date: new Date(contrib.date).getTime(),
+						pack: contrib.pack,
+						authors: contrib.authors,
+						texture: String(textureID),
+					})),
+				);
+			}
 
-			if (this.closeOnSubmit) this.modalOpened = false;
+			if (!success) return;
+
+			axios
+				.post(`${this.$root.apiURL}/contributions`, finalContributions, this.$root.apiOptions)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					if (this.closeOnSubmit) this.$emit("close", true);
+				})
+				.catch((err) => {
+					this.$root.showSnackBar(err, "error");
+					console.error(err);
+					return false;
+				});
+		},
+		async editContribution() {
+			const contrib = this.contribs[0];
+			axios
+				.put(
+					`${this.$root.apiURL}/contributions/${contrib.id}`,
+					{
+						date: new Date(contrib.date).getTime(),
+						pack: contrib.pack,
+						authors: contrib.authors,
+						texture: String(contrib.texture),
+					},
+					this.$root.apiOptions,
+				)
+				.then(() => {
+					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
+					if (this.closeOnSubmit) this.$emit("close", true);
+				})
+				.catch((err) => {
+					this.$root.showSnackBar(err, "error");
+				});
 		},
 	},
 	computed: {

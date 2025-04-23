@@ -150,18 +150,16 @@ import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
 import UserSelect from "@components/user-select.vue";
 import SmartGrid from "@components/smart-grid.vue";
 
-import generateRange from "@helpers/generateRange";
-
 const ALL_PACK_KEY = "all";
 
 export default {
+	name: "contribution-page",
 	components: {
 		SmartGrid,
 		ContributionModal,
 		UserSelect,
 		ContributionRemoveConfirm,
 	},
-	name: "contribution-page",
 	data() {
 		return {
 			// more convenient to have as object for retrieval
@@ -203,9 +201,10 @@ export default {
 			this.modalAdd = false;
 			this.modalData = contrib;
 		},
-		closeModal() {
+		closeModal(refresh = false) {
 			this.modalOpen = false;
 			this.modalData = null;
+			if (refresh) this.startSearch();
 		},
 		openDeleteModal(data) {
 			this.remove.data = data;
@@ -263,81 +262,6 @@ export default {
 				})
 				.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
-		async onNewSubmit(entries) {
-			if (!Array.isArray(entries)) return;
-
-			// prepare final data
-			const finalContributions = [];
-			for (const entry of entries) {
-				const generatedRange = generateRange(entry.texture);
-
-				if (generatedRange.length === 0) {
-					this.$root
-						.jsonSnackBar(entry)
-						.showSnackBar(
-							this.$root.lang().database.contributions.modal.id_field_errors.one_required,
-							"error",
-						);
-					console.error(entry);
-					return false;
-				}
-
-				if (entry.authors.length === 0) {
-					this.$root
-						.jsonSnackBar(entry)
-						.showSnackBar(this.$root.lang().database.contributions.no_contributor_yet, "error");
-					console.error(entry);
-					return false;
-				}
-
-				for (const textureID of generatedRange) {
-					const newContribution = {
-						date: new Date(entry.date).getTime(),
-						pack: entry.pack,
-						authors: entry.authors,
-						texture: String(textureID),
-					};
-					finalContributions.push(newContribution);
-				}
-			}
-
-			const wentWell = await axios
-				.post(`${this.$root.apiURL}/contributions`, finalContributions, this.$root.apiOptions)
-				.then(() => true)
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-					console.error(err);
-					return false;
-				});
-
-			if (wentWell) {
-				this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-				this.getAuthors();
-			}
-
-			return wentWell;
-		},
-		onChangeSubmit(data) {
-			axios
-				.put(
-					`${this.$root.apiURL}/contributions/${data.id}`,
-					{
-						date: data.date,
-						pack: data.pack,
-						authors: data.authors,
-						texture: String(data.texture),
-					},
-					this.$root.apiOptions,
-				)
-				.then(() => {
-					modalOpen = false;
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.startSearch();
-				})
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-				});
-		},
 		async getPacks() {
 			this.packs = (await axios.get(`${this.$root.apiURL}/packs/search?type=submission`)).data;
 			for (const pack of Object.values(this.packs)) {
@@ -354,24 +278,20 @@ export default {
 					.join("");
 			}
 		},
-		getAuthors() {
-			axios
-				.get(`${this.$root.apiURL}/contributions/authors`)
-				.then((res) => {
-					// assign the result sorted by username
-					this.contributors = res.data.sort((a, b) => {
-						if (!a.username && !b.username) return 0;
-						if (a.username && !b.username) return 1;
-						if (!a.username && b.username) return -1;
+		async getAuthors() {
+			const authors = (await axios.get(`${this.$root.apiURL}/contributions/authors`)).data;
+			// assign the result sorted by username
+			this.contributors = authors.sort((a, b) => {
+				if (!a.username && !b.username) return 0;
+				if (a.username && !b.username) return 1;
+				if (!a.username && b.username) return -1;
 
-						return a.username.toLowerCase() > b.username.toLowerCase()
-							? 1
-							: b.username.toLowerCase() > a.username.toLowerCase()
-								? -1
-								: 0;
-					});
-				})
-				.catch(console.trace);
+				return a.username.toLowerCase() > b.username.toLowerCase()
+					? 1
+					: b.username.toLowerCase() > a.username.toLowerCase()
+						? -1
+						: 0;
+			});
 		},
 	},
 	computed: {
@@ -387,9 +307,6 @@ export default {
 		},
 		selectedPackKeys() {
 			return Object.keys(this.selectedPacks).filter((k) => this.selectedPacks[k].selected);
-		},
-		onModalSubmit() {
-			return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit;
 		},
 	},
 	created() {

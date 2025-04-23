@@ -20,7 +20,7 @@
 					:items="packList"
 					item-text="label"
 					item-value="value"
-					class="mt-0 pt-0 mb-2"
+					class="mt-0 pt-0"
 					hide-details
 					required
 					v-model="contrib.pack"
