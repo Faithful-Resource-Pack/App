@@ -2,34 +2,10 @@
 	<canvas ref="canvasRef" @click="$emit('click')"></canvas>
 </template>
 
-<script lang="ts">
-interface Point {
-	/** left to right */
-	x: number;
-	/** top to bottom */
-	y: number;
-}
-
-interface Frame {
-	index: number;
-	frametime: number;
-	topLeft: Point;
-	topRight: Point;
-	bottomRight: Point;
-	bottomLeft: Point;
-}
-
-interface Animation {
-	frames?: (number | { index: number; time: number })[];
-	frametime?: number;
-	interpolate?: boolean;
-	height?: number;
-	width?: number;
-}
-
-class MCMETA {
-	animation: Animation = {};
-}
+<script>
+const emptyMcmeta = () => ({
+	animation: {},
+});
 
 export default {
 	name: "gallery-animation",
@@ -45,8 +21,9 @@ export default {
 		 * The MCMETA object for the animation
 		 */
 		mcmeta: {
-			type: MCMETA,
-			default: () => new MCMETA(),
+			type: Object,
+			required: false,
+			default: () => emptyMcmeta(),
 		},
 		/**
 		 * Determine if the animation should be tiled
@@ -59,21 +36,19 @@ export default {
 	},
 	data() {
 		return {
-			canvasRef: null as HTMLCanvasElement | null,
-			image: null as HTMLImageElement | null,
-			/**
-			 * Frames for the animation (not interpolated)
-			 */
-			frames: [] as Frame[],
+			canvasRef: null,
+			image: null,
+			/** Frames for the animation (not interpolated) */
+			frames: [],
 			/**
 			 * The drawn frames with interpolation taken into account
 			 * key being the base frame index, value being an array of frames
 			 * with the first frame being the base frame and the rest being
 			 * the interpolated frames
 			 */
-			framesDrawn: {} as Record<number, { frame: Frame; alpha: number }[]>,
+			drawnFrames: {},
 			currentTick: 1,
-			updateCanvasTimeout: null as ReturnType<typeof setTimeout> | null,
+			updateCanvasTimeout: null,
 		};
 	},
 	mounted() {
@@ -84,7 +59,7 @@ export default {
 		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
 	methods: {
-		loadImage(): void {
+		loadImage() {
 			const img = new Image();
 			img.setAttribute("crossorigin", "anonymous");
 			img.src = this.src;
@@ -104,19 +79,19 @@ export default {
 		 * to create the frames for the animation with the texture
 		 * coordinates for each frame
 		 */
-		getFrames(): void {
+		getFrames() {
 			if (!this.image || !this.mcmeta.animation) return;
 
 			const { animation } = this.mcmeta;
 
-			const frames: Frame[] = [];
+			const frames = [];
 			const frametime = Math.min(300, animation.frametime ?? 1);
 
 			const width = animation.width ?? this.image.width;
 			const height = animation.height ?? this.image.width;
 
 			// get the four corners of the frame
-			const getPoints = (index: number): Omit<Frame, "index" | "frametime"> => {
+			const getPoints = (index) => {
 				// when tiled, we shift the upper half left corner to the center (width/4, height/4)
 				// then we shift using the index to get the right frame
 				if (this.isTiled)
@@ -137,7 +112,7 @@ export default {
 
 			if (animation.frames) {
 				for (const frame of animation.frames) {
-					const partialFrame: Pick<Frame, "frametime" | "index"> = {
+					const partialFrame = {
 						frametime: 0,
 						index: 0,
 					};
@@ -147,7 +122,6 @@ export default {
 							partialFrame.index = frame.index;
 							partialFrame.frametime = Math.min(300, frame.time ?? 1);
 							break;
-
 						case "number":
 						default:
 							partialFrame.index = frame;
@@ -171,7 +145,7 @@ export default {
 				}
 			}
 
-			const framesToDraw: Record<number, { frame: Frame; alpha: number }[]> = {};
+			const framesToDraw = {};
 			let ticks = 1;
 
 			frames.forEach((frame, index) => {
@@ -191,9 +165,9 @@ export default {
 			});
 
 			this.frames = frames;
-			this.framesDrawn = framesToDraw;
+			this.drawnFrames = framesToDraw;
 		},
-		updateCanvas(): void {
+		updateCanvas() {
 			if (this.frames.length === 0) return;
 
 			// make sure the canvas is updated at most 20 times per second (50ms)
@@ -201,7 +175,7 @@ export default {
 
 			this.updateCanvasTimeout = setTimeout(() => {
 				let next = this.currentTick + 1;
-				if (this.framesDrawn[next] === undefined) next = 1;
+				if (this.drawnFrames[next] === undefined) next = 1;
 				this.currentTick = next;
 
 				this.updateCanvas();
@@ -209,13 +183,13 @@ export default {
 		},
 	},
 	watch: {
-		currentTick(): void {
-			if (Object.keys(this.framesDrawn).length === 0) return;
+		currentTick() {
+			if (Object.keys(this.drawnFrames).length === 0) return;
 
-			const framesDrawnAtTick = this.framesDrawn[this.currentTick];
+			const framesDrawnAtTick = this.drawnFrames[this.currentTick];
 			if (!framesDrawnAtTick) return;
 
-			const canvas = this.$refs.canvasRef as HTMLCanvasElement | null;
+			const canvas = this.$refs.canvasRef;
 			const context = canvas?.getContext("2d");
 
 			if (!context || !canvas || !this.image) return;
@@ -228,20 +202,17 @@ export default {
 			context.globalAlpha = 1;
 			context.imageSmoothingEnabled = false;
 
-			for (const frameDrawn of framesDrawnAtTick) {
-				const { frame: f, alpha } = frameDrawn;
+			for (const { frame, alpha } of framesDrawnAtTick) {
 				context.globalAlpha = alpha;
 
 				context.drawImage(
 					this.image,
-
 					// source x, source y
-					f.topLeft.x,
-					f.topLeft.y,
+					frame.topLeft.x,
+					frame.topLeft.y,
 					// source width, source height
-					f.topRight.x - f.topLeft.x,
-					f.bottomLeft.y - f.topLeft.y,
-
+					frame.topRight.x - frame.topLeft.x,
+					frame.bottomLeft.y - frame.topLeft.y,
 					// dest x, dest y, dest width, dest height
 					0,
 					0,

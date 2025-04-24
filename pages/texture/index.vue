@@ -67,7 +67,7 @@
 		<div class="my-2">
 			<v-text-field
 				v-model="search"
-				:append-outer-icon="search ? 'mdi-send' : undefined"
+				:append-outer-icon="search && 'mdi-send'"
 				filled
 				clear-icon="mdi-close"
 				clearable

@@ -1,11 +1,11 @@
 <template>
 	<div
-		:class="modal ? 'gallery-modal-texture' : undefined"
-		:style="exists ? {} : { background: 'rgba(0,0,0,0.3)' }"
+		:class="{ 'gallery-modal-texture': modal }"
+		:style="!exists && { background: 'rgba(0,0,0,0.3)' }"
 	>
 		<!-- send click events back to caller -->
 		<gallery-animation
-			v-if="isPlaying && exists && hasAnimation"
+			v-if="animated && exists && hasAnimation"
 			class="gallery-texture-image"
 			:src="imageURL"
 			:mcmeta="animation"
@@ -14,7 +14,7 @@
 		/>
 		<img
 			v-if="exists"
-			v-show="!hasAnimation || !isPlaying"
+			v-show="!hasAnimation || !animated"
 			class="gallery-texture-image gallery-animated-image"
 			ref="imageRef"
 			@error="textureNotFound"
@@ -52,7 +52,7 @@ export default {
 			type: String,
 			required: true,
 		},
-		isPlaying: {
+		animated: {
 			type: Boolean,
 			required: false,
 			default: true,

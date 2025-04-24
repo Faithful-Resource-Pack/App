@@ -26,7 +26,7 @@
 							:src="texture.url"
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
-							:isPlaying="isPlaying"
+							:animated="animated"
 							:animatedTextures="animatedTextures"
 						>
 							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
@@ -95,7 +95,7 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		isPlaying: {
+		animated: {
 			type: Boolean,
 			required: true,
 		},

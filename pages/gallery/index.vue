@@ -1,8 +1,8 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
-		<v-row no-gutters class="text-h4 py-4">
-			<v-col cols="6">{{ $root.lang().gallery.title }}</v-col>
-			<v-col class="ml-auto" cols="6" v-if="$root.isAdmin">
+		<v-row no-gutters>
+			<v-col cols="12" sm="6" class="text-h4 my-4">{{ $root.lang().gallery.title }}</v-col>
+			<v-col class="ml-auto my-4" cols="12" sm="6" v-if="$root.isAdmin">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
 			</v-col>
 		</v-row>
@@ -10,14 +10,15 @@
 		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
 
 		<v-row class="my-2">
-			<v-col cols="12" sm="6">
+			<!-- no point showing column slider on mobile -->
+			<v-col v-if="maxColumns > 1" cols="12" sm="6">
 				<v-slider
 					:label="$root.lang().gallery.max_items_per_row"
 					v-model="columns"
 					step="1"
 					thumb-label
 					ticks="always"
-					tick-size="4"
+					tick-size="3"
 					hide-details
 					min="1"
 					:max="maxColumns"
@@ -34,7 +35,7 @@
 		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
 		<v-text-field
 			v-model="current.search"
-			:append-icon="current.search ? 'mdi-send' : undefined"
+			:append-icon="current.search && 'mdi-send'"
 			filled
 			clear-icon="mdi-close"
 			clearable
@@ -70,7 +71,7 @@
 			v-model="columns"
 			:loading="loading"
 			:stretched="stretched"
-			:isPlaying="animated"
+			:animated="animated"
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
@@ -88,6 +89,7 @@
 			:textureID="modalTextureID"
 			:discordIDtoName="discordIDtoName"
 			:packToName="packToName"
+			:animated="animated"
 			:ignoreList="ignoreList"
 			@share="copyShareURL"
 			@close="closeModal"
@@ -350,7 +352,7 @@ export default {
 		stretched(n) {
 			localStorage.setItem(STRETCHED_KEY, n);
 		},
-		isPlaying(n) {
+		animated(n) {
 			localStorage.setItem(ANIMATED_KEY, n);
 		},
 		currentSort(n) {

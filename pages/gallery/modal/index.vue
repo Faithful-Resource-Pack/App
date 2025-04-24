@@ -22,6 +22,7 @@
 							:src="url.image"
 							:textureID="textureID"
 							:ignoreList="ignoreList"
+							:animated="animated"
 							:mcmeta="textureObj.mcmeta"
 							@click="openFullscreenPreview(url.image)"
 						>
@@ -111,6 +112,11 @@ export default {
 		packToName: {
 			type: Object,
 			required: true,
+		},
+		animated: {
+			type: Boolean,
+			required: false,
+			default: true,
 		},
 		// ignore list provided (already filtered by edition)
 		ignoreList: {
