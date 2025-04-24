@@ -17,6 +17,12 @@ declare module "vue/types/vue" {
 		roles: string[];
 	}
 
+	type SnackBarCallback = (
+		message: string | AxiosResponse,
+		color?: string, // can be vuetify color also
+		timeout?: number,
+	) => void;
+
 	// inject methods being used
 	interface Vue {
 		readonly selectedLang: string;
@@ -31,13 +37,8 @@ declare module "vue/types/vue" {
 		log(...objs: any[]): void;
 		lang(): typeof strings;
 		lang(key: string): string;
-		jsonSnackBar(json?: string): any;
-		showSnackBar(
-			message: string | AxiosResponse,
-			color?: string,
-			timeout?: number,
-			json?: any,
-		): void;
+		jsonSnackBar(json?: string): { showSnackBar: SnackBarCallback };
+		showSnackBar: SnackBarCallback;
 		logout(): void;
 		compileMarkdown(rawText: string): string;
 		addAccessTokenListener(listener: (token: string) => any): void;

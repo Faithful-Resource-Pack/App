@@ -62,7 +62,7 @@
 					:error-messages="
 						contrib.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
 					"
-					@newUser="(l) => this.$emit('newUser', l)"
+					@newUser="(users) => this.$emit('newUser', users)"
 				/>
 			</v-col>
 		</v-row>

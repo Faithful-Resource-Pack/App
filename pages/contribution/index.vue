@@ -63,8 +63,8 @@
 					small-chips
 					clearable
 					@newUser="
-						(l) => {
-							contributors = l;
+						(users) => {
+							contributors = users;
 						}
 					"
 				/>

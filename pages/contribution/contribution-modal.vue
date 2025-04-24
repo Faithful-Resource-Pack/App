@@ -13,11 +13,7 @@
 					:packs="packs"
 					:contributors="contributors"
 					add
-					@newUser="
-						(l) => {
-							searchedContributors = l;
-						}
-					"
+					@newUser="addNewUsers"
 				/>
 			</v-col>
 			<v-col
@@ -71,11 +67,7 @@
 			v-model="contribs[selectedContrib]"
 			:packs="packs"
 			:contributors="contributors"
-			@newUser="
-				(l) => {
-					searchedContributors = l;
-				}
-			"
+			@newUser="addNewUsers"
 		/>
 	</modal-form>
 </template>
@@ -164,6 +156,9 @@ export default {
 		changeOpenedForm(index) {
 			this.selectedContrib = index;
 		},
+		addNewUsers(users) {
+			this.searchedContributors = users;
+		},
 		close() {
 			this.$emit("close", false);
 		},
@@ -176,28 +171,27 @@ export default {
 			const finalContributions = [];
 			// can't use map since errors can be thrown
 			for (const contrib of this.contribs) {
+				const snackBar = this.$root.jsonSnackBar(contrib);
+
 				// convert ranges into actual texture IDs
 				const generatedRange = generateRange(contrib.texture);
 
 				if (!generatedRange.length) {
-					this.$root
-						.jsonSnackBar(contrib)
-						.showSnackBar(
-							this.$root.lang().database.contributions.modal.id_field_errors.one_required,
-							"error",
-						);
+					snackBar.showSnackBar(
+						this.$root.lang().database.contributions.modal.id_field_errors.one_required,
+						"error",
+					);
 					console.error(contrib);
 					success = false;
-					break;
 				}
 
 				if (contrib.authors.length === 0) {
-					this.$root
-						.jsonSnackBar(contrib)
-						.showSnackBar(this.$root.lang().database.contributions.no_contributor_yet, "error");
+					snackBar.showSnackBar(
+						this.$root.lang().database.contributions.no_contributor_yet,
+						"error",
+					);
 					console.error(contrib);
 					success = false;
-					break;
 				}
 
 				finalContributions.push(
@@ -211,6 +205,7 @@ export default {
 				);
 			}
 
+			// all contributions must be valid
 			if (!success) return;
 
 			axios

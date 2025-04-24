@@ -76,12 +76,12 @@ export default {
 
 			const total = knownAuthors.length + anonymousCount;
 
-			if (anonymousCount > 0) {
-				const anonymousStr = `${anonymousCount} ${this.$root.lang().database.anonymous}`;
-				return `[${total}]: ${anonymousStr}, ${knownAuthors.join(", ")}`;
-			}
+			const formattedAuthors =
+				anonymousCount > 0
+					? [`${anonymousCount} ${this.$root.lang().database.anonymous}`, ...knownAuthors]
+					: knownAuthors;
 
-			return `[${total}]: ${knownAuthors.join(", ")}`;
+			return `[${total}]: ${formattedAuthors.join(", ")}`;
 		},
 	},
 };
