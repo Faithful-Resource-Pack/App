@@ -74,7 +74,6 @@
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
-			:animatedTextures="animatedTextures"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
 			:maxColumns="maxColumns"
@@ -166,8 +165,6 @@ export default {
 			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
-			// list of animated textures ids
-			animatedTextures: [],
 			abortController: new AbortController(),
 		};
 	},
@@ -365,10 +362,6 @@ export default {
 		},
 	},
 	created() {
-		axios.get(`${this.$root.apiURL}/textures/animated`).then((res) => {
-			this.animatedTextures = res.data.map((el) => el.toString());
-		});
-
 		axios
 			.get(
 				"https://raw.githubusercontent.com/Faithful-Resource-Pack/CompliBot/main/json/ignored_textures.json",

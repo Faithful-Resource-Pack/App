@@ -99,10 +99,6 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		animatedTextures: {
-			type: Array,
-			required: true,
-		},
 		textures: {
 			type: Array,
 			required: true,
@@ -142,6 +138,8 @@ export default {
 			displayedResults: 1,
 			// go to the top arrow
 			scrollY: 0,
+			// list of animated textures ids
+			animatedTextures: [],
 		};
 	},
 	methods: {
@@ -244,6 +242,10 @@ export default {
 		},
 	},
 	created() {
+		axios.get(`${this.$root.apiURL}/textures/animated`).then((res) => {
+			this.animatedTextures = res.data.map((el) => el.toString());
+		});
+
 		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
 			this.loadedContributions = Object.values(res.data)
 				.filter((contribution) => contribution.pack && contribution.texture)

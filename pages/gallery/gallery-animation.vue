@@ -3,18 +3,20 @@
 </template>
 
 <script lang="ts">
+interface Point {
+	/** left to right */
+	x: number;
+	/** top to bottom */
+	y: number;
+}
+
 interface Frame {
 	index: number;
 	frametime: number;
-
-	/** top left */
-	p0: { x: number; y: number };
-	/** top right */
-	p1: { x: number; y: number };
-	/** bottom right */
-	p2: { x: number; y: number };
-	/** bottom left */
-	p3: { x: number; y: number };
+	topLeft: Point;
+	topRight: Point;
+	bottomRight: Point;
+	bottomLeft: Point;
 }
 
 interface Animation {
@@ -119,17 +121,17 @@ export default {
 				// then we shift using the index to get the right frame
 				if (this.isTiled)
 					return {
-						p0: { x: width / 4, y: height / 4 + height * index },
-						p1: { x: width / 4 + width / 2, y: height / 4 + height * index },
-						p2: { x: width / 4 + width / 2, y: height / 4 + height / 2 + height * index },
-						p3: { x: width / 4, y: height / 4 + height / 2 + height * index },
+						topLeft: { x: width / 4, y: height / 4 + height * index },
+						topRight: { x: width / 4 + width / 2, y: height / 4 + height * index },
+						bottomRight: { x: width / 4 + width / 2, y: height / 4 + height / 2 + height * index },
+						bottomLeft: { x: width / 4, y: height / 4 + height / 2 + height * index },
 					};
 
 				return {
-					p0: { x: 0, y: height * index },
-					p1: { x: width, y: height * index },
-					p2: { x: width, y: height * (index + 1) },
-					p3: { x: 0, y: height * (index + 1) },
+					topLeft: { x: 0, y: height * index },
+					topRight: { x: width, y: height * index },
+					bottomRight: { x: width, y: height * (index + 1) },
+					bottomLeft: { x: 0, y: height * (index + 1) },
 				};
 			};
 
@@ -234,11 +236,11 @@ export default {
 					this.image,
 
 					// source x, source y
-					f.p0.x,
-					f.p0.y,
+					f.topLeft.x,
+					f.topLeft.y,
 					// source width, source height
-					f.p1.x - f.p0.x,
-					f.p3.y - f.p0.y,
+					f.topRight.x - f.topLeft.x,
+					f.bottomLeft.y - f.topLeft.y,
 
 					// dest x, dest y, dest width, dest height
 					0,
