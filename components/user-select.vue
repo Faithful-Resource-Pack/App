@@ -1,6 +1,5 @@
 <template>
 	<v-autocomplete
-		v-bind="$attrs"
 		v-model="content"
 		:items="userList"
 		:loading="users.length == 0 || isSearching"
@@ -10,17 +9,18 @@
 		multiple
 		:dense="dense"
 		chips
+		v-bind="$attrs"
 	>
 		<!-- SELECTED THINGY -->
 		<template #selection="data">
 			<v-chip
+				v-if="!limit || data.index < limit"
 				:key="data.item.id"
-				v-bind="data.attrs"
 				:input-value="data.selected"
 				:disabled="data.disabled"
 				close
+				v-bind="data.attrs"
 				@click:close="remove(data.item.id)"
-				v-if="!limit || data.index < limit"
 			>
 				<v-avatar :class="{ accent: data.item.uuid == undefined, 'text--white': true }" left>
 					<template v-if="data.item.uuid != undefined">

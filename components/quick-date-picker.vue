@@ -1,26 +1,25 @@
 <template>
 	<v-card
-		v-bind="$attrs"
 		:disabled="disabled"
 		:color="flat ? '' : 'rgba(0,0,0,0.165)'"
 		:flat="flat"
 		:class="['qd-datepicker', flat ? '' : 'pt-2 px-4 pb-4']"
 		:style="style"
+		v-bind="$attrs"
 	>
-		<div class="font-weight-medium text--secondary mb-2">{{ labels.year }}</div>
+		<div class="font-weight-medium text--secondary mt-3">{{ labels.year }}</div>
 		<v-text-field
 			class="mt-0"
 			placeholder="Regular"
 			flat
 			hide-details
-			dense
 			type="number"
 			:value="year"
 			:max="thisYear"
 			min="0"
 			@input="(e) => newYear(e)"
 		/>
-		<div class="font-weight-medium text--secondary my-2">{{ labels.month }}</div>
+		<div class="font-weight-medium text--secondary my-3">{{ labels.month }}</div>
 		<v-row class="qd-months" dense>
 			<v-col cols="2" v-for="i in 12" :key="`qd-month-col-${i}`">
 				<v-btn
@@ -37,7 +36,7 @@
 				</v-btn>
 			</v-col>
 		</v-row>
-		<div class="font-weight-medium text--secondary my-2">{{ labels.day }}</div>
+		<div class="font-weight-medium text--secondary my-3">{{ labels.day }}</div>
 		<div class="qd-days">
 			<v-btn
 				v-for="i in 31"

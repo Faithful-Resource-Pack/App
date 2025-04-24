@@ -1,16 +1,18 @@
 <template>
 	<v-container>
 		<contribution-modal
-			ref="mod"
+			v-model="modalOpen"
+			:data="modalData"
+			:add="modalAdd"
+			:packs="packs"
 			:contributors="contributors"
-			:onSubmit="onModalSubmit"
-			:multiple="multiple"
+			@close="closeModal"
 		/>
 		<contribution-remove-confirm
 			v-model="remove.confirm"
 			:data="remove.data"
 			:contributors="contributors"
-			@close="close"
+			@close="closeDeleteModal"
 		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
@@ -20,7 +22,7 @@
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
-				<v-btn block color="primary" @click="openAdd()">
+				<v-btn block color="primary" @click="addContribution">
 					{{ $root.lang().database.contributions.add_manually }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
@@ -30,17 +32,17 @@
 		<h2 class="my-2 text-h5">{{ $root.lang().database.contributions.pack_filter }}</h2>
 		<div class="d-flex flex-wrap ma-n1">
 			<v-card
-				v-for="packObj in form.packs"
-				:key="packObj.key"
+				v-for="(packObj, key) in selectedPacks"
+				:key="key"
 				class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
 			>
 				<v-checkbox
 					v-model="packObj.selected"
-					:label="packObj.value"
-					:id="packObj.key"
+					:label="packObj.label"
+					:id="key"
 					hide-details
 					class="ma-0 pt-0"
-					@change="(val) => onPackChange(val, packObj.key)"
+					@change="(val) => onPackChange(key, val)"
 				/>
 			</v-card>
 		</div>
@@ -61,8 +63,8 @@
 					small-chips
 					clearable
 					@newUser="
-						(l) => {
-							this.contributors = l;
+						(users) => {
+							contributors = users;
 						}
 					"
 				/>
@@ -74,7 +76,7 @@
 					outlined
 					style="height: 100%"
 					type="search"
-					v-model="textureSearch"
+					v-model="searchValue"
 					class="pt-0 my-0"
 					height="100%"
 					:placeholder="$root.lang().database.textures.search_texture"
@@ -92,7 +94,7 @@
 
 		<div class="mb-2 text-h5">{{ $root.lang().database.contributions.contribution_result }}</div>
 
-		<smart-grid v-if="search.search_results.length" :items="search.search_results" track="id">
+		<smart-grid v-if="searchResults.length" :items="searchResults" track="id">
 			<template #default="{ item }">
 				<v-list-item-avatar tile class="texture-preview">
 					<a :href="`/gallery?show=${item.texture}`" target="_blank">
@@ -126,7 +128,7 @@
 					<v-btn icon @click="editContribution(item)">
 						<v-icon color="lighten-1">mdi-pencil</v-icon>
 					</v-btn>
-					<v-btn icon @click="deleteContribution(item)">
+					<v-btn icon @click="openDeleteModal(item)">
 						<v-icon color="red lighten-1">mdi-delete</v-icon>
 					</v-btn>
 				</v-list-item-action>
@@ -148,137 +150,106 @@ import ContributionRemoveConfirm from "./contribution-remove-confirm.vue";
 import UserSelect from "@components/user-select.vue";
 import SmartGrid from "@components/smart-grid.vue";
 
-import generateRange from "@helpers/generateRange";
+const ALL_PACK_KEY = "all";
 
 export default {
+	name: "contribution-page",
 	components: {
 		SmartGrid,
 		ContributionModal,
 		UserSelect,
 		ContributionRemoveConfirm,
 	},
-	name: "contribution-page",
 	data() {
 		return {
-			maxheight: 170,
-			form: {
-				packs: [], // [{ key: 'all', selected: true }]
+			// more convenient to have as object for retrieval
+			selectedPacks: {
+				[ALL_PACK_KEY]: {
+					key: ALL_PACK_KEY,
+					// reuse gallery translation because it's the same thing
+					label: this.$root.lang().gallery.all,
+					selected: true,
+				},
 			},
-			all_packs: "all",
-			all_packs_display: "All",
 			contributors: [],
 			selectedContributors: [],
+			packs: [],
 			packToCode: {},
 			logos: {},
-			search: {
-				searching: false,
-				search_results: [],
-			},
-			textureSearch: "",
-			newSubmit: false,
+			searching: false,
+			searchResults: [],
+			searchValue: "",
+			modalOpen: false,
+			modalAdd: false,
+			modalData: null,
 			remove: {
 				confirm: false,
 				data: {},
 			},
 		};
 	},
-	computed: {
-		queryToIds() {
-			if (this.$route.query.ids) return this.$route.query.ids.split("-");
-
-			// use the logged user as default selected contributor
-			return [];
-		},
-		idsToQuery() {
-			return {
-				ids: this.selectedContributors.join("-"),
-			};
-		},
-		searchDisabled() {
-			const resSelected = this.form.packs.reduce((a, c) => a || c.selected, false) === false;
-			const invalidTextSearch =
-				this.textureSearch.length < 3 && Number.isNaN(Number.parseInt(this.textureSearch));
-			const result =
-				this.search.searching ||
-				resSelected ||
-				(this.selectedContributors.length === 0 && invalidTextSearch);
-			return result;
-		},
-		multiple() {
-			return this.newSubmit;
-		},
-		packsSelected() {
-			return this.form.packs.filter((entry) => entry.selected);
-		},
-		packsToChoose() {
-			return (
-				this.form.packs
-					.filter((entry) => entry.key !== this.all_packs)
-					// format into list-suitable format
-					.map(({ value, key }) => ({ label: value, value: key }))
-			);
-		},
-		onModalSubmit() {
-			return this.newSubmit ? this.onNewSubmit : this.onChangeSubmit;
-		},
-	},
 	methods: {
 		// expose for inline use
 		moment,
-		getPacks() {
-			axios.get(`${this.$root.apiURL}/packs/search?type=submission`).then((res) => {
-				Object.values(res.data).forEach((r) => {
-					this.addPack(r.id, r.name);
-					this.logos[r.id] = r.logo;
-				});
-			});
+		addContribution() {
+			this.modalOpen = true;
+			this.modalAdd = true;
+			this.modalData = null;
 		},
-		getAuthors() {
-			axios
-				.get(`${this.$root.apiURL}/contributions/authors`)
-				.then((res) => {
-					// assign the result, but sorted by username
-					this.contributors = res.data.sort((a, b) => {
-						if (!a.username && !b.username) return 0;
-						if (a.username && !b.username) return 1;
-						if (!a.username && b.username) return -1;
+		editContribution(contrib) {
+			this.modalOpen = true;
+			this.modalAdd = false;
+			this.modalData = contrib;
+		},
+		closeModal(refresh = false) {
+			this.modalOpen = false;
+			this.modalData = null;
+			if (refresh) this.startSearch();
+		},
+		openDeleteModal(data) {
+			this.remove.data = data;
+			this.remove.confirm = true;
+		},
+		closeDeleteModal(refresh = false) {
+			this.remove.confirm = false;
+			if (refresh) this.startSearch();
+		},
+		onPackChange(key, isSelected) {
+			if (key === ALL_PACK_KEY) {
+				if (isSelected) {
+					// just checked all, uncheck others
+					for (const key in Object.keys(this.selectedPacks))
+						this.selectedPacks[key].selected = false;
+					this.selectedPacks[ALL_PACK_KEY].selected = true;
+				} else this.onPackDeselect(key);
+				return;
+			}
+			// other pack
+			if (isSelected) {
+				this.selectedPacks[ALL_PACK_KEY].selected = false;
+			} else this.onPackDeselect(key);
+		},
+		onPackDeselect(key) {
+			// do nothing, at least one is selected
+			if (this.selectedPackKeys.length > 0) return;
 
-						return a.username.toLowerCase() > b.username.toLowerCase()
-							? 1
-							: b.username.toLowerCase() > a.username.toLowerCase()
-								? -1
-								: 0;
-					});
-				})
-				.catch(console.trace);
-		},
-		addPack(name, value, selected = false) {
-			this.form.packs.push({
-				key: name,
-				value: value,
-				selected,
-			});
-		},
-		openAdd() {
-			this.newSubmit = true;
+			// needs to be changed on next tick, cannot change same data on same cycle
 			this.$nextTick(() => {
-				this.$refs.mod.open(undefined, this.packsToChoose, true);
+				this.selectedPacks[key].selected = true;
 			});
 		},
 		startSearch() {
 			if (this.searchDisabled) return;
-			this.search.searching = true;
-			Promise.all([
-				axios.get(
-					`${this.$root.apiURL}/contributions/search
-	?packs=${this.packsSelected.map((r) => r.key).join("-")}
-	&users=${this.selectedContributors.join("-")}
-	&search=${this.textureSearch}`,
-				),
-				axios.get(`${this.$root.apiURL}/textures/raw`),
-			])
+			this.searching = true;
+
+			const url = new URL(`${this.$root.apiURL}/contributions/search`);
+			url.searchParams.set("packs", this.selectedPackKeys.join("-"));
+			url.searchParams.set("users", this.selectedContributors.join("-"));
+			url.searchParams.set("search", this.searchValue);
+
+			Promise.all([axios.get(url.toString()), axios.get(`${this.$root.apiURL}/textures/raw`)])
 				.then(([contributions, textures]) => {
-					this.search.search_results = contributions.data
+					this.searchResults = contributions.data
 						.sort((a, b) => b.date - a.date)
 						.map((c) => ({
 							...c,
@@ -286,174 +257,68 @@ export default {
 							name: textures.data[c.texture]?.name || "",
 						}));
 				})
-				.finally(() => (this.search.searching = false))
+				.finally(() => {
+					this.searching = false;
+				})
 				.catch((err) => this.$root.showSnackBar(err, "error"));
 		},
-		editContribution(contrib) {
-			this.newSubmit = false;
-			this.$refs.mod.open(contrib, this.packsToChoose, false);
-		},
-		/**
-		 * @typedef MultipleContribution
-		 * @type {object}
-		 * @property {string[]} authors Author id array
-		 * @property {string[]?} packs Resource pack name array
-		 * @property {string} pack Contribution resource pack
-		 * @property {string} date Contribution date
-		 * @property {Array<number|[number, number]>} texture Texture range array
-		 */
-		/**
-		 * @param {Array<MultipleContribution>} entries Input entries
-		 * @returns {Promise<void>}
-		 */
-		async onNewSubmit(entries) {
-			if (!Array.isArray(entries)) return;
-
-			// prepare final data
-			const finalContributions = [];
-			for (const entry of entries) {
-				const generatedRange = generateRange(entry.texture);
-
-				if (generatedRange.length === 0) {
-					this.$root
-						.jsonSnackBar(entry)
-						.showSnackBar(
-							this.$root.lang().database.contributions.modal.id_field_errors.one_required,
-							"error",
-						);
-					console.error(entry);
-					return false;
-				}
-
-				if (entry.authors.length === 0) {
-					this.$root
-						.jsonSnackBar(entry)
-						.showSnackBar(this.$root.lang().database.contributions.no_contributor_yet, "error");
-					console.error(entry);
-					return false;
-				}
-
-				for (const textureID of generatedRange) {
-					const newContribution = {
-						date: new Date(entry.date).getTime(),
-						pack: entry.pack,
-						authors: entry.authors,
-						texture: String(textureID),
-					};
-					finalContributions.push(newContribution);
-				}
-			}
-
-			const wentWell = await axios
-				.post(`${this.$root.apiURL}/contributions`, finalContributions, this.$root.apiOptions)
-				.then(() => true)
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-					console.error(err);
-					return false;
-				});
-
-			if (wentWell) {
-				this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-				this.getAuthors();
-			}
-
-			return wentWell;
-		},
-		onPackChange(selected, key) {
-			if (key === this.all_packs) {
-				if (selected) {
-					// just checked all, uncheck others
-					// better to make all of them not selected instead of replacing data
-					// more stable if more data in entries
-					this.form.packs.forEach((entry) => {
-						if (entry.key === this.all_packs) return;
-
-						entry.selected = false;
-					});
-				} else {
-					this.onPackUnselected(key);
-				}
-			} else {
-				// other pack
-				if (selected) {
-					// uncheck all
-					const index_all = this.form.packs.findIndex((entry) => entry.key === this.all_packs);
-					this.form.packs[index_all].selected = false;
-				} else {
-					this.onPackUnselected(key);
-				}
+		async getPacks() {
+			this.packs = (await axios.get(`${this.$root.apiURL}/packs/search?type=submission`)).data;
+			for (const pack of Object.values(this.packs)) {
+				this.selectedPacks[pack.id] = {
+					key: pack.id,
+					label: pack.name,
+					selected: false,
+				};
+				this.logos[pack.id] = pack.logo;
+				this.packToCode[pack.id] = pack.name
+					.split(" ")
+					// Classic Faithful 32x Jappa -> CF32J
+					.map((el) => (isNaN(Number(el[0])) ? el[0].toUpperCase() : el.match(/\d+/g)?.[0]))
+					.join("");
 			}
 		},
-		onPackUnselected(key) {
-			// ensure at least one selected
-			if (this.packsSelected.length === 0) {
-				const index_entry = this.form.packs.findIndex((entry) => entry.key === key);
+		async getAuthors() {
+			const authors = (await axios.get(`${this.$root.apiURL}/contributions/authors`)).data;
+			// assign the result sorted by username
+			this.contributors = authors.sort((a, b) => {
+				if (!a.username && !b.username) return 0;
+				if (a.username && !b.username) return 1;
+				if (!a.username && b.username) return -1;
 
-				// needs to be changed on next tick, cannot change same data on same cycle
-				this.$nextTick(() => {
-					this.$set(this.form.packs[index_entry], "selected", true);
-				});
-			} else {
-				// do nothing, at least one is selected
-			}
+				return a.username.toLowerCase() > b.username.toLowerCase()
+					? 1
+					: b.username.toLowerCase() > a.username.toLowerCase()
+						? -1
+						: 0;
+			});
 		},
-		onChangeSubmit(data) {
-			axios
-				.put(
-					`${this.$root.apiURL}/contributions/${data.id}`,
-					{
-						date: data.date,
-						pack: data.pack,
-						authors: data.authors,
-						texture: String(data.texture),
-					},
-					this.$root.apiOptions,
-				)
-				.then(() => {
-					this.$refs.mod.close();
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.startSearch();
-				})
-				.catch((err) => {
-					this.$root.showSnackBar(err, "error");
-				});
+	},
+	computed: {
+		searchInvalid() {
+			if (this.searchValue.length === 0) return true;
+
+			// if search is numeric it can be fewer than three characters
+			return this.searchValue.length < 3 && isNaN(Number(this.searchValue));
 		},
-		deleteContribution(data) {
-			this.remove.data = data;
-			this.remove.confirm = true;
+		searchDisabled() {
+			const noFilters = this.selectedContributors.length === 0 && this.searchInvalid;
+			return this.searching || noFilters;
 		},
-		close(refresh = false) {
-			this.remove.confirm = false;
-			if (refresh) this.startSearch();
+		selectedPackKeys() {
+			return Object.keys(this.selectedPacks).filter((k) => this.selectedPacks[k].selected);
 		},
 	},
 	created() {
-		axios.get(`${this.$root.apiURL}/packs/raw`).then((res) => {
-			this.packToCode = Object.values(res.data).reduce((acc, cur) => {
-				acc[cur.id] = cur.name
-					.split(" ")
-					// Classic Faithful 32x Programmer Art -> CF32PA
-					.map((el) => (isNaN(Number(el[0])) ? el[0].toUpperCase() : el.match(/\d+/g)?.[0]))
-					.join("");
-				return acc;
-			}, {});
-		});
-		this.selectedContributors = this.queryToIds;
-		this.addPack(this.all_packs, this.all_packs_display, true);
-	},
-	mounted() {
 		this.getPacks();
 		this.getAuthors();
 	},
 	watch: {
 		contributors: {
-			handler(contributors) {
+			handler(newValue) {
 				// FIX BUG WHERE USERS WITH NO CONTRIBUTIONS GET INCLUDED IN SEARCH
-				const contributors_id = contributors.map((c) => c.id);
-				this.selectedContributors = this.selectedContributors.filter((c) =>
-					contributors_id.includes(c),
-				);
+				const contributorIDs = new Set(newValue.map((c) => c.id));
+				this.selectedContributors = this.selectedContributors.filter((c) => contributorIDs.has(c));
 			},
 			deep: true,
 		},

@@ -1,49 +1,49 @@
 <template>
-	<v-form :disabled="disabled" lazy-validation ref="contributionForm">
-		<v-row :no-gutters="multiple">
-			<v-col cols="12" :sm="multiple ? false : 6">
+	<!-- wrapped by contribution-modal -->
+	<v-form lazy-validation>
+		<v-row>
+			<v-col cols="12" :sm="add ? false : 6">
 				<quick-date-picker
-					:block="!multiple"
+					:block="!add"
 					flat
-					:disabled="disabled"
-					v-model="content.date"
+					v-model="contrib.date"
 					:months="months"
 					:labels="$root.lang().datepicker"
 					style="margin-left: auto; margin-right: auto"
 				/>
 			</v-col>
-			<v-col cols="12" :sm="multiple ? false : 6">
-				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang().database.contributions.modal.pack }}
-				</div>
+			<v-col cols="12" :sm="add ? false : 6">
 				<v-select
-					class="mt-0 pt-0 mb-2"
-					hide-details
-					required
-					:items="content.packs"
+					:label="$root.lang().database.contributions.modal.pack"
+					:items="packList"
 					item-text="label"
 					item-value="value"
-					v-model="content.pack"
+					hide-details
+					required
+					v-model="contrib.pack"
 				/>
-				<div class="font-weight-medium text--secondary my-2">
-					{{ $root.lang().database.textures.modal.id }}
-				</div>
+				<!-- must manually handle v-model to prevent type errors -->
 				<multi-range-input
-					v-if="multiple && Array.isArray(content.texture)"
-					v-model="content.texture"
-					:disabled="disabled"
-					:multiple="multiple"
-					:labels="$root.lang().database.contributions.modal.id_field_errors"
+					v-if="add"
+					:value="Array.isArray(contrib.texture) ? contrib.texture : []"
+					@input="
+						(value) => {
+							contrib.texture = value;
+						}
+					"
+					:label="$root.lang().database.contributions.modal.texture_ids"
+					hide-details
+					:errors="$root.lang().database.contributions.modal.id_field_errors"
 				/>
-				<div class="d-flex align-center mb-2" v-else>
+				<div class="d-flex align-center" v-else>
 					<v-text-field
+						v-model="contrib.texture"
+						:label="$root.lang().database.contributions.modal.texture_id"
 						required
-						dense
 						type="number"
 						hide-details
-						class="mr-2 my-0 pt-0"
+						class="mr-2"
 						min="0"
-						v-model="content.texture"
 					/>
 					<v-btn icon @click="incrementTextureID">
 						<v-icon>mdi-chevron-up</v-icon>
@@ -52,19 +52,17 @@
 						<v-icon>mdi-chevron-down</v-icon>
 					</v-btn>
 				</div>
-				<div class="font-weight-medium text--secondary mb-2">
-					{{ $root.lang().database.contributions.contributors }}
-				</div>
 				<user-select
-					dense
 					:users="contributors"
-					v-model="content.authors"
-					class="my-0"
+					v-model="contrib.authors"
+					:label="$root.lang().database.contributions.contributors"
 					:limit="3"
+					small-chips
 					:placeholder="$root.lang().database.contributions.modal.one_contributor"
 					:error-messages="
-						content.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
+						contrib.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []
 					"
+					@newUser="(users) => this.$emit('newUser', users)"
 				/>
 			</v-col>
 		</v-row>
@@ -86,49 +84,58 @@ export default {
 		MultiRangeInput,
 	},
 	props: {
-		contributors: {
-			required: true,
-			type: Array,
-		},
 		value: {
+			type: Object,
 			required: true,
 		},
-		disabled: {
+		add: {
 			type: Boolean,
 			required: false,
-			default: () => false,
+			default: false,
 		},
-		multiple: {
-			type: Boolean,
+		packs: {
+			type: Array,
+			required: true,
+		},
+		contributors: {
+			type: Array,
 			required: true,
 		},
 	},
 	data() {
 		return {
-			content: this.value,
+			contrib: this.value,
 			months: moment.monthsShort(),
 		};
 	},
 	methods: {
 		incrementTextureID() {
-			const incremented = Number(this.content.texture) + 1;
-			this.content.texture = String(incremented);
+			const incremented = Number(this.contrib.texture) + 1;
+			this.contrib.texture = String(incremented);
 		},
 		decrementTextureID() {
-			const decremented = Number(this.content.texture) - 1;
+			const decremented = Number(this.contrib.texture) - 1;
 			// min zero
-			this.content.texture = String(Math.max(decremented, 0));
+			this.contrib.texture = String(Math.max(decremented, 0));
+		},
+	},
+	computed: {
+		packList() {
+			return this.packs.map((p) => ({
+				label: p.name,
+				value: p.id,
+			}));
 		},
 	},
 	watch: {
 		value: {
 			handler(n, o) {
-				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.content = n;
+				if (n !== undefined && JSON.stringify(n) !== JSON.stringify(o)) this.contrib = n;
 			},
 			immediate: true,
 			deep: true,
 		},
-		content: {
+		contrib: {
 			handler(n) {
 				this.$emit("input", n);
 			},
