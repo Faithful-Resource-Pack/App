@@ -1,6 +1,11 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
-		<div class="text-h4 py-4">{{ $root.lang().gallery.title }}</div>
+		<v-row no-gutters class="text-h4 py-4">
+			<v-col cols="6">{{ $root.lang().gallery.title }}</v-col>
+			<v-col class="ml-auto" cols="6" v-if="$root.isAdmin">
+				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
+			</v-col>
+		</v-row>
 
 		<gallery-options v-model="current" :packToName="packToName" @updateRoute="updateRoute" />
 
@@ -15,14 +20,14 @@
 					tick-size="4"
 					hide-details
 					min="1"
-					max="16"
+					:max="maxColumns"
 				/>
 			</v-col>
-			<v-col cols="12" :sm="$root.isAdmin ? 3 : 6">
+			<v-col cols="12" v-if="stretchable" sm="3">
 				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
 			</v-col>
-			<v-col cols="12" sm="3" v-if="$root.isAdmin">
-				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
+			<v-col cols="12" :sm="stretchable ? 3 : 6">
+				<v-switch :label="$root.lang().gallery.animated_switcher" v-model="animated" />
 			</v-col>
 		</v-row>
 
@@ -43,9 +48,7 @@
 
 		<v-row class="py-3 pb-0">
 			<v-col cols="12" sm="9" v-if="requestTime > 0 && textures.length">
-				<p class="text--secondary">
-					{{ resultMessage }}
-				</p>
+				<p class="text--secondary">{{ resultMessage }}</p>
 			</v-col>
 			<v-col cols="12" sm="9" v-else>
 				<br />
@@ -67,11 +70,13 @@
 			v-model="columns"
 			:loading="loading"
 			:stretched="stretched"
+			:isPlaying="animated"
 			:textures="textures"
 			:pack="current.pack"
 			:ignoreList="ignoreList"
 			:discordIDtoName="discordIDtoName"
 			:sort="currentSort"
+			:maxColumns="maxColumns"
 			:error="error"
 			@open="newShareURL"
 			@openNewTab="openModalInNewTab"
@@ -100,6 +105,7 @@ import GalleryModal from "./modal/index.vue";
 
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
+const ANIMATED_KEY = "gallery_animated";
 const SORT_KEY = "gallery_sort";
 
 export default {
@@ -114,6 +120,8 @@ export default {
 		return {
 			// whether the page shouldn't be stretched to the full width
 			stretched: localStorage.getItem(STRETCHED_KEY) === "true",
+			// whether to show animated textures
+			animated: localStorage.getItem(ANIMATED_KEY) !== "false",
 			// number of columns you want to display
 			columns: Number(localStorage.getItem(COLUMN_KEY) || 7),
 			// whether search is loading
@@ -288,6 +296,21 @@ export default {
 		modalTextureID() {
 			return this.$route.query.show;
 		},
+		maxColumns() {
+			const { xs, sm, md, lg } = this.$vuetify.breakpoint;
+
+			// mostly arbitrary values, feel free to change these
+			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
+			if (xs) return 1; // one for mobile
+			if (sm) return 4;
+			if (md) return 8;
+			if (lg) return 12;
+			return 16;
+		},
+		// hide the stretched switcher when the screen is smaller than the size when not stretched
+		stretchable() {
+			return this.$vuetify.breakpoint.lgAndUp;
+		},
 	},
 	watch: {
 		"$route.params": {
@@ -327,8 +350,15 @@ export default {
 		stretched(n) {
 			localStorage.setItem(STRETCHED_KEY, n);
 		},
+		isPlaying(n) {
+			localStorage.setItem(ANIMATED_KEY, n);
+		},
 		currentSort(n) {
 			localStorage.setItem(SORT_KEY, n);
+		},
+		stretchable(n) {
+			// turn off stretching if screen doesn't support it
+			if (!n) this.stretched = false;
 		},
 	},
 	created() {
@@ -346,6 +376,7 @@ export default {
 				return acc;
 			}, {});
 		});
+
 		axios.get(`${this.$root.apiURL}/contributions/authors`).then((res) => {
 			this.authors = res.data.reduce((acc, cur) => {
 				acc[cur.id] = cur;

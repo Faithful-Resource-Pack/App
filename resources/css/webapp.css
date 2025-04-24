@@ -657,6 +657,10 @@ code {
 	cursor: pointer;
 }
 
+.gallery-animated-image {
+	aspect-ratio: 1;
+}
+
 .gallery-texture-background > .v-image__image {
 	image-rendering: pixelated;
 	background-repeat: repeat;

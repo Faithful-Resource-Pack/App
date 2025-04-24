@@ -22,6 +22,7 @@
 							:src="url.image"
 							:textureID="textureID"
 							:ignoreList="ignoreList"
+							:mcmeta="textureObj.mcmeta"
 							@click="openFullscreenPreview(url.image)"
 						>
 							<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
@@ -35,20 +36,22 @@
 			<div class="flex-grow-1 pa-2">
 				<v-tabs id="info-tabs" v-model="selectedTab" :show-arrows="false">
 					<v-tabs-slider />
-					<v-tab v-for="tab in tabs" :key="tab" style="text-transform: uppercase">
+
+					<v-tab v-for="tab in displayedTabs" :key="tab" style="text-transform: uppercase">
 						{{ tab }}
 					</v-tab>
 				</v-tabs>
 
 				<v-tabs-items v-model="selectedTab">
-					<v-tab-item v-for="tab in tabs" :key="tab">
-						<texture-tab v-if="tab === tabs.information" :textureObj="textureObj" />
+					<v-tab-item v-for="tab in displayedTabs" :key="tab">
+						<texture-tab v-if="tab === displayedTabs.information" :textureObj="textureObj" />
 						<author-tab
-							v-if="tab === tabs.authors"
+							v-if="tab === displayedTabs.authors"
 							:contributions="textureObj.contributions"
 							:packToName="packToName"
 							:discordIDtoName="discordIDtoName"
 						/>
+						<animation-tab v-if="tab === displayedTabs.animation" :mcmeta="textureObj.mcmeta" />
 					</v-tab-item>
 				</v-tabs-items>
 			</div>
@@ -61,6 +64,7 @@ import axios from "axios";
 import GalleryImage from "../gallery-image.vue";
 import TextureTab from "./texture-tab.vue";
 import AuthorTab from "./author-tab.vue";
+import AnimationTab from "./animation-tab.vue";
 import FullscreenPreview from "@components/fullscreen-preview.vue";
 import FullscreenModal from "@components/fullscreen-modal.vue";
 
@@ -88,6 +92,7 @@ export default {
 		FullscreenPreview,
 		FullscreenModal,
 		TextureTab,
+		AnimationTab,
 		AuthorTab,
 	},
 	props: {
@@ -118,7 +123,6 @@ export default {
 		return {
 			textureObj: {},
 			selectedTab: null,
-			tabs: this.$root.lang().gallery.modal.tabs,
 			modalOpened: false,
 			clickedImage: "",
 			previewOpen: false,
@@ -158,6 +162,17 @@ export default {
 		modalTitle() {
 			if (this.loading) return this.$root.lang().global.loading;
 			return `[#${this.textureID}] ${this.textureObj.texture.name}`;
+		},
+		displayedTabs() {
+			const availableTabs = ["information", "authors"];
+
+			// only show animation tab if there's an mcmeta
+			if (Object.keys(this.textureObj.mcmeta).length) availableTabs.push("animation");
+
+			return availableTabs.reduce((acc, cur) => {
+				acc[cur] = this.$root.lang().gallery.modal.tabs[cur];
+				return acc;
+			}, {});
 		},
 	},
 	watch: {

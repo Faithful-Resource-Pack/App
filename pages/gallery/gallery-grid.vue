@@ -26,6 +26,8 @@
 							:src="texture.url"
 							:textureID="texture.textureID"
 							:ignoreList="ignoreList"
+							:isPlaying="isPlaying"
+							:animatedTextures="animatedTextures"
 						>
 							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
 							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
@@ -93,6 +95,10 @@ export default {
 			type: Boolean,
 			required: true,
 		},
+		isPlaying: {
+			type: Boolean,
+			required: true,
+		},
 		textures: {
 			type: Array,
 			required: true,
@@ -114,6 +120,10 @@ export default {
 			type: String,
 			required: true,
 		},
+		maxColumns: {
+			type: Number,
+			required: true,
+		},
 		error: {
 			type: String,
 			required: false,
@@ -128,6 +138,8 @@ export default {
 			displayedResults: 1,
 			// go to the top arrow
 			scrollY: 0,
+			// list of animated textures ids
+			animatedTextures: [],
 		};
 	},
 	methods: {
@@ -180,17 +192,6 @@ export default {
 				},
 			};
 		},
-		maxColumns() {
-			const { xs, sm, md, lg, xl } = this.$vuetify.breakpoint;
-
-			// completely arbitrary values, feel free to change these
-			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
-			if (xs) return 1;
-			if (sm) return 4;
-			if (md) return 8;
-			if (lg) return 12;
-			if (xl) return 16;
-		},
 		shownColumns() {
 			return Math.min(this.columns, this.maxColumns);
 		},
@@ -241,6 +242,10 @@ export default {
 		},
 	},
 	created() {
+		axios.get(`${this.$root.apiURL}/textures/animated`).then((res) => {
+			this.animatedTextures = res.data.map((el) => el.toString());
+		});
+
 		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
 			this.loadedContributions = Object.values(res.data)
 				.filter((contribution) => contribution.pack && contribution.texture)

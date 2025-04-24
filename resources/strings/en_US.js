@@ -547,9 +547,10 @@ export default {
 		},
 	},
 	gallery: {
-		stretched_switcher: "Full width view",
-		share_link_copied_to_clipboard: "Share link copied to clipboard",
 		max_items_per_row: "Max items per row",
+		stretched_switcher: "Full width view",
+		animated_switcher: "Play animated textures",
+		share_link_copied_to_clipboard: "Share link copied to clipboard",
 		title: "Gallery",
 		loading_message: "Loading…",
 		error_message: {
@@ -588,11 +589,15 @@ export default {
 			tabs: {
 				information: "information",
 				authors: "authors",
+				animation: "animation",
 			},
 			info: {
 				texture: "Texture",
 				uses: "Uses",
 				paths: "Paths",
+			},
+			animation: {
+				texture_mcmeta: "MCMETA",
 			},
 			data: {
 				contribution_id: "Contribution ID",

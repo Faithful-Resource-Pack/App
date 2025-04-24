@@ -120,11 +120,16 @@ export default {
 			});
 		},
 		tagList() {
-			return this.options.tags.map((t) => ({
-				// tags are already title cased
-				label: t === "all" ? this.$root.lang().gallery.all : t,
-				value: t,
-			}));
+			return (
+				this.options.tags
+					// filter out java and bedrock tags as they're already covered by edition
+					.filter((t) => !["java", "bedrock"].includes(t.toLowerCase()))
+					.map((t) => ({
+						// tags are already title cased
+						label: t === "all" ? this.$root.lang().gallery.all : t,
+						value: t,
+					}))
+			);
 		},
 	},
 	created() {
