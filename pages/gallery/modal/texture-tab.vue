@@ -1,25 +1,23 @@
 <template>
 	<div>
 		<div class="py-3">
-			<h2>{{ $root.lang().gallery.modal.info.texture }}</h2>
+			<h2 class="mb-3">{{ $root.lang().gallery.modal.info.texture }}</h2>
 			<v-data-table
 				dense
 				:headers="headers.texture"
 				:items="texture"
 				class="elevation-1"
-				style="margin-top: 10px"
 				hide-default-footer
 				disable-pagination
 			/>
 		</div>
 		<div class="py-3">
-			<h2>{{ $root.lang().gallery.modal.info.uses }}</h2>
+			<h2 class="mb-3">{{ $root.lang().gallery.modal.info.uses }}</h2>
 			<v-data-table
 				dense
 				:headers="headers.uses"
 				:items="uses"
 				class="elevation-1"
-				style="margin-top: 10px"
 				hide-default-footer
 				disable-pagination
 			>
@@ -31,21 +29,25 @@
 			</v-data-table>
 		</div>
 		<div class="py-3">
-			<h2>{{ $root.lang().gallery.modal.info.paths }}</h2>
-			<v-data-table
-				dense
-				:headers="headers.paths"
-				:items="paths"
-				class="elevation-1"
-				style="margin-top: 10px"
-				hide-default-footer
-				disable-pagination
-			>
-				<template #item.versions="{ value }">
-					<!-- title property gives alt text -->
-					<span :title="value.join(', ')">{{ formatPathVersions(value) }}</span>
-				</template>
-			</v-data-table>
+			<h2 class="mb-3">{{ $root.lang().gallery.modal.info.paths }}</h2>
+			<div v-for="edition in editions" :key="edition">
+				<p class="title text-button text--secondary mb-0">
+					{{ edition.toTitleCase() }}
+				</p>
+				<v-data-table
+					dense
+					:headers="headers.paths"
+					:items="paths[edition]"
+					class="elevation-1"
+					hide-default-footer
+					disable-pagination
+				>
+					<template #item.versions="{ value }">
+						<!-- title property gives alt text -->
+						<span :title="value.join(', ')">{{ formatPathVersions(value) }}</span>
+					</template>
+				</v-data-table>
+			</div>
 		</div>
 	</div>
 </template>
@@ -133,14 +135,30 @@ export default {
 			];
 		},
 		uses() {
-			return Object.values(this.textureObj.uses);
+			return this.textureObj.uses;
 		},
 		paths() {
-			return this.textureObj.paths.map((path) => ({
-				...path,
-				// sort() mutates the original array so we need to clone it
-				versions: Array.from(path.versions).sort(versionSorter),
-			}));
+			return this.textureObj.paths
+				.map((path) => ({
+					...path,
+					// sort() mutates the original array so we need to clone it
+					versions: Array.from(path.versions).sort(versionSorter),
+				}))
+				.reduce((acc, cur) => {
+					const edition = this.uses.find((u) => u.id === cur.use)?.edition;
+					if (!edition) return acc;
+					acc[edition] ||= [];
+					acc[edition].push(cur);
+					return acc;
+				}, {});
+		},
+		editions() {
+			// faster to search path keys than use .some with uses
+			const availableEditions = Object.keys(this.paths);
+			console.log(availableEditions);
+
+			// trick to make sure editions are sorted
+			return settings.editions.filter((e) => availableEditions.includes(e));
 		},
 	},
 };

@@ -124,7 +124,7 @@ export default {
 		editions: {
 			type: Array,
 			required: false,
-			default: () => ["java", "bedrock"],
+			default: () => settings.editions,
 		},
 		textureID: {
 			type: String,

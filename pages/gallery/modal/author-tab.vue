@@ -1,10 +1,11 @@
 <template>
 	<div>
 		<div v-for="{ category, packs } in authorCategories" :key="category" class="py-3">
-			<h2>{{ category }}</h2>
-			<v-row>
-				<v-col v-for="pack in packs" :key="pack" cols="12" sm="6" class="ma-0">
-					<p class="title text-button text--secondary">
+			<h2 class="mb-3">{{ category }}</h2>
+			<!-- only need dense for lg since the mobile layout is horizontal anyways -->
+			<v-row :dense="$vuetify.breakpoint.lg">
+				<v-col v-for="pack in packs" :key="pack" cols="12" sm="6">
+					<p class="title text-button text--secondary mb-0">
 						{{ packToName[pack] }}
 					</p>
 					<v-data-table
@@ -12,7 +13,6 @@
 						:headers="headers"
 						:items="getContributions(pack)"
 						class="elevation-1"
-						style="margin-top: 10px"
 						hide-default-footer
 						disable-pagination
 						:no-data-text="$root.lang().gallery.modal.no_contributions"
