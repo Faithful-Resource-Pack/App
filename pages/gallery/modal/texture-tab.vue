@@ -155,7 +155,6 @@ export default {
 		editions() {
 			// faster to search path keys than use .some with uses
 			const availableEditions = Object.keys(this.paths);
-			console.log(availableEditions);
 
 			// trick to make sure editions are sorted
 			return settings.editions.filter((e) => availableEditions.includes(e));
