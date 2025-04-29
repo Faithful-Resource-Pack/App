@@ -10,10 +10,9 @@
 			</div>
 		</div>
 		<div class="gallery-textures-container mx-auto" :style="gridStyles">
-			<!-- sort method in key ensures rerenders change the image (this took me an hour) -->
+			<!-- sort method in key ensures rerenders change the image (this took me an hour to figure out) -->
 			<div
-				v-for="(texture, index) in sortedTextures"
-				v-if="index <= displayedResults"
+				v-for="texture in displayedTextures"
 				:key="sort + texture.textureID"
 				class="gallery-texture-in-container"
 				@click.exact.stop="$emit('open', texture.textureID)"
@@ -175,6 +174,9 @@ export default {
 		},
 		sortedTextures() {
 			return Array.from(this.textures).sort(this.sortMethods[this.sort]);
+		},
+		displayedTextures() {
+			return this.sortedTextures.slice(0, this.displayedResults);
 		},
 		sortMethods() {
 			// needs to be computed because we're using outer data for a closure
