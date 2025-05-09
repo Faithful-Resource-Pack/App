@@ -1186,7 +1186,7 @@ body .database-list-avatar {
 
 .qd-days {
 	display: grid;
-	grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+	grid-template-columns: repeat(7, 1fr);
 	grid-gap: 4px;
 }
 
