@@ -448,7 +448,7 @@ export default {
 			heading: "General",
 			title: {
 				label: "Post title",
-				placeholder: "Faithful Smart Fridge – Alpha 1",
+				placeholder: "Faithful Smart Fridge: Alpha 1",
 			},
 			permalink: {
 				label: "Permalink",

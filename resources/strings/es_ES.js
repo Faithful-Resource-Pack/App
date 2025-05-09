@@ -436,7 +436,7 @@ export default {
 			heading: "General",
 			title: {
 				label: "Título de la publicación",
-				placeholder: "Faithful Smart Fridge – Alfa 1",
+				placeholder: "Faithful Smart Fridge: Alfa 1",
 			},
 			permalink: {
 				label: "Enlace permanente",
