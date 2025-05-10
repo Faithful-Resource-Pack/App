@@ -5,7 +5,7 @@
 				{{ $root.lang().global.json_editor.import_data }}
 			</h2>
 			<prism-editor
-				class="my-editor json-modal-editor"
+				class="json-editor json-modal-editor"
 				v-model="jsonData"
 				:highlight="highlighter"
 				line-numbers

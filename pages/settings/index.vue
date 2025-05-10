@@ -9,7 +9,7 @@
 		<div class="my-5 text-h5">{{ $root.lang().settings.label.edit_raw }}</div>
 		<prism-editor
 			style="max-height: 600px"
-			class="ma-0 my-editor mb-2"
+			class="ma-0 json-editor mb-2"
 			v-model="jsonText"
 			:highlight="highlighter"
 			line-numbers

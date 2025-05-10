@@ -3,7 +3,7 @@
 		<h2>{{ $root.lang().gallery.modal.animation.texture_mcmeta }}</h2>
 		<prism-editor
 			style="margin-top: 10px"
-			class="my-editor"
+			class="json-editor"
 			v-model="jsonData"
 			:highlight="highlighter"
 			line-numbers
