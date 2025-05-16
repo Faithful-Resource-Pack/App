@@ -35,6 +35,8 @@ export default {
 			.get(`${this.$root.apiURL}/posts/${this.id}`, this.$root.apiOptions)
 			.then((res) => {
 				this.post = res.data;
+				// set default values for optional fields
+				this.post.discontinued ||= false;
 			})
 			.catch((err) => {
 				console.error(err);

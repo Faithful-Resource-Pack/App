@@ -463,6 +463,10 @@ export default {
 				label: "Post release date",
 				placeholder: "YYYY-MM-DD",
 			},
+			discontinued: {
+				label: "Discontinued",
+				hint: "If checked, the post will be marked as discontinued.",
+			},
 			description: {
 				label: "Post description",
 				hint: "You can use HTML markup to improve your description!",

@@ -37,15 +37,27 @@
 			persistent-placeholder
 		/>
 
-		<v-text-field
-			required
-			clearable
-			v-model="formData.date"
-			:label="$root.lang().posts.general.date.label"
-			:placeholder="$root.lang().posts.general.date.placeholder"
-			persistent-placeholder
-		/>
-
+		<div class="row">
+			<div class="col pb-0">
+				<v-text-field
+					required
+					clearable
+					v-model="formData.date"
+					:label="$root.lang().posts.general.date.label"
+					:placeholder="$root.lang().posts.general.date.placeholder"
+					persistent-placeholder
+				/>
+			</div>
+			<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
+				<div class="col">
+					<v-checkbox
+						v-model="formData.discontinued"
+						:label="$root.lang().posts.general.discontinued.label"
+						:hint="$root.lang().posts.general.discontinued.hint"
+					/>
+				</div>
+			</div>
+		</div>
 		<v-textarea
 			clearable
 			v-model="formData.description"

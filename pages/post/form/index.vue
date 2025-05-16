@@ -89,6 +89,7 @@ export default {
 			};
 
 			if (!formData.header_img) delete formData.header_img;
+			if (!formData.discontinued) delete formData.discontinued;
 
 			let prom;
 			if (this.add) {

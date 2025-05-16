@@ -22,6 +22,7 @@ export default {
 				description: "",
 				permalink: "",
 				header_img: "",
+				discontinued: false,
 				changelog: {},
 				downloads: {},
 			},
