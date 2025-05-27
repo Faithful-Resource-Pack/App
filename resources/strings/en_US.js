@@ -116,6 +116,10 @@ export default {
 			import_data: "Import JSON data",
 			parse_json: "Parse JSON to data",
 		},
+		text_field_tabs: {
+			write: "Write",
+			preview: "Preview",
+		},
 	},
 	database: {
 		search: "Search",
@@ -340,22 +344,6 @@ export default {
 					name_unavailable: "This name is already taken!",
 				},
 			},
-			description: {
-				label: "Add-on description",
-				hint: "You can use Markdown formatting to improve your description!",
-				rules: {
-					description_required: "The description is required.",
-					description_too_big: "Description must be less than %s characters.",
-					description_too_small: "Description must be at least %s characters long.",
-				},
-			},
-			embed_description: {
-				label: "Embed description",
-				hint: "Description seen when sharing the add-on on social media",
-				rules: {
-					too_big: "Embed description must be less than %s characters.",
-				},
-			},
 			slug: {
 				label: "Add-on slug",
 				hint: "Changing this will break old links!",
@@ -369,6 +357,25 @@ export default {
 			authors: {
 				label: "Select authors for the add-on",
 				hint: "Any author can modify the add-on once it is submitted! | If you can't find someone in the list, contact a manager or developer",
+			},
+		},
+		info: {
+			title: "Information",
+			description: {
+				placeholder: "Add-on description",
+				hint: "You can use Markdown formatting to improve your description!",
+				rules: {
+					description_required: "The description is required.",
+					description_too_big: "Description must be less than %s characters.",
+					description_too_small: "Description must be at least %s characters long.",
+				},
+			},
+			embed_description: {
+				label: "Embed description",
+				hint: "Description seen when sharing the add-on on social media",
+				rules: {
+					too_big: "Embed description must be less than %s characters.",
+				},
 			},
 		},
 		images: {
@@ -468,7 +475,7 @@ export default {
 				hint: "If checked, the post will be marked as discontinued.",
 			},
 			description: {
-				label: "Post description",
+				placeholder: "Post description",
 				hint: "You can use HTML markup to improve your description!",
 			},
 		},

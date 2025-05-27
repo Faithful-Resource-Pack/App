@@ -58,30 +58,27 @@
 				</div>
 			</div>
 		</div>
-		<v-textarea
-			clearable
-			v-model="formData.description"
-			:label="$root.lang().posts.general.description.label"
-			:hint="$root.lang().posts.general.description.hint"
-		/>
 
-		<!-- eslint-disable vue/no-v-text-v-html-on-component -->
-		<v-card
-			id="addon-description-preview"
-			v-if="formData.description && formData.description.length > 0"
-			class="pa-3"
-			:elevation="0"
-			v-html="sanitize(formData.description)"
+		<tabbed-text-field
+			v-model="formData.description"
+			type="html"
+			:textareaProps="{
+				clearable: true,
+				placeholder: $root.lang().posts.general.description.placeholder,
+				hint: $root.lang().posts.general.description.hint,
+			}"
 		/>
-		<!-- eslint-enable vue/no-v-text-v-html-on-component -->
 	</div>
 </template>
 
 <script>
-import DOMPurify from "dompurify";
+import TabbedTextField from "@components/tabbed-text-field.vue";
 
 export default {
 	name: "general-tab",
+	components: {
+		TabbedTextField,
+	},
 	props: {
 		value: {
 			type: Object,
@@ -92,9 +89,6 @@ export default {
 		return {
 			formData: {},
 		};
-	},
-	methods: {
-		sanitize: DOMPurify.sanitize,
 	},
 	watch: {
 		value: {

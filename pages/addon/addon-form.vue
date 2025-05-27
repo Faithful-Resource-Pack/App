@@ -130,35 +130,26 @@
 					@item-delete="onDeleteCarousel"
 				/>
 
-				<div class="text-h5">{{ $root.lang().addons.titles.details }}</div>
+				<div class="text-h5 mb-3">{{ $root.lang().addons.titles.info }}</div>
 
 				<!-- Addon description -->
-				<v-textarea
-					clearable
+				<tabbed-text-field
 					v-model="submittedForm.description"
-					:rules="form.description.rules"
-					:counter="form.description.counter.max"
-					:label="$root.lang().addons.general.description.label"
-					:hint="$root.lang().addons.general.description.hint"
+					:textareaProps="{
+						clearable: true,
+						rules: form.description.rules,
+						counter: form.description.counter.max,
+						hint: $root.lang().addons.info.description.hint,
+						placeholder: $root.lang().addons.info.description.placeholder,
+					}"
 				/>
-
-				<!-- Addon description preview (using marked and sanitized)-->
-				<!-- eslint-disable vue/no-v-text-v-html-on-component -->
-				<v-card
-					id="addon-description-preview"
-					v-if="submittedForm.description && submittedForm.description.length > 0"
-					class="pa-3"
-					:elevation="0"
-					v-html="$root.compileMarkdown(submittedForm.description)"
-				/>
-				<!-- eslint-enable vue/no-v-text-v-html-on-component -->
 
 				<!-- Embed description -->
 				<v-text-field
 					clearable
 					v-model="submittedForm.embed_description"
-					:label="$root.lang().addons.general.embed_description.label"
-					:hint="$root.lang().addons.general.embed_description.hint"
+					:label="$root.lang().addons.info.embed_description.label"
+					:hint="$root.lang().addons.info.embed_description.hint"
 					:counter="form.embed_description.counter.max"
 					persistent-hint
 				/>
@@ -304,6 +295,7 @@ import UserSelect from "@components/user-select.vue";
 import ImagePreviewer from "./image-previewer.vue";
 import FullscreenPreview from "@components/fullscreen-preview.vue";
 import DropZone from "@components/drop-zone.vue";
+import TabbedTextField from "@components/tabbed-text-field.vue";
 
 export default {
 	name: "addon-form",
@@ -312,6 +304,7 @@ export default {
 		ImagePreviewer,
 		FullscreenPreview,
 		DropZone,
+		TabbedTextField,
 	},
 	props: {
 		addonNew: {
@@ -393,12 +386,12 @@ export default {
 				description: {
 					rules: [
 						(desc) =>
-							!!desc || this.$root.lang().addons.general.description.rules.description_required,
+							!!desc || this.$root.lang().addons.info.description.rules.description_required,
 						(desc) =>
 							(desc && desc.length <= this.form.description.counter.max) ||
 							this.$root
 								.lang()
-								.addons.general.description.rules.description_too_big.replace(
+								.addons.info.description.rules.description_too_big.replace(
 									"%s",
 									this.form.description.counter.max,
 								),
@@ -406,7 +399,7 @@ export default {
 							(desc && desc.length >= this.form.description.counter.min) ||
 							this.$root
 								.lang()
-								.addons.general.description.rules.description_too_small.replace(
+								.addons.info.description.rules.description_too_small.replace(
 									"%s",
 									this.form.description.counter.min,
 								),
@@ -422,7 +415,7 @@ export default {
 							(desc && desc.length > this.form.embed_description.counter.max) ||
 							this.$root
 								.lang()
-								.addons.general.embed_description.rules.too_big.replace(
+								.addons.info.embed_description.rules.too_big.replace(
 									"%s",
 									this.form.embed_description.counter.max,
 								),
