@@ -59,6 +59,9 @@ export default {
 		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
 	methods: {
+		emitLoaded(val) {
+			this.$emit("loaded", val);
+		},
 		loadImage() {
 			const img = new Image();
 			img.setAttribute("crossorigin", "anonymous");
@@ -68,10 +71,12 @@ export default {
 				this.image = img;
 				this.getFrames();
 				this.updateCanvas();
+				this.emitLoaded(true);
 			};
 
 			img.onerror = () => {
 				this.image = null;
+				this.emitLoaded(false);
 			};
 		},
 		/**
@@ -84,7 +89,7 @@ export default {
 
 			const { animation } = this.mcmeta;
 
-			const frames = [];
+			let frames = [];
 			const frametime = Math.min(300, animation.frametime ?? 1);
 
 			const width = animation.width ?? this.image.width;
@@ -145,6 +150,9 @@ export default {
 				}
 			}
 
+			// filter every frame out of the image size?
+			frames = frames.filter(f => f.topLeft.x < this.image.width && f.topLeft.y < this.image.height);
+
 			const framesToDraw = {};
 			let ticks = 1;
 
@@ -181,6 +189,9 @@ export default {
 				this.updateCanvas();
 			}, 1000 / 20);
 		},
+		resetCurrentTick() {
+			self.currentTick = 1;
+		}
 	},
 	watch: {
 		currentTick() {

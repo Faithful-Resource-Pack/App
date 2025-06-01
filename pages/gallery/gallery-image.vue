@@ -10,7 +10,9 @@
 			:src="imageURL"
 			:mcmeta="animation"
 			:isTiled="imageURL.includes('_flow')"
+			ref="animation"
 			@click="$emit('click')"
+			@loaded="(val) => $emit('loaded', val)"
 		/>
 		<img
 			v-if="exists"
@@ -130,6 +132,9 @@ export default {
 					console.error(err);
 				});
 		},
+		reset() {
+			this.$refs.animation?.resetCurrentTick();
+		}
 	},
 	watch: {
 		animatedTextures() {
@@ -146,6 +151,12 @@ export default {
 		image.onerror = () => {
 			this.textureNotFound();
 		};
+
+		// always emit loaded, if not animated
+		if(!this.animated || !this.exists || !this.hasAnimation)
+		{
+			this.$emit("loaded", false)
+		}
 	},
 };
 </script>
