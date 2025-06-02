@@ -19,10 +19,10 @@
 			v-show="!hasAnimation || !animated"
 			class="gallery-texture-image gallery-animated-image"
 			ref="imageRef"
-			@error="textureNotFound"
-			@click="$emit('click')"
 			:src="imageURL"
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
+			@error="textureNotFound"
+			@click="$emit('click')"
 		/>
 		<div v-else class="not-done">
 			<span style="height: 100%" />
@@ -134,7 +134,7 @@ export default {
 		},
 		reset() {
 			this.$refs.animation?.resetCurrentTick();
-		}
+		},
 	},
 	watch: {
 		animatedTextures() {
@@ -153,10 +153,7 @@ export default {
 		};
 
 		// always emit loaded, if not animated
-		if(!this.animated || !this.exists || !this.hasAnimation)
-		{
-			this.$emit("loaded", false)
-		}
+		if (!this.animated || !this.exists || !this.hasAnimation) this.$emit("loaded", false);
 	},
 };
 </script>

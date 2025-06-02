@@ -25,7 +25,7 @@
 							:animated="animated"
 							:mcmeta="textureObj.mcmeta"
 							@click="openFullscreenPreview(url.image)"
-							@loaded="function(val) { countLoaded(url.name, val); }"
+							@loaded="countLoaded"
 							:ref="`image-${url.name}`"
 						>
 							<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
@@ -143,19 +143,14 @@ export default {
 			this.textureObj = {};
 			this.modalOpened = false;
 		},
-		countLoaded(name, val) {
-			if(val === true) {
-				clearTimeout(this.loadedTimeout);
-				this.loadedTimeout = setTimeout(async () => {
-					const childrenRefs = Object.values(this.$refs)
-						.filter(ref => ref).flat();
-					const resetPromises = childrenRefs.map((ref) => async function () {
-						ref.reset();
-						return Promise.resolve();
-					}());
-					await Promise.all(resetPromises);
-				}, 100)
-			}
+		countLoaded(val) {
+			if (!val) return;
+
+			clearTimeout(this.loadedTimeout);
+			this.loadedTimeout = setTimeout(() => {
+				const childrenRefs = Object.values(this.$refs).filter((ref) => ref);
+				Promise.all(childrenRefs.flatMap((ref) => ref.reset()));
+			}, 100);
 		},
 		openFullscreenPreview(url) {
 			this.clickedImage = url;

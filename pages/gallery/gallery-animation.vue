@@ -71,12 +71,12 @@ export default {
 				this.image = img;
 				this.getFrames();
 				this.updateCanvas();
-				this.emitLoaded(true);
+				this.$emit("loaded", true);
 			};
 
 			img.onerror = () => {
 				this.image = null;
-				this.emitLoaded(false);
+				this.$emit("loaded", false);
 			};
 		},
 		/**
@@ -89,7 +89,7 @@ export default {
 
 			const { animation } = this.mcmeta;
 
-			let frames = [];
+			const allFrames = [];
 			const frametime = Math.min(300, animation.frametime ?? 1);
 
 			const width = animation.width ?? this.image.width;
@@ -134,7 +134,7 @@ export default {
 							break;
 					}
 
-					frames.push({ ...partialFrame, ...getPoints(partialFrame.index) });
+					allFrames.push({ ...partialFrame, ...getPoints(partialFrame.index) });
 				}
 			} else {
 				const framesCount =
@@ -146,12 +146,14 @@ export default {
 							Math.floor(this.image.height / this.image.width) * (width / height);
 
 				for (let frame = 0; frame < framesCount; frame++) {
-					frames.push({ index: frame, frametime, ...getPoints(frame) });
+					allFrames.push({ index: frame, frametime, ...getPoints(frame) });
 				}
 			}
 
-			// filter every frame out of the image size?
-			frames = frames.filter(f => f.topLeft.x < this.image.width && f.topLeft.y < this.image.height);
+			// filter every frame out of the image size
+			const frames = allFrames.filter(
+				(f) => f.topLeft.x < this.image.width && f.topLeft.y < this.image.height,
+			);
 
 			const framesToDraw = {};
 			let ticks = 1;
@@ -191,7 +193,7 @@ export default {
 		},
 		resetCurrentTick() {
 			self.currentTick = 1;
-		}
+		},
 	},
 	watch: {
 		currentTick() {
