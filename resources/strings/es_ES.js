@@ -189,13 +189,10 @@ export default {
 			pack_tags: "Etiquetas del pack",
 			pack_resolution: "Resolución del pack",
 			pack_logo: "URL del logo del pack",
-			council_enabled: "Habilitar Consejo",
 			contributor_role: "ID de rol de contribuyente",
 			time_to_results: "Tiempo hasta los resultados",
-			time_to_council: "Hora del Consejo",
 			channels: {
 				submit: "Canal de envío",
-				council: "Canal del Consejo",
 				results: "Canal de resultados",
 			},
 			github_org: "Organización",

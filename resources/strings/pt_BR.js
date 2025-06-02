@@ -259,17 +259,14 @@ export default {
 				edit_submission: "Editar informações de envio",
 				reference_pack: "Pacote de referência",
 				reference_hint: "Pacote para comparar com as atribuições de envios.",
-				council_enabled: "Ativar conselho",
 				contributor_role: "ID da função do contribuidor",
 				time_to_results: "Tempo para os resultados",
-				time_to_council: "Tempo para o conselho",
 				time_hint: "Os atrasos são medidos em dias.",
 				channels: {
 					title: "Canais do Discord",
 					title_hint:
 						"Ative o Modo de Desenvolvedor e clique com o botão direito em um canal para obter IDs de canal.",
 					submit: "Canal de envio",
-					council: "Canal do conselho",
 					results: "Canal de resultados",
 				},
 				ask_submission_deletion: "Deseja excluir informações de envio para %s (%d)?",

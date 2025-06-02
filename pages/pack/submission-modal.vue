@@ -45,26 +45,6 @@
 						:label="$root.lang().database.packs.submissions.time_to_results"
 					/>
 				</v-col>
-				<v-col v-if="formData.council_enabled">
-					<v-text-field
-						:color="color"
-						persistent-hint
-						clearable
-						required
-						:hint="$root.lang().database.packs.submissions.time_hint"
-						v-model="formData.time_to_council"
-						:label="$root.lang().database.packs.submissions.time_to_council"
-					/>
-				</v-col>
-			</v-row>
-			<v-row>
-				<v-col>
-					<v-checkbox
-						:color="color"
-						v-model="formData.council_enabled"
-						:label="$root.lang().database.packs.submissions.council_enabled"
-					/>
-				</v-col>
 				<v-col>
 					<v-text-field
 						:color="color"
@@ -84,15 +64,6 @@
 						clearable
 						v-model="formData.channels.submit"
 						:label="$root.lang().database.packs.submissions.channels.submit"
-					/>
-				</v-col>
-				<v-col v-if="formData.council_enabled">
-					<v-text-field
-						:color="color"
-						required
-						clearable
-						v-model="formData.channels.council"
-						:label="$root.lang().database.packs.submissions.channels.council"
 					/>
 				</v-col>
 				<v-col>
@@ -151,13 +122,10 @@ export default {
 			formData: {
 				id: null,
 				reference: null,
-				council_enabled: null,
 				channels: {
 					submit: null,
-					council: null,
 					results: null,
 				},
-				time_to_council: null,
 				time_to_results: null,
 				contributor_role: null,
 			},
@@ -167,12 +135,6 @@ export default {
 	methods: {
 		send() {
 			const data = { ...this.formData };
-
-			if (!data.council_enabled) {
-				// delete properties that may have been shown and hidden at some point
-				delete data.channels.council;
-				delete data.time_to_council;
-			}
 
 			// get rid of empty strings so api can validate properly
 			if (!data.contributor_role) delete data.contributor_role;
