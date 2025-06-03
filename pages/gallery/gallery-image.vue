@@ -112,7 +112,7 @@ export default {
 				return;
 			}
 
-			if (this.animatedTextures.length > 0 && !this.animatedTextures.includes(this.textureID)) {
+			if (this.animatedTextures.length && !this.animatedTextures.includes(this.textureID)) {
 				this.hasAnimation = false;
 				return;
 			}
@@ -143,16 +143,12 @@ export default {
 	},
 	created() {
 		const image = new Image();
+
 		image.src = this.src;
+		image.onload = () => void this.fetchAnimation();
+		image.onerror = () => void this.textureNotFound();
 
-		image.onload = () => {
-			this.fetchAnimation();
-		};
-		image.onerror = () => {
-			this.textureNotFound();
-		};
-
-		// always emit loaded, if not animated
+		// always emit loaded if not animated
 		if (!this.animated || !this.exists || !this.hasAnimation) this.$emit("loaded", false);
 	},
 };

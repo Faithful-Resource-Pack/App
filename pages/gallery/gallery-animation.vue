@@ -59,9 +59,6 @@ export default {
 		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},
 	methods: {
-		emitLoaded(val) {
-			this.$emit("loaded", val);
-		},
 		loadImage() {
 			const img = new Image();
 			img.setAttribute("crossorigin", "anonymous");

@@ -143,9 +143,11 @@ export default {
 			this.textureObj = {};
 			this.modalOpened = false;
 		},
-		countLoaded(val) {
-			if (!val) return;
+		countLoaded(loaded) {
+			// if image errored ignore it
+			if (!loaded) return;
 
+			// reset the other frames until synced
 			clearTimeout(this.loadedTimeout);
 			this.loadedTimeout = setTimeout(() => {
 				const childrenRefs = Object.values(this.$refs).filter((ref) => ref);
