@@ -10,17 +10,19 @@
 			:src="imageURL"
 			:mcmeta="animation"
 			:isTiled="imageURL.includes('_flow')"
+			ref="animation"
 			@click="$emit('click')"
+			@loaded="(val) => $emit('loaded', val)"
 		/>
 		<img
 			v-if="exists"
 			v-show="!hasAnimation || !animated"
 			class="gallery-texture-image gallery-animated-image"
 			ref="imageRef"
-			@error="textureNotFound"
-			@click="$emit('click')"
 			:src="imageURL"
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
+			@error="textureNotFound"
+			@click="$emit('click')"
 		/>
 		<div v-else class="not-done">
 			<span style="height: 100%" />
@@ -110,7 +112,7 @@ export default {
 				return;
 			}
 
-			if (this.animatedTextures.length > 0 && !this.animatedTextures.includes(this.textureID)) {
+			if (this.animatedTextures.length && !this.animatedTextures.includes(this.textureID)) {
 				this.hasAnimation = false;
 				return;
 			}
@@ -130,6 +132,9 @@ export default {
 					console.error(err);
 				});
 		},
+		reset() {
+			this.$refs.animation?.resetCurrentTick();
+		},
 	},
 	watch: {
 		animatedTextures() {
@@ -138,14 +143,13 @@ export default {
 	},
 	created() {
 		const image = new Image();
-		image.src = this.src;
 
-		image.onload = () => {
-			this.fetchAnimation();
-		};
-		image.onerror = () => {
-			this.textureNotFound();
-		};
+		image.src = this.src;
+		image.onload = () => void this.fetchAnimation();
+		image.onerror = () => void this.textureNotFound();
+
+		// always emit loaded if not animated
+		if (!this.animated || !this.exists || !this.hasAnimation) this.$emit("loaded", false);
 	},
 };
 </script>
