@@ -33,11 +33,10 @@
 		<div class="d-flex flex-wrap ma-n1">
 			<v-card
 				v-for="(packObj, key) in selectedPacks"
-				:key="key"
+				:key="key + packObj.selected"
 				class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
 			>
 				<v-checkbox
-					:id="key"
 					v-model="packObj.selected"
 					:label="packObj.label"
 					hide-details
@@ -215,28 +214,31 @@ export default {
 			if (refresh) this.startSearch();
 		},
 		onPackChange(key, isSelected) {
-			if (key === ALL_PACK_KEY) {
-				if (isSelected) {
-					// just checked all, uncheck others
-					for (const key in Object.keys(this.selectedPacks))
-						this.selectedPacks[key].selected = false;
-					this.selectedPacks[ALL_PACK_KEY].selected = true;
-				} else this.onPackDeselect(key);
-				return;
-			}
-			// other pack
-			if (isSelected) {
-				this.selectedPacks[ALL_PACK_KEY].selected = false;
-			} else this.onPackDeselect(key);
-		},
-		onPackDeselect(key) {
-			// do nothing, at least one is selected
-			if (this.selectedPackKeys.length > 0) return;
+			if (!isSelected) {
+				// do nothing, at least one is selected
+				if (this.selectedPackKeys.length > 0) return;
 
-			// needs to be changed on next tick, cannot change same data on same cycle
-			this.$nextTick(() => {
-				this.selectedPacks[key].selected = true;
-			});
+				// needs to be changed on next tick, cannot change same data on same cycle
+				return void this.$nextTick(() => {
+					this.$set(this.selectedPacks[key], "selected", true);
+				});
+			}
+
+			// just checked all, uncheck others
+			if (key === ALL_PACK_KEY) {
+				// have to buffer changes and apply them on next tick
+				const acc = Object.values(this.selectedPacks).reduce((acc, cur) => {
+					acc[cur.key] = { ...cur, selected: false };
+					return acc;
+				}, {});
+				acc[ALL_PACK_KEY].selected = true;
+				return void this.$nextTick(() => {
+					this.selectedPacks = acc;
+				});
+			}
+
+			// other pack
+			this.$set(this.selectedPacks[ALL_PACK_KEY], "selected", false);
 		},
 		startSearch() {
 			if (this.searchDisabled) return;
