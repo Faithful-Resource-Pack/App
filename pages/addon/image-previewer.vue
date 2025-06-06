@@ -3,10 +3,10 @@
 		<div class="scroller" style="overflow: auto; white-space: nowrap">
 			<div class="scroller-content">
 				<v-card
-					class="pa-0 mr-2"
-					style="display: inline-block"
 					v-for="(url, index) in sources"
 					:key="url"
+					class="pa-0 mr-2"
+					style="display: inline-block"
 				>
 					<v-img
 						class="rounded image-fullscreen-thumb"

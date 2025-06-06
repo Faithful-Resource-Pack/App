@@ -1,7 +1,7 @@
 <template>
 	<v-list rounded two-line class="main-container">
 		<v-row>
-			<v-col :cols="12 / listColumns" xs="1" v-for="(items, index) in splitResults" :key="index">
+			<v-col v-for="(items, index) in splitResults" :key="index" :cols="12 / listColumns" xs="1">
 				<v-list-item v-for="item in items" :key="item[track]">
 					<slot :item="item" />
 				</v-list-item>
@@ -9,12 +9,12 @@
 		</v-row>
 
 		<v-btn
+			v-if="displayedResults < items.length"
 			:style="{ margin: 'auto', 'min-width': '250px !important' }"
 			:color="pageColor"
 			:class="[textColor, 'my-2']"
 			block
 			@click="showMore"
-			v-if="displayedResults < items.length"
 		>
 			{{ $root.lang().global.btn.load_more }}
 		</v-btn>

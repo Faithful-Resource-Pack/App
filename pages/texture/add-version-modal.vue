@@ -7,24 +7,24 @@
 	>
 		<v-form ref="form">
 			<v-select
+				v-model="form.edition"
 				:color="color"
 				:item-color="color"
 				:items="settings.editions"
-				v-model="form.edition"
 				:label="$root.lang().database.textures.add_version.new_edition"
 				@change="form.version = settings.versions[form.edition][0]"
 			/>
 			<v-select
+				v-model="form.version"
 				:color="color"
 				:item-color="color"
 				:items="settings.versions[form.edition] || []"
 				:disabled="!form.edition"
-				v-model="form.version"
 				:label="$root.lang().database.textures.add_version.template_version"
 			/>
 			<v-text-field
-				:color="color"
 				v-model="form.newVersion"
+				:color="color"
 				:label="$root.lang().database.textures.add_version.new_version"
 			/>
 		</v-form>

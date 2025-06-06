@@ -14,15 +14,15 @@
 					:class="['rounded-lg', 'my-3', 'mr-0', user.avatar ? 'transparent' : 'primary']"
 					size="120"
 				>
-					<v-img :src="user.avatar" v-if="user.avatar" />
-					<div class="text-h5 text-center text--primary font-weight-medium" v-else>
+					<v-img v-if="user.avatar" :src="user.avatar" />
+					<div v-else class="text-h5 text-center text--primary font-weight-medium">
 						{{ user.username[0] }}
 					</div>
 				</v-list-item-avatar>
 			</div>
 
 			<div class="my-2">
-				<div class="text-h5 text-center text--primary mb-2" id="user-username">
+				<div id="user-username" class="text-h5 text-center text--primary mb-2">
 					{{ user.username }}
 				</div>
 
@@ -32,8 +32,8 @@
 			</div>
 
 			<p
-				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0"
 				v-if="user.roles.length"
+				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0"
 			>
 				<span>
 					<template v-for="role in user.roles">

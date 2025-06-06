@@ -33,16 +33,16 @@
 				<template v-else>
 					<div style="position: relative">
 						<v-img
+							:src="addonInPanelHeaderURL"
+							:aspect-ratio="16 / 9"
+							style="border-radius: 5px"
+							alt="Header not found!"
 							@click.stop="
 								(e) => {
 									previewOpen = true;
 									imagePreview = addonInPanelHeaderURL;
 								}
 							"
-							:src="addonInPanelHeaderURL"
-							:aspect-ratio="16 / 9"
-							style="border-radius: 5px"
-							alt="Header not found!"
 						>
 							<template #placeholder>
 								<v-row
@@ -166,25 +166,25 @@
 
 					<div class="text-right mt-4">
 						<v-btn
+							v-show="status != 'approved'"
 							text
 							color="teal"
-							v-show="status != 'approved'"
 							@click="reviewAddon(addon, 'approved')"
 						>
 							{{ $root.lang().global.btn.approve }}
 						</v-btn>
 						<v-btn
+							v-show="status != 'denied'"
 							text
 							color="red"
-							v-show="status != 'denied'"
 							@click="openDenyPopup(addonInPanel)"
 						>
 							{{ $root.lang().global.btn.deny }}
 						</v-btn>
 						<v-btn
+							v-show="status != 'archived'"
 							text
 							color="gray"
-							v-show="status != 'archived'"
 							@click="openDenyPopup(addonInPanel, 'archive')"
 						>
 							{{ $root.lang().global.btn.archive }}

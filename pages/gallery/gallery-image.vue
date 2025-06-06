@@ -6,19 +6,19 @@
 		<!-- send click events back to caller -->
 		<gallery-animation
 			v-if="animated && exists && hasAnimation"
+			ref="animation"
 			class="gallery-texture-image"
 			:src="imageURL"
 			:mcmeta="animation"
 			:isTiled="imageURL.includes('_flow')"
-			ref="animation"
 			@click="$emit('click')"
 			@loaded="(val) => $emit('loaded', val)"
 		/>
 		<img
 			v-if="exists"
 			v-show="!hasAnimation || !animated"
-			class="gallery-texture-image gallery-animated-image"
 			ref="imageRef"
+			class="gallery-texture-image gallery-animated-image"
 			:src="imageURL"
 			lazy-src="https://database.faithfulpack.net/images/bot/loading.gif"
 			@error="textureNotFound"

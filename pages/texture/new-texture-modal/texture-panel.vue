@@ -20,13 +20,13 @@
 					multiple
 					deletable-chips
 					small-chips
+					:items="tags"
+					:label="$root.lang().database.textures.modal.tags"
 					@change="
 						() => {
 							texture.tags = sortTags(texture.tags);
 						}
 					"
-					:items="tags"
-					:label="$root.lang().database.textures.modal.tags"
 				/>
 			</v-col>
 		</v-row>
@@ -52,8 +52,8 @@
 							:color="color"
 							:item-color="color"
 							:items="settings.editions"
-							@change="(e) => onEditionChange(e, use)"
 							:label="$root.lang().database.textures.uses.edition"
+							@change="(e) => onEditionChange(e, use)"
 						/>
 					</v-col>
 					<v-col cols="12" sm="1">
@@ -69,9 +69,9 @@
 							:color="color"
 							:label="$root.lang().database.textures.paths.name"
 							clearable
-							@change="(e) => onPathAdded(e, path, use)"
 							persistent-hint
 							:hint="$root.lang().database.textures.paths.name_prefill"
+							@change="(e) => onPathAdded(e, path, use)"
 						/>
 					</v-col>
 					<v-col cols="12" sm="4">

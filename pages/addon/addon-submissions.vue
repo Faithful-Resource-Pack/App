@@ -43,13 +43,13 @@
 
 		<addon-remove-confirm
 			v-model="remove.confirm"
+			:data="remove.data"
 			@close="
 				() => {
 					remove.confirm = false;
 					update();
 				}
 			"
-			:data="remove.data"
 		/>
 	</v-container>
 </template>

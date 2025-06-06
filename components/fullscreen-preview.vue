@@ -1,5 +1,5 @@
 <template>
-	<v-dialog v-model="modalOpened" :width="`${this.aspectRatio * 90}vh`" height="90vh">
+	<v-dialog v-model="modalOpened" :width="`${aspectRatio * 90}vh`" height="90vh">
 		<v-card>
 			<v-img
 				:style="styles"

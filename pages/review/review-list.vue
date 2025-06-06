@@ -2,9 +2,9 @@
 	<v-card flat class="overflow-y-auto rounded-lg">
 		<div v-if="items.length > 0">
 			<v-list-item
-				two-line
 				v-for="(item, i) in items"
 				:key="item.key"
+				two-line
 				:class="classes[i]"
 				@click="$emit('input', item.key)"
 			>

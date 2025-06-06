@@ -24,7 +24,7 @@
 					</v-col>
 				</template>
 			</v-row>
-			<v-row v-else dense id="status-loader" class="d-flex align-stretch">
+			<v-row v-else id="status-loader" dense class="d-flex align-stretch">
 				<v-col
 					v-for="i in loading_for"
 					:key="`skeleton-status-${i}`"
@@ -40,7 +40,7 @@
 				</v-col>
 			</v-row>
 
-			<v-row class="mt-1 py-0 my-0 align-self-stretch" v-if="data" dense>
+			<v-row v-if="data" class="mt-1 py-0 my-0 align-self-stretch" dense>
 				<v-col
 					v-for="(number, tag) in data.numbers"
 					:key="tag"
@@ -56,7 +56,7 @@
 					</p>
 				</v-col>
 			</v-row>
-			<v-row class="mt-1 py-0 my-0 align-self-stretch" v-else dense id="stats-loader">
+			<v-row v-else id="stats-loader" class="mt-1 py-0 my-0 align-self-stretch" dense>
 				<v-col
 					v-for="i in 4"
 					:key="`skeleton-stats-${i}`"
@@ -74,7 +74,7 @@
 			</v-row>
 		</v-card-text>
 
-		<v-card-actions class="d-flex mt-0 px-4 pt-1" v-if="$root.isLoggedIn">
+		<v-card-actions v-if="$root.isLoggedIn" class="d-flex mt-0 px-4 pt-1">
 			<v-row dense>
 				<v-col>
 					<v-btn block text color="primary" to="/addons/submissions">

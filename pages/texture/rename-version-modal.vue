@@ -11,17 +11,17 @@
 		</v-alert>
 		<v-form ref="form" class="pt-2">
 			<v-select
+				v-model="form.old"
 				:color="color"
 				:item-color="color"
 				:items="versions"
 				required
-				v-model="form.old"
 				:label="$root.lang().database.textures.rename_version.current_version"
 			/>
 			<v-text-field
+				v-model="form.new"
 				:color="color"
 				required
-				v-model="form.new"
 				:label="$root.lang().database.textures.rename_version.new_version"
 			/>
 		</v-form>

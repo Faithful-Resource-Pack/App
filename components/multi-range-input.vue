@@ -1,5 +1,5 @@
 <template>
-	<v-form lazy-validation ref="form">
+	<v-form ref="form" lazy-validation>
 		<v-combobox
 			v-model="ranges"
 			:items="undefined"

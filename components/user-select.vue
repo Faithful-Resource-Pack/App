@@ -65,7 +65,7 @@
 			</template>
 		</template>
 		<template #no-data>
-			<v-btn block elevation="0" color="primary" @click="() => startSearch(search)" class="mt-4">
+			<v-btn block elevation="0" color="primary" class="mt-4" @click="() => startSearch(search)">
 				{{ $root.lang().database.search }} <v-icon right dark>mdi-magnify</v-icon>
 			</v-btn>
 		</template>

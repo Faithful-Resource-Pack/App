@@ -21,7 +21,7 @@
 		/>
 		<div class="font-weight-medium text--secondary my-3">{{ labels.month }}</div>
 		<v-row class="qd-months" dense>
-			<v-col cols="2" v-for="i in 12" :key="`qd-month-col-${i}`">
+			<v-col v-for="i in 12" :key="`qd-month-col-${i}`" cols="2">
 				<v-btn
 					:key="`qd-month-${i}`"
 					class="qd-month pa-0"
@@ -46,8 +46,8 @@
 				rounded
 				:text="i !== day"
 				:elevation="i == day ? 2 : 0"
-				@click="() => newDay(i)"
 				:disabled="disabled || i > daysInCurMonth"
+				@click="() => newDay(i)"
 			>
 				{{ i }}
 			</v-btn>

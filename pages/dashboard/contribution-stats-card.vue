@@ -1,20 +1,20 @@
 <template>
 	<dashboard-card
-		clickable
 		id="contribution-stats-card"
+		clickable
 		:title="$root.lang().dashboard.titles.contribution_stats"
 		to="/contribution-stats"
 		class="d-flex flex-column"
 	>
 		<v-card-text class="pb-4 flex-grow-1 d-flex align-stretch">
-			<v-row dense v-if="data" class="col-12 pa-0">
+			<v-row v-if="data" dense class="col-12 pa-0">
 				<v-col cols="12" class="d-flex align-stretch">
 					<v-row dense class="d-flex">
 						<v-col
-							cols="12"
-							:sm="i == totals.length - 1 && total.name.includes('last_day') ? 12 : 6"
 							v-for="(total, i) in totals"
 							:key="total.name"
+							cols="12"
+							:sm="i == totals.length - 1 && total.name.includes('last_day') ? 12 : 6"
 							class="d-flex align-stretch"
 						>
 							<p class="mb-0 rounded-lg pa-2">
@@ -27,14 +27,14 @@
 					</v-row>
 				</v-col>
 			</v-row>
-			<v-row dense v-else class="col-12 pa-0">
+			<v-row v-else dense class="col-12 pa-0">
 				<v-col cols="12" class="d-flex align-stretch">
 					<v-row dense class="d-flex">
 						<v-col
-							cols="12"
-							sm="6"
 							v-for="i in 4"
 							:key="`skeleton-${i}`"
+							cols="12"
+							sm="6"
 							class="d-flex align-stretch"
 						>
 							<p class="mb-0 rounded-lg pa-2">

@@ -1,6 +1,6 @@
 <template>
 	<v-container>
-		<div class="text-center" v-if="loading">
+		<div v-if="loading" class="text-center">
 			<h2 class="mb-5">{{ $root.lang().posts.loading }}</h2>
 			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
 		</div>

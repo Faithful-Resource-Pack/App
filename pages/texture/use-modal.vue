@@ -8,60 +8,60 @@
 		@submit="send"
 	>
 		<path-modal
-			:color="color"
 			v-model="pathModalOpen"
-			@close="closePathModal"
+			:color="color"
 			:add="Object.keys(pathModalData).length == 0"
 			:first="add"
 			:useID="formData.id"
 			:edition="formData.edition"
 			:data="pathModalData"
+			@close="closePathModal"
 			@pathAdded="pathAdded"
 		/>
 		<texture-remove-confirm
-			type="path"
 			v-model="remove.confirm"
-			@close="closeAndUpdate"
+			type="path"
 			:data="remove.data"
+			@close="closeAndUpdate"
 		/>
 
 		<v-form ref="form" v-model="formValid">
 			<v-text-field
-				:color="color"
 				v-if="add == false"
+				v-model="formData.id"
+				:color="color"
 				disabled
 				required
 				persistent-hint
 				:hint="'⚠️ ' + $root.lang().database.textures.uses.id_hint"
-				v-model="formData.id"
 				:label="$root.lang().database.textures.uses.id"
 			/>
 			<v-text-field
-				:color="color"
 				v-model="formData.name"
+				:color="color"
 				:label="$root.lang().database.textures.uses.name"
 			/>
 			<v-text-field
-				:color="color"
 				v-if="add == false"
+				v-model="formData.texture"
+				:color="color"
 				persistent-hint
 				:hint="'⚠️ ' + $root.lang().database.textures.modal.id_hint"
 				required
 				clearable
-				v-model="formData.texture"
 				:label="$root.lang().database.textures.modal.id"
 			/>
 			<v-select
+				v-model="formData.edition"
 				required
 				:color="color"
 				:item-color="color"
-				v-model="formData.edition"
 				:items="editions"
 				:label="$root.lang().database.textures.uses.edition"
 			/>
 			<h2 class="title">{{ $root.lang().database.textures.paths.title }}</h2>
 			<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
-				<v-list-item class="list-item-inline" v-for="(path, index) in formData.paths" :key="index">
+				<v-list-item v-for="(path, index) in formData.paths" :key="index" class="list-item-inline">
 					<v-list-item-content>
 						<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
 						<v-list-item-subtitle :title="(path.versions || []).join(', ')">

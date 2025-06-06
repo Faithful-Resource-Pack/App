@@ -27,17 +27,17 @@
 				<v-row id="review-general">
 					<v-col cols="12" sm="7" style="position: relative">
 						<v-img
+							:src="addonInPanelHeaderURL"
+							:aspect-ratio="16 / 9"
+							style="border-radius: 5px"
+							alt="Header not found!"
+							class="image-fullscreen-thumb"
 							@click.stop="
 								(e) => {
 									previewOpen = true;
 									imagePreview = addonInPanelHeaderURL;
 								}
 							"
-							:src="addonInPanelHeaderURL"
-							:aspect-ratio="16 / 9"
-							style="border-radius: 5px"
-							alt="Header not found!"
-							class="image-fullscreen-thumb"
 						>
 							<template #placeholder>
 								<v-row

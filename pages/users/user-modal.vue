@@ -10,40 +10,40 @@
 			>
 				<v-form ref="form" lazy-validation>
 					<v-text-field
+						v-model="formData.id"
 						:color="color"
 						required
 						:readonly="add == false"
-						v-model="formData.id"
 						:label="$root.lang().database.users.modal.id"
 					/>
 					<v-text-field
+						v-model="formData.username"
 						:color="color"
 						required
 						clearable
-						v-model="formData.username"
 						:label="$root.lang().database.users.modal.username"
 					/>
 					<v-select
+						v-model="formData.roles"
 						:color="color"
 						:item-color="color"
 						required
 						multiple
 						small-chips
-						v-model="formData.roles"
 						:items="roles"
 						:label="$root.lang().database.users.modal.roles"
 					/>
 					<v-text-field
+						v-model="formData.uuid"
 						:color="color"
 						clearable
-						v-model="formData.uuid"
 						:label="$root.lang().database.users.modal.uuid"
 					/>
 					<v-checkbox
+						v-model="formData.anonymous"
 						:color="color"
 						required
 						clearable
-						v-model="formData.anonymous"
 						:label="$root.lang().database.users.modal.anonymous"
 					/>
 					<p v-if="formData.anonymous">{{ $root.lang().database.users.modal.anonymous_hint }}</p>

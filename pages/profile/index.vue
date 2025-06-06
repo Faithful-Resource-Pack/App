@@ -73,11 +73,11 @@
 								<v-row>
 									<v-col>
 										<v-text-field
+											v-model="localUser.username"
 											required
 											:rules="usernameRules"
 											:counter="usernameMaxLength"
 											clearable
-											v-model="localUser.username"
 											:label="$root.lang().profile.general.username.label"
 											:hint="$root.lang().profile.general.username.hint"
 										/>
@@ -86,11 +86,11 @@
 								<v-row>
 									<v-col>
 										<v-text-field
+											v-model="localUser.uuid"
 											placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33"
 											:rules="uuidRules"
 											:counter="uuidMaxLength"
 											clearable
-											v-model="localUser.uuid"
 											:label="$root.lang().profile.general.uuid.label"
 											:hint="$root.lang().profile.general.uuid.hint"
 										/>
@@ -112,18 +112,18 @@
 								<v-row v-for="(socialMedia, i) in localUser.media" :key="socialMedia.key">
 									<v-col cols="12" sm="8">
 										<v-text-field
+											v-model="socialMedia.link"
 											clearable
 											:placeholder="$root.lang().profile.social.placeholder"
 											:label="$root.lang().profile.social.link_label"
-											v-model="socialMedia.link"
 											:rules="urlRules"
 										/>
 									</v-col>
 									<v-col cols="12" sm="3">
 										<v-select
+											v-model="socialMedia.type"
 											:items="mediaTypes"
 											:label="$root.lang().profile.social.type_label"
-											v-model="socialMedia.type"
 											:rules="mediaTypeRules"
 										/>
 									</v-col>
@@ -146,7 +146,7 @@
 					<v-btn text color="error darken-1" @click="openDeleteModal">
 						{{ $root.lang().profile.delete.btn }}
 					</v-btn>
-					<v-btn text color="darken-1" @click="send" :disabled="!canSubmit">
+					<v-btn text color="darken-1" :disabled="!canSubmit" @click="send">
 						{{ $root.lang().profile.save_changes }}
 					</v-btn>
 				</div>

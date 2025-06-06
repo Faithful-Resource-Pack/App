@@ -1,57 +1,57 @@
 <template>
 	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
 		<use-modal
-			:color="color"
 			v-model="useModalOpen"
-			@close="closeUseModal"
+			:color="color"
 			:add="useModalAdd"
 			:textureID="formData.id"
 			:data="useModalData"
+			@close="closeUseModal"
 		/>
 		<texture-remove-confirm
-			type="use"
 			v-model="remove.confirm"
-			@close="closeAndUpdate"
+			type="use"
 			:data="remove.data"
+			@close="closeAndUpdate"
 		/>
 		<v-form ref="form">
 			<v-text-field
+				v-model="formData.id"
 				:disabled="!add"
 				:color="color"
 				persistent-hint
 				:hint="'⚠️' + $root.lang().database.textures.modal.id_hint"
 				required
 				:readonly="add == false"
-				v-model="formData.id"
 				:label="$root.lang().database.textures.modal.id"
 			/>
 			<v-text-field
+				v-model="formData.name"
 				:color="color"
 				required
 				clearable
-				v-model="formData.name"
 				:label="$root.lang().database.textures.modal.name"
 			/>
 			<v-combobox
+				v-model="formData.tags"
 				:color="color"
 				:item-color="color"
 				required
 				multiple
 				deletable-chips
 				small-chips
+				:items="tags"
+				:label="$root.lang().database.textures.modal.tags"
 				@change="
 					() => {
 						formData.tags = sortTags(formData.tags);
 					}
 				"
-				v-model="formData.tags"
-				:items="tags"
-				:label="$root.lang().database.textures.modal.tags"
 			/>
 
 			<h2 class="title">{{ $root.lang().database.textures.uses.title }}</h2>
 			<v-list v-if="Object.keys(formData.uses).length">
-				<v-list-item class="list-item-inline" v-for="(use, index) in formData.uses" :key="index">
+				<v-list-item v-for="(use, index) in formData.uses" :key="index" class="list-item-inline">
 					<v-list-item-avatar
 						tile
 						:class="[color, textColor]"

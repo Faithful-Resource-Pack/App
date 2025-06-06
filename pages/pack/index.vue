@@ -2,24 +2,24 @@
 	<v-container>
 		<div class="styles" v-html="pageStyles" />
 		<pack-modal
-			:color="pageColor"
 			v-model="modalOpen"
-			@close="close"
+			:color="pageColor"
 			:data="modalData"
 			:add="modalAdd"
 			:tags="tags"
+			@close="close"
 		/>
 		<pack-remove-confirm
-			type="packs"
+			:id="remove.id"
 			v-model="remove.confirm"
+			type="packs"
+			:label="remove.label"
 			@close="
 				() => {
 					remove.confirm = false;
 					startSearch();
 				}
 			"
-			:id="remove.id"
-			:label="remove.label"
 		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">

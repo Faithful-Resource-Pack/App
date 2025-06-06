@@ -1,11 +1,11 @@
 <template>
 	<div :class="margin ? 'ml-5' : ''">
-		<v-row dense v-if="typeof item === 'string'">
+		<v-row v-if="typeof item === 'string'" dense>
 			<v-col cols="12" sm="11">
 				<v-text-field
+					v-model="item"
 					dense
 					clearable
-					v-model="item"
 					:placeholder="$root.lang().posts.changelog.form_levels.item"
 					hide-details
 				/>
@@ -20,10 +20,10 @@
 			<v-row dense>
 				<v-col cols="12" sm="11">
 					<v-text-field
+						v-model="item.category"
 						dense
 						clearable
 						hide-details
-						v-model="item.category"
 						:placeholder="categoryPlaceholder"
 						:class="classList"
 						:height="categoryHeight"
@@ -37,11 +37,11 @@
 			</v-row>
 			<post-changelog
 				v-for="(el, i) in item.items"
-				v-model="item.items[i]"
-				@delete="remove(i)"
 				:key="i"
+				v-model="item.items[i]"
 				:level="level + 1"
 				margin
+				@delete="remove(i)"
 			/>
 			<div class="ml-5">
 				<v-btn class="ma-1" color="secondary" @click="addItem">

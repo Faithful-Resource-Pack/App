@@ -25,13 +25,13 @@
 			@close="() => handleReasonModal(false)"
 			@submit="handleReasonModal(true)"
 		>
-			<v-form lazy-validation v-model="validForm" ref="reasonForm">
+			<v-form ref="reasonForm" v-model="validForm" lazy-validation>
 				<p>{{ this.$root.lang().addons.general.reason.text }}</p>
 				<v-text-field
+					v-model="reason"
 					:label="$root.lang().addons.general.reason.title"
 					required
 					:rules="reasonRules"
-					v-model="reason"
 					:counter="reasonCounter.max"
 				/>
 			</v-form>

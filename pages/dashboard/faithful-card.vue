@@ -11,7 +11,7 @@
 				/>
 			</div>
 
-			<div class="mt-2 mx-auto" id="connect-title">
+			<div id="connect-title" class="mt-2 mx-auto">
 				<h3 class="faithful-font uppercase-unsized text-center text--primary card-text-shadow">
 					{{ $root.lang().global.name }}
 				</h3>

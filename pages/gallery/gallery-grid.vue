@@ -3,7 +3,7 @@
 		<div class="text-center">
 			<template v-if="loading">
 				<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
-				<v-progress-circular class="ma-1" v-if="loading" indeterminate />
+				<v-progress-circular v-if="loading" class="ma-1" indeterminate />
 			</template>
 			<div v-else-if="textures.length === 0" class="text-h6 my-2">
 				{{ error || $root.lang().global.no_results }}
@@ -35,11 +35,11 @@
 							</p>
 						</gallery-image>
 						<v-btn
-							@click.stop="$emit('share', texture.textureID)"
 							class="ma-2 gallery-share"
 							absolute
 							plain
 							icon
+							@click.stop="$emit('share', texture.textureID)"
 						>
 							<v-icon>mdi-share-variant</v-icon>
 						</v-btn>
@@ -57,7 +57,7 @@
 			</div>
 		</div>
 
-		<v-btn icon large @click="toTop" v-show="scrollY > 300" class="go-up-btn">
+		<v-btn v-show="scrollY > 300" icon large class="go-up-btn" @click="toTop">
 			<v-icon>mdi-arrow-up</v-icon>
 		</v-btn>
 

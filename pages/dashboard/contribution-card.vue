@@ -7,13 +7,13 @@
 		class="d-flex flex-column"
 	>
 		<v-card-text class="pb-3 flex-grow-1 d-flex align-stretch">
-			<v-row class="mb-0" v-if="data" style="width: 100%">
+			<v-row v-if="data" class="mb-0" style="width: 100%">
 				<v-col
+					v-for="(values, activity) in data.activity"
+					:key="activity"
 					cols="12"
 					sm="6"
 					class="pr-sm-2 d-flex flex-column justify-space-around pb-0"
-					v-for="(values, activity) in data.activity"
-					:key="activity"
 				>
 					<div class="title text-button text--secondary">
 						{{ packToName[activity] }}
@@ -30,13 +30,13 @@
 					</div>
 				</v-col>
 			</v-row>
-			<v-row class="mb-0" v-else style="width: 100%">
+			<v-row v-else class="mb-0" style="width: 100%">
 				<v-col
+					v-for="i in 5"
+					:key="`skeleton-${i}`"
 					cols="12"
 					sm="6"
 					class="pr-sm-2 d-flex flex-column justify-space-around pb-0"
-					v-for="i in 5"
-					:key="`skeleton-${i}`"
 				>
 					<v-skeleton-loader height="24" type="heading" class="mb-2" />
 					<v-skeleton-loader height="130" type="card" />

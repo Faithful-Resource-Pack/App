@@ -5,12 +5,12 @@
 				{{ $root.lang().global.json_editor.import_data }}
 			</h2>
 			<prism-editor
-				class="json-editor json-modal-editor"
 				v-model="jsonData"
+				class="json-editor json-modal-editor"
 				:highlight="highlighter"
 				line-numbers
 			/>
-			<v-btn block @click="parseJSON" :color="color" class="white--text">
+			<v-btn block :color="color" class="white--text" @click="parseJSON">
 				{{ $root.lang().global.json_editor.parse_json }}
 			</v-btn>
 		</v-card>

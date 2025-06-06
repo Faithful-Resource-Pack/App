@@ -5,7 +5,7 @@
 		</div>
 
 		<div class="text-center mb-4">
-			<div class="text-center" v-if="isLoading">
+			<div v-if="isLoading" class="text-center">
 				<h2 class="mb-5">{{ $root.lang().statistics.loading }}</h2>
 				<v-progress-circular :size="70" :width="7" indeterminate />
 			</div>

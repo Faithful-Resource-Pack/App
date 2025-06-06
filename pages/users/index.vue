@@ -2,22 +2,22 @@
 	<v-container>
 		<div class="styles" v-html="pageStyles" />
 		<user-modal
-			:color="pageColor"
 			v-model="modalOpen"
-			@close="closeUserModal"
+			:color="pageColor"
 			:add="modalAdd"
 			:data="modalData"
 			:roles="roles"
+			@close="closeUserModal"
 		/>
 		<user-remove-confirm
 			v-model="remove.confirm"
+			:data="remove.data"
 			@close="
 				() => {
 					remove.confirm = false;
 					update();
 				}
 			"
-			:data="remove.data"
 		/>
 
 		<div class="text-h4 py-4">
@@ -58,7 +58,7 @@
 		</div>
 
 		<!-- main buttons -->
-		<v-btn block @click="openModal()" :color="pageColor" :class="[textColorOnPage, 'my-6']">
+		<v-btn block :color="pageColor" :class="[textColorOnPage, 'my-6']" @click="openModal()">
 			{{ $root.lang().database.users.modal.add_user }}<v-icon right dark>mdi-plus</v-icon>
 		</v-btn>
 
@@ -77,7 +77,7 @@
 			<template #default="{ item }">
 				<v-list-item-avatar tile class="database-list-avatar">
 					<v-img v-if="item.uuid" :src="`https://visage.surgeplay.com/head/48/${item.uuid}`" />
-					<v-icon large v-else class="darken-1">mdi-account</v-icon>
+					<v-icon v-else large class="darken-1">mdi-account</v-icon>
 				</v-list-item-avatar>
 
 				<v-list-item-content>

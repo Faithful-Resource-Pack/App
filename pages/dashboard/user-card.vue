@@ -5,7 +5,7 @@
 		:clickable="$root.isAdmin"
 	>
 		<v-card-text class="pb-3">
-			<v-row class="py-0 my-0" v-if="data" dense>
+			<v-row v-if="data" class="py-0 my-0" dense>
 				<v-col v-for="info in ['total_anonymous', 'total_roles']" :key="info" cols="12" sm="6">
 					<p v-if="data[info] !== undefined" class="mb-0 rounded-lg pa-3">
 						<span class="v-card__title pa-0 d-inline text--primary">{{ data[info] || 0 }}</span>
@@ -13,7 +13,7 @@
 					</p>
 				</v-col>
 			</v-row>
-			<v-row class="py-0 my-0" v-else dense>
+			<v-row v-else class="py-0 my-0" dense>
 				<v-col v-for="i in 2" :key="`user-stats-${i}`" cols="12" sm="6">
 					<div style="min-height: 56px" class="p mb-0 rounded-lg pa-3 d-flex align-center">
 						<v-skeleton-loader height="24" type="heading" width="100%" />

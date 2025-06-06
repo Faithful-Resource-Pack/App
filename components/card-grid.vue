@@ -1,9 +1,9 @@
 <template>
 	<v-row>
 		<v-col
-			:cols="$vuetify.breakpoint.mdAndUp ? 4 : $vuetify.breakpoint.smAndUp ? 6 : 12"
 			v-for="item in items"
 			:key="item[track]"
+			:cols="$vuetify.breakpoint.mdAndUp ? 4 : $vuetify.breakpoint.smAndUp ? 6 : 12"
 			style="align-items: stretch; display: flex"
 		>
 			<v-card

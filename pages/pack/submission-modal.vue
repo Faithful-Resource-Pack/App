@@ -8,24 +8,24 @@
 		@submit="send"
 	>
 		<!-- only render form if there's keys to render (prevents nullish errors) -->
-		<v-form ref="form" v-model="formValid" v-if="Object.keys(formData).length" lazy-validation>
+		<v-form v-if="Object.keys(formData).length" ref="form" v-model="formValid" lazy-validation>
 			<v-row>
 				<v-col v-if="!first">
 					<v-text-field
+						v-model="formData.id"
 						:color="color"
 						persistent-hint
 						:hint="$root.lang().database.packs.modal.id_editing_hint"
-						v-model="formData.id"
 						:label="$root.lang().database.pack_id"
 					/>
 				</v-col>
 				<v-col>
 					<v-select
+						v-model="formData.reference"
 						:color="color"
 						:item-color="color"
 						required
 						:hint="$root.lang().database.packs.submissions.reference_hint"
-						v-model="formData.reference"
 						:items="computePacks"
 						item-text="label"
 						item-value="value"
@@ -36,20 +36,20 @@
 			<v-row>
 				<v-col>
 					<v-text-field
+						v-model="formData.time_to_results"
 						:color="color"
 						persistent-hint
 						clearable
 						required
 						:hint="$root.lang().database.packs.submissions.time_hint"
-						v-model="formData.time_to_results"
 						:label="$root.lang().database.packs.submissions.time_to_results"
 					/>
 				</v-col>
 				<v-col>
 					<v-text-field
+						v-model="formData.contributor_role"
 						:color="color"
 						clearable
-						v-model="formData.contributor_role"
 						:label="$root.lang().database.packs.submissions.contributor_role"
 					/>
 				</v-col>
@@ -59,19 +59,19 @@
 			<v-row>
 				<v-col>
 					<v-text-field
+						v-model="formData.channels.submit"
 						:color="color"
 						required
 						clearable
-						v-model="formData.channels.submit"
 						:label="$root.lang().database.packs.submissions.channels.submit"
 					/>
 				</v-col>
 				<v-col>
 					<v-text-field
+						v-model="formData.channels.results"
 						:color="color"
 						required
 						clearable
-						v-model="formData.channels.results"
 						:label="$root.lang().database.packs.submissions.channels.results"
 					/>
 				</v-col>

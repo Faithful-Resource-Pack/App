@@ -13,7 +13,7 @@
 		<div class="px-10 py-5">
 			<v-row>
 				<v-col cols="12" :md="$vuetify.breakpoint.lgAndUp ? 9 : 8">
-					<v-tabs :color="color" v-model="selectedTab" :show-arrows="false">
+					<v-tabs v-model="selectedTab" :color="color" :show-arrows="false">
 						<v-tab
 							v-for="(texture, i) in textures"
 							:key="texture.key"
@@ -33,8 +33,8 @@
 					<v-tabs-items v-model="selectedTab" fixed-tabs>
 						<texture-panel
 							v-for="(texture, i) in textures"
-							v-model="textures[i]"
 							:key="texture.key"
+							v-model="textures[i]"
 							:color="color"
 							:tags="tags"
 							:versions="versions"
@@ -42,7 +42,7 @@
 					</v-tabs-items>
 				</v-col>
 				<v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="ma-5" />
-				<v-col cols="12" v-else>
+				<v-col v-else cols="12">
 					<v-divider class="mx-5 my-0" />
 				</v-col>
 				<v-col>
@@ -52,8 +52,8 @@
 						</div>
 						<summary-item
 							v-for="(tex, i) in textures"
-							:texture="tex"
 							:key="tex.key"
+							:texture="tex"
 							:color="color"
 							@delete="deleteTexture(i)"
 						/>

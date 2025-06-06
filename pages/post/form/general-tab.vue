@@ -3,24 +3,24 @@
 		<div class="row">
 			<div class="col pb-0">
 				<v-text-field
+					v-model="formData.title"
 					required
 					clearable
-					v-model="formData.title"
 					:label="$root.lang().posts.general.title.label"
 					:placeholder="$root.lang().posts.general.title.placeholder"
 					persistent-placeholder
 				/>
 
 				<v-text-field
+					v-model="formData.permalink"
 					required
 					clearable
-					v-model="formData.permalink"
 					:label="$root.lang().posts.general.permalink.label"
 					:placeholder="$root.lang().posts.general.permalink.placeholder"
 					persistent-placeholder
 				/>
 			</div>
-			<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center" v-if="formData.header_img">
+			<div v-if="formData.header_img" class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
 				<div class="col">
 					<v-img style="border-radius: 10px" :src="formData.header_img" />
 				</div>
@@ -28,9 +28,9 @@
 		</div>
 
 		<v-text-field
+			v-model.lazy="formData.header_img"
 			required
 			clearable
-			v-model.lazy="formData.header_img"
 			:label="$root.lang().posts.general.header_img.label"
 			:hint="$root.lang().posts.general.header_img.hint"
 			:placeholder="$root.lang().posts.general.header_img.placeholder"
@@ -40,9 +40,9 @@
 		<div class="row">
 			<div class="col pb-0">
 				<v-text-field
+					v-model="formData.date"
 					required
 					clearable
-					v-model="formData.date"
 					:label="$root.lang().posts.general.date.label"
 					:placeholder="$root.lang().posts.general.date.placeholder"
 					persistent-placeholder

@@ -1,67 +1,67 @@
 <template>
 	<modal-form v-model="modalOpened" :title="modalTitle" @close="$emit('close')" @submit="send">
 		<submission-modal
-			:color="color"
 			v-model="submissionOpen"
-			@close="closeSubmissionModal"
+			:color="color"
 			:data="submissionData"
 			:add="submissionAdd"
 			:first="add"
+			@close="closeSubmissionModal"
 			@submissionFinished="addSubmissionData"
 		/>
 		<pack-remove-confirm
-			type="submissions"
+			:id="remove.id"
 			v-model="remove.confirm"
+			type="submissions"
+			:label="remove.label"
 			@close="
 				() => {
 					remove.confirm = false;
 					getSubmission(data.id);
 				}
 			"
-			:id="remove.id"
-			:label="remove.label"
 		/>
 		<v-form ref="form" lazy-validation>
 			<v-text-field
+				v-model="formData.id"
 				:color="color"
 				:hint="
 					add
 						? $root.lang().database.packs.modal.id_creation_hint
 						: $root.lang().database.packs.modal.id_editing_hint
 				"
-				v-model="formData.id"
 				:label="$root.lang().database.packs.modal.id"
 			/>
 			<v-text-field
+				v-model="formData.name"
 				:color="color"
 				required
 				clearable
-				v-model="formData.name"
 				:label="$root.lang().database.packs.modal.name"
 			/>
 			<v-combobox
+				v-model="formData.tags"
 				:color="color"
 				:item-color="color"
 				required
 				multiple
 				deletable-chips
 				small-chips
-				v-model="formData.tags"
 				:items="tags"
 				:label="$root.lang().database.packs.modal.tags"
 			/>
 			<v-text-field
+				v-model="formData.resolution"
 				:color="color"
 				required
 				type="number"
-				v-model="formData.resolution"
 				:label="$root.lang().database.packs.modal.resolution"
 			/>
 			<v-text-field
+				v-model="formData.logo"
 				:color="color"
 				:rules="downloadLinkRules"
 				clearable
-				v-model="formData.logo"
 				:label="$root.lang().database.packs.modal.logo"
 			/>
 			<h2 class="title">{{ $root.lang().database.packs.modal.github.title }}</h2>
@@ -71,16 +71,16 @@
 				<v-row>
 					<v-col>
 						<v-text-field
+							v-model="(formData.github[edition] || createNewGithub(edition)).org"
 							:color="color"
 							:label="$root.lang().database.packs.modal.github.organization"
-							v-model="(formData.github[edition] || createNewGithub(edition)).org"
 						/>
 					</v-col>
 					<v-col>
 						<v-text-field
+							v-model="(formData.github[edition] || createNewGithub(edition)).repo"
 							:color="color"
 							:label="$root.lang().database.packs.modal.github.repository"
-							v-model="(formData.github[edition] || createNewGithub(edition)).repo"
 						/>
 					</v-col>
 				</v-row>

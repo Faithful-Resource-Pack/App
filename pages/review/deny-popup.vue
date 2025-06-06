@@ -7,8 +7,8 @@
 		@submit="interacted(true)"
 	>
 		<v-text-field
-			required
 			v-model="denyReason"
+			required
 			:label="$root.lang().review.deny_window.label"
 			:rules="reasonRules"
 		/>

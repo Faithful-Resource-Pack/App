@@ -1,6 +1,6 @@
 <template>
 	<v-row class="roles-graph mt-0" dense>
-		<v-col class="flex-sm-shrink-0 flex-grow-0" cols="12" sm="6" id="roles-graph-cell">
+		<v-col id="roles-graph-cell" class="flex-sm-shrink-0 flex-grow-0" cols="12" sm="6">
 			<v-skeleton-loader v-if="loading || !renderComponent" id="graph-loader" type="image" />
 			<graph-treemap
 				v-if="renderComponent"

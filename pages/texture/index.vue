@@ -2,50 +2,50 @@
 	<v-container id="texturePage">
 		<div class="styles" v-html="pageStyles" />
 		<texture-modal
+			v-model="textureModalOpen"
 			:color="pageColor"
 			:textColor="textColorOnPage"
-			v-model="textureModalOpen"
-			@close="closeTextureModal"
 			:add="!Object.keys(modalData).length"
 			:data="modalData"
 			:tags="tags"
+			@close="closeTextureModal"
 		/>
 		<new-texture-modal
-			:color="pageColor"
 			v-model="newTextureModalOpen"
+			:color="pageColor"
 			:tags="tags"
 			:versions="versions"
 		/>
 		<rename-version-modal
-			:color="pageColor"
 			v-model="renameVersionModalOpen"
+			:color="pageColor"
+			:versions="versions"
 			@close="
 				() => {
 					renameVersionModalOpen = false;
 				}
 			"
-			:versions="versions"
 		/>
 		<add-version-modal
-			:color="pageColor"
 			v-model="addVersionModalOpen"
+			:color="pageColor"
+			:versions="versions"
 			@close="
 				() => {
 					addVersionModalOpen = false;
 				}
 			"
-			:versions="versions"
 		/>
 		<texture-remove-confirm
-			type="texture"
 			v-model="remove.confirm"
+			type="texture"
 			:data="remove.data"
+			:on-submit="removeTexture"
 			@close="
 				() => {
 					remove.confirm = false;
 				}
 			"
-			:on-submit="removeTexture"
 		/>
 
 		<div class="text-h4 py-4">

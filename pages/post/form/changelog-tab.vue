@@ -3,12 +3,12 @@
 		<!-- root level object is an array so it must be iterated over -->
 		<post-changelog
 			v-for="(_item, i) in changelog"
+			:key="i"
 			v-model="changelog[i]"
 			@delete="remove(i)"
-			:key="i"
 		/>
 		<json-modal v-model="jsonModalOpened" initialValue="{}" @data="parseJSON" />
-		<div class="py-5" v-if="changelog.length">
+		<div v-if="changelog.length" class="py-5">
 			<v-divider />
 		</div>
 		<v-row dense>

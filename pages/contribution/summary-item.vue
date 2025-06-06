@@ -11,10 +11,10 @@
 				</v-list-item-subtitle>
 				<v-list-item-subtitle v-if="contrib.texture && contrib.texture.length">
 					<v-chip
-						class="mr-1 px-2"
-						x-small
 						v-for="range in contrib.texture"
 						:key="formatRange(range)"
+						class="mr-1 px-2"
+						x-small
 					>
 						{{ formatRange(range) }}
 					</v-chip>

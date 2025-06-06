@@ -2,7 +2,7 @@
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
 		<v-row no-gutters>
 			<v-col cols="12" sm="6" class="text-h4 my-4">{{ $root.lang().gallery.title }}</v-col>
-			<v-col class="ml-auto my-4" cols="12" sm="6" v-if="$root.isAdmin">
+			<v-col v-if="$root.isAdmin" class="ml-auto my-4" cols="12" sm="6">
 				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
 			</v-col>
 		</v-row>
@@ -13,8 +13,8 @@
 			<!-- no point showing column slider on mobile -->
 			<v-col v-if="maxColumns > 1" cols="12" sm="6">
 				<v-slider
-					:label="$root.lang().gallery.max_items_per_row"
 					v-model="columns"
+					:label="$root.lang().gallery.max_items_per_row"
 					step="1"
 					thumb-label
 					ticks="always"
@@ -24,11 +24,11 @@
 					:max="maxColumns"
 				/>
 			</v-col>
-			<v-col cols="12" v-if="stretchable" sm="3">
-				<v-switch :label="$root.lang().gallery.stretched_switcher" v-model="stretched" />
+			<v-col v-if="stretchable" cols="12" sm="3">
+				<v-switch v-model="stretched" :label="$root.lang().gallery.stretched_switcher" />
 			</v-col>
 			<v-col cols="12" :sm="stretchable ? 3 : 6">
-				<v-switch :label="$root.lang().gallery.animated_switcher" v-model="animated" />
+				<v-switch v-model="animated" :label="$root.lang().gallery.animated_switcher" />
 			</v-col>
 		</v-row>
 
@@ -48,21 +48,21 @@
 		/>
 
 		<v-row class="py-3 pb-0">
-			<v-col cols="12" sm="9" v-if="requestTime > 0 && textures.length">
+			<v-col v-if="requestTime > 0 && textures.length" cols="12" sm="9">
 				<p class="text--secondary">{{ resultMessage }}</p>
 			</v-col>
-			<v-col cols="12" sm="9" v-else>
+			<v-col v-else cols="12" sm="9">
 				<br />
 			</v-col>
 			<v-col cols="12" sm="3">
 				<v-select
+					v-model="currentSort"
 					color="text--secondary"
 					dense
 					hide-details
 					:items="sortMethods"
 					item-text="label"
 					item-value="value"
-					v-model="currentSort"
 				/>
 			</v-col>
 		</v-row>

@@ -2,41 +2,41 @@
 	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
 		<v-form ref="form">
 			<v-text-field
-				:color="color"
 				v-if="add == false"
+				v-model="formData.id"
+				:color="color"
 				disabled
 				persistent-hint
 				:hint="'⚠️' + $root.lang().database.textures.paths.id_hint"
-				v-model="formData.id"
 				:label="$root.lang().database.textures.paths.id"
 			/>
 			<v-text-field
-				:color="color"
 				v-if="add == false"
-				:hint="'⚠️' + $root.lang().database.textures.uses.id_hint"
 				v-model="formData.use"
+				:color="color"
+				:hint="'⚠️' + $root.lang().database.textures.uses.id_hint"
 				:label="$root.lang().database.textures.uses.id"
 			/>
 			<v-text-field
+				v-model="formData.name"
 				:color="color"
 				:hint="$root.lang().database.textures.paths.name_hint"
-				v-model="formData.name"
-				@change="(e) => formatPath(e)"
 				:label="$root.lang().database.textures.paths.name"
+				@change="(e) => formatPath(e)"
 			/>
 			<v-select
+				v-model="formData.versions"
 				:color="color"
 				:item-color="color"
 				required
 				multiple
 				small-chips
-				v-model="formData.versions"
 				:items="sortedVersions"
 				:label="$root.lang().database.textures.paths.versions"
 			/>
 			<v-checkbox
-				:color="color"
 				v-model="formData.mcmeta"
+				:color="color"
 				:label="$root.lang().database.textures.paths.mcmeta"
 			/>
 		</v-form>

@@ -8,8 +8,8 @@
 		<deny-popup v-model="showDenyPopup" :archive="archive" @close="closeDenyPopup" />
 
 		<review-categories
-			:categories="categories"
 			v-model="status"
+			:categories="categories"
 			:activeColor="pageColor"
 			:empty="empty"
 		/>
@@ -38,8 +38,8 @@ d88   888  888    888 d88   888
 				<template v-if="$vuetify.breakpoint.mdAndUp">
 					<div id="review-list">
 						<review-list
-							:items="selectedItems"
 							v-model="selectedAddonId"
+							:items="selectedItems"
 							:activeColor="pageColor"
 							:empty="empty"
 						/>

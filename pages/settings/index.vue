@@ -8,9 +8,9 @@
 		</v-btn>
 		<div class="my-5 text-h5">{{ $root.lang().settings.label.edit_raw }}</div>
 		<prism-editor
+			v-model="jsonText"
 			style="max-height: 600px"
 			class="ma-0 json-editor mb-2"
-			v-model="jsonText"
 			:highlight="highlighter"
 			line-numbers
 		/>

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-row dense v-for="(download, i) in downloads" :key="download.key">
+		<v-row v-for="(download, i) in downloads" :key="download.key" dense>
 			<template v-if="download.category !== undefined">
 				<v-col cols="12" sm="3">
 					<v-text-field
@@ -10,7 +10,7 @@
 					/>
 				</v-col>
 				<v-col cols="12" sm="9">
-					<v-row dense v-for="(item, j) in download.items" :key="item.key">
+					<v-row v-for="(item, j) in download.items" :key="item.key" dense>
 						<v-col cols="12" sm="3">
 							<v-text-field
 								v-model="item.name"
@@ -28,18 +28,18 @@
 						</v-col>
 						<template v-if="j === 0">
 							<v-col cols="12" sm="1">
-								<v-btn icon @click="addItemToCategory(i)" color="lighten-1">
+								<v-btn icon color="lighten-1" @click="addItemToCategory(i)">
 									<v-icon>mdi-plus</v-icon>
 								</v-btn>
 							</v-col>
 							<v-col cols="12" sm="1">
-								<v-btn icon @click="removeItem(i)" color="red lighten-1">
+								<v-btn icon color="red lighten-1" @click="removeItem(i)">
 									<v-icon>mdi-delete</v-icon>
 								</v-btn>
 							</v-col>
 						</template>
 						<v-col v-else cols="12" sm="1">
-							<v-btn icon @click="removeItemInCategory(i, j)" color="red lighten-1">
+							<v-btn icon color="red lighten-1" @click="removeItemInCategory(i, j)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>
 						</v-col>
@@ -61,7 +61,7 @@
 							/>
 						</v-col>
 						<v-col cols="12" sm="1">
-							<v-btn icon @click="removeItem(i)" color="red lighten-1">
+							<v-btn icon color="red lighten-1" @click="removeItem(i)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>
 						</v-col>

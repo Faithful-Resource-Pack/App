@@ -1,7 +1,7 @@
 <template>
 	<v-dialog v-model="modalOpened" content-class="colored" :max-width="maxWidth">
 		<v-card>
-			<v-card-title class="headline" v-if="title">{{ title }}</v-card-title>
+			<v-card-title v-if="title" class="headline">{{ title }}</v-card-title>
 			<v-card-text>
 				<slot />
 			</v-card-text>

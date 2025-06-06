@@ -11,14 +11,14 @@
 			@click.stop="click"
 		/>
 		<input
+			id="fileInput"
+			ref="file"
 			type="file"
 			:multiple="multiple"
 			name="file"
-			id="fileInput"
 			class="hidden-input"
-			@change="onChange"
-			ref="file"
 			:accept="accept"
+			@change="onChange"
 		/>
 
 		<label for="fileInput" class="label">

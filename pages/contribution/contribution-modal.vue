@@ -6,7 +6,7 @@
 		@close="close"
 		@submit="handleSubmit"
 	>
-		<v-row dense v-if="add">
+		<v-row v-if="add" dense>
 			<v-col class="flex-grow-0 flex-shrink-1" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
 				<contribution-form
 					v-model="contribs[selectedContrib]"

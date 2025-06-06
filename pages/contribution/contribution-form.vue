@@ -4,9 +4,9 @@
 		<v-row>
 			<v-col cols="12" :sm="add ? false : 6">
 				<quick-date-picker
+					v-model="contrib.date"
 					:block="!add"
 					flat
-					v-model="contrib.date"
 					:months="months"
 					:labels="$root.lang().datepicker"
 					style="margin-left: auto; margin-right: auto"
@@ -14,28 +14,28 @@
 			</v-col>
 			<v-col cols="12" :sm="add ? false : 6">
 				<v-select
+					v-model="contrib.pack"
 					:label="$root.lang().database.contributions.modal.pack"
 					:items="packList"
 					item-text="label"
 					item-value="value"
 					hide-details
 					required
-					v-model="contrib.pack"
 				/>
 				<!-- must manually handle v-model to prevent type errors -->
 				<multi-range-input
 					v-if="add"
 					:value="Array.isArray(contrib.texture) ? contrib.texture : []"
+					:label="$root.lang().database.contributions.modal.texture_ids"
+					hide-details
+					:errors="$root.lang().database.contributions.modal.id_field_errors"
 					@input="
 						(value) => {
 							contrib.texture = value;
 						}
 					"
-					:label="$root.lang().database.contributions.modal.texture_ids"
-					hide-details
-					:errors="$root.lang().database.contributions.modal.id_field_errors"
 				/>
-				<div class="d-flex align-center" v-else>
+				<div v-else class="d-flex align-center">
 					<v-text-field
 						v-model="contrib.texture"
 						:label="$root.lang().database.contributions.modal.texture_id"
@@ -53,8 +53,8 @@
 					</v-btn>
 				</div>
 				<user-select
-					:users="contributors"
 					v-model="contrib.authors"
+					:users="contributors"
 					:label="$root.lang().database.contributions.contributors"
 					:limit="3"
 					small-chips

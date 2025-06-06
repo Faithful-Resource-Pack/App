@@ -37,9 +37,9 @@
 				class="ma-1 px-4 py-2 text-uppercase v-btn v-btn--has-bg font-weight-medium"
 			>
 				<v-checkbox
+					:id="key"
 					v-model="packObj.selected"
 					:label="packObj.label"
-					:id="key"
 					hide-details
 					class="ma-0 pt-0"
 					@change="(val) => onPackChange(key, val)"
@@ -52,10 +52,10 @@
 		<v-row align="stretch" class="my-2">
 			<v-col cols="12" sm="6" class="pt-0 py-sm-0">
 				<user-select
+					v-model="selectedContributors"
 					persistent-placeholder
 					:label="$root.lang().database.contributions.user_filter"
 					outlined
-					v-model="selectedContributors"
 					:users="contributors"
 					:placeholder="$root.lang().database.contributions.select_user"
 					hide-details
@@ -71,23 +71,23 @@
 			</v-col>
 			<v-col cols="12" sm="6" class="pb-0 py-sm-0">
 				<v-text-field
+					v-model="searchValue"
 					persistent-placeholder
 					:label="$root.lang().database.contributions.texture_filter"
 					outlined
 					style="height: 100%"
 					type="search"
-					v-model="searchValue"
 					class="pt-0 my-0"
 					height="100%"
 					:placeholder="$root.lang().database.textures.search_texture"
-					@keyup.enter="startSearch()"
 					hide-details
+					@keyup.enter="startSearch()"
 				/>
 			</v-col>
 		</v-row>
 
 		<!-- Search button -->
-		<v-btn block color="primary" @click="startSearch()" :disabled="searchDisabled" class="my-6">
+		<v-btn block color="primary" :disabled="searchDisabled" class="my-6" @click="startSearch()">
 			{{ $root.lang().database.contributions.search_contributions }}
 			<v-icon right dark>mdi-magnify</v-icon>
 		</v-btn>

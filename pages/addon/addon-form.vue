@@ -2,7 +2,7 @@
 	<v-container>
 		<fullscreen-preview v-model="previewOpen" :src="header" />
 
-		<div class="text-center" v-if="loading">
+		<div v-if="loading" class="text-center">
 			<h2 class="mb-5">{{ $root.lang().addons.general.loading_addon }}</h2>
 			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
 		</div>
@@ -12,7 +12,7 @@
 			:rounded="$vuetify.breakpoint.mdAndUp"
 			two-line
 		>
-			<v-form lazy-validation v-model="validForm" ref="form">
+			<v-form ref="form" v-model="validForm" lazy-validation>
 				<a href="https://docs.faithfulpack.net/pages/manuals/add-on-rules" target="_blank">
 					<v-alert type="warning" class="pb-4" color="orange darken-3">
 						<span style="color: inherit; text-decoration: underline">
@@ -29,9 +29,9 @@
 
 						<!-- Addon name -->
 						<v-text-field
+							v-model="submittedForm.name"
 							required
 							clearable
-							v-model="submittedForm.name"
 							:rules="form.name.rules"
 							:counter="form.name.counter.max"
 							:label="$root.lang().addons.general.name.label"
@@ -40,25 +40,25 @@
 
 						<!-- Addon authors selection -->
 						<user-select
-							:users="users"
 							v-model="submittedForm.authors"
+							:users="users"
 							:label="$root.lang().addons.general.authors.label"
 							:hint="$root.lang().addons.general.authors.hint"
 						/>
 
-						<div class="text-h5 mb-3" v-if="!$vuetify.breakpoint.smAndDown">
+						<div v-if="!$vuetify.breakpoint.smAndDown" class="text-h5 mb-3">
 							{{ $root.lang().addons.images.title }}
 						</div>
 					</div>
 					<!-- RIGHT PART: HEADER IMAGE PREVIEW -->
 					<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
 						<div class="col">
-							<div style="position: relative" v-if="hasHeader" class="mt-3">
+							<div v-if="hasHeader" style="position: relative" class="mt-3">
 								<v-img
-									@click.stop="() => (previewOpen = true)"
 									style="border-radius: 10px"
 									:aspect-ratio="16 / 9"
 									:src="header"
+									@click.stop="() => (previewOpen = true)"
 								/>
 								<v-card
 									class="ma-2"
@@ -83,17 +83,17 @@
 								</v-card>
 							</div>
 							<v-responsive
+								v-else
 								:aspect-ratio="$vuetify.breakpoint.smAndDown ? undefined : 16 / 9"
 								min-height="100px"
 								class="mt-3"
-								v-else
 							>
 								<drop-zone
-									:disabled="disabledHeaderInput"
 									v-model="submittedForm.headerFile"
+									:disabled="disabledHeaderInput"
 									accept="image/jpg, image/jpeg"
-									@change="headerChange"
 									style="height: 100%"
+									@change="headerChange"
 								>
 									<span>
 										<v-icon small>mdi-image</v-icon>
@@ -105,18 +105,18 @@
 					</div>
 				</div>
 
-				<div class="text-h5 mb-3" v-if="$vuetify.breakpoint.smAndDown">
+				<div v-if="$vuetify.breakpoint.smAndDown" class="text-h5 mb-3">
 					{{ $root.lang().addons.images.title }}
 				</div>
 
 				<!-- upload field for images -->
 				<div class="py-5">
 					<drop-zone
-						multiple
 						v-model="submittedForm.carouselFiles"
+						multiple
 						accept="image/jpg, image/jpeg"
-						@change="carouselChange"
 						style="height: 70px"
+						@change="carouselChange"
 					>
 						<span>
 							<v-icon small>mdi-image</v-icon>
@@ -146,8 +146,8 @@
 
 				<!-- Embed description -->
 				<v-text-field
-					clearable
 					v-model="submittedForm.embed_description"
+					clearable
 					:label="$root.lang().addons.info.embed_description.label"
 					:hint="$root.lang().addons.info.embed_description.hint"
 					:counter="form.embed_description.counter.max"
@@ -156,9 +156,9 @@
 
 				<!-- only visible to admins on already-existing addons -->
 				<v-text-field
-					clearable
-					v-model="submittedForm.slug"
 					v-if="$root.isAdmin && !addonNew"
+					v-model="submittedForm.slug"
+					clearable
 					:label="$root.lang().addons.general.slug.label"
 					:hint="$root.lang().addons.general.slug.hint"
 				/>
@@ -169,7 +169,7 @@
 					<div class="row text-center">
 						<div class="col-12 col-md-6">
 							<v-row>
-								<v-col cols="6" v-for="type in editions" :key="type">
+								<v-col v-for="type in editions" :key="type" cols="6">
 									<v-checkbox
 										v-model="submittedForm.selectedEditions"
 										:label="type"
@@ -186,7 +186,7 @@
 						</div>
 						<div class="col-12 col-md-6">
 							<v-row>
-								<v-col cols="6" v-for="type in res" :key="type">
+								<v-col v-for="type in res" :key="type" cols="6">
 									<v-checkbox
 										v-model="submittedForm.selectedRes"
 										:label="type"
@@ -204,8 +204,8 @@
 					</div>
 					<v-row>
 						<v-checkbox
-							class="col-6"
 							v-model="submittedForm.options.optifine"
+							class="col-6"
 							:label="$root.lang().addons.options.optifine.label"
 							color="primary"
 						/>
@@ -218,10 +218,10 @@
 					<v-row v-for="(obj, index) in submittedForm.downloads" :key="index" style="margin-top: 0">
 						<v-col cols="12" sm="3">
 							<v-text-field
+								v-model="obj.key"
 								clearable
 								:placeholder="$root.lang().addons.downloads.name.placeholder"
 								:label="$root.lang().addons.downloads.name.label"
-								v-model="obj.key"
 								:rules="downloadTitleRules"
 							/>
 						</v-col>
@@ -236,10 +236,10 @@
 							>
 								<v-col>
 									<v-text-field
+										v-model="obj.links[indexLinks]"
 										clearable
 										:placeholder="$root.lang().addons.downloads.link.placeholder"
 										:label="$root.lang().addons.downloads.link.label"
-										v-model="obj.links[indexLinks]"
 										:rules="downloadLinkRules"
 									/>
 								</v-col>

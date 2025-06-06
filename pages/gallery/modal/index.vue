@@ -12,12 +12,13 @@
 		</template>
 		<fullscreen-preview v-model="previewOpen" :src="clickedImage" :aspect-ratio="1 / 1" texture />
 
-		<div class="gallery-modal-container pa-5" v-if="Object.keys(textureObj).length > 0">
+		<div v-if="Object.keys(textureObj).length > 0" class="gallery-modal-container pa-5">
 			<!-- image display -->
 			<div class="mx-auto overflow-auto pa-2">
 				<div v-for="(group, i) in grouped" :key="i" class="d-flex flex-row pb-2 pb-sm-0">
 					<div v-for="url in group" :key="url.name" class="px-2 pb-sm-2">
 						<gallery-image
+							:ref="`image-${url.name}`"
 							modal
 							:src="url.image"
 							:textureID="textureID"
@@ -26,7 +27,6 @@
 							:mcmeta="textureObj.mcmeta"
 							@click="openFullscreenPreview(url.image)"
 							@loaded="countLoaded"
-							:ref="`image-${url.name}`"
 						>
 							<p>{{ $root.lang().gallery.error_message.texture_not_done }}</p>
 						</gallery-image>
