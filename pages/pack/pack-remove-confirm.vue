@@ -24,13 +24,13 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		id: {
+		packID: {
 			type: String,
 			required: true,
 		},
 		label: {
 			type: String,
-			required: false,
+			required: true,
 		},
 		type: {
 			type: String,
@@ -45,7 +45,7 @@ export default {
 	methods: {
 		deletePack() {
 			axios
-				.delete(`${this.$root.apiURL}/${this.type}/${this.id}`, this.$root.apiOptions)
+				.delete(`${this.$root.apiURL}/${this.type}/${this.packID}`, this.$root.apiOptions)
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 					this.$emit("close", true);

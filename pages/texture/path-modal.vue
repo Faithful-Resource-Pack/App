@@ -76,10 +76,13 @@ export default {
 		edition: {
 			type: String,
 			required: false,
+			default: null,
 		},
+		// only used when adding to existing use
 		useID: {
 			type: String,
 			required: false,
+			default: null,
 		},
 		color: {
 			type: String,
@@ -169,7 +172,7 @@ export default {
 					if (this.sortedVersions.length === 1)
 						this.formData.versions = Array.from(this.sortedVersions);
 				} else {
-					this.formData.versions = this.data.versions.sort(versionSorter);
+					this.formData.versions = Array.from(this.data.versions).sort(versionSorter);
 					this.formData.id = this.data.id;
 					this.formData.name = this.data.name;
 					this.formData.use = this.data.use;

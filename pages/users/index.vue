@@ -1,5 +1,6 @@
 <template>
 	<v-container>
+		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
 		<user-modal
 			v-model="modalOpen"
@@ -28,13 +29,13 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.users.role_filter }}</div>
 		<div class="selector">
 			<v-btn
-				v-for="role in usersRoles"
-				:key="role"
-				:class="['my-1 mr-2', activeRole(role)]"
-				:to="userURL(role)"
-				:exact="role == 'all'"
+				v-for="userRole in usersRoles"
+				:key="userRole"
+				:class="['my-1 mr-2', activeRole(userRole)]"
+				:to="userURL(userRole)"
+				:exact="userRole == 'all'"
 			>
-				{{ role }}
+				{{ userRole }}
 			</v-btn>
 		</div>
 

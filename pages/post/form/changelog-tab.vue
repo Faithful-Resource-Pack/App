@@ -40,7 +40,7 @@ export default {
 	props: {
 		value: {
 			type: Array,
-			required: false,
+			required: true,
 		},
 		convert: {
 			type: Function,

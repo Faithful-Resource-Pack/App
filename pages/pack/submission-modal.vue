@@ -102,7 +102,7 @@ export default {
 		},
 		data: {
 			type: Object,
-			required: false,
+			required: true,
 		},
 		add: {
 			type: Boolean,

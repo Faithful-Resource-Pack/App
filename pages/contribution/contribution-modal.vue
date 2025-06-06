@@ -104,6 +104,7 @@ export default {
 		data: {
 			type: Object,
 			required: false,
+			default: null,
 		},
 		// whether it's a new contribution or editing existing one
 		add: {

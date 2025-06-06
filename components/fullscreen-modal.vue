@@ -7,6 +7,7 @@
 		transition="dialog-bottom-transition"
 		@keydown.esc="closeModal"
 	>
+		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
 		<v-card>
 			<v-toolbar>
@@ -38,6 +39,7 @@ export default {
 		title: {
 			type: String,
 			required: false,
+			default: "",
 		},
 		loading: {
 			type: Boolean,

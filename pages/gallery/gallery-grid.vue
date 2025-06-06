@@ -16,8 +16,8 @@
 				:key="sort + texture.textureID"
 				class="gallery-texture-in-container"
 				@click.exact.stop="$emit('open', texture.textureID)"
-				@click.middle.stop="$emit('openNewTab', texture.textureID)"
-				@click.meta.stop="$emit('openNewTab', texture.textureID)"
+				@click.exact.middle.stop="$emit('openNewTab', texture.textureID)"
+				@click.exact.meta.stop="$emit('openNewTab', texture.textureID)"
 			>
 				<tippy-component :to="texture.id" placement="right-start" theme="" maxWidth="350px">
 					<template #trigger>
@@ -126,6 +126,7 @@ export default {
 		error: {
 			type: String,
 			required: false,
+			default: null,
 		},
 	},
 	data() {

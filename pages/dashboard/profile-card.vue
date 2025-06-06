@@ -33,13 +33,11 @@
 
 			<p
 				v-if="user.roles.length"
-				class="text-center d-flex justify-center align-center rounded-lg pa-3 mb-0"
+				class="text-center d-flex justify-center align-center flex-column rounded-lg pa-3 mb-0"
 			>
-				<span>
-					<template v-for="role in user.roles">
-						{{ role }}
-						<br />
-					</template>
+				<span v-for="role in user.roles" :key="role">
+					{{ role }}
+					<br />
 				</span>
 			</p>
 			<div v-else />

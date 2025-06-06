@@ -1,5 +1,6 @@
 <template>
 	<v-container id="texturePage">
+		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
 		<texture-modal
 			v-model="textureModalOpen"
@@ -54,13 +55,13 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.textures.tag_filter }}</div>
 		<div class="selector">
 			<v-btn
-				v-for="tag in textureTags"
-				:key="tag"
-				:class="['my-1 mr-2', activeTag(tag)]"
-				:to="textureURL(tag)"
-				:exact="tag == 'all'"
+				v-for="textureTag in textureTags"
+				:key="textureTag"
+				:class="['my-1 mr-2', activeTag(textureTag)]"
+				:to="textureURL(textureTag)"
+				:exact="textureTag == 'all'"
 			>
-				{{ tag }}
+				{{ textureTag }}
 			</v-btn>
 		</div>
 		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>

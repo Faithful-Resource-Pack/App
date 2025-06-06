@@ -133,12 +133,9 @@
 					<v-list-item-title class="uppercase my-2">
 						{{ $root.lang().review.addon.titles.description }}
 					</v-list-item-title>
-					<!-- eslint-disable vue/no-v-text-v-html-on-component -->
-					<v-container
-						class="markdown"
-						:style="{ backgroundColor: `rgba(0, 0, 0, ${$root.isDark ? 0.2 : 0.05})` }"
-						v-html="$root.compileMarkdown(addonInPanel.description)"
-					/>
+
+					<!-- eslint-disable-next-line vue/no-v-html -->
+					<div v-html="$root.compileMarkdown(addonInPanel.description)" />
 
 					<div v-if="addonInPanel.approval.status === 'approved'" class="my-2">
 						<v-list-item-title class="uppercase">

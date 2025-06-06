@@ -10,8 +10,8 @@
 			@submissionFinished="addSubmissionData"
 		/>
 		<pack-remove-confirm
-			:id="remove.id"
 			v-model="remove.confirm"
+			:packID="remove.id"
 			type="submissions"
 			:label="remove.label"
 			@close="
@@ -154,7 +154,7 @@ export default {
 		},
 		data: {
 			type: Object,
-			required: false,
+			required: true,
 		},
 		tags: {
 			type: Array,

@@ -4,7 +4,7 @@
 			<v-btn large icon class="ml-4" to="/addons/submissions">
 				<v-icon>mdi-chevron-left</v-icon>
 			</v-btn>
-			{{ $root.lang().addons.titles.edit }} <span class="thin-text">#{{ this.id }}</span>
+			{{ $root.lang().addons.titles.edit }} <span class="thin-text">#{{ id }}</span>
 		</h4>
 		<addon-form
 			:addon-new="false"
@@ -21,12 +21,12 @@
 		<modal-form
 			v-model="reasonModalOpen"
 			button-type="submit"
-			:title="this.$root.lang().addons.general.reason.title"
+			:title="$root.lang().addons.general.reason.title"
 			@close="() => handleReasonModal(false)"
 			@submit="handleReasonModal(true)"
 		>
 			<v-form ref="reasonForm" v-model="validForm" lazy-validation>
-				<p>{{ this.$root.lang().addons.general.reason.text }}</p>
+				<p>{{ $root.lang().addons.general.reason.text }}</p>
 				<v-text-field
 					v-model="reason"
 					:label="$root.lang().addons.general.reason.title"

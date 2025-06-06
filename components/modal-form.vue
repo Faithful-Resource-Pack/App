@@ -30,6 +30,7 @@ export default {
 		title: {
 			type: String,
 			required: false,
+			default: null,
 		},
 		value: {
 			type: Boolean,
@@ -44,6 +45,7 @@ export default {
 		buttonType: {
 			type: String,
 			required: false,
+			default: null,
 		},
 		disabled: {
 			type: Boolean,

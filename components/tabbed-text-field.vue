@@ -15,6 +15,7 @@
 				</v-tab-item>
 				<v-tab-item>
 					<!-- 120px textarea + 18px word count text -->
+					<!-- eslint-disable-next-line vue/no-v-html -->
 					<div class="my-4 mx-3" style="min-height: 138px" v-html="rendered"></div>
 				</v-tab-item>
 			</v-tabs-items>
@@ -31,7 +32,6 @@ export default {
 		value: {
 			type: String,
 			required: true,
-			default: "",
 		},
 		type: {
 			type: String,

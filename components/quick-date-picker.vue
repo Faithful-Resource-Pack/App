@@ -60,9 +60,12 @@ export default {
 	name: "quick-date-picker",
 	props: {
 		months: {
+			type: Array,
 			required: true,
 		},
 		value: {
+			// anything that can go into the Date constructor
+			type: [Number, String, Date],
 			required: true,
 		},
 		disabled: {
@@ -76,6 +79,7 @@ export default {
 			default: () => false,
 		},
 		labels: {
+			type: Object,
 			required: false,
 			default: () => ({ year: "Year", month: "Month", day: "Day" }),
 		},

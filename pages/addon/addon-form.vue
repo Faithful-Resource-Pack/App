@@ -313,7 +313,9 @@ export default {
 			default: false,
 		},
 		addonData: {
+			type: Object,
 			required: false,
+			default: null,
 		},
 		loading: {
 			type: Boolean,
@@ -321,11 +323,14 @@ export default {
 			default: false,
 		},
 		headerSource: {
+			type: String,
 			required: false,
 			default: "",
 		},
 		screenSources: {
+			type: Array,
 			required: false,
+			default: () => [],
 		},
 		screenIds: {
 			required: false,
@@ -506,7 +511,7 @@ export default {
 	},
 	computed: {
 		hasHeader() {
-			return !!(this.header || this.headerURL);
+			return this.header || this.headerURL;
 		},
 		header() {
 			return this.addonNew

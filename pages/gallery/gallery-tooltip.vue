@@ -73,6 +73,7 @@ export default {
 			const contributions = this.contributions[this.pack]?.[this.texture.textureID];
 			if (contributions !== undefined)
 				return contributions.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
+			return undefined;
 		},
 		lastContributionNames() {
 			if (this.lastContribution === undefined) return "";

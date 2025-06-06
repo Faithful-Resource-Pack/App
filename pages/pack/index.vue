@@ -1,5 +1,6 @@
 <template>
 	<v-container>
+		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
 		<pack-modal
 			v-model="modalOpen"
@@ -10,8 +11,8 @@
 			@close="close"
 		/>
 		<pack-remove-confirm
-			:id="remove.id"
 			v-model="remove.confirm"
+			:packID="remove.id"
 			type="packs"
 			:label="remove.label"
 			@close="
@@ -39,13 +40,13 @@
 		<div class="my-2 text-h5">{{ $root.lang().database.packs.tag_filter }}</div>
 		<div class="selector">
 			<v-btn
-				v-for="tag in packTags"
-				:key="tag"
-				:class="['my-1 mr-2', activeTag(tag)]"
-				:to="packURL(tag)"
-				:exact="tag == 'all'"
+				v-for="packTag in packTags"
+				:key="packTag"
+				:class="['my-1 mr-2', activeTag(packTag)]"
+				:to="packURL(packTag)"
+				:exact="packTag == 'all'"
 			>
-				{{ formatTags(tag) }}
+				{{ formatTags(packTag) }}
 			</v-btn>
 		</div>
 
@@ -56,7 +57,7 @@
 			:items="packs"
 			:pageColor="pageColor"
 			:textColor="textColorOnPage"
-			:max-columns="2"
+			:maxColumns="2"
 			track="id"
 		>
 			<template #default="{ item }">

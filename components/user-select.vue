@@ -81,10 +81,11 @@ export default {
 	name: "user-select",
 	props: {
 		users: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 		value: {
+			type: Array,
 			required: true,
 		},
 		dense: {

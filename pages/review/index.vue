@@ -1,5 +1,6 @@
 <template>
 	<v-container id="review-addons">
+		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
 		<div class="text-h4 py-4">
 			{{ $root.lang().review.titles.addons }}
@@ -18,6 +19,7 @@
 			<div v-if="selectedItems.length === 0" id="empty">
 				<div class="rounded-lg d-flex text-center align-center justify-center">
 					<div>
+						<!-- eslint-disable vue/html-closing-bracket-newline -->
 						<pre v-if="$vuetify.breakpoint.mdAndUp">
     d8888   .d8888b.      d8888
    d8P888  d88P  Y88b    d8P888
@@ -29,6 +31,7 @@ d88   888  888    888 d88   888
       888   "Y8888P"        888
 </pre
 						>
+						<!-- eslint-enable vue/html-closing-bracket-newline -->
 						<p v-else class="text-h2 my-2">404</p>
 						<p class="my-2 px-2">{{ empty }}</p>
 					</div>

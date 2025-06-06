@@ -45,7 +45,9 @@ export default {
 			default: () => false,
 		},
 		value: {
-			required: true,
+			type: [File, Array],
+			required: false,
+			default: null,
 		},
 		disabled: {
 			required: false,

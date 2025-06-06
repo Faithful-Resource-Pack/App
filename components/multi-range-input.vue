@@ -34,6 +34,7 @@ export default {
 			default: "",
 		},
 		errors: {
+			type: Object,
 			required: false,
 			default: () => ({
 				one_required: "One value required",

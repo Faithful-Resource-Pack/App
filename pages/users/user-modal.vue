@@ -76,6 +76,7 @@ export default {
 		data: {
 			type: Object,
 			required: false,
+			default: () => ({}),
 		},
 		roles: {
 			type: Array,

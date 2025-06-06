@@ -1,9 +1,9 @@
 <template>
 	<v-list rounded two-line class="main-container">
 		<v-row>
-			<v-col v-for="(items, index) in splitResults" :key="index" :cols="12 / listColumns" xs="1">
-				<v-list-item v-for="item in items" :key="item[track]">
-					<slot :item="item" />
+			<v-col v-for="(results, index) in splitResults" :key="index" :cols="12 / listColumns" xs="1">
+				<v-list-item v-for="res in results" :key="res[track]">
+					<slot :item="res" />
 				</v-list-item>
 			</v-col>
 		</v-row>

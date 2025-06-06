@@ -93,10 +93,5 @@ export default {
 				}));
 		},
 	},
-	computed: {
-		packs() {
-			return this.authorCategories.flatMap(({ packs }) => packs);
-		},
-	},
 };
 </script>

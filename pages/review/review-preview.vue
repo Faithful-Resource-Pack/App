@@ -131,11 +131,9 @@
 				<v-list-item-title class="uppercase py-2">
 					{{ $root.lang().review.addon.titles.description }}
 				</v-list-item-title>
-				<v-container
-					class="markdown"
-					:style="{ backgroundColor: `rgba(0, 0, 0, ${$root.isDark ? 0.2 : 0.05})` }"
-					v-html="$root.compileMarkdown(addonInPanel.description)"
-				/>
+
+				<!-- eslint-disable-next-line vue/no-v-html -->
+				<div v-html="$root.compileMarkdown(addonInPanel.description)" />
 			</template>
 		</v-card>
 		<div v-if="status === 'pending'" class="mt-2 rounded-lg pa-2">

@@ -28,9 +28,10 @@ export default {
 		value: {
 			type: String,
 			required: false,
+			default: undefined,
 		},
 		items: {
-			type: Array, // [{ primary: String, secondary: String, key: Number }]
+			type: Array, // { primary: String, secondary: String, key: Number }[]
 			required: true,
 		},
 		empty: {
