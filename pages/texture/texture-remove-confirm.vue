@@ -13,7 +13,7 @@
 		<blockquote v-if="type == 'use'">
 			<v-btn text @click="getPaths(data.id)"> See affected paths </v-btn>
 			<br />
-			<v-list-item v-for="path in data.paths" :key="path.id">
+			<v-list-item v-for="path in paths" :key="path.id">
 				<v-list-item-title>
 					{{ path.name }}
 					<v-list-item-subtitle>
@@ -62,7 +62,6 @@ export default {
 	data() {
 		return {
 			modalOpened: false,
-			formData: {},
 			deletePaths: true,
 			paths: {},
 		};
@@ -72,10 +71,10 @@ export default {
 			axios
 				.get(`${this.$root.apiURL}/uses/${useID}/paths`, this.$root.apiOptions)
 				.then((res) => {
-					const temp = res.data;
-					this.data.paths = {};
-
-					for (let i = 0; i < temp.length; i++) this.data.paths[temp[i].id] = temp[i];
+					this.paths = res.data.reduce((acc, path) => {
+						acc[path.id] = path;
+						return acc;
+					}, {});
 
 					this.$forceUpdate();
 				})
