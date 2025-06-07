@@ -71,20 +71,20 @@ export default {
 	},
 	props: {
 		series: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 		labels: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 		loading: {
-			required: true,
 			type: Boolean,
+			required: true,
 		},
 		colors: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 	},
 	data() {

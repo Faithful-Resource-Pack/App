@@ -333,13 +333,13 @@ export default {
 			default: () => [],
 		},
 		screenIds: {
-			required: false,
 			type: Array,
+			required: false,
 			default: undefined,
 		},
 		disabledHeaderInput: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: false,
 		},
 	},

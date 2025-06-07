@@ -52,17 +52,17 @@ export default {
 	},
 	props: {
 		sources: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 		ids: {
-			required: false,
 			type: Array,
+			required: false,
 			default: undefined,
 		},
 		deletable: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: true,
 		},
 	},

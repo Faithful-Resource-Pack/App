@@ -26,8 +26,8 @@ export default {
 			required: true,
 		},
 		aspectRatio: {
-			required: false,
 			type: Number,
+			required: false,
 			default: 16 / 9,
 		},
 		src: {
@@ -36,8 +36,8 @@ export default {
 			default: "",
 		},
 		texture: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: false,
 		},
 	},

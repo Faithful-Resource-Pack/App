@@ -56,6 +56,7 @@ export default {
 		},
 		onSubmit: {
 			type: Function,
+			required: false,
 			default: () => Promise.resolve(),
 		},
 	},

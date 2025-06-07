@@ -44,8 +44,8 @@ export default {
 	},
 	props: {
 		colors: {
-			required: true,
 			type: Array,
+			required: true,
 		},
 	},
 	data() {

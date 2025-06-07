@@ -35,13 +35,13 @@ export default {
 	name: "drop-zone",
 	props: {
 		accept: {
-			required: false,
 			type: String,
+			required: false,
 			default: () => "image/jpg, image/jpeg, image/png, image/gif",
 		},
 		multiple: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: () => false,
 		},
 		value: {
@@ -50,8 +50,8 @@ export default {
 			default: null,
 		},
 		disabled: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: () => false,
 		},
 	},

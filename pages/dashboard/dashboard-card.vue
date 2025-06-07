@@ -16,18 +16,18 @@ export default {
 	name: "dashboard-card",
 	props: {
 		title: {
-			required: false,
 			type: String,
+			required: false,
 			default: "",
 		},
 		to: {
-			required: false,
 			type: String,
+			required: false,
 			default: undefined,
 		},
 		clickable: {
-			required: false,
 			type: Boolean,
+			required: false,
 			default: false,
 		},
 	},

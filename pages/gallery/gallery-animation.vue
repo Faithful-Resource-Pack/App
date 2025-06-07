@@ -31,6 +31,7 @@ export default {
 		 */
 		isTiled: {
 			type: Boolean,
+			required: false,
 			default: false,
 		},
 	},
