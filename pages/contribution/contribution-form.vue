@@ -58,6 +58,7 @@
 					:label="$root.lang().database.contributions.contributors"
 					:limit="3"
 					small-chips
+					deletable-chips
 					:placeholder="$root.lang().database.contributions.modal.one_contributor"
 					:error-messages="
 						contrib.length === 0 ? [$root.lang().database.contributions.no_contributor_yet] : []

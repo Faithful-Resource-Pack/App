@@ -30,6 +30,7 @@
 						required
 						multiple
 						small-chips
+						deletable-chips
 						:items="roles"
 						:label="$root.lang().database.users.modal.roles"
 					/>

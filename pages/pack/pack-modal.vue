@@ -45,8 +45,8 @@
 				:item-color="color"
 				required
 				multiple
-				deletable-chips
 				small-chips
+				deletable-chips
 				:items="tags"
 				:label="$root.lang().database.packs.modal.tags"
 			/>

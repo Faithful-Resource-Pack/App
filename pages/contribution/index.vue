@@ -60,6 +60,7 @@
 					hide-details
 					class="my-0 pt-0"
 					small-chips
+					deletable-chips
 					clearable
 					@newUser="
 						(users) => {

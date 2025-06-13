@@ -18,8 +18,8 @@
 					:item-color="color"
 					required
 					multiple
-					deletable-chips
 					small-chips
+					deletable-chips
 					:items="tags"
 					:label="$root.lang().database.textures.modal.tags"
 					@change="
@@ -85,6 +85,7 @@
 							hide-details
 							clearable
 							small-chips
+							deletable-chips
 						/>
 					</v-col>
 					<v-col cols="12" sm="2">

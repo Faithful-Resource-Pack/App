@@ -31,6 +31,7 @@
 				required
 				multiple
 				small-chips
+				deletable-chips
 				:items="sortedVersions"
 				:label="$root.lang().database.textures.paths.versions"
 			/>
