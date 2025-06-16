@@ -232,6 +232,13 @@ export default {
 				example: "Renames all instances of a Minecraft version in the database (ex. 1.17 → 1.17.1)",
 				warning: "Please don't forget to update all GitHub branch names!",
 			},
+			merge_textures: {
+				title: "Merge textures",
+				warning: "This will delete the source texture and cannot be undone!",
+				source: "Source texture ID",
+				destination: "Destination texture ID",
+				invalid_id: "Invalid texture ID",
+			},
 		},
 		packs: {
 			title: "Packs",

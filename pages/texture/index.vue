@@ -37,6 +37,16 @@
 				}
 			"
 		/>
+		<merge-texture-modal
+			v-model="mergeModalOpen"
+			:color="pageColor"
+			@close="
+				() => {
+					mergeModalOpen = false;
+					getTextures();
+				}
+			"
+		/>
 		<texture-remove-confirm
 			v-model="remove.confirm"
 			type="texture"
@@ -85,8 +95,9 @@
 		<div class="my-6">
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
-						{{ $root.lang().database.textures.add_multiple }}<v-icon right>mdi-plus</v-icon>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal">
+						{{ $root.lang().database.textures.add_multiple }}
+						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -94,7 +105,8 @@
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openAddVersionModal">
-						{{ $root.lang().database.textures.add_version.title }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.add_version.title }}
+						<v-icon right>mdi-pencil-plus</v-icon>
 					</v-btn>
 				</v-col>
 				<v-col>
@@ -104,7 +116,14 @@
 						:class="[textColorOnPage]"
 						@click="openRenameVersionModal"
 					>
-						{{ $root.lang().database.textures.rename_version.title }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.rename_version.title }}
+						<v-icon right>mdi-pencil</v-icon>
+					</v-btn>
+				</v-col>
+				<v-col>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openMergeModal">
+						{{ $root.lang().database.textures.merge_textures.title }}
+						<v-icon right>mdi-merge</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -156,6 +175,7 @@ import TextureModal from "./texture-modal.vue";
 import NewTextureModal from "./new-texture-modal/index.vue";
 import RenameVersionModal from "./rename-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
+import MergeTextureModal from "./merge-texture-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
 import { updatePageStyles } from "@helpers/colors.js";
@@ -168,6 +188,7 @@ export default {
 		RenameVersionModal,
 		NewTextureModal,
 		AddVersionModal,
+		MergeTextureModal,
 		TextureRemoveConfirm,
 	},
 	data() {
@@ -183,6 +204,7 @@ export default {
 			search: "",
 			textureModalOpen: false,
 			renameVersionModalOpen: false,
+			mergeModalOpen: false,
 			modalData: {},
 			remove: {
 				confirm: false,
@@ -236,6 +258,9 @@ export default {
 		},
 		openNewTextureModal() {
 			this.newTextureModalOpen = true;
+		},
+		openMergeModal() {
+			this.mergeModalOpen = true;
 		},
 		askRemove(data) {
 			this.remove.data = data;
