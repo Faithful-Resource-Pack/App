@@ -308,7 +308,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.update(false);
+		this.update();
 		updatePageStyles(this);
 	},
 };
