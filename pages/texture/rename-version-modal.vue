@@ -2,6 +2,8 @@
 	<modal-form
 		v-model="modalOpened"
 		:title="$root.lang().database.textures.rename_version.title"
+		danger
+		button-type="confirm"
 		@close="$emit('close')"
 		@submit="send"
 	>

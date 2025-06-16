@@ -61,7 +61,6 @@ export default {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
-			this.$nextTick(() => this.$refs.form.reset());
 			this.$emit("input", newValue);
 		},
 	},
