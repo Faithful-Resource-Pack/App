@@ -41,7 +41,6 @@
 			clearable
 			hide-details
 			:placeholder="$root.lang().database.textures.search_texture"
-			type="text"
 			@keyup.enter="startSearch"
 			@click:append="startSearch"
 			@click:clear="clearSearch"

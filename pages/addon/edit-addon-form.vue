@@ -22,7 +22,7 @@
 			v-model="reasonModalOpen"
 			button-type="submit"
 			:title="$root.lang().addons.general.reason.title"
-			@close="() => handleReasonModal(false)"
+			@close="handleReasonModal(false)"
 			@submit="handleReasonModal(true)"
 		>
 			<v-form ref="reasonForm" v-model="validForm" lazy-validation>

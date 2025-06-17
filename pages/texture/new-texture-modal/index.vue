@@ -37,7 +37,6 @@
 							v-model="textures[i]"
 							:color="color"
 							:tags="tags"
-							:versions="versions"
 						/>
 					</v-tabs-items>
 				</v-col>
@@ -117,11 +116,6 @@ export default {
 			default: "primary",
 		},
 		tags: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
-		versions: {
 			type: Array,
 			required: false,
 			default: () => [],

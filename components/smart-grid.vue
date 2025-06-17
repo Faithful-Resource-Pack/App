@@ -22,8 +22,8 @@
 </template>
 
 <script>
-const MIN_DISPLAYED_RESULTS = 150;
-const RESULT_INCREMENT = 100;
+const MIN_DISPLAYED_RESULTS = 120;
+const RESULT_INCREMENT = 120;
 
 // lazy loaded list which automatically paginates and fits list to screen
 export default {

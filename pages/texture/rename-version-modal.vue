@@ -44,11 +44,6 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		versions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
 		color: {
 			type: String,
 			required: false,
@@ -58,6 +53,7 @@ export default {
 	data() {
 		return {
 			modalOpened: false,
+			versions: Object.values(settings.versions).flat(),
 			form: {
 				old: settings.versions.java[0],
 				new: "",

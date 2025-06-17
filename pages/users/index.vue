@@ -49,7 +49,6 @@
 				clear-icon="mdi-close"
 				clearable
 				:placeholder="$root.lang().database.users.search_username"
-				type="text"
 				hide-details
 				:color="pageColor"
 				@keyup.enter="startSearch"
