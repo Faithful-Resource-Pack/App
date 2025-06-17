@@ -7,7 +7,7 @@
 			</v-card-text>
 			<v-card-actions>
 				<v-spacer />
-				<v-btn :color="danger ? normalColor : dangerColor" text @click="$emit('close')">
+				<v-btn :color="danger ? normalColor : dangerColor" text @click="closeModal">
 					{{ $root.lang().global.btn.cancel }}
 				</v-btn>
 				<v-btn
@@ -56,6 +56,12 @@ export default {
 			type: String,
 			required: false,
 			default: "600",
+		},
+	},
+	methods: {
+		closeModal() {
+			this.modalOpened = false;
+			this.$emit("close");
 		},
 	},
 	computed: {

@@ -45,16 +45,7 @@
 			</card-grid>
 		</div>
 
-		<post-remove-confirm
-			v-model="removeOpen"
-			:post="removeData"
-			@close="
-				() => {
-					removeOpen = false;
-					getPosts();
-				}
-			"
-		/>
+		<post-remove-confirm v-model="removeOpen" :post="removeData" @close="getPosts" />
 	</v-container>
 </template>
 

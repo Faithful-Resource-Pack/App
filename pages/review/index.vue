@@ -238,7 +238,6 @@ export default {
 				});
 		},
 		closeDenyPopup(send = false, reason) {
-			this.showDenyPopup = false;
 			if (send) this.reviewAddon(this.denyAddon, this.archive ? "archived" : "denied", reason);
 		},
 		openDenyPopup(addon, archive = undefined) {

@@ -208,7 +208,6 @@ export default {
 			this.editModal.data = data;
 		},
 		closeTextureModal(refresh = false) {
-			this.editModal.open = false;
 			if (refresh) {
 				this.getTags();
 				this.getTextures();

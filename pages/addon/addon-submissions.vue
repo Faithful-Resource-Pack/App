@@ -41,16 +41,7 @@
 			</card-grid>
 		</div>
 
-		<addon-remove-confirm
-			v-model="remove.confirm"
-			:data="remove.data"
-			@close="
-				() => {
-					remove.confirm = false;
-					update();
-				}
-			"
-		/>
+		<addon-remove-confirm v-model="remove.open" :data="remove.data" @close="update" />
 	</v-container>
 </template>
 
@@ -70,7 +61,7 @@ export default {
 		return {
 			addons: [],
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 			},
 			colors: {
@@ -88,7 +79,7 @@ export default {
 	methods: {
 		deleteAddon(addon) {
 			this.remove.data = addon;
-			this.remove.confirm = true;
+			this.remove.open = true;
 		},
 		getAddons(authorID) {
 			axios

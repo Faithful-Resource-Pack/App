@@ -3,7 +3,7 @@
 		v-model="modalOpened"
 		:title="$root.lang().database.textures.add_multiple"
 		:pageColor="color"
-		@close="closeModal"
+		@close="$emit('close')"
 	>
 		<template #toolbar>
 			<v-btn icon @click="copyData"><v-icon>mdi-content-copy</v-icon></v-btn>
@@ -178,10 +178,6 @@ export default {
 		},
 		resetModal() {
 			this.textures = [emptyTexture()];
-		},
-		closeModal() {
-			this.$emit("close");
-			this.modalOpened = false;
 		},
 		send() {
 			axios

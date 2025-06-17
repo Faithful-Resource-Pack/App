@@ -60,6 +60,7 @@ export default {
 	},
 	methods: {
 		closeModal() {
+			this.modalOpened = false;
 			this.$emit("close");
 		},
 	},

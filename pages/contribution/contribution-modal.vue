@@ -3,7 +3,7 @@
 		v-model="modalOpened"
 		:title="$root.lang().database.contributions.title"
 		max-width="800"
-		@close="close"
+		@close="$emit('close', false)"
 		@submit="handleSubmit"
 	>
 		<v-row v-if="add" dense>
@@ -159,9 +159,6 @@ export default {
 		},
 		addNewUsers(users) {
 			this.searchedContributors = users;
-		},
-		close() {
-			this.$emit("close", false);
 		},
 		handleSubmit() {
 			// the code is different enough for adding/creating it's worth having two functions

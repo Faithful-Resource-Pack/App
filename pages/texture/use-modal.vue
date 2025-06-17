@@ -19,7 +19,7 @@
 			@pathAdded="pathAdded"
 		/>
 		<texture-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			type="path"
 			:data="remove.data"
 			@close="closeAndUpdate"
@@ -150,7 +150,7 @@ export default {
 			pathModalOpen: false,
 			pathModalData: {},
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 				index: null,
 			},
@@ -170,9 +170,7 @@ export default {
 			if (this.add && index !== null) this.$delete(this.formData.paths, index);
 		},
 		closePathModal() {
-			this.pathModalOpen = false;
 			if (!this.add) this.getPaths(this.formData.id);
-			this.$forceUpdate();
 		},
 		pathAdded(data) {
 			// won't trigger update otherwise
@@ -185,11 +183,9 @@ export default {
 			if (this.add && this.remove.index !== null) {
 				this.$delete(this.formData.paths, this.remove.index);
 				this.remove.index = null;
-				this.remove.confirm = false;
 				return;
 			}
 
-			this.remove.confirm = false;
 			this.getPaths(this.formData.id);
 			this.$forceUpdate();
 		},
@@ -239,7 +235,7 @@ export default {
 		},
 		askRemovePath(data, index) {
 			this.remove.data = data;
-			this.remove.confirm = true;
+			this.remove.open = true;
 			this.remove.index = index;
 		},
 	},

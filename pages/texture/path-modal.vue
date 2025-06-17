@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="$emit('close')" @submit="send">
 		<v-form ref="form">
 			<v-text-field
 				v-if="add == false"
@@ -104,10 +104,6 @@ export default {
 		};
 	},
 	methods: {
-		onCancel() {
-			this.modalOpened = false;
-			this.$emit("close");
-		},
 		formatPath(e) {
 			// windows fix
 			this.formData.name = e.replace(/\\/g, "/").trim();

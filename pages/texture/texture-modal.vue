@@ -1,5 +1,5 @@
 <template>
-	<modal-form v-model="modalOpened" :title="modalTitle" @close="onCancel" @submit="send">
+	<modal-form v-model="modalOpened" :title="modalTitle" @close="$emit('close')" @submit="send">
 		<use-modal
 			v-model="useModalOpen"
 			:color="color"
@@ -9,7 +9,7 @@
 			@close="closeUseModal"
 		/>
 		<texture-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			type="use"
 			:data="remove.data"
 			@close="closeAndUpdate"
@@ -163,7 +163,7 @@ export default {
 			useModalData: {},
 			useModalAdd: false,
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 			},
 		};
@@ -217,16 +217,12 @@ export default {
 				});
 		},
 		closeUseModal() {
-			this.useModalOpen = false;
 			// fix for previous modal's paths showing up in blank one
 			this.useModalData = {};
 			this.getUses(this.formData.id);
-			this.$forceUpdate();
 		},
 		closeAndUpdate() {
-			this.remove.confirm = false;
 			this.getUses(this.formData.id);
-			this.$forceUpdate();
 		},
 		send() {
 			if (!this.$root.isLoggedIn) return;
@@ -282,11 +278,7 @@ export default {
 		},
 		askRemoveUse(data) {
 			this.remove.data = data;
-			this.remove.confirm = true;
-		},
-		onCancel() {
-			this.modalOpened = false;
-			this.$emit("close");
+			this.remove.open = true;
 		},
 	},
 	watch: {

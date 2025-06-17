@@ -143,7 +143,6 @@ export default {
 		closeModal() {
 			this.$emit("close");
 			this.textureObj = {};
-			this.modalOpened = false;
 		},
 		countLoaded(loaded) {
 			// if image errored ignore it

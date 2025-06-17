@@ -10,16 +10,7 @@
 			:roles="roles"
 			@close="closeUserModal"
 		/>
-		<user-remove-confirm
-			v-model="remove.confirm"
-			:data="remove.data"
-			@close="
-				() => {
-					remove.confirm = false;
-					update();
-				}
-			"
-		/>
+		<user-remove-confirm v-model="remove.open" :data="remove.data" @close="update" />
 
 		<div class="text-h4 py-4">
 			{{ $root.lang().database.users.title }}
@@ -130,7 +121,7 @@ export default {
 			modalData: {},
 			modalAdd: false,
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 			},
 		};
@@ -213,7 +204,6 @@ export default {
 			this.modalOpen = true;
 		},
 		closeUserModal(refresh = false) {
-			this.modalOpen = false;
 			this.modalData = {};
 			this.modalAdd = false;
 
@@ -221,7 +211,7 @@ export default {
 		},
 		askRemove(data) {
 			this.remove.data = data;
-			this.remove.confirm = true;
+			this.remove.open = true;
 		},
 	},
 	computed: {

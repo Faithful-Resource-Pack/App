@@ -10,16 +10,11 @@
 			@submissionFinished="addSubmissionData"
 		/>
 		<pack-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			:packID="remove.id"
 			type="submissions"
 			:label="remove.label"
-			@close="
-				() => {
-					remove.confirm = false;
-					getSubmission(data.id);
-				}
-			"
+			@close="getSubmission(data.id)"
 		/>
 		<v-form ref="form" lazy-validation>
 			<v-text-field
@@ -181,7 +176,7 @@ export default {
 			remove: {
 				id: "",
 				label: "",
-				confirm: false,
+				open: false,
 			},
 		};
 	},
@@ -196,7 +191,6 @@ export default {
 			else this.submissionData = data.submission;
 		},
 		closeSubmissionModal() {
-			this.submissionOpen = false;
 			// clear form
 			this.submissionData = {};
 			if (!this.add) this.getSubmission(this.formData.id);
@@ -223,7 +217,7 @@ export default {
 				.lang()
 				.database.packs.submissions.ask_submission_deletion.replace("%s", this.data.name)
 				.replace("%d", this.data.id);
-			this.remove.confirm = true;
+			this.remove.open = true;
 		},
 		validURL(str) {
 			return String.urlRegex.test(str);

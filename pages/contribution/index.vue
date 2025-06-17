@@ -9,7 +9,7 @@
 			@close="closeModal"
 		/>
 		<contribution-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			:data="remove.data"
 			:contributors="contributors"
 			@close="closeDeleteModal"
@@ -183,7 +183,7 @@ export default {
 			modalAdd: false,
 			modalData: null,
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 			},
 		};
@@ -202,16 +202,14 @@ export default {
 			this.modalData = contrib;
 		},
 		closeModal(refresh = false) {
-			this.modalOpen = false;
 			this.modalData = null;
 			if (refresh) this.startSearch();
 		},
 		openDeleteModal(data) {
 			this.remove.data = data;
-			this.remove.confirm = true;
+			this.remove.open = true;
 		},
 		closeDeleteModal(refresh = false) {
-			this.remove.confirm = false;
 			if (refresh) this.startSearch();
 		},
 		onPackChange(key, isSelected) {

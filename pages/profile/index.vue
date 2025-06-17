@@ -156,11 +156,6 @@
 			v-model="deleteModalOpened"
 			danger
 			:title="$root.lang().profile.delete.title"
-			@close="
-				() => {
-					deleteModalOpened = false;
-				}
-			"
 			@submit="deleteAccount"
 		>
 			<p>{{ $root.lang().profile.delete.description }}</p>

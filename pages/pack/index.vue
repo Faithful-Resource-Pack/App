@@ -11,16 +11,11 @@
 			@close="close"
 		/>
 		<pack-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			:packID="remove.id"
 			type="packs"
 			:label="remove.label"
-			@close="
-				() => {
-					remove.confirm = false;
-					startSearch();
-				}
-			"
+			@close="startSearch"
 		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
@@ -127,7 +122,7 @@ export default {
 			remove: {
 				id: "",
 				label: "",
-				confirm: false,
+				open: false,
 			},
 		};
 	},
@@ -182,7 +177,7 @@ export default {
 				.lang()
 				.database.ask_deletion.replace("%s", data.name)
 				.replace("%d", data.id);
-			this.remove.confirm = true;
+			this.remove.open = true;
 		},
 	},
 	computed: {
