@@ -46,7 +46,7 @@
 							:label="$root.lang().database.textures.uses.name"
 						/>
 					</v-col>
-					<v-col cols="12" sm="6">
+					<v-col cols="10" sm="6">
 						<v-select
 							v-model="use.edition"
 							:color="color"
@@ -56,7 +56,7 @@
 							@change="(e) => onEditionChange(e, use)"
 						/>
 					</v-col>
-					<v-col cols="12" sm="1">
+					<v-col cols="2" sm="1">
 						<v-btn color="red lighten-1" icon @click="deleteUse(ui)">
 							<v-icon>mdi-trash-can</v-icon>
 						</v-btn>
@@ -88,14 +88,14 @@
 							deletable-chips
 						/>
 					</v-col>
-					<v-col cols="12" sm="2">
+					<v-col cols="10" sm="2">
 						<v-checkbox
 							v-model="path.mcmeta"
 							:color="color"
 							:label="$root.lang().database.textures.paths.mcmeta"
 						/>
 					</v-col>
-					<v-col cols="12" sm="1">
+					<v-col cols="2" sm="1">
 						<v-btn color="red lighten-1" icon @click="deletePath(ui, pi)">
 							<v-icon>mdi-minus</v-icon>
 						</v-btn>

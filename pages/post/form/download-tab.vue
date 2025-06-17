@@ -18,7 +18,8 @@
 								hide-details
 							/>
 						</v-col>
-						<v-col cols="12" :sm="j === 0 ? 7 : 8">
+						<!-- on new line with mobile layout so more cols are added -->
+						<v-col :cols="j === 0 ? 10 : 11" :sm="j === 0 ? 7 : 8">
 							<v-text-field
 								v-model="item.link"
 								:label="$root.lang().posts.download.link"
@@ -27,18 +28,18 @@
 							/>
 						</v-col>
 						<template v-if="j === 0">
-							<v-col cols="12" sm="1">
+							<v-col cols="1">
 								<v-btn icon color="lighten-1" @click="addItemToCategory(i)">
 									<v-icon>mdi-plus</v-icon>
 								</v-btn>
 							</v-col>
-							<v-col cols="12" sm="1">
+							<v-col cols="1">
 								<v-btn icon color="red lighten-1" @click="removeItem(i)">
 									<v-icon>mdi-delete</v-icon>
 								</v-btn>
 							</v-col>
 						</template>
-						<v-col v-else cols="12" sm="1">
+						<v-col v-else cols="1">
 							<v-btn icon color="red lighten-1" @click="removeItemInCategory(i, j)">
 								<v-icon>mdi-minus</v-icon>
 							</v-btn>

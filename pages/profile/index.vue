@@ -119,7 +119,7 @@
 											:rules="urlRules"
 										/>
 									</v-col>
-									<v-col cols="12" sm="3">
+									<v-col cols="11" sm="3">
 										<v-select
 											v-model="socialMedia.type"
 											:items="mediaTypes"
@@ -127,9 +127,9 @@
 											:rules="mediaTypeRules"
 										/>
 									</v-col>
-									<v-col cols="12" sm="1">
+									<v-col cols="1">
 										<v-btn icon @click="removeSocialMedia(i)">
-											<v-icon color="red darken-1"> mdi-minus </v-icon>
+											<v-icon color="red darken-1">mdi-minus</v-icon>
 										</v-btn>
 									</v-col>
 								</v-row>
