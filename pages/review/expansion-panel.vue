@@ -165,7 +165,7 @@
 						<v-btn
 							v-show="status != 'approved'"
 							text
-							color="teal"
+							color="green"
 							@click="reviewAddon(addon, 'approved')"
 						>
 							{{ $root.lang().global.btn.approve }}

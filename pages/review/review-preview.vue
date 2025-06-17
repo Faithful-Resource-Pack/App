@@ -162,7 +162,7 @@
 				</div>
 				<v-btn
 					text
-					color="teal"
+					color="green"
 					:disabled="status === 'approved'"
 					@click="reviewAddon(addonId, 'approved')"
 				>
