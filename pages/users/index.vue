@@ -42,18 +42,12 @@
 		<!-- search -->
 		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
 		<div class="my-2">
-			<v-text-field
+			<search-box
 				v-model="search"
-				append-outer-icon="mdi-send"
-				filled
-				clear-icon="mdi-close"
-				clearable
-				:placeholder="$root.lang().database.users.search_username"
-				hide-details
 				:color="pageColor"
-				@keyup.enter="startSearch"
-				@click:append-outer="startSearch"
-				@click:clear="clearSearch"
+				:placeholder="$root.lang().database.users.search_username"
+				@search="startSearch"
+				@clear="clearSearch"
 			/>
 		</div>
 
@@ -109,6 +103,7 @@ import axios from "axios";
 import UserModal from "./user-modal.vue";
 import UserRemoveConfirm from "./user-remove-confirm.vue";
 import SmartGrid from "@components/smart-grid.vue";
+import SearchBox from "@components/search-box.vue";
 
 import { updatePageStyles } from "@helpers/colors.js";
 
@@ -116,6 +111,7 @@ export default {
 	name: "users-page",
 	components: {
 		SmartGrid,
+		SearchBox,
 		UserModal,
 		UserRemoveConfirm,
 	},

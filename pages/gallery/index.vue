@@ -33,17 +33,11 @@
 		</v-row>
 
 		<div class="my-2 text-h5">{{ $root.lang().gallery.category.search }}</div>
-		<v-text-field
+		<search-box
 			v-model="current.search"
-			:append-icon="current.search && 'mdi-send'"
-			filled
-			clear-icon="mdi-close"
-			clearable
-			hide-details
 			:placeholder="$root.lang().database.textures.search_texture"
-			@keyup.enter="startSearch"
-			@click:append="startSearch"
-			@click:clear="clearSearch"
+			@search="startSearch"
+			@clear="clearSearch"
 		/>
 
 		<v-row class="py-3 pb-0">
@@ -103,6 +97,7 @@ import axios from "axios";
 import GalleryOptions from "./gallery-options.vue";
 import GalleryGrid from "./gallery-grid.vue";
 import GalleryModal from "./modal/index.vue";
+import SearchBox from "@components/search-box.vue";
 
 const COLUMN_KEY = "gallery_columns";
 const STRETCHED_KEY = "gallery_stretched";
@@ -115,6 +110,7 @@ export default {
 		GalleryOptions,
 		GalleryGrid,
 		GalleryModal,
+		SearchBox,
 	},
 	data() {
 		const sortStrings = this.$root.lang().gallery.sort;

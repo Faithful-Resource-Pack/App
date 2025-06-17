@@ -42,18 +42,12 @@
 		</div>
 		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
 		<div class="my-2">
-			<v-text-field
+			<search-box
 				v-model="search"
-				:append-outer-icon="search && 'mdi-send'"
-				filled
-				clear-icon="mdi-close"
-				clearable
 				:color="pageColor"
-				:placeholder="$root.lang().database.textures.search_texture"
-				hide-details
-				@keyup.enter="startSearch"
-				@click:append-outer="startSearch"
-				@click:clear="clearSearch"
+				:placeholder="$root.lang().database.users.search_texture"
+				@search="startSearch"
+				@clear="clearSearch"
 			/>
 		</div>
 
@@ -135,6 +129,7 @@
 import axios from "axios";
 
 import SmartGrid from "@components/smart-grid.vue";
+import SearchBox from "@components/search-box.vue";
 
 import TextureModal from "./texture-modal.vue";
 import NewTextureModal from "./new-texture-modal/index.vue";
@@ -149,6 +144,7 @@ export default {
 	name: "texture-page",
 	components: {
 		SmartGrid,
+		SearchBox,
 		TextureModal,
 		RenameVersionModal,
 		NewTextureModal,
