@@ -105,7 +105,8 @@ export default {
 		},
 		textureID: {
 			type: String,
-			required: true,
+			required: false,
+			default: undefined,
 		},
 		discordIDtoName: {
 			type: Function,
