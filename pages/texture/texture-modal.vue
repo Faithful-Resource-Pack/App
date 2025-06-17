@@ -54,7 +54,7 @@
 				<v-list-item v-for="(use, index) in formData.uses" :key="index" class="list-item-inline">
 					<v-list-item-avatar
 						tile
-						:class="[color, textColor]"
+						:class="[color, 'white--text']"
 						:style="{
 							padding: '0 10px 0 10px',
 							'border-radius': '4px !important',
@@ -148,11 +148,6 @@ export default {
 			type: String,
 			required: false,
 			default: "primary",
-		},
-		textColor: {
-			type: String,
-			required: false,
-			default: "",
 		},
 	},
 	data() {

@@ -154,9 +154,8 @@
 					</div>
 					<div v-if="status === 'denied' || status === 'archived'">
 						<div>
-							{{
-								`${$root.lang().review.addon.labels.denied_by} ${getUsername(addonInPanel.approval.author)}:`
-							}}
+							{{ $root.lang().review.addon.labels.denied_by }}
+							{{ getUsername(addonInPanel.approval.author) }}:
 						</div>
 						<div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
 					</div>
@@ -164,18 +163,23 @@
 				<v-btn
 					text
 					color="teal"
-					:disabled="status == 'approved'"
+					:disabled="status === 'approved'"
 					@click="reviewAddon(addonId, 'approved')"
 				>
 					{{ $root.lang().global.btn.approve }}
 				</v-btn>
-				<v-btn text color="red" :disabled="status == 'denied'" @click="openDenyPopup(addonInPanel)">
+				<v-btn
+					text
+					color="red"
+					:disabled="status === 'denied'"
+					@click="openDenyPopup(addonInPanel)"
+				>
 					{{ $root.lang().global.btn.deny }}
 				</v-btn>
 				<v-btn
 					text
 					color="gray"
-					:disabled="status == 'archived'"
+					:disabled="status === 'archived'"
 					@click="openDenyPopup(addonInPanel, 'archive')"
 				>
 					{{ $root.lang().global.btn.archive }}

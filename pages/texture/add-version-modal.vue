@@ -45,11 +45,6 @@ export default {
 			type: Boolean,
 			required: true,
 		},
-		versions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
 		color: {
 			type: String,
 			required: false,

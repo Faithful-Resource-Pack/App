@@ -2,51 +2,27 @@
 	<v-container id="texturePage">
 		<!-- eslint-disable-next-line vue/no-v-html -->
 		<div class="styles" v-html="pageStyles" />
+
+		<!-- main button modals -->
+		<new-texture-modal v-model="newTextureModalOpen" :color="pageColor" :tags="tags" />
+		<rename-version-modal v-model="renameVersionModalOpen" :color="pageColor" />
+		<add-version-modal v-model="addVersionModalOpen" :color="pageColor" />
+		<merge-texture-modal v-model="mergeModalOpen" :color="pageColor" />
+
+		<!-- per-texture edit/delete modals -->
 		<texture-modal
-			v-model="textureModalOpen"
+			v-model="editModal.open"
 			:color="pageColor"
-			:textColor="textColorOnPage"
-			:add="!Object.keys(modalData).length"
-			:data="modalData"
+			:add="!Object.keys(editModal.data).length"
+			:data="editModal.data"
 			:tags="tags"
 			@close="closeTextureModal"
 		/>
-		<new-texture-modal
-			v-model="newTextureModalOpen"
-			:color="pageColor"
-			:tags="tags"
-			:versions="versions"
-		/>
-		<rename-version-modal
-			v-model="renameVersionModalOpen"
-			:color="pageColor"
-			:versions="versions"
-			@close="
-				() => {
-					renameVersionModalOpen = false;
-				}
-			"
-		/>
-		<add-version-modal
-			v-model="addVersionModalOpen"
-			:color="pageColor"
-			:versions="versions"
-			@close="
-				() => {
-					addVersionModalOpen = false;
-				}
-			"
-		/>
 		<texture-remove-confirm
-			v-model="remove.confirm"
+			v-model="remove.open"
 			type="texture"
 			:data="remove.data"
 			:on-submit="removeTexture"
-			@close="
-				() => {
-					remove.confirm = false;
-				}
-			"
 		/>
 
 		<div class="text-h4 py-4">
@@ -74,7 +50,6 @@
 				clearable
 				:color="pageColor"
 				:placeholder="$root.lang().database.textures.search_texture"
-				type="text"
 				hide-details
 				@keyup.enter="startSearch"
 				@click:append-outer="startSearch"
@@ -85,8 +60,9 @@
 		<div class="my-6">
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal()">
-						{{ $root.lang().database.textures.add_multiple }}<v-icon right>mdi-plus</v-icon>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal">
+						{{ $root.lang().database.textures.add_multiple }}
+						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -94,7 +70,8 @@
 			<v-row>
 				<v-col>
 					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openAddVersionModal">
-						{{ $root.lang().database.textures.add_version.title }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.add_version.title }}
+						<v-icon right>mdi-pencil-plus</v-icon>
 					</v-btn>
 				</v-col>
 				<v-col>
@@ -104,7 +81,14 @@
 						:class="[textColorOnPage]"
 						@click="openRenameVersionModal"
 					>
-						{{ $root.lang().database.textures.rename_version.title }}<v-icon right>mdi-plus</v-icon>
+						{{ $root.lang().database.textures.rename_version.title }}
+						<v-icon right>mdi-pencil</v-icon>
+					</v-btn>
+				</v-col>
+				<v-col>
+					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openMergeModal">
+						{{ $root.lang().database.textures.merge_textures.title }}
+						<v-icon right>mdi-merge</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
@@ -156,6 +140,7 @@ import TextureModal from "./texture-modal.vue";
 import NewTextureModal from "./new-texture-modal/index.vue";
 import RenameVersionModal from "./rename-version-modal.vue";
 import AddVersionModal from "./add-version-modal.vue";
+import MergeTextureModal from "./merge-texture-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
 import { updatePageStyles } from "@helpers/colors.js";
@@ -168,6 +153,7 @@ export default {
 		RenameVersionModal,
 		NewTextureModal,
 		AddVersionModal,
+		MergeTextureModal,
 		TextureRemoveConfirm,
 	},
 	data() {
@@ -177,15 +163,17 @@ export default {
 			textColorOnPage: "white--text",
 			addVersionModalOpen: false,
 			newTextureModalOpen: false,
-			recompute: false,
 			tags: [],
 			textures: {},
 			search: "",
-			textureModalOpen: false,
 			renameVersionModalOpen: false,
-			modalData: {},
+			mergeModalOpen: false,
+			editModal: {
+				open: false,
+				data: {},
+			},
 			remove: {
-				confirm: false,
+				open: false,
 				data: {},
 			},
 			selectTextureTag: "all",
@@ -201,9 +189,11 @@ export default {
 			return result;
 		},
 		textureURL(t, name = undefined) {
-			return this.name || name
-				? `/textures/${t}/${name !== undefined ? name : this.name}`
-				: `/textures/${t}`;
+			// provided name is prioritized
+			if (name) return `/textures/${t}/${name}`;
+			if (this.name) return `/textures/${t}/${this.name}`;
+			// no texture searched, remove name param
+			return `/textures/${t}`;
 		},
 		startSearch() {
 			const newPath = this.textureURL(this.tag, this.search);
@@ -218,11 +208,11 @@ export default {
 			this.startSearch();
 		},
 		openTextureModal(data = {}) {
-			this.textureModalOpen = true;
-			this.modalData = data;
+			this.editModal.open = true;
+			this.editModal.data = data;
 		},
 		closeTextureModal(refresh = false) {
-			this.textureModalOpen = false;
+			this.editModal.open = false;
 			if (refresh) {
 				this.getTags();
 				this.getTextures();
@@ -237,9 +227,12 @@ export default {
 		openNewTextureModal() {
 			this.newTextureModalOpen = true;
 		},
+		openMergeModal() {
+			this.mergeModalOpen = true;
+		},
 		askRemove(data) {
+			this.remove.open = true;
 			this.remove.data = data;
-			this.remove.confirm = true;
 		},
 		getTags() {
 			axios
@@ -290,10 +283,6 @@ export default {
 		name() {
 			if (this.tag !== undefined) return this.$route.params.name;
 			return this.$route.params.tag;
-		},
-		versions() {
-			// saves a db request to reuse cached settings
-			return Object.values(settings.versions).flat();
 		},
 	},
 	watch: {

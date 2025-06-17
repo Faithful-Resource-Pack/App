@@ -152,11 +152,6 @@ export default {
 			required: false,
 			default: () => [],
 		},
-		versions: {
-			type: Array,
-			required: false,
-			default: () => [],
-		},
 	},
 	data() {
 		return {
@@ -245,7 +240,8 @@ export default {
 	},
 	computed: {
 		sortedVersions() {
-			return Array.from(this.versions).sort(versionSorter).reverse();
+			// use cached settings to save request
+			return Object.values(settings.versions).flat().sort(versionSorter).reverse();
 		},
 		canAddEditionUse() {
 			// must have only one use to select from
