@@ -50,8 +50,8 @@
 								}"
 								:src="
 									($vuetify.breakpoint.mdAndUp
-										? 'https://visage.surgeplay.com/full/256/'
-										: 'https://visage.surgeplay.com/head/128/') + localUser.uuid
+										? 'https://vzge.me/full/256/'
+										: 'https://vzge.me/head/128/') + localUser.uuid
 								"
 							/>
 						</v-col>

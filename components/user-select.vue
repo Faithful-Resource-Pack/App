@@ -26,7 +26,7 @@
 					<template v-if="data.item.uuid != undefined">
 						<v-img
 							eager
-							:src="`https://visage.surgeplay.com/face/24/${data.item.uuid}`"
+							:src="`https://vzge.me/face/24/${data.item.uuid}`"
 							:alt="(data.item.username || '' + data.item.id).slice(0, 1)"
 						/>
 					</template>
@@ -58,7 +58,7 @@
 				</v-list-item-content>
 				<v-list-item-avatar :style="{ background: data.item.uuid ? 'transparent' : '#4e4e4e' }">
 					<template v-if="data.item.uuid">
-						<v-img eager :src="`https://visage.surgeplay.com/head/48/${data.item.uuid}`" />
+						<v-img eager :src="`https://vzge.me/head/48/${data.item.uuid}`" />
 					</template>
 					<div v-else>{{ (data.item.username || "" + data.item.id).slice(0, 1) }}</div>
 				</v-list-item-avatar>

@@ -115,8 +115,8 @@ export default {
 		},
 		avatarSrc() {
 			const baseURL = this.$vuetify.breakpoint.mdAndUp
-				? "https://visage.surgeplay.com/full/256/"
-				: "https://visage.surgeplay.com/head/128/";
+				? "https://vzge.me/full/256/"
+				: "https://vzge.me/head/128/";
 			return baseURL + this.formData.uuid;
 		},
 	},

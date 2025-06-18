@@ -61,7 +61,7 @@
 		>
 			<template #default="{ item }">
 				<v-list-item-avatar tile class="database-list-avatar">
-					<v-img v-if="item.uuid" :src="`https://visage.surgeplay.com/head/48/${item.uuid}`" />
+					<v-img v-if="item.uuid" :src="`https://vzge.me/head/48/${item.uuid}`" />
 					<v-icon v-else large class="darken-1">mdi-account</v-icon>
 				</v-list-item-avatar>
 
