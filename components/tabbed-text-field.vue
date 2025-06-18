@@ -63,8 +63,11 @@ export default {
 		},
 	},
 	watch: {
-		value(newValue) {
-			this.text = newValue;
+		value: {
+			handler(newValue) {
+				this.text = newValue;
+			},
+			immediate: true,
 		},
 		text(newValue) {
 			this.$emit("input", newValue);
