@@ -8,7 +8,7 @@
 		@close="$emit('close')"
 		@submit="send"
 	>
-		<v-alert type="warning" class="px-2" outlined dense>
+		<v-alert type="warning" outlined dense>
 			{{ $root.lang().database.textures.merge_textures.warning }}
 		</v-alert>
 		<v-form ref="form" class="pt-2">

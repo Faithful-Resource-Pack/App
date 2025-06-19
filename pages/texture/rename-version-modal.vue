@@ -8,7 +8,7 @@
 		@submit="send"
 	>
 		<p>{{ $root.lang().database.textures.rename_version.example }}</p>
-		<v-alert type="warning" class="px-2" outlined dense>
+		<v-alert type="warning" outlined dense>
 			{{ $root.lang().database.textures.rename_version.warning }}
 		</v-alert>
 		<v-form ref="form" class="pt-2">

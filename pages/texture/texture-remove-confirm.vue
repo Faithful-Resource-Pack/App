@@ -7,7 +7,7 @@
 		@submit="deleteData"
 	>
 		<p>Do you want to delete this {{ type }}?</p>
-		<v-alert v-if="type == 'use'" type="warning" class="px-2" outlined dense>
+		<v-alert v-if="type == 'use'" type="warning" outlined dense>
 			{{ $root.lang().database.textures.deleting_use_will_delete_paths }}
 		</v-alert>
 		<blockquote v-if="type == 'use'">

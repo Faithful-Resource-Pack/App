@@ -58,6 +58,11 @@ declare global {
 		readonly apiURL: typeof apiURL;
 	}
 
+	interface Array {
+		/** Convert an array into a formatted string list */
+		listify(): string;
+	}
+
 	interface String {
 		/** Converts all words in a string to title case. */
 		toTitleCase(): string;

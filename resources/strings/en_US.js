@@ -229,7 +229,8 @@ export default {
 				title: "Rename Minecraft version",
 				current_version: "Current version name",
 				new_version: "New version name",
-				example: "Renames all instances of a Minecraft version in the database (ex. 1.17 → 1.17.1)",
+				example:
+					"Renames all instances of a Minecraft version in the database (e.g. 1.17 → 1.17.1)",
 				warning: "Please don't forget to update all GitHub branch names!",
 			},
 			merge_textures: {
@@ -496,12 +497,21 @@ export default {
 			heading: "Changelog",
 			add_category: "Add changelog category",
 			add_item: "Add changelog item",
+			import_json: "Import JSON",
 			form_levels: {
 				primary: "Primary category",
 				secondary: "Secondary category",
 				item_category: "Item category (Authors)",
 				item: "Item (Authors)",
 			},
+		},
+		generator: {
+			heading: "Generate changelog",
+			date: "Date since last changelog",
+			pack: "Changelog pack",
+			copy: "Copy to clipboard",
+			download: "Download changelog",
+			warning: "Please manually review the changelog before importing it!",
 		},
 	},
 	statistics: {

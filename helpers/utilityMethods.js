@@ -49,3 +49,13 @@ String.urlRegex = new RegExp(
 		"(\\#[-a-z\\d_]*)?$", // fragment locator
 	"i",
 );
+
+Array.prototype.listify = function () {
+	if (!this.length) return "";
+	// [a] -> a
+	if (this.length === 1) return this[0];
+	// [a, b] -> a and b
+	if (this.length === 2) return `${this[0]} and ${this[1]}`;
+	// [a, b, ..., y, z] -> a, b, ..., y, and z
+	return `${this.slice(0, -1).join(", ")}, and ${this[this.length - 1]}`;
+};
