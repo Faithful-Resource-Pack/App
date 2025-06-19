@@ -49,7 +49,7 @@
 							</v-btn>
 						</v-col>
 						<v-col>
-							<v-btn block color="secondary" @click="downloadData">
+							<v-btn block color="secondary" :href="fileURL" :download="fileName">
 								{{ $root.lang().posts.generator.download }}
 								<v-icon right>mdi-download</v-icon>
 							</v-btn>
@@ -92,6 +92,7 @@ export default {
 			packs: [],
 			loading: false,
 			outputData: "",
+			fileURL: "",
 			idToUsername: {},
 		};
 	},
@@ -102,15 +103,6 @@ export default {
 		copyData() {
 			navigator.clipboard.writeText(this.outputData);
 			this.$root.showSnackBar(this.$root.lang().database.textures.modal.copy_json_data, "success");
-		},
-		downloadData() {
-			// https://www.tutorialspoint.com/how-to-create-and-save-text-file-in-javascript
-			const link = document.createElement("a");
-			const file = new Blob([this.outputData], { type: "text/json" });
-			link.href = URL.createObjectURL(file);
-			link.download = `changelog-${this.selectedPack}.json`;
-			link.click();
-			URL.revokeObjectURL(link.href);
 		},
 		async generate() {
 			this.loading = true;
@@ -178,6 +170,12 @@ export default {
 		formInvalid() {
 			return !this.date || !this.selectedPack;
 		},
+		fileBlob() {
+			return new Blob([this.outputData], { type: "text/json" });
+		},
+		fileName() {
+			return `changelog-${this.selectedPack}.json`;
+		},
 	},
 	watch: {
 		value(newValue) {
@@ -185,6 +183,16 @@ export default {
 		},
 		modalOpened(newValue) {
 			this.$emit("input", newValue);
+		},
+		// done in a watcher since you have to revoke the old url before creating a new one
+		fileBlob: {
+			handler(newValue) {
+				if (this.fileURL) URL.revokeObjectURL(this.fileURL);
+				this.$nextTick(() => {
+					this.fileURL = URL.createObjectURL(newValue);
+				});
+			},
+			deep: true,
 		},
 	},
 	created() {
@@ -199,6 +207,10 @@ export default {
 				return acc;
 			}, {});
 		});
+	},
+	beforeUnmount() {
+		// clean up download button
+		if (this.fileURL) URL.revokeObjectURL(this.fileURL);
 	},
 };
 </script>
