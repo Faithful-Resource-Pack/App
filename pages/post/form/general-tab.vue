@@ -48,7 +48,7 @@
 					persistent-placeholder
 				/>
 			</div>
-			<div class="col-12 col-sm-3 d-flex px-0 pt-0 align-center">
+			<div class="col-4 col-md-2 d-flex px-0 pt-0 align-center">
 				<div class="col">
 					<v-checkbox
 						v-model="formData.discontinued"

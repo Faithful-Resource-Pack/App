@@ -70,7 +70,7 @@
 				</v-col>
 			</template>
 		</v-row>
-		<v-row dense>
+		<v-row>
 			<v-col>
 				<v-btn block color="secondary" @click="addSingleItem">
 					{{ $root.lang().posts.download.add_single_item }}
