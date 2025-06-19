@@ -173,8 +173,8 @@ export default {
 			labels: {
 				link: "Link",
 				optifine: "OptiFine",
-				approved_by: "Genehmigt von",
-				denied_by: "Abgelehnt von",
+				approved_by: "Genehmigt von %s",
+				denied_by: "Abgelehnt von %s",
 				reason: "Grund",
 			},
 		},

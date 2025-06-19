@@ -1,6 +1,6 @@
 <template>
 	<v-container id="review-expanders">
-		<fullscreen-preview v-model="previewOpen" :src="imagePreview" />
+		<fullscreen-preview v-model="previewOpen" :src="addonInPanelHeaderURL" />
 
 		<v-expansion-panel
 			v-for="addon in addons"
@@ -37,12 +37,7 @@
 							:aspect-ratio="16 / 9"
 							style="border-radius: 5px"
 							alt="Header not found!"
-							@click.stop="
-								(e) => {
-									previewOpen = true;
-									imagePreview = addonInPanelHeaderURL;
-								}
-							"
+							@click.stop="openHeader"
 						>
 							<template #placeholder>
 								<v-row
@@ -65,63 +60,11 @@
 							rounded
 							style="display: inline-block; position: absolute; right: 0; top: 0"
 						>
-							<v-icon
-								small
-								class="ma-1"
-								@click.stop="
-									(e) => {
-										previewOpen = true;
-										imagePreview = addonInPanelHeaderURL;
-									}
-								"
-							>
-								mdi-fullscreen
-							</v-icon>
+							<v-icon small class="ma-1" @click.stop="openHeader">mdi-fullscreen</v-icon>
 						</v-card>
 					</div>
 
-					<v-list-item-title class="uppercase mt-2">
-						{{
-							$root.lang().review.addon.titles[
-								addonInPanel.authors.length === 1 ? "author_singular" : "author_plural"
-							]
-						}}
-					</v-list-item-title>
-					<div class="text--secondary mb-2">
-						{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
-					</div>
-
-					<v-list-item-title class="uppercase mt-2">
-						{{ $root.lang().review.addon.titles.links }}
-					</v-list-item-title>
-					<div class="text--secondary mb-2">
-						<ul
-							v-for="file in addonInPanel.files.filter((f) => f.use === 'download')"
-							:key="file.id"
-						>
-							<li>
-								{{ file.name }} -
-								<a :href="file.source" class="text--secondary">
-									{{ $root.lang().review.addon.labels.link }}
-									<v-icon small color="light-blue">mdi-open-in-new</v-icon>
-								</a>
-							</li>
-						</ul>
-					</div>
-
-					<v-list-item-title class="uppercase">
-						{{ $root.lang().review.addon.titles.options }}
-					</v-list-item-title>
-					<div>
-						<v-icon small>
-							{{
-								addonInPanel.options.optifine
-									? "mdi-checkbox-marked-outline"
-									: "mdi-checkbox-blank-outline"
-							}}
-						</v-icon>
-						{{ $root.lang().review.addon.labels.optifine }}
-					</div>
+					<addon-info class="pt-4" :addonInPanel="addonInPanel" :getUsername="getUsername" />
 
 					<template v-if="addonSources.length > 0">
 						<v-list-item-title class="uppercase my-2">
@@ -138,10 +81,9 @@
 					<div v-html="$root.compileMarkdown(addonInPanel.description)" />
 
 					<div v-if="addonInPanel.approval.status === 'approved'" class="my-2">
-						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.labels.approved_by }}
+						<v-list-item-title class="uppercase my-2">
+							{{ $root.lang().review.addon.labels.approved_by.replace("%s", approvalAuthor) }}
 						</v-list-item-title>
-						<p class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</p>
 					</div>
 
 					<div
@@ -151,19 +93,15 @@
 						"
 						class="my-2"
 					>
-						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.labels.denied_by }}
+						<v-list-item-title class="uppercase mt-2">
+							{{ $root.lang().review.addon.labels.denied_by.replace("%s", approvalAuthor) }}
 						</v-list-item-title>
-						<div class="text--secondary">{{ getUsername(addonInPanel.approval.author) }}</div>
-						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.labels.reason }}
-						</v-list-item-title>
-						<div class="text--secondary">{{ addon.approval.reason }}</div>
+						<p class="text--secondary">{{ addon.approval.reason }}</p>
 					</div>
 
 					<div class="text-right mt-4">
 						<v-btn
-							v-show="status != 'approved'"
+							v-show="status !== 'approved'"
 							text
 							color="green"
 							@click="reviewAddon(addon, 'approved')"
@@ -171,7 +109,7 @@
 							{{ $root.lang().global.btn.approve }}
 						</v-btn>
 						<v-btn
-							v-show="status != 'denied'"
+							v-show="status !== 'denied'"
 							text
 							color="red"
 							@click="openDenyPopup(addonInPanel)"
@@ -179,7 +117,7 @@
 							{{ $root.lang().global.btn.deny }}
 						</v-btn>
 						<v-btn
-							v-show="status != 'archived'"
+							v-show="status !== 'archived'"
 							text
 							color="gray"
 							@click="openDenyPopup(addonInPanel, 'archive')"
@@ -201,12 +139,14 @@ import axios from "axios";
 
 import FullscreenPreview from "@components/fullscreen-preview.vue";
 import ImagePreviewer from "../addon/image-previewer.vue";
+import AddonInfo from "./addon-info.vue";
 
 export default {
 	name: "expansion-panel",
 	components: {
 		ImagePreviewer,
 		FullscreenPreview,
+		AddonInfo,
 	},
 	props: {
 		addons: {
@@ -245,22 +185,14 @@ export default {
 	},
 	data() {
 		return {
-			imagePreview: "",
 			modalData: {},
 			modalOpen: false,
 			previewOpen: false,
 			addonInPanelLoading: true,
 			addonInPanel: {},
 			addonURL: undefined,
-			addonInPanelHeaderURL: undefined,
+			addonInPanelHeaderURL: "",
 		};
-	},
-	computed: {
-		addonSources() {
-			return (this.addonInPanel.files || [])
-				.filter((f) => f.use === "carousel" || f.use === "screenshot")
-				.map((f) => f.source);
-		},
 	},
 	methods: {
 		getAddon(id) {
@@ -288,6 +220,9 @@ export default {
 				else this.addonInPanelHeaderURL = null;
 			});
 		},
+		openHeader() {
+			this.previewOpen = true;
+		},
 		openModal() {
 			this.modalData = this.addonInPanel;
 			this.modalOpen = true;
@@ -300,6 +235,16 @@ export default {
 		getUsername(id) {
 			if (id === null || id === undefined) return "Herobrine";
 			return this.contributors.find((c) => c.id === id)?.username || "Unknown User";
+		},
+	},
+	computed: {
+		addonSources() {
+			return (this.addonInPanel.files || [])
+				.filter((f) => f.use === "carousel" || f.use === "screenshot")
+				.map((f) => f.source);
+		},
+		approvalAuthor() {
+			return this.getUsername(this.addonInPanel.approval.author);
 		},
 	},
 	mounted() {

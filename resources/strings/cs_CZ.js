@@ -214,8 +214,8 @@ export default {
 			labels: {
 				link: "Odkaz",
 				optifine: "OptiFine",
-				approved_by: "Schváleno administrátorem",
-				denied_by: "Zamítnuto administrátorem",
+				approved_by: "Schváleno administrátorem %s",
+				denied_by: "Zamítnuto administrátorem %s",
 				reason: "Důvod",
 			},
 		},

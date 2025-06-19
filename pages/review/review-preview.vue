@@ -1,7 +1,7 @@
 <template>
 	<div id="review-preview" class="d-flex flex-column">
 		<v-card flat style="height: 100%" class="rounded-lg pa-2 overflow-x-hidden">
-			<fullscreen-preview v-model="previewOpen" :src="imagePreview" />
+			<fullscreen-preview v-model="previewOpen" :src="addonInPanelHeaderURL" />
 			<template v-if="addonInPanelLoading === true">
 				<p>{{ $root.lang().global.loading }}</p>
 			</template>
@@ -32,12 +32,7 @@
 							style="border-radius: 5px"
 							alt="Header not found!"
 							class="image-fullscreen-thumb"
-							@click.stop="
-								(e) => {
-									previewOpen = true;
-									imagePreview = addonInPanelHeaderURL;
-								}
-							"
+							@click.stop="openHeader"
 						>
 							<template #placeholder>
 								<v-row
@@ -61,63 +56,11 @@
 							rounded
 							style="display: inline-block; position: absolute; right: 10px; top: 10px"
 						>
-							<v-icon
-								small
-								class="ma-1"
-								@click.stop="
-									(e) => {
-										previewOpen = true;
-										imagePreview = addonInPanelHeaderURL;
-									}
-								"
-							>
-								mdi-fullscreen
-							</v-icon>
+							<v-icon small class="ma-1" @click.stop="openHeader">mdi-fullscreen</v-icon>
 						</v-card>
 					</v-col>
 					<v-col cols="12" sm="5">
-						<v-list-item-title class="uppercase">
-							{{
-								$root.lang().review.addon.titles[
-									addonInPanel.authors.length === 1 ? "author_singular" : "author_plural"
-								]
-							}}
-						</v-list-item-title>
-						<div class="text--secondary" style="margin-bottom: 10px">
-							{{ addonInPanel.authors.map((id) => getUsername(id)).join(", ") }}
-						</div>
-
-						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.titles.links }}
-						</v-list-item-title>
-						<div class="text--secondary" style="margin-bottom: 10px">
-							<ul
-								v-for="file in addonInPanel.files.filter((f) => f.use === 'download')"
-								:key="file.id"
-							>
-								<li>
-									{{ file.name }} -
-									<a :href="file.source" target="_blank" class="text--secondary">
-										{{ $root.lang().review.addon.labels.link }}
-										<v-icon small color="light-blue">mdi-open-in-new</v-icon>
-									</a>
-								</li>
-							</ul>
-						</div>
-
-						<v-list-item-title class="uppercase">
-							{{ $root.lang().review.addon.titles.options }}
-						</v-list-item-title>
-						<div>
-							<v-icon small>
-								{{
-									addonInPanel.options.optifine
-										? "mdi-checkbox-marked-outline"
-										: "mdi-checkbox-blank-outline"
-								}}
-							</v-icon>
-							{{ $root.lang().review.addon.labels.optifine }}
-						</div>
+						<addon-info :addonInPanel="addonInPanel" :getUsername="getUsername" />
 					</v-col>
 				</v-row>
 
@@ -128,7 +71,7 @@
 					<image-previewer :sources="addonSources" :deletable="false" />
 				</template>
 
-				<v-list-item-title class="uppercase py-2">
+				<v-list-item-title class="uppercase pb-2 py-4">
 					{{ $root.lang().review.addon.titles.description }}
 				</v-list-item-title>
 
@@ -140,24 +83,19 @@
 			<v-list-item-title class="uppercase pb-1">
 				{{ $root.lang().addons.general.reason.title }}
 			</v-list-item-title>
-			<div>
-				{{ addonInPanel.approval.reason }}
-			</div>
+			<div>{{ addonInPanel.approval.reason }}</div>
 		</div>
 		<div v-if="addonInPanelLoading === false" id="review-actions" class="mt-2 rounded-lg pa-2">
 			<div class="d-flex align-center">
 				<div class="mr-auto">
 					<div v-if="status === 'approved'">
-						{{
-							`${$root.lang().review.addon.labels.approved_by} ${getUsername(addonInPanel.approval.author)}`
-						}}
+						{{ $root.lang().review.addon.labels.approved_by.replace("%s", approvalAuthor) }}
 					</div>
 					<div v-if="status === 'denied' || status === 'archived'">
-						<div>
-							{{ $root.lang().review.addon.labels.denied_by }}
-							{{ getUsername(addonInPanel.approval.author) }}:
-						</div>
-						<div class="text--secondary">{{ addonInPanel.approval.reason }}</div>
+						<v-list-item-title class="uppercase">
+							{{ $root.lang().review.addon.labels.denied_by.replace("%s", approvalAuthor) }}:
+						</v-list-item-title>
+						<p class="text--secondary">{{ addonInPanel.approval.reason }}</p>
 					</div>
 				</div>
 				<v-btn
@@ -194,12 +132,14 @@ import axios from "axios";
 
 import FullscreenPreview from "@components/fullscreen-preview.vue";
 import ImagePreviewer from "../addon/image-previewer.vue";
+import AddonInfo from "./addon-info.vue";
 
 export default {
 	name: "review-preview",
 	components: {
 		FullscreenPreview,
 		ImagePreviewer,
+		AddonInfo,
 	},
 	props: {
 		addonId: {
@@ -210,37 +150,14 @@ export default {
 	},
 	data() {
 		return {
-			imagePreview: "",
 			modalData: {},
 			modalOpen: false,
 			previewOpen: false,
 			addonInPanelLoading: true,
 			addonInPanel: {},
-			addonURL: undefined,
-			addonInPanelHeaderURL: undefined,
+			addonInPanelHeaderURL: "",
 			contributors: [],
 		};
-	},
-	computed: {
-		addonSources() {
-			return (this.addonInPanel.files || [])
-				.filter((f) => f.use === "carousel" || f.use === "screenshot")
-				.map((f) => f.source);
-		},
-		status() {
-			return this.addonInPanel && this.addonInPanel.approval
-				? this.addonInPanel.approval.status
-				: undefined;
-		},
-	},
-	watch: {
-		addonId: {
-			handler(n) {
-				if (n === undefined) return;
-				this.getAddon(n);
-			},
-			immediate: true,
-		},
 	},
 	methods: {
 		getAddon(id) {
@@ -279,11 +196,38 @@ export default {
 			if (id === null || id === undefined) return "Herobrine";
 			return this.contributors.find((c) => c.id === id)?.username || "Unknown User";
 		},
+		openHeader() {
+			this.previewOpen = true;
+		},
 		openDenyPopup(...args) {
 			this.$root.$emit("openDenyPopup", args);
 		},
 		reviewAddon(...args) {
 			this.$root.$emit("reviewAddon", args);
+		},
+	},
+	computed: {
+		addonSources() {
+			return (this.addonInPanel.files || [])
+				.filter((f) => f.use === "carousel" || f.use === "screenshot")
+				.map((f) => f.source);
+		},
+		status() {
+			return this.addonInPanel && this.addonInPanel.approval
+				? this.addonInPanel.approval.status
+				: undefined;
+		},
+		approvalAuthor() {
+			return this.getUsername(this.addonInPanel.approval.author);
+		},
+	},
+	watch: {
+		addonId: {
+			handler(n) {
+				if (n === undefined) return;
+				this.getAddon(n);
+			},
+			immediate: true,
 		},
 	},
 	created() {

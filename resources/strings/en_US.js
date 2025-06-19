@@ -300,7 +300,7 @@ export default {
 			pending: "There are currently no pending add-ons!",
 			denied: "There are currently no denied add-ons!",
 			archived: "There are currently no archived add-ons!",
-			approved: "There are current no approved add-ons!",
+			approved: "There are currently no approved add-ons!",
 			load_approved: "Load approved add-ons",
 		},
 		addon: {
@@ -314,8 +314,8 @@ export default {
 			labels: {
 				link: "Link",
 				optifine: "OptiFine",
-				approved_by: "Approved by",
-				denied_by: "Denied by",
+				approved_by: "Approved by %s",
+				denied_by: "Denied by %s",
 				reason: "Reason",
 			},
 		},

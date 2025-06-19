@@ -30,7 +30,7 @@ export default {
 			required: true,
 		},
 		categories: {
-			type: Array, // [{ label: String, color: String }]
+			type: Array, // { label: String, color: String }[]
 			required: true,
 		},
 		activeColor: {

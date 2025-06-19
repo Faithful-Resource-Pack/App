@@ -230,8 +230,8 @@ export default {
 			labels: {
 				link: "Lien",
 				optifine: "OptiFine",
-				approved_by: "Approuvé par",
-				denied_by: "Refusé par",
+				approved_by: "Approuvé par %s",
+				denied_by: "Refusé par %s",
 				reason: "Raison",
 			},
 		},

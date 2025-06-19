@@ -137,8 +137,8 @@ export default {
 			},
 			addons: {
 				pending: [],
-				denied: [],
 				approved: [],
+				denied: [],
 				archived: [],
 			},
 			loading: {
@@ -148,72 +148,12 @@ export default {
 				archived: true,
 			},
 			contributors: [],
-
 			showDenyPopup: false,
 			denyAddon: {},
 			archive: false,
 			status: "pending",
 			selectedAddonId: undefined,
 		};
-	},
-	watch: {
-		status(n) {
-			// select first if not empty
-			this.searchSet("status", n);
-			this.selectedAddonId = this.addons[n].length > 0 ? this.addons[n][0].id : undefined;
-		},
-		selectedAddonId(n) {
-			if (n !== undefined) this.searchSet("id", n);
-			else this.searchDelete("id");
-		},
-		"$route.query": {
-			handler(params, prev) {
-				if (JSON.stringify(params) === JSON.stringify(prev)) return;
-				this.searchUpdate();
-			},
-			deep: true,
-			immediate: true,
-		},
-	},
-	computed: {
-		stats() {
-			return Object.values(this.addons).map((v) => v.length);
-		},
-		categories() {
-			return Object.keys(this.addons).map((s, i) => {
-				return {
-					label: this.$root.lang(`review.titles.${s}`),
-					color: this.colors[s],
-					value: s,
-					count: this.stats[i] !== undefined ? String(this.stats[i]) : "",
-				};
-			});
-		},
-		items() {
-			return Object.entries(this.addons)
-				.map(([state, list]) => {
-					return {
-						state,
-						items: list.map((addon) => {
-							return {
-								key: String(addon.id),
-								primary: addon.name,
-								secondary: addon.options.tags.join(", "),
-							};
-						}),
-					};
-				})
-				.reduce((acc, cur) => {
-					acc[cur.state] = cur.items;
-					return acc;
-				}, {});
-		},
-		selectedItems() {
-			return this.items[this.status];
-		},
-		empty() {
-			return this.$root.lang(`review.labels.${this.status}`);
-		},
 	},
 	methods: {
 		reviewAddon(addon, status, reason = null) {
@@ -279,8 +219,7 @@ export default {
 				this.getAddonsByStatus("archived"),
 			])
 				.then(() => {
-					if (!this.selectedAddonId)
-						this.selectedAddonId = (this.selectedItems[0] || {}).key || this.selectedAddonId;
+					this.selectedAddonId ||= (this.selectedItems[0] || {}).key;
 				})
 				.catch((err) => {
 					this.$root.showSnackBar(err, "error");
@@ -291,6 +230,59 @@ export default {
 			this.$nextTick(() => {
 				this.selectedAddonId = this.searchGet("id") || this.selectedAddonId;
 			});
+		},
+	},
+	computed: {
+		stats() {
+			return Object.values(this.addons).map((v) => v.length);
+		},
+		categories() {
+			return Object.keys(this.addons).map((cat, i) => ({
+				label: this.$root.lang().review.titles[cat],
+				color: this.colors[cat],
+				value: cat,
+				count: this.stats[i] !== undefined ? String(this.stats[i]) : "",
+			}));
+		},
+		items() {
+			return Object.entries(this.addons)
+				.map(([category, addons]) => ({
+					category,
+					items: addons.map((a) => ({
+						key: String(a.id),
+						primary: a.name,
+						secondary: a.options.tags.join(", "),
+					})),
+				}))
+				.reduce((acc, cur) => {
+					acc[cur.category] = cur.items;
+					return acc;
+				}, {});
+		},
+		selectedItems() {
+			return this.items[this.status];
+		},
+		empty() {
+			return this.$root.lang().review.labels[this.status];
+		},
+	},
+	watch: {
+		status(n) {
+			// select first if not empty
+			this.searchSet("status", n);
+			this.selectedAddonId = this.addons[n].length > 0 ? this.addons[n][0].id : undefined;
+		},
+		selectedAddonId(n) {
+			if (n !== undefined) this.searchSet("id", n);
+			else this.searchDelete("id");
+		},
+		"$route.query": {
+			handler(params, prev) {
+				if (JSON.stringify(params) === JSON.stringify(prev)) return;
+				this.searchUpdate();
+			},
+			deep: true,
+			immediate: true,
 		},
 	},
 	created() {
