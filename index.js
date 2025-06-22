@@ -1,16 +1,12 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Vuetify from "vuetify";
-import VueCalendarHeatmap from "vue-calendar-heatmap";
 
 import axios from "axios";
 import moment from "moment";
-import { marked } from "marked";
 import DOMPurify from "dompurify";
+import { marked } from "marked";
 import { createPinia } from "pinia";
-
-// dynamic import because vite, used for fallback translation
-const { default: en_US } = await import("./resources/strings/en_US.js");
 
 import { discordAuthStore } from "./stores/discordAuthStore.js";
 import { discordUserStore } from "./stores/discordUserStore.js";
@@ -23,14 +19,15 @@ import MissingPage from "./pages/404/index.vue";
 Vue.config.devtools = import.meta.env.MODE === "development";
 Vue.use(Vuetify);
 Vue.use(VueRouter);
-// package can't import individual components for some reason (even though it's used in ONE PLACE)
-Vue.use(VueCalendarHeatmap);
 
 const pinia = createPinia();
 Vue.use(pinia);
 
 // add injected methods to entire webapp
 import "@helpers/utilityMethods.js";
+
+// dynamic import because vite, used for fallback translation
+const { default: en_US } = await import("./resources/strings/en_US.js");
 
 /**
  * PWA REGISTRATION
@@ -48,12 +45,12 @@ if ("serviceWorker" in navigator) {
 
 // https://www.techonthenet.com/js/language_tags.php
 const AVAILABLE_LANGS = Object.entries(import.meta.glob("/resources/strings/*.js")).map(
-	([path, _init]) => {
+	([path, loadAsImport]) => {
 		const name = path.split("/").pop().split(".")[0];
 		return {
 			id: name.includes("en") ? "en" : name.slice(-2).toLowerCase(),
-			// import is a keyword, this was the next closest thing I could think of lol
-			init: () => _init().then((res) => res.default),
+			// automatically fetch default import
+			load: () => loadAsImport().then((res) => res.default),
 			bcp47: name.replace("_", "-"),
 			file: path,
 			iso3166: name.split("_")[1].toLowerCase(),
@@ -204,7 +201,7 @@ const app = new Vue({
 			// already cached, no need to load
 			if (this.loadedLangs[langObj.id]) return;
 
-			const strings = await langObj.init().catch((e) => {
+			const strings = await langObj.load().catch((e) => {
 				this.showSnackBar(e.toString(), "error");
 			});
 			this.loadedLangs[langObj.id] = Object.merge({}, en_US, strings || {});

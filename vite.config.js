@@ -43,6 +43,8 @@ export default defineConfig(({ mode }) => {
 			alias: {
 				// stupid fix for vite/vue interop
 				vue: "vue/dist/vue.esm.js",
+				// https://github.com/julienr114/vue-calendar-heatmap/issues/18
+				"vue-calendar-heatmap": "vue-calendar-heatmap/dist/vue-calendar-heatmap.browser.js",
 				"@helpers": fileURLToPath(new URL("./helpers", import.meta.url)),
 				"@components": fileURLToPath(new URL("./components", import.meta.url)),
 			},

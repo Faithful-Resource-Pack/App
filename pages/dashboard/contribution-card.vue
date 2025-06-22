@@ -51,11 +51,13 @@ import axios from "axios";
 import moment from "moment";
 
 import DashboardCard from "./dashboard-card.vue";
+import { CalendarHeatmap } from "vue-calendar-heatmap";
 
 export default {
 	name: "contribution-card",
 	components: {
 		DashboardCard,
+		CalendarHeatmap,
 	},
 	props: {
 		colors: {
