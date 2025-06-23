@@ -161,107 +161,108 @@
 					clearable
 					:label="$root.lang().addons.general.slug.label"
 					:hint="$root.lang().addons.general.slug.hint"
+					:rules="form.slug.rules"
+					:counter="form.slug.counter"
 				/>
 
-				<div class="text-h5">{{ $root.lang().addons.options.title }}</div>
+				<div class="text-h5 mb-3">{{ $root.lang().addons.compatibility.title }}</div>
 
-				<div class="container">
-					<div class="row text-center">
-						<div class="col-12 col-md-6">
-							<v-row>
-								<v-col v-for="type in editions" :key="type" cols="6">
-									<v-checkbox
-										v-model="submittedForm.selectedEditions"
-										:label="type"
-										:disabled="
-											submittedForm.selectedEditions.length === 1 &&
-											submittedForm.selectedEditions[0] === type
-										"
-										:value="type"
-										hide-details
-										color="primary"
-									/>
-								</v-col>
-							</v-row>
-						</div>
-						<div class="col-12 col-md-6">
-							<v-row>
-								<v-col v-for="type in res" :key="type" cols="6">
-									<v-checkbox
-										v-model="submittedForm.selectedRes"
-										:label="type"
-										:disabled="
-											submittedForm.selectedRes.length === 1 &&
-											submittedForm.selectedRes[0] === type
-										"
-										hide-details
-										:value="type"
-										color="primary"
-									/>
-								</v-col>
-							</v-row>
-						</div>
-					</div>
-					<v-row>
-						<v-checkbox
-							v-model="submittedForm.options.optifine"
-							class="col-6"
-							:label="$root.lang().addons.options.optifine.label"
-							color="primary"
-						/>
-					</v-row>
-				</div>
+				<v-chip-group
+					v-model="submittedForm.selectedPacks"
+					multiple
+					mandatory
+					class="d-flex flex-row align-center"
+				>
+					<span class="subtitle-1 text--secondary mt-1">
+						{{ $root.lang().addons.compatibility.packs.label }}
+					</span>
+					<div class="px-2" />
+					<v-chip
+						v-for="pack in packs"
+						:key="pack.value"
+						filter
+						:value="pack.value"
+						:style="{ color: pack.color }"
+					>
+						{{ pack.label }}
+					</v-chip>
+				</v-chip-group>
+
+				<v-chip-group
+					v-model="submittedForm.selectedEditions"
+					multiple
+					mandatory
+					class="d-flex flex-row align-center"
+				>
+					<span class="subtitle-1 text--secondary mt-1">
+						{{ $root.lang().addons.compatibility.editions.label }}
+					</span>
+					<div class="px-2" />
+					<v-chip
+						v-for="edition in editions"
+						:key="edition.value"
+						filter
+						:value="edition.value"
+						:style="{ color: edition.color }"
+					>
+						{{ edition.value }}
+					</v-chip>
+				</v-chip-group>
+
+				<v-checkbox
+					v-model="submittedForm.options.optifine"
+					class="pt-5"
+					:label="$root.lang().addons.compatibility.optifine.label"
+				/>
 
 				<div class="text-h5">{{ $root.lang().addons.downloads.title }}</div>
 
-				<div>
-					<v-row v-for="(obj, index) in submittedForm.downloads" :key="index" style="margin-top: 0">
-						<v-col cols="12" sm="3">
-							<v-text-field
-								v-model="obj.key"
-								clearable
-								:placeholder="$root.lang().addons.downloads.name.placeholder"
-								:label="$root.lang().addons.downloads.name.label"
-								:rules="downloadTitleRules"
-							/>
-						</v-col>
-						<v-col cols="12" sm="9">
-							<v-row
-								v-for="(link, indexLinks) in obj.links"
-								:key="indexLinks"
-								:style="{
-									'align-items': 'baseline',
-									'margin-top': indexLinks != 0 ? '-32px' : '-12px',
-								}"
-							>
-								<v-col>
-									<v-text-field
-										v-model="obj.links[indexLinks]"
-										clearable
-										:placeholder="$root.lang().addons.downloads.link.placeholder"
-										:label="$root.lang().addons.downloads.link.label"
-										:rules="downloadLinkRules"
-									/>
-								</v-col>
-								<v-col v-if="indexLinks == 0" class="flex-grow-0 flex-shrink-0">
-									<v-btn icon @click="linkAdd(index)">
-										<v-icon color="lighten-1">mdi-plus</v-icon>
-									</v-btn>
-								</v-col>
-								<v-col v-else class="flex-grow-0 flex-shrink-0">
-									<v-btn icon @click="linkRemove(index, indexLinks)">
-										<v-icon color="red lighten-1">mdi-minus</v-icon>
-									</v-btn>
-								</v-col>
-								<v-col v-if="index != 0 && indexLinks == 0" class="flex-grow-0 flex-shrink-0">
-									<v-btn icon @click="downloadRemove(index)">
-										<v-icon color="red lighten-1">mdi-delete</v-icon>
-									</v-btn>
-								</v-col>
-							</v-row>
-						</v-col>
-					</v-row>
-				</div>
+				<v-row v-for="(obj, index) in submittedForm.downloads" :key="obj.key" class="mt-0">
+					<v-col cols="12" sm="3">
+						<v-text-field
+							v-model="obj.key"
+							clearable
+							:placeholder="$root.lang().addons.downloads.name.placeholder"
+							:label="$root.lang().addons.downloads.name.label"
+							:rules="downloadTitleRules"
+						/>
+					</v-col>
+					<v-col cols="12" sm="9">
+						<v-row
+							v-for="(link, indexLinks) in obj.links"
+							:key="link"
+							:style="{
+								'align-items': 'baseline',
+								'margin-top': indexLinks != 0 ? '-32px' : '-12px',
+							}"
+						>
+							<v-col>
+								<v-text-field
+									v-model="obj.links[indexLinks]"
+									clearable
+									:placeholder="$root.lang().addons.downloads.link.placeholder"
+									:label="$root.lang().addons.downloads.link.label"
+									:rules="downloadLinkRules"
+								/>
+							</v-col>
+							<v-col v-if="indexLinks == 0" class="flex-grow-0 flex-shrink-0">
+								<v-btn icon @click="linkAdd(index)">
+									<v-icon color="lighten-1">mdi-plus</v-icon>
+								</v-btn>
+							</v-col>
+							<v-col v-else class="flex-grow-0 flex-shrink-0">
+								<v-btn icon @click="linkRemove(index, indexLinks)">
+									<v-icon color="red lighten-1">mdi-minus</v-icon>
+								</v-btn>
+							</v-col>
+							<v-col v-if="index != 0 && indexLinks == 0" class="flex-grow-0 flex-shrink-0">
+								<v-btn icon @click="downloadRemove(index)">
+									<v-icon color="red lighten-1">mdi-delete</v-icon>
+								</v-btn>
+							</v-col>
+						</v-row>
+					</v-col>
+				</v-row>
 				<div class="pb-3">
 					<v-btn block color="secondary" @click="downloadAdd">
 						{{ $root.lang().global.btn.add_download }}
@@ -365,22 +366,19 @@ export default {
 					},
 					carousel: {
 						rules: [
-							(files) => {
-								return (
-									files
-										.map(
-											(file) =>
-												file.size < this.form.files.carousel.counter.max ||
-												this.$root
-													.lang()
-													.addons.images.header.rules.image_size.replace(
-														"%s",
-														this.form.files.header.counter.max / 1000,
-													),
-										)
-										.filter((r) => typeof r === "string")[0] || true
-								);
-							},
+							(files) =>
+								files
+									.map(
+										(file) =>
+											file.size < this.form.files.carousel.counter.max ||
+											this.$root
+												.lang()
+												.addons.images.header.rules.image_size.replace(
+													"%s",
+													this.form.files.header.counter.max / 1000,
+												),
+									)
+									.filter((r) => typeof r === "string")[0] || true,
 						],
 						counter: {
 							max: 3000000,
@@ -466,7 +464,7 @@ export default {
 							this.$root.lang().addons.general.slug.rules.incorrect_format,
 					],
 					counter: {
-						min: 5,
+						min: 3,
 						max: 30,
 					},
 				},
@@ -484,7 +482,7 @@ export default {
 				],
 				authors: [],
 				selectedEditions: ["Java"],
-				selectedRes: ["32x"],
+				selectedPacks: [],
 				options: {
 					tags: [],
 					optifine: false,
@@ -503,8 +501,15 @@ export default {
 			],
 			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().addons.downloads.link.rule],
 			validForm: false,
-			editions: ["Java", "Bedrock"],
-			res: ["32x", "64x"],
+			// todo: move this to pack API when all packs are supported
+			packs: [
+				{ label: "Faithful 32x", value: "32x", color: "#00b0ff" },
+				{ label: "Faithful 64x", value: "64x", color: "#ff62bc" },
+			],
+			editions: [
+				{ value: "Java", color: "#1dd96a" },
+				{ value: "Bedrock", color: "#eee" },
+			],
 			users: [],
 			previewOpen: false,
 		};
@@ -547,17 +552,20 @@ export default {
 			return this.carouselError;
 		},
 		submittedData() {
-			const res = Object.merge({}, this.submittedForm);
+			const data = Object.merge({}, this.submittedForm);
 
-			res.options.tags = [...res.selectedEditions, ...res.selectedRes];
-			delete res.selectedEditions;
-			delete res.selectedRes;
+			data.options.tags = [...data.selectedEditions, ...data.selectedPacks];
+			delete data.selectedEditions;
+			delete data.selectedPacks;
 
 			// we treat files with different endpoint
-			delete res.headerFile;
-			delete res.carouselFiles;
+			delete data.headerFile;
+			delete data.carouselFiles;
 
-			return res;
+			return data;
+		},
+		resolutions() {
+			return this.packs.map((p) => p.value);
 		},
 	},
 	methods: {
@@ -695,8 +703,10 @@ export default {
 					data = JSON.parse(JSON.stringify(data));
 					data.headerFile = undefined;
 					data.carouselFiles = [];
-					data.selectedRes = data.options.tags.filter((e) => this.res.includes(e));
-					data.selectedEditions = data.options.tags.filter((e) => this.editions.includes(e));
+					data.selectedPacks = data.options.tags.filter((e) => this.resolutions.includes(e));
+					data.selectedEditions = data.options.tags.filter((e) =>
+						this.editions.some((ed) => ed.value === e),
+					);
 					this.submittedForm = data;
 				}
 			},

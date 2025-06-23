@@ -408,18 +408,16 @@ export default {
 				rule: "Wrong Ratio: All images with a side ratio other than 16:9 have been removed.",
 			},
 		},
-		options: {
-			title: "Options",
+		compatibility: {
+			title: "Compatibility",
 			optifine: {
 				label: "Requires OptiFine",
 			},
 			editions: {
-				label: "Supported edition(s)",
-				rule: "You need to select at least 1 edition.",
+				label: "Supported editions",
 			},
-			resolutions: {
-				label: "Supported resolution(s)",
-				rule: "You need to select at least 1 resolution.",
+			packs: {
+				label: "Supported packs",
 			},
 		},
 		downloads: {
