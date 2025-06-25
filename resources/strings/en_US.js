@@ -165,8 +165,6 @@ export default {
 				uuid: "Minecraft profile UUID",
 				roles: "User roles",
 				anonymous: "Anonymous",
-				anonymous_hint:
-					"If checked, the user's name will be displayed as \"Anonymous\" and their skin won't show up. Can only be changed by managers!",
 			},
 		},
 		textures: {
@@ -174,11 +172,14 @@ export default {
 			add_texture: "Add new texture",
 			add_multiple: "Add new textures",
 			change_texture: "Edit texture",
-			deleting_use_will_delete_paths: "Deleting the use will also delete all its paths.",
 			texture_result: "Texture results",
 			tag_filter: "Filter by tag",
 			search_texture: "Search texture name",
 			add_success: "Added texture(s) successfully",
+			delete_modal: {
+				deleting_use_will_delete_paths: "Deleting a use will also delete all its paths.",
+				load_paths: "Load affected paths",
+			},
 			modal: {
 				title: "Textures",
 				subtitle: "Uses and Paths",

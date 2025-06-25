@@ -190,9 +190,9 @@ export default {
 					this.loading = false;
 				});
 		},
-		update(users = true) {
+		update(success = true) {
 			this.getRoles();
-			if (users) this.getUsers();
+			if (success) this.getUsers();
 		},
 		clearSearch() {
 			this.search = "";

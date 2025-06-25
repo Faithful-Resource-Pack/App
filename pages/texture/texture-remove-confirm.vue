@@ -6,29 +6,30 @@
 		@close="$emit('close')"
 		@submit="deleteData"
 	>
-		<p>Do you want to delete this {{ type }}?</p>
 		<v-alert v-if="type == 'use'" type="warning" outlined dense>
-			{{ $root.lang().database.textures.deleting_use_will_delete_paths }}
+			{{ $root.lang().database.textures.delete_modal.deleting_use_will_delete_paths }}
 		</v-alert>
-		<blockquote v-if="type == 'use'">
-			<v-btn text @click="getPaths(data.id)"> See affected paths </v-btn>
-			<br />
-			<v-list-item v-for="path in paths" :key="path.id">
-				<v-list-item-title>
-					{{ path.name }}
-					<v-list-item-subtitle>
-						{{ `#${path.id} — ${path.versions.join(", ")}` }}
-					</v-list-item-subtitle>
-				</v-list-item-title>
-			</v-list-item>
-		</blockquote>
-		<ul v-else>
-			<template v-for="key in Object.keys(data).sort()">
-				<li v-if="typeof data[key] === 'string' || Array.isArray(data[key])" :key="key">
-					{{ key.toTitleCase() }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
-				</li>
-			</template>
+		<ul>
+			<li v-for="key in cleanedData" :key="key">
+				{{ key.toTitleCase() }}: {{ Array.isArray(data[key]) ? data[key].join(", ") : data[key] }}
+			</li>
 		</ul>
+		<template v-if="type == 'use'">
+			<v-divider class="ma-3" />
+			<v-btn block color="secondary" @click="getPaths(data.id)">
+				{{ $root.lang().database.textures.delete_modal.load_paths }}
+			</v-btn>
+			<v-list>
+				<v-list-item v-for="path in paths" :key="path.id">
+					<v-list-item-title>
+						{{ path.name }}
+						<v-list-item-subtitle>
+							{{ `${path.id} — ${path.versions.join(", ")}` }}
+						</v-list-item-subtitle>
+					</v-list-item-title>
+				</v-list-item>
+			</v-list>
+		</template>
 	</modal-form>
 </template>
 
@@ -122,11 +123,19 @@ export default {
 			}
 		},
 	},
+	computed: {
+		cleanedData() {
+			return Object.keys(this.data)
+				.filter((k) => typeof this.data[k] === "string" || Array.isArray(this.data[k]))
+				.sort();
+		},
+	},
 	watch: {
 		value(newValue) {
 			this.modalOpened = newValue;
 		},
 		modalOpened(newValue) {
+			this.paths = {};
 			this.$emit("input", newValue);
 		},
 	},

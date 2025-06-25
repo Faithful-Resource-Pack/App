@@ -45,7 +45,7 @@
 			<search-box
 				v-model="search"
 				:color="pageColor"
-				:placeholder="$root.lang().database.users.search_texture"
+				:placeholder="$root.lang().database.textures.search_texture"
 				@search="startSearch"
 				@clear="clearSearch"
 			/>

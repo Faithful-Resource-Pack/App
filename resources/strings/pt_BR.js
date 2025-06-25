@@ -160,8 +160,6 @@ export default {
 				uuid: "UUID do perfil do Minecraft",
 				roles: "Função do usuário",
 				anonymous: "Anônimo",
-				anonymous_hint:
-					'Se marcado, o nome do usuário será exibido como "Anônimo" e sua skin não será exibida. Só pode ser alterado por gerentes!',
 			},
 		},
 		textures: {
@@ -169,11 +167,13 @@ export default {
 			add_texture: "Adicionar nova textura",
 			add_multiple: "Adicionar novas texturas",
 			change_texture: "Editar textura",
-			deleting_use_will_delete_paths: "Excluindo o uso também irá apagar todos os seus caminhos.",
 			texture_result: "Resultados da textura",
 			tag_filter: "Filtrar por tag",
 			search_texture: "Buscar nome de textura",
 			add_success: "Textura(s) adicionada(s) com sucesso",
+			delete_modal: {
+				deleting_use_will_delete_paths: "Excluindo o uso também irá apagar todos os seus caminhos.",
+			},
 			modal: {
 				title: "Texturas",
 				subtitle: "Usos e Caminhos",
