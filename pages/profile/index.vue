@@ -27,16 +27,15 @@
 				<!-- ================ GENERAL SETTINGS ================ -->
 				<v-list-item>
 					<v-row
+						class="mt-5 justify-space-between"
 						:style="{
-							'margin-top': '20px',
-							'align-items': $vuetify.breakpoint.mdAndUp ? 'flex-start' : 'center',
-							'flex-direction': $vuetify.breakpoint.mdAndUp ? 'row' : 'column',
-							'justify-content': 'space-between',
+							alignItems: $vuetify.breakpoint.mdAndUp ? 'flex-start' : 'center',
+							flexDirection: $vuetify.breakpoint.mdAndUp ? 'row' : 'column',
 						}"
 					>
 						<v-col
 							v-if="localUser.uuid && localUser.uuid.length == uuidMaxLength"
-							class="col-2"
+							cols="2"
 							:sm="$vuetify.breakpoint.mdAndUp ? 3 : 2"
 							style="max-width: 250px"
 						>
@@ -56,16 +55,8 @@
 							/>
 						</v-col>
 						<v-col
-							:class="
-								'col-' + (localUser.uuid && localUser.uuid.length == uuidMaxLength) ? '10' : '12'
-							"
-							:sm="
-								localUser.uuid && localUser.uuid.length == uuidMaxLength
-									? $vuetify.breakpoint.mdAndUp
-										? 9
-										: 10
-									: 12
-							"
+							:cols="hasUUID ? 10 : 12"
+							:sm="hasUUID ? ($vuetify.breakpoint.mdAndUp ? 9 : 10) : 12"
 							style="max-width: 100%"
 						>
 							<v-form ref="form" lazy-validation>
@@ -84,7 +75,7 @@
 									</v-col>
 								</v-row>
 								<v-row>
-									<v-col>
+									<v-col cols="12" sm="9">
 										<v-text-field
 											v-model="localUser.uuid"
 											placeholder="aaabbbcc-ddee-1122-3344-zzz555aadd33"
@@ -94,6 +85,25 @@
 											:label="$root.lang().profile.general.uuid.label"
 											:hint="$root.lang().profile.general.uuid.hint"
 										/>
+									</v-col>
+									<v-col cols="12" sm="3">
+										<v-tooltip
+											:left="$vuetify.breakpoint.mdAndUp"
+											:right="!$vuetify.breakpoint.mdAndUp"
+											max-width="400px"
+											min-width="250px"
+										>
+											<template #activator="{ on, attrs }">
+												<!-- https://github.com/vuetifyjs/vuetify/issues/11345 -->
+												<span v-bind="attrs" v-on="on">
+													<v-checkbox
+														v-model="localUser.anonymous"
+														:label="$root.lang().profile.general.anonymous.label"
+													/>
+												</span>
+											</template>
+											<span>{{ $root.lang().profile.general.anonymous.hint }}</span>
+										</v-tooltip>
 									</v-col>
 								</v-row>
 							</v-form>
@@ -252,6 +262,7 @@ export default {
 			const data = {
 				uuid: this.localUser.uuid || "",
 				username: this.localUser.username || "",
+				anonymous: this.localUser.anonymous || false,
 				media: this.cleanedMedia,
 			};
 
@@ -312,6 +323,9 @@ export default {
 					delete m.key;
 					return m;
 				});
+		},
+		hasUUID() {
+			return this.localUser.uuid && this.localUser.uuid.length === this.uuidMaxLength;
 		},
 		canSubmit() {
 			// media handled separately since there's multiple

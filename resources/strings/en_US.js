@@ -527,11 +527,15 @@ export default {
 			title: "General",
 			uuid: {
 				label: "Minecraft profile UUID",
-				hint: "Your skin will be displayed with add-ons you authored.",
+				hint: "Your skin will be displayed on your created or credited add-ons.",
 			},
 			username: {
 				label: "Username",
 				hint: "Your username will be displayed on Faithful services for contributions, add-ons, etc.",
+			},
+			anonymous: {
+				label: "Anonymous",
+				hint: "Hides username and Minecraft UUID in the texture gallery and submitted add-ons. Your username will still be accessible in texture submissions for crediting purposes, but won't appear anywhere else.",
 			},
 		},
 		social: {
