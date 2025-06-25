@@ -47,7 +47,7 @@
 						clearable
 						:label="$root.lang().database.users.modal.anonymous"
 					/>
-					<p v-if="formData.anonymous">{{ $root.lang().database.users.modal.anonymous_hint }}</p>
+					<p v-if="formData.anonymous">{{ $root.lang().profile.general.anonymous.hint }}</p>
 				</v-form>
 			</v-col>
 		</v-row>

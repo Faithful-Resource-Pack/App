@@ -21,7 +21,7 @@ export default {
 		},
 		btn: {
 			add: "Add",
-			add_download: "Add Download",
+			add_download: "Add download",
 			submit: "Submit",
 			submit_for_review: "Submit for review",
 			submit_and_approve: "Submit and approve",
@@ -535,7 +535,7 @@ export default {
 			},
 			anonymous: {
 				label: "Anonymous",
-				hint: "Hides username and Minecraft UUID in the texture gallery and submitted add-ons. Your username will still be accessible in texture submissions for crediting purposes, but won't appear anywhere else.",
+				hint: "Hides username and Minecraft skin in the texture gallery and submitted add-ons. Username will still be accessible in texture submissions for crediting purposes, but won't appear anywhere else.",
 			},
 		},
 		social: {
