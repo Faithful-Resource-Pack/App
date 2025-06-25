@@ -2,14 +2,18 @@
 	<!-- not extending modal-form since this has no action buttons -->
 	<v-dialog v-model="modalOpened" content-class="colored" max-width="800">
 		<v-card>
-			<v-card-title class="headline">{{ $root.lang().posts.generator.heading }}</v-card-title>
+			<v-card-title class="headline">
+				{{ $root.lang().posts.changelog_generator.heading }}
+			</v-card-title>
 			<v-card-text>
-				<v-alert type="warning" outlined dense>{{ $root.lang().posts.generator.warning }}</v-alert>
+				<v-alert type="warning" outlined dense>
+					{{ $root.lang().posts.changelog_generator.warning }}
+				</v-alert>
 				<v-row>
 					<v-col>
 						<v-text-field
 							v-model="date"
-							:label="$root.lang().posts.generator.date"
+							:label="$root.lang().posts.changelog_generator.date"
 							:placeholder="$root.lang().posts.general.date.placeholder"
 							persistent-placeholder
 							hide-details
@@ -18,7 +22,7 @@
 					<v-col>
 						<v-select
 							v-model="selectedPack"
-							:label="$root.lang().posts.generator.pack"
+							:label="$root.lang().posts.changelog_generator.pack"
 							:items="packs"
 							hide-details
 							item-text="name"
@@ -35,7 +39,7 @@
 							:loading="loading"
 							@click="generate"
 						>
-							{{ $root.lang().posts.generator.heading }}<v-icon right>mdi-pencil</v-icon>
+							{{ $root.lang().posts.changelog_generator.heading }}<v-icon right>mdi-pencil</v-icon>
 						</v-btn>
 					</v-col>
 				</v-row>
@@ -44,13 +48,13 @@
 					<v-row>
 						<v-col>
 							<v-btn block color="secondary" @click="copyData">
-								{{ $root.lang().posts.generator.copy }}
+								{{ $root.lang().posts.changelog_generator.copy }}
 								<v-icon right>mdi-content-copy</v-icon>
 							</v-btn>
 						</v-col>
 						<v-col>
 							<v-btn block color="secondary" :href="fileURL" :download="fileName">
-								{{ $root.lang().posts.generator.download }}
+								{{ $root.lang().posts.changelog_generator.download }}
 								<v-icon right>mdi-download</v-icon>
 							</v-btn>
 						</v-col>

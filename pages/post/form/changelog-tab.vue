@@ -23,13 +23,13 @@
 		<br />
 		<v-row>
 			<v-col>
-				<v-btn block color="secondary" @click="openJSONModal">
-					{{ $root.lang().posts.changelog.import_json }}<v-icon right>mdi-code-json</v-icon>
+				<v-btn block color="secondary" @click="openGenerateModal">
+					{{ $root.lang().posts.changelog_generator.heading }}<v-icon right>mdi-pencil</v-icon>
 				</v-btn>
 			</v-col>
 			<v-col>
-				<v-btn block color="secondary" @click="openGenerateModal">
-					{{ $root.lang().posts.generator.heading }}<v-icon right>mdi-pencil</v-icon>
+				<v-btn block color="secondary" @click="openJSONModal">
+					{{ $root.lang().posts.changelog.import_json }}<v-icon right>mdi-code-json</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>

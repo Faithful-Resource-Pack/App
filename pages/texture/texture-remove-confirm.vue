@@ -19,7 +19,7 @@
 			<v-btn block color="secondary" @click="getPaths(data.id)">
 				{{ $root.lang().database.textures.delete_modal.load_paths }}
 			</v-btn>
-			<v-list>
+			<v-list v-if="paths.length">
 				<v-list-item v-for="path in paths" :key="path.id">
 					<v-list-item-title>
 						{{ path.name }}
