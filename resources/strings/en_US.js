@@ -504,7 +504,7 @@ export default {
 				item: "Item (Authors)",
 			},
 		},
-		generator: {
+		changelog_generator: {
 			heading: "Generate changelog",
 			date: "Date since last changelog",
 			pack: "Changelog pack",
