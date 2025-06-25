@@ -552,6 +552,11 @@ export default {
 			btn: "Delete account",
 			description: "Are you sure you want to delete your account?",
 			warning: "This process is irreversible!",
+			addons: {
+				title: "This will affect %d add-on(s)",
+				deleted: "Deleted",
+				transferred: "Transferred to other authors",
+			},
 		},
 	},
 	files: {

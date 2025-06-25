@@ -162,22 +162,19 @@
 				</div>
 			</v-list>
 		</div>
-		<modal-form
+		<user-remove-confirm
 			v-model="deleteModalOpened"
-			danger
-			:title="$root.lang().profile.delete.title"
-			@submit="deleteAccount"
-		>
-			<p>{{ $root.lang().profile.delete.description }}</p>
-			<v-alert type="warning" outlined dense>{{ $root.lang().profile.delete.warning }}</v-alert>
-		</modal-form>
+			:data="localUser"
+			profile
+			@close="deleteClosed"
+		/>
 	</v-container>
 </template>
 
 <script>
 import axios from "axios";
 
-import ModalForm from "@components/modal-form.vue";
+import UserRemoveConfirm from "../users/user-remove-confirm.vue";
 
 const emptySocial = () => ({
 	key: crypto.randomUUID(),
@@ -188,7 +185,7 @@ const emptySocial = () => ({
 export default {
 	name: "profile-page",
 	components: {
-		ModalForm,
+		UserRemoveConfirm,
 	},
 	data() {
 		return {
@@ -279,18 +276,12 @@ export default {
 		openDeleteModal() {
 			this.deleteModalOpened = true;
 		},
-		deleteAccount() {
-			axios
-				.delete(`${this.$root.apiURL}/users/${this.$root.user.id}`, this.$root.apiOptions)
-				.then(() => {
-					this.$router.push({ path: "dashboard" });
-					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
-					this.$root.logout();
-				})
-				.catch((error) => {
-					console.error(error);
-					this.$root.showSnackBar(error, "error");
-				});
+		deleteClosed(success = false) {
+			// user deleted, sign them out and put them on the dashboard
+			if (success) {
+				this.$router.push({ path: "dashboard" });
+				this.$root.logout();
+			}
 		},
 		getUserInfo() {
 			if (!this.$root.isLoggedIn) return;
