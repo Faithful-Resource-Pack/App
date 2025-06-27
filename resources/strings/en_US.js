@@ -255,6 +255,7 @@ export default {
 				name: "Pack name",
 				tags: "Pack tags",
 				resolution: "Pack resolution",
+				color: "Pack color",
 				logo: "Pack logo URL",
 				github: {
 					title: "GitHub",

@@ -160,10 +160,10 @@ export default {
 				.map((p) => (p == "progart" ? "Programmer Art" : p.toTitleCase()))
 				.join(" ");
 		},
-		openModal(data = undefined) {
-			this.modalData = data;
-			this.modalAdd = data === undefined;
+		openModal(data) {
 			this.modalOpen = true;
+			this.modalData = data || {};
+			this.modalAdd = data === undefined;
 		},
 		close(refresh = false) {
 			this.modalOpen = false;

@@ -59,6 +59,13 @@
 				clearable
 				:label="$root.lang().database.packs.modal.logo"
 			/>
+			<span class="subtitle-1 text--secondary">{{ $root.lang().database.packs.modal.color }}</span>
+			<v-color-picker
+				v-model="colorPicker"
+				mode="hexa"
+				class="d-flex flex-row-reverse justify-center my-3"
+				style="max-width: 100%"
+			/>
 			<h2 class="title">{{ $root.lang().database.packs.modal.github.title }}</h2>
 			<p class="text-caption">{{ $root.lang().database.packs.modal.github.title_hint }}</p>
 			<div v-for="edition in editions" :key="edition">
@@ -89,8 +96,8 @@
 						color="secondary"
 						@click="openSubmissionModal(formData, false)"
 					>
-						{{ $root.lang().database.packs.submissions.edit_submission
-						}}<v-icon right>mdi-pencil</v-icon>
+						{{ $root.lang().database.packs.submissions.edit_submission }}
+						<v-icon right>mdi-pencil</v-icon>
 					</v-btn>
 				</v-col>
 				<v-col cols="2">
@@ -168,6 +175,8 @@ export default {
 				github: {},
 				submission: {},
 			},
+			// store outside of formData so it doesn't reset
+			colorPicker: "#000000",
 			editions: [],
 			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().global.invalid_url],
 			submissionOpen: false,
@@ -229,7 +238,7 @@ export default {
 		send() {
 			const data = { ...this.formData };
 
-			// if user doesn't specify id on pack creation (falsy), the API will assume it
+			// if user doesn't specify id on pack creation (falsy) the API will assume it
 			if (this.add) {
 				if (!data.submission.id) delete data.submission.id;
 				if (!data.id) delete data.id;
@@ -237,6 +246,7 @@ export default {
 
 			// stop accidental casting
 			if (!data.logo) data.logo = null;
+			data.color = this.colorPicker;
 
 			Object.entries(data.github).forEach(([k, v]) => {
 				if (!v.repo || !v.org) delete data.github[k];
@@ -279,17 +289,17 @@ export default {
 			return this.formData.github[edition];
 		},
 	},
-	created() {
-		axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
-			this.editions = res.data;
-		});
-	},
 	computed: {
 		modalTitle() {
 			return this.add
 				? this.$root.lang().database.packs.modal.add_pack
 				: this.$root.lang().database.packs.modal.change_pack;
 		},
+	},
+	created() {
+		axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
+			this.editions = res.data;
+		});
 	},
 	watch: {
 		value(newValue) {
@@ -305,6 +315,8 @@ export default {
 					}
 					this.getSubmission(this.data.id);
 				}
+
+				this.colorPicker = this.data.color || "#000000";
 			});
 
 			this.$emit("input", newValue);

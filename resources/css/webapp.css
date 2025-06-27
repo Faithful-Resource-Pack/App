@@ -1092,3 +1092,7 @@ body .database-list-avatar {
 	/* fix weird left margin on mobile tabs */
 	display: none !important;
 }
+
+.v-color-picker__controls {
+	flex: 1;
+}
