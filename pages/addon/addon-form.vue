@@ -503,8 +503,8 @@ export default {
 			validForm: false,
 			// todo: move this to pack API when all packs are supported
 			packs: [
-				{ label: "Faithful 32x", value: "32x", color: "#00b0ff" },
-				{ label: "Faithful 64x", value: "64x", color: "#ff62bc" },
+				{ label: "Faithful 32x", value: "32x", color: "#00a2ff" },
+				{ label: "Faithful 64x", value: "64x", color: "#ff0092" },
 			],
 			editions: [
 				{ value: "Java", color: "#1dd96a" },
