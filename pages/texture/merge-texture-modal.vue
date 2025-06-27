@@ -95,10 +95,10 @@ export default {
 			return `${data.name} (${data.tags.join(", ")})`;
 		},
 		send() {
-			// /textures/merge/{add_id}/{remove_id} (destination goes first)
+			// /textures/merge/{source}/{destination}
 			axios
 				.put(
-					`${this.$root.apiURL}/textures/merge/${this.destTextureID}/${this.srcTextureID}`,
+					`${this.$root.apiURL}/textures/merge/${this.srcTextureID}/${this.destTextureID}`,
 					null,
 					this.$root.apiOptions,
 				)
