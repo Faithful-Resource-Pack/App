@@ -19,7 +19,7 @@
 				@click.exact.middle.stop="$emit('openNewTab', texture.textureID)"
 				@click.exact.meta.stop="$emit('openNewTab', texture.textureID)"
 			>
-				<tippy-component :to="texture.id" placement="right-start" theme="" maxWidth="350px">
+				<tippy-component :to="texture.id" placement="right-start" maxWidth="350px">
 					<template #trigger>
 						<gallery-image
 							:src="texture.url"
@@ -39,6 +39,7 @@
 							absolute
 							plain
 							icon
+							:aria-label="$root.lang().gallery.share"
 							@click.stop="$emit('share', texture.textureID)"
 						>
 							<v-icon>mdi-share-variant</v-icon>

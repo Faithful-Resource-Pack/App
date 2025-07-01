@@ -592,6 +592,7 @@ export default {
 		max_items_per_row: "Max items per row",
 		stretched_switcher: "Full width view",
 		animated_switcher: "Play animated textures",
+		share: "Share texture",
 		share_link_copied_to_clipboard: "Share link copied to clipboard",
 		title: "Gallery",
 		loading_message: "Loading…",
