@@ -69,14 +69,25 @@
 		<!-- HTML parsing rules apply here; no auto-closing tags -->
 		<v-app id="app" ref="app">
 			<v-app-bar flat dense bar app class="small-app-bar">
-				<span class="mr-2 d-flex noselect">
-					<v-app-bar-nav-icon small @click="drawerOpen = !drawerOpen" />
+				<span class="d-flex noselect">
+					<v-app-bar-nav-icon
+						small
+						:title="$root.lang().global.navbar_labels.sidebar"
+						@click="drawerOpen = !drawerOpen"
+					/>
 				</span>
 
 				<v-spacer></v-spacer>
 				<v-menu left offset-y open-on-hover transition="slide-y-transition">
 					<template #activator="{ on, attrs }">
-						<v-btn min-width="0" class="px-1 ms-2" v-bind="attrs" v-on="on" elevation="0">
+						<v-btn
+							min-width="0"
+							class="px-1 ms-2"
+							elevation="0"
+							:aria-label="$root.lang().global.navbar_labels.theme"
+							v-bind="attrs"
+							v-on="on"
+						>
 							<v-icon>mdi-theme-light-dark</v-icon>
 							<v-icon small>mdi-chevron-down</v-icon>
 						</v-btn>
@@ -106,7 +117,14 @@
 				</v-menu>
 				<v-menu right offset-y open-on-hover transition="slide-y-transition">
 					<template #activator="{ on, attrs }">
-						<v-btn min-width="0" class="px-1 ms-2" v-bind="attrs" v-on="on" elevation="0">
+						<v-btn
+							min-width="0"
+							class="px-1 ms-2"
+							elevation="0"
+							:aria-label="$root.lang().global.navbar_labels.translations"
+							v-bind="attrs"
+							v-on="on"
+						>
 							<v-icon>mdi-translate</v-icon>
 							<v-icon small>mdi-chevron-down</v-icon>
 						</v-btn>
@@ -151,9 +169,14 @@
 				</v-menu>
 
 				<span class="monochrome-logo mx-2 d-flex noselect">
-					<a href="https://faithfulpack.net" title="Return to main site">
+					<v-btn
+						icon
+						small
+						href="https://faithfulpack.net"
+						:title="$root.lang().global.navbar_labels.main_site"
+					>
 						<img :src="monochromeLogo" width="30" alt="logo" />
-					</a>
+					</v-btn>
 				</span>
 			</v-app-bar>
 
@@ -181,14 +204,7 @@
 						</v-card-actions>
 					</div>
 					<div v-else class="px-5 py-5">
-						<v-btn
-							block
-							class="blurple"
-							:href="$root.discordAuth.discordAuthURL"
-							:style="{
-								color: '#FFF',
-							}"
-						>
+						<v-btn block class="blurple" :href="$root.discordAuth.discordAuthURL">
 							{{ $root.lang().global.login }}
 						</v-btn>
 					</div>

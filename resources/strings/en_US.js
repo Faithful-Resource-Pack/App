@@ -10,6 +10,12 @@ export default {
 		nyi: "Not yet implemented.",
 		invalid_url: "This URL is not valid",
 		translations: "Translations",
+		navbar_labels: {
+			sidebar: "Toggle sidebar",
+			theme: "Toggle theme dropdown",
+			translations: "Toggle translations dropdown",
+			main_site: "Return to main site",
+		},
 		snackbar_system_theme: {
 			sentence: "System theme changed to %s",
 			themes: {

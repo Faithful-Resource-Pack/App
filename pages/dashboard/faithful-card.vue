@@ -1,5 +1,5 @@
 <template>
-	<dashboard-card id="faithful-card" class="d-flex flex-column">
+	<dashboard-card class="d-flex flex-column">
 		<v-card-text class="pt-1 pb-3 d-flex flex-column justify-space-between flex-grow-1">
 			<div class="text-center">
 				<v-img
@@ -23,6 +23,7 @@
 						:href="listing.href"
 						target="_blank"
 						class="text--secondary"
+						:aria-label="listing.name"
 						icon
 					>
 						<v-icon>{{ listing.icon }}</v-icon>
@@ -31,8 +32,7 @@
 			</div>
 
 			<v-btn
-				id="login-button"
-				class="text-center d-flex justify-center align-center rounded-lg pa-3 my-2 blurple"
+				class="text-center rounded-lg pa-3 my-2 blurple"
 				:href="$root.discordAuth.discordAuthURL"
 			>
 				{{ $root.lang().global.login }}
@@ -52,10 +52,10 @@ export default {
 	data() {
 		return {
 			listings: [
-				{ icon: "mdi-cube", href: "https://faithfulpack.net/news" },
-				{ icon: "mdi-twitter", href: "https://twitter.com/faithfulpack" },
-				{ icon: "mdi-reddit", href: "https://reddit.com/r/faithfulpack" },
-				{ icon: "mdi-github", href: "https://github.com/faithful-resource-pack" },
+				{ name: "Faithful News", icon: "mdi-cube", href: "https://faithfulpack.net/news" },
+				{ name: "Twitter", icon: "mdi-twitter", href: "https://twitter.com/faithfulpack" },
+				{ name: "Reddit", icon: "mdi-reddit", href: "https://reddit.com/r/faithfulpack" },
+				{ name: "GitHub", icon: "mdi-github", href: "https://github.com/faithful-resource-pack" },
 			],
 		};
 	},

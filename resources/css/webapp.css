@@ -311,6 +311,8 @@ img.texture-img {
 
 .blurple {
 	background-color: #5865F2 !important;
+	height: auto;
+	white-space: normal;
 }
 .blurple > *:first-child::before {
 	content: url(/resources/icons/discord_white.svg);
@@ -320,13 +322,9 @@ img.texture-img {
 	margin-left: -4px;
 }
 
-#login-button {
-	height: auto;
-	color: white;
-	white-space: normal;
-}
-#login-button .v-btn__content {
+.blurple .v-btn__content {
 	flex: auto;
+	color: white;
 }
 
 .router-link {

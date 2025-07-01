@@ -1,6 +1,5 @@
 <template>
 	<dashboard-card
-		id="contribution-card"
 		:title="$root.lang().dashboard.titles.contribution_activity"
 		to="/contributions"
 		:clickable="$root.isAdmin"
