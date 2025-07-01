@@ -20,7 +20,7 @@
 					</p>
 					<!-- there's no mdi mojang icon so this is a custom one -->
 					<p v-else-if="mojang">
-						<i class="icon-mojang-red"></i> {{ $root.lang().gallery.tooltip.mojang }}
+						<i class="icon-mojang-red" /> {{ $root.lang().gallery.tooltip.mojang }}
 					</p>
 					<p v-else-if="ignored">
 						<v-icon small>mdi-texture</v-icon> {{ $root.lang().gallery.tooltip.ignored }}
@@ -68,6 +68,11 @@ export default {
 			required: true,
 		},
 	},
+	methods: {
+		timestampToDate(t) {
+			return moment(new Date(t)).format("ll");
+		},
+	},
 	computed: {
 		lastContribution() {
 			const contributions = this.contributions[this.pack]?.[this.texture.textureID];
@@ -91,11 +96,6 @@ export default {
 		},
 		ignored() {
 			return this.ignoreList.some((el) => this.texture.url.includes(el));
-		},
-	},
-	methods: {
-		timestampToDate(t) {
-			return moment(new Date(t)).format("ll");
 		},
 	},
 };

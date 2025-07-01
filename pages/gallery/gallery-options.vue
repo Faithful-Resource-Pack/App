@@ -70,7 +70,7 @@ export default {
 			// search values available
 			options: {
 				packs: [],
-				tags: ["all"],
+				tags: [],
 				versions: ["latest", ...settings.versions.java, ...settings.versions.bedrock],
 				editions: ["all", ...settings.editions],
 			},
@@ -111,12 +111,11 @@ export default {
 						label: this.$root.lang().gallery.latest,
 						value: v,
 					};
-				else
-					return {
-						// fix for B1.7 instead of b1.7
-						label: /\d/g.test(v) ? v : v.toTitleCase(),
-						value: v,
-					};
+				return {
+					// fix for B1.7 instead of b1.7
+					label: /\d/g.test(v) ? v : v.toTitleCase(),
+					value: v,
+				};
 			});
 		},
 		tagList() {
@@ -137,7 +136,7 @@ export default {
 		this.options.packs = Object.values(this.packToName);
 
 		axios.get(`${this.$root.apiURL}/textures/tags`).then((res) => {
-			this.options.tags = [...this.options.tags, ...res.data];
+			this.options.tags = ["all", ...res.data];
 		});
 	},
 	watch: {
