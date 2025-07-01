@@ -724,10 +724,6 @@ code {
 	z-index: 202;
 }
 
-.go-up-btn:hover {
-	cursor: pointer;
-}
-
 #addon-description-preview {
 	margin-bottom: 1.5vh;
 }

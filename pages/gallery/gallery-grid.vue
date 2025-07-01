@@ -58,8 +58,9 @@
 			</div>
 		</div>
 
-		<v-btn v-show="scrollY > 300" icon large class="go-up-btn" @click="toTop">
-			<v-icon>mdi-arrow-up</v-icon>
+		<!-- already a scroll listener here so we can reuse it -->
+		<v-btn v-show="scrollY > 500" fab class="go-up-btn" @click="toTop">
+			<v-icon large>mdi-chevron-up</v-icon>
 		</v-btn>
 
 		<div ref="bottomElement" />
