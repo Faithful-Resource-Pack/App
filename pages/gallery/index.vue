@@ -63,7 +63,6 @@
 		<gallery-grid
 			v-model="columns"
 			:loading="loading"
-			:stretched="stretched"
 			:animated="animated"
 			:textures="textures"
 			:pack="current.pack"

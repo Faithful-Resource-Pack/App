@@ -1,13 +1,11 @@
 <template>
-	<v-list class="main-container pa-2" two-line>
-		<div class="text-center">
-			<template v-if="loading">
-				<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
-				<v-progress-circular v-if="loading" class="ma-1" indeterminate />
-			</template>
-			<div v-else-if="textures.length === 0" class="text-h6 my-2">
-				{{ error || $root.lang().global.no_results }}
-			</div>
+	<v-list class="main-container pa-2 text-center">
+		<div v-if="loading">
+			<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
+			<v-progress-circular v-if="loading" class="ma-1" indeterminate />
+		</div>
+		<div v-else-if="textures.length === 0" class="text-h6 my-2">
+			{{ error || $root.lang().global.no_results }}
 		</div>
 		<div class="gallery-textures-container mx-auto" :style="gridStyles">
 			<!-- sort method in key ensures rerenders change the image (this took me an hour to figure out) -->
@@ -89,10 +87,6 @@ export default {
 			required: true,
 		},
 		loading: {
-			type: Boolean,
-			required: true,
-		},
-		stretched: {
 			type: Boolean,
 			required: true,
 		},
