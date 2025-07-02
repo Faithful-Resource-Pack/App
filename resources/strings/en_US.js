@@ -147,7 +147,7 @@ export default {
 			search_contributions: "Search contributions",
 			modal: {
 				add_new_contribution: "Add a new contribution",
-				clone_contribution: "Clone the contribution",
+				clone_contribution: "Clone contribution",
 				one_contributor: "Select at least one contributor",
 				pack: "Resource Pack",
 				texture_id: "Texture ID",

@@ -25,21 +25,12 @@
 			>
 				<v-divider :vertical="$vuetify.breakpoint.mdAndUp" />
 			</v-col>
-			<v-col
-				class="flex-grow-1 flex-shrink-0 d-flex flex-column"
-				:cols="$vuetify.breakpoint.mdAndUp ? false : 12"
-			>
+			<v-col class="flex-grow-1 flex-shrink-0" :cols="$vuetify.breakpoint.mdAndUp ? false : 12">
 				<div class="font-weight-medium text--secondary mb-2">
 					{{ $root.lang().database.summary }}: [{{ contribs.length }}]
 				</div>
-				<v-list
-					id="contribution-form-list"
-					dense
-					flat
-					style="min-height: 200px"
-					class="pt-0 mb-4 flex-grow-1 flex-shrink-0"
-				>
-					<div>
+				<v-list two-line class="pt-0 mb-4">
+					<div :class="$vuetify.breakpoint.mdAndUp ? 'contribution-form-list' : ''">
 						<summary-item
 							v-for="(contrib, i) in contribs"
 							:key="contrib.key"
@@ -52,13 +43,9 @@
 						/>
 					</div>
 				</v-list>
-				<v-btn
-					class="flex-grow-0 flex-shrink-1"
-					elevation="0"
-					block
-					@click.stop.prevent="cloneContribution"
-				>
+				<v-btn color="secondary" elevation="0" block @click.stop.prevent="cloneContribution">
 					{{ $root.lang().database.contributions.modal.clone_contribution }}
+					<v-icon right>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>

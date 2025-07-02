@@ -2,17 +2,16 @@
 	<!-- wrapped by contribution-modal -->
 	<v-form lazy-validation>
 		<v-row>
-			<v-col cols="12" :sm="add ? false : 6">
+			<v-col cols="12" :sm="add && $vuetify.breakpoint.mdAndUp ? false : 6">
 				<quick-date-picker
 					v-model="contrib.date"
-					:block="!add"
 					flat
 					:months="months"
 					:labels="$root.lang().datepicker"
 					style="margin-left: auto; margin-right: auto"
 				/>
 			</v-col>
-			<v-col cols="12" :sm="add ? false : 6">
+			<v-col cols="12" :sm="add && $vuetify.breakpoint.mdAndUp ? false : 6">
 				<v-select
 					v-model="contrib.pack"
 					:label="$root.lang().database.contributions.modal.pack"

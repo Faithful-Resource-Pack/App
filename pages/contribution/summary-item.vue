@@ -20,7 +20,6 @@
 					</v-chip>
 				</v-list-item-subtitle>
 			</v-list-item-content>
-
 			<v-list-item-action>
 				<v-icon color="red lighten-1" @click="$emit('delete')">mdi-trash-can</v-icon>
 			</v-list-item-action>

@@ -1028,17 +1028,10 @@ body .database-list-avatar {
 	padding: 16px;
 }
 
-#contribution-form-list {
-	position: relative;
-}
-
-#contribution-form-list > * {
+.contribution-form-list {
+	/* height of the modal minus padding rounded to nearest 64 (height of one contribution) */
+	max-height: 512px;
 	overflow-y: scroll;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
 }
 
 .v-autocomplete:not(.v-input--is-focused).v-select--chips input {
