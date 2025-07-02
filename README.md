@@ -20,7 +20,7 @@
 ---
 
 ## Requirements
-- NodeJS 18+ https://nodejs.org
+- NodeJS 20+ https://nodejs.org
 - pnpm (`corepack enable` + `corepack prepare pnpm@latest --activate`)
 
 ## Running
