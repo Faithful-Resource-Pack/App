@@ -187,7 +187,7 @@ export default {
 				load_paths: "Load affected paths",
 			},
 			modal: {
-				title: "Textures",
+				title: "Texture",
 				subtitle: "Uses and Paths",
 				tagless: "No tags added",
 				copy_json_data: "Copied JSON data to clipboard",
