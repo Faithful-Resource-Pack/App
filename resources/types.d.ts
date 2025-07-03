@@ -35,7 +35,7 @@ declare module "vue/types/vue" {
 
 		// log reactive vue object without all the ugly stuff
 		log(...objs: any[]): void;
-		lang(): typeof strings;
+		lang(): Readonly<typeof strings>;
 		lang(key: string): string;
 		jsonSnackBar(json?: string): { showSnackBar: SnackBarCallback };
 		showSnackBar: SnackBarCallback;

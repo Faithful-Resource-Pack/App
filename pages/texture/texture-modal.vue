@@ -90,15 +90,14 @@
 			</v-list>
 			<div v-else>{{ $root.lang().database.textures.uses.no_use_found }}</div>
 
-			<v-btn block style="margin-top: 10px" color="secondary" @click="openUseModal(null, true)">
+			<v-btn block class="mt-2" color="secondary" @click="openUseModal(null, true)">
 				{{ $root.lang().database.textures.uses.add_use }}
 				<v-icon right>mdi-plus</v-icon>
 			</v-btn>
 			<v-btn
 				v-if="Object.keys(formData.uses).length === 1"
 				block
-				class="white--text"
-				style="margin-top: 10px"
+				class="white--text mt-2"
 				:color="color"
 				@click="openEditionUseModal"
 			>

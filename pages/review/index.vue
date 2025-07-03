@@ -52,7 +52,7 @@ d88   888  888    888 d88   888
 					</div>
 				</template>
 				<template v-else>
-					<v-expansion-panels v-if="addons[status].length > 0" style="margin-top: 5px">
+					<v-expansion-panels v-if="addons[status].length > 0" class="mt-1">
 						<expansion-panel
 							v-model="selectedAddonId"
 							:contributors="contributors"
@@ -64,12 +64,12 @@ d88   888  888    888 d88   888
 							:status="status"
 						/>
 					</v-expansion-panels>
-					<template v-else-if="loading[status] === true">
-						<v-container>{{ $root.lang().global.loading }}</v-container>
-					</template>
-					<template v-else>
-						<v-container>{{ $root.lang().review.labels[status] }}</v-container>
-					</template>
+					<v-container v-else-if="loading[status] === true">
+						{{ $root.lang().global.loading }}
+					</v-container>
+					<v-container v-else>
+						{{ $root.lang().review.labels[status] }}
+					</v-container>
 				</template>
 			</template>
 		</div>

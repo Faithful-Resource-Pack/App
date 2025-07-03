@@ -41,15 +41,14 @@
 			</v-btn>
 		</div>
 		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
-		<div class="my-2">
-			<search-box
-				v-model="search"
-				:color="pageColor"
-				:placeholder="$root.lang().database.textures.search_texture"
-				@search="startSearch"
-				@clear="clearSearch"
-			/>
-		</div>
+		<search-box
+			v-model="search"
+			class="my-2"
+			:color="pageColor"
+			:placeholder="$root.lang().database.textures.search_texture"
+			@search="startSearch"
+			@clear="clearSearch"
+		/>
 
 		<div class="my-6">
 			<v-row>

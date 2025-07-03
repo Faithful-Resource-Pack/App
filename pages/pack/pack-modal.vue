@@ -59,7 +59,9 @@
 				clearable
 				:label="$root.lang().database.packs.modal.logo"
 			/>
-			<span class="subtitle-1 text--secondary">{{ $root.lang().database.packs.modal.color }}</span>
+			<span class="subtitle-1 text--secondary">
+				{{ $root.lang().database.packs.modal.color }}
+			</span>
 			<v-color-picker
 				v-model="colorPicker"
 				mode="hexa"
@@ -87,37 +89,21 @@
 					</v-col>
 				</v-row>
 			</div>
-			<h2 class="title">{{ $root.lang().database.packs.submissions.title }}</h2>
+			<h2 class="title mb-2">{{ $root.lang().database.packs.submissions.title }}</h2>
 			<v-row v-if="Object.keys(formData.submission).length">
-				<v-col>
-					<v-btn
-						block
-						:style="{ 'margin-top': '10px' }"
-						color="secondary"
-						@click="openSubmissionModal(formData, false)"
-					>
+				<v-col cols="12" sm="10">
+					<v-btn block color="secondary" @click="openSubmissionModal(formData, false)">
 						{{ $root.lang().database.packs.submissions.edit_submission }}
 						<v-icon right>mdi-pencil</v-icon>
 					</v-btn>
 				</v-col>
-				<v-col cols="2">
-					<v-btn
-						block
-						:style="{ 'margin-top': '10px' }"
-						color="error darken-1"
-						@click="deleteSubmission(formData)"
-					>
+				<v-col cols="12" sm="2">
+					<v-btn block color="error darken-1" @click="deleteSubmission(formData)">
 						<v-icon>mdi-delete</v-icon>
 					</v-btn>
 				</v-col>
 			</v-row>
-			<v-btn
-				v-else
-				block
-				:style="{ 'margin-top': '10px' }"
-				color="secondary"
-				@click="openSubmissionModal(formData, true)"
-			>
+			<v-btn v-else block color="secondary" @click="openSubmissionModal(formData, true)">
 				{{ $root.lang().database.packs.submissions.add_submission }}
 				<v-icon right>mdi-plus</v-icon>
 			</v-btn>
@@ -177,7 +163,7 @@ export default {
 			},
 			// store outside of formData so it doesn't reset
 			colorPicker: "#000000",
-			editions: [],
+			editions: settings.editions,
 			downloadLinkRules: [(u) => this.validURL(u) || this.$root.lang().global.invalid_url],
 			submissionOpen: false,
 			submissionData: {},
@@ -295,11 +281,6 @@ export default {
 				? this.$root.lang().database.packs.modal.add_pack
 				: this.$root.lang().database.packs.modal.change_pack;
 		},
-	},
-	created() {
-		axios.get(`${this.$root.apiURL}/textures/editions`).then((res) => {
-			this.editions = res.data;
-		});
 	},
 	watch: {
 		value(newValue) {

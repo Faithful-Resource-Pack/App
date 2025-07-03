@@ -60,7 +60,7 @@
 				:label="$root.lang().database.textures.uses.edition"
 			/>
 			<h2 class="title">{{ $root.lang().database.textures.paths.title }}</h2>
-			<v-list v-if="Object.keys(formData.paths).length" label="Texture Paths">
+			<v-list v-if="Object.keys(formData.paths).length">
 				<v-list-item v-for="(path, index) in formData.paths" :key="index" class="list-item-inline">
 					<v-list-item-content>
 						<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
@@ -84,8 +84,9 @@
 				{{ $root.lang().database.textures.paths.no_path_found }}
 			</div>
 
-			<v-btn block :style="{ 'margin-top': '10px' }" color="secondary" @click="openPathModal()">
-				{{ $root.lang().database.textures.paths.add_path }} <v-icon right>mdi-plus</v-icon>
+			<v-btn block class="mt-2" color="secondary" @click="openPathModal()">
+				{{ $root.lang().database.textures.paths.add_path }}
+				<v-icon right>mdi-plus</v-icon>
 			</v-btn>
 		</v-form>
 	</modal-form>

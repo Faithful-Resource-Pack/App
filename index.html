@@ -184,7 +184,7 @@
 				<v-card :style="bannerStyles" class="rounded-t-0">
 					<div v-if="isLoggedIn" class="py-2">
 						<v-card-title class="pl-2">
-							<v-avatar size="48" style="margin-right: 10px">
+							<v-avatar size="48" class="mr-2">
 								<img
 									v-if="user.avatar"
 									style="line-height: 48px"
@@ -234,7 +234,7 @@
 							:disabled="subtab.disabled"
 							class="uppercase-unsized"
 						>
-							<v-list-item-icon v-if="subtab.icon" style="margin-right: 5px">
+							<v-list-item-icon v-if="subtab.icon" class="mr-1">
 								<v-icon small style="color: inherit">{{ subtab.icon }}</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title class="uppercase">{{ subtab.labelText }}</v-list-item-title>
@@ -251,7 +251,7 @@
 							:disabled="tab.disabled"
 							class="uppercase-unsized"
 						>
-							<v-list-item-icon v-if="tab.icon" style="margin-right: 5px">
+							<v-list-item-icon v-if="tab.icon" class="mr-1">
 								<v-icon small style="color: inherit">{{ tab.icon }}</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title class="uppercase">{{ tab.labelText }}</v-list-item-title>
@@ -262,17 +262,17 @@
 						</v-list-item>
 					</v-list>
 					<v-divider
-						style="margin-bottom: 10px"
 						v-if="
 							isLoggedIn ||
 							(tab.subtabs && tab.subtabs.reduce((acc, cur) => acc + (cur.public || 0), 0)) > 0
 						"
+						class="mb-2"
 					>
 					</v-divider>
 				</div>
 
 				<!-- Fix problem on firefox on mobile where bar disappears and fixed elements are hidden -->
-				<div class="py-8" v-if="!$vuetify.breakpoint.lgAndUp"></div>
+				<div class="py-5" v-if="$vuetify.breakpoint.mdAndDown"></div>
 			</v-navigation-drawer>
 
 			<v-main>

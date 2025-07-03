@@ -5,10 +5,10 @@
 			<v-col cols="12" :sm="add && $vuetify.breakpoint.mdAndUp ? false : 6">
 				<quick-date-picker
 					v-model="contrib.date"
+					class="mx-auto"
 					flat
 					:months="months"
 					:labels="$root.lang().datepicker"
-					style="margin-left: auto; margin-right: auto"
 				/>
 			</v-col>
 			<v-col cols="12" :sm="add && $vuetify.breakpoint.mdAndUp ? false : 6">

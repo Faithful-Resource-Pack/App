@@ -32,15 +32,14 @@
 
 		<!-- search -->
 		<div class="my-2 text-h5">{{ $root.lang().database.search }}</div>
-		<div class="my-2">
-			<search-box
-				v-model="search"
-				:color="pageColor"
-				:placeholder="$root.lang().database.users.search_username"
-				@search="startSearch"
-				@clear="clearSearch"
-			/>
-		</div>
+		<search-box
+			v-model="search"
+			class="my-2"
+			:color="pageColor"
+			:placeholder="$root.lang().database.users.search_username"
+			@search="startSearch"
+			@clear="clearSearch"
+		/>
 
 		<!-- main buttons -->
 		<v-btn block :color="pageColor" :class="[textColorOnPage, 'my-6']" @click="openModal()">
