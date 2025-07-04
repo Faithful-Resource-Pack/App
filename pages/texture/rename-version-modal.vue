@@ -64,7 +64,7 @@ export default {
 		send() {
 			axios
 				.put(
-					`${this.$root.apiURL}/paths/versions/modify/${this.form.old}/${this.form.new}`,
+					`${this.$root.apiURL}/paths/versions/rename/${this.form.old}/${this.form.new}`,
 					null,
 					this.$root.apiOptions,
 				)
