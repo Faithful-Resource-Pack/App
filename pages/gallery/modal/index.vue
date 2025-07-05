@@ -73,8 +73,8 @@ import FullscreenModal from "@components/fullscreen-modal.vue";
 
 const PACK_GRID_ORDER = [
 	["default", "faithful_32x", "faithful_64x"],
-	["default", "classic_faithful_32x", "classic_faithful_64x"],
-	["progart", "classic_faithful_32x_progart", "classic_faithful_64x_progart"],
+	["default", "classic_faithful_32x_jappa", "classic_faithful_64x_jappa"],
+	["progart", "classic_faithful_32x", "classic_faithful_64x"],
 ];
 
 const PACK_SLIDER_ORDER = [
@@ -82,10 +82,10 @@ const PACK_SLIDER_ORDER = [
 	"progart",
 	"faithful_32x",
 	"faithful_64x",
-	"classic_faithful_32x_progart",
-	"classic_faithful_64x_progart",
 	"classic_faithful_32x",
 	"classic_faithful_64x",
+	"classic_faithful_32x_jappa",
+	"classic_faithful_64x_jappa",
 ];
 
 export default {

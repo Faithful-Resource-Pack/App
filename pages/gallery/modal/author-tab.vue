@@ -51,11 +51,11 @@ export default {
 				},
 				{
 					category: "Classic Faithful",
-					packs: ["classic_faithful_32x_progart", "classic_faithful_64x_progart"],
+					packs: ["classic_faithful_32x", "classic_faithful_64x"],
 				},
 				{
 					category: "Classic Faithful Jappa",
-					packs: ["classic_faithful_32x", "classic_faithful_64x"],
+					packs: ["classic_faithful_32x_jappa", "classic_faithful_64x_jappa"],
 				},
 			],
 			headers: [
