@@ -152,10 +152,6 @@ const app = new Vue({
 			selectedLang: _get_lang(),
 			loadedLangs: LOADED_LANGS,
 			availableLangs: AVAILABLE_LANGS,
-			window: {
-				width: window.innerWidth,
-				height: window.innerHeight,
-			},
 			tabs: ALL_TABS.map((tab) => {
 				tab.subtabs = tab.subtabs.map((s) => {
 					s.to = s.routes[0].path;
@@ -561,10 +557,6 @@ const app = new Vue({
 		window.matchMedia("(prefers-color-scheme: light)").onchange = (ev) => {
 			if (ev.matches) this.onMediaChange(false);
 		};
-		window.addEventListener("resize", () => {
-			this.window.width = window.innerWidth;
-			this.window.height = window.innerHeight;
-		});
 	},
 	// plugins
 	router,

@@ -55,7 +55,7 @@ export default {
 	mounted() {
 		this.loadImage();
 	},
-	beforeUnmount() {
+	unmounted() {
 		// clear all timeouts to prevent memory leaks
 		if (this.updateCanvasTimeout) clearTimeout(this.updateCanvasTimeout);
 	},

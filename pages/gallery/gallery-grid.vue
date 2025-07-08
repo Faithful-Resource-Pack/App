@@ -111,6 +111,9 @@ export default {
 			scrollY: 0,
 			// list of animated textures ids
 			animatedTextures: [],
+			// must maintain static references to listeners for unmounting
+			scrollListener: () => {},
+			resizeListener: () => {},
 		};
 	},
 	methods: {
@@ -210,23 +213,30 @@ export default {
 		this.displayedResults = this.pageLength;
 	},
 	mounted() {
-		const el = this.$refs.bottomElement;
-		document.addEventListener("scroll", () => {
+		// initialize callback references (they need to be the same for unmounting)
+		this.scrollListener = () => {
+			const el = this.$refs.bottomElement;
 			this.scrollY = document.firstElementChild.scrollTop;
 
 			if (!el || !this.isScrolledIntoView(el, 600)) return;
 
 			// add more results when near bottom
 			this.displayedResults += this.pageLength;
-		});
+		};
 
-		// this can only be done on mount since $el doesn't exist otherwise
-		window.addEventListener("resize", () => {
+		this.resizeListener = () => {
 			this.width = this.$el.clientWidth;
-		});
+		};
 
-		// start calculation
+		document.addEventListener("scroll", this.scrollListener);
+		window.addEventListener("resize", this.resizeListener);
+
+		// start width calculation
 		window.dispatchEvent(new Event("resize"));
+	},
+	unmounted() {
+		document.removeEventListener("scroll", this.scrollListener);
+		window.removeEventListener("resize", this.resizeListener);
 	},
 };
 </script>
