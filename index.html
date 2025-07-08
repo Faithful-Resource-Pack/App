@@ -180,7 +180,7 @@
 				</span>
 			</v-app-bar>
 
-			<v-navigation-drawer width="320" fixed app v-model="drawerOpen">
+			<v-navigation-drawer v-model="drawerOpen" app width="320">
 				<v-card :style="bannerStyles" class="rounded-t-0">
 					<div v-if="isLoggedIn" class="py-2">
 						<v-card-title class="pl-2">

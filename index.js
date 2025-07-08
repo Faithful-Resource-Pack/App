@@ -514,6 +514,8 @@ const app = new Vue({
 	created() {
 		moment.locale(this.langToBCP47(_get_lang()));
 
+		if (this.$vuetify.breakpoint.mdAndDown) this.drawerOpen = false;
+
 		this.discordAuth.apiURL = window.apiURL;
 		this.discordAuth
 			.tryLogin(location.search, localStorage.getItem(AUTH_STORAGE_KEY))
