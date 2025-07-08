@@ -8,22 +8,27 @@
 					<!-- always show contributions even if a texture is ignored/modded -->
 					<template v-if="lastContribution !== undefined">
 						<p>
-							<v-icon small>{{ icon }}</v-icon> {{ lastContributionNames }}
+							<v-icon small>{{ icon }}</v-icon>
+							{{ authors }}
 						</p>
 						<p>
-							<v-icon small>mdi-clock-outline</v-icon> {{ timestampToDate(lastContribution.date) }}
+							<v-icon small>mdi-clock-outline</v-icon>
+							{{ timestampToDate(lastContribution.date) }}
 						</p>
 					</template>
 					<!-- even in 16x the modded textures aren't by mojang -->
 					<p v-else-if="modded">
-						<v-icon small>mdi-wrench</v-icon> {{ $root.lang().gallery.tooltip.modded }}
+						<v-icon small>mdi-wrench</v-icon>
+						{{ $root.lang().gallery.tooltip.modded }}
 					</p>
 					<!-- there's no mdi mojang icon so this is a custom one -->
 					<p v-else-if="mojang">
-						<i class="icon-mojang-red" /> {{ $root.lang().gallery.tooltip.mojang }}
+						<i class="icon-mojang-red" />
+						{{ $root.lang().gallery.tooltip.mojang }}
 					</p>
 					<p v-else-if="ignored">
-						<v-icon small>mdi-texture</v-icon> {{ $root.lang().gallery.tooltip.ignored }}
+						<v-icon small>mdi-texture</v-icon>
+						{{ $root.lang().gallery.tooltip.ignored }}
 					</p>
 					<p v-else>
 						{{ $root.lang().gallery.error_message.contribution_not_found }}
@@ -31,7 +36,9 @@
 				</div>
 			</div>
 			<div class="texture-tags-container">
-				<span v-for="tag in texture.tags" :key="tag" class="encased">{{ tag }}</span>
+				<span v-for="tag in texture.tags" :key="tag" class="encased">
+					{{ tag }}
+				</span>
 			</div>
 		</div>
 	</div>
@@ -51,13 +58,11 @@ export default {
 			type: Boolean,
 			required: true,
 		},
+		// passed as prop since you only need one request for every tooltip
 		contributions: {
 			type: Object,
-			required: true,
-		},
-		pack: {
-			type: String,
-			required: true,
+			required: false,
+			default: () => ({}),
 		},
 		discordIDtoName: {
 			type: Function,
@@ -75,16 +80,16 @@ export default {
 	},
 	computed: {
 		lastContribution() {
-			const contributions = this.contributions[this.pack]?.[this.texture.textureID];
-			if (contributions !== undefined)
-				return contributions.sort((a, b) => (a.date > b.date ? -1 : 1))?.[0];
-			return undefined;
+			return this.contributions[this.texture.textureID];
 		},
-		lastContributionNames() {
+		authors() {
 			if (this.lastContribution === undefined) return "";
-			return this.lastContribution.authors
-				.map((d) => this.discordIDtoName(d).replace(/\s/gm, "\u00A0"))
-				.join(", ");
+			return (
+				this.lastContribution.authors
+					// nbsp so users with spaces don't get wrapped
+					.map((d) => this.discordIDtoName(d).replace(/\s/gm, "\u00A0"))
+					.join(", ")
+			);
 		},
 		icon() {
 			if (this.lastContribution.authors.length === 1) return "mdi-account";

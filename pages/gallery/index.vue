@@ -40,7 +40,7 @@
 			@clear="clearSearch"
 		/>
 
-		<v-row class="py-3 pb-0">
+		<v-row class="pt-3">
 			<v-col v-if="requestTime > 0 && textures.length" cols="12" sm="9">
 				<p class="text--secondary">{{ resultMessage }}</p>
 			</v-col>
@@ -49,7 +49,7 @@
 			</v-col>
 			<v-col cols="12" sm="3">
 				<v-select
-					v-model="currentSort"
+					v-model="sort"
 					color="text--secondary"
 					dense
 					hide-details
@@ -59,22 +59,28 @@
 				/>
 			</v-col>
 		</v-row>
-		<!-- prop drilling mostly to save requests -->
-		<gallery-grid
-			v-model="columns"
-			:loading="loading"
-			:animated="animated"
-			:textures="textures"
-			:pack="current.pack"
-			:ignoreList="ignoreList"
-			:discordIDtoName="discordIDtoName"
-			:sort="currentSort"
-			:maxColumns="maxColumns"
-			:error="error"
-			@open="newShareURL"
-			@openNewTab="openModalInNewTab"
-			@share="copyShareURL"
-		/>
+		<v-list class="main-container pa-2 text-center">
+			<div v-if="loading">
+				<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
+				<v-progress-circular v-if="loading" class="ma-1" indeterminate />
+			</div>
+			<div v-else-if="textures.length === 0" class="text-h6 my-2">
+				{{ error || $root.lang().global.no_results }}
+			</div>
+			<gallery-grid
+				v-else
+				:textures="textures"
+				:pack="current.pack"
+				:animated="animated"
+				:sort="sort"
+				:ignoreList="ignoreList"
+				:discordIDtoName="discordIDtoName"
+				:shownColumns="shownColumns"
+				@open="newShareURL"
+				@openNewTab="openModalInNewTab"
+				@share="copyShareURL"
+			/>
+		</v-list>
 
 		<gallery-modal
 			v-model="modalOpened"
@@ -139,7 +145,7 @@ export default {
 				{ label: sortStrings.id_desc, value: "idDesc" },
 				{ label: sortStrings.contrib_desc, value: "contribDesc" },
 			],
-			currentSort: localStorage.getItem(SORT_KEY) || "nameAsc",
+			sort: localStorage.getItem(SORT_KEY) || "nameAsc",
 			// how long a request took
 			timer: {
 				start: null,
@@ -303,6 +309,9 @@ export default {
 			if (lg) return 12;
 			return 16;
 		},
+		shownColumns() {
+			return Math.min(this.columns, this.maxColumns);
+		},
 		// hide the stretched switcher when the screen is smaller than the size when not stretched
 		stretchable() {
 			return this.$vuetify.breakpoint.lgAndUp;
@@ -349,7 +358,7 @@ export default {
 		animated(n) {
 			localStorage.setItem(ANIMATED_KEY, n);
 		},
-		currentSort(n) {
+		sort(n) {
 			localStorage.setItem(SORT_KEY, n);
 		},
 		stretchable(n) {

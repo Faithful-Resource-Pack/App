@@ -1,68 +1,57 @@
 <template>
-	<v-list class="main-container pa-2 text-center">
-		<div v-if="loading">
-			<div class="text-h6 ma-1">{{ $root.lang().gallery.loading_message }}</div>
-			<v-progress-circular v-if="loading" class="ma-1" indeterminate />
-		</div>
-		<div v-else-if="textures.length === 0" class="text-h6 my-2">
-			{{ error || $root.lang().global.no_results }}
-		</div>
-		<div class="gallery-textures-container mx-auto" :style="gridStyles">
-			<!-- sort method in key ensures rerenders change the image (this took me an hour to figure out) -->
-			<div
-				v-for="texture in displayedTextures"
-				:key="sort + texture.textureID"
-				class="gallery-texture-in-container"
-				@click.exact.stop="$emit('open', texture.textureID)"
-				@click.exact.middle.stop="$emit('openNewTab', texture.textureID)"
-				@click.exact.meta.stop="$emit('openNewTab', texture.textureID)"
-			>
-				<tippy-component :to="texture.id" placement="right-start" maxWidth="350px">
-					<template #trigger>
-						<gallery-image
-							:src="texture.url"
-							:textureID="texture.textureID"
-							:ignoreList="ignoreList"
-							:animated="animated"
-							:animatedTextures="animatedTextures"
-						>
-							<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
-							<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
-							<p :style="missingTextStyles.message">
-								{{ $root.lang().gallery.error_message.texture_not_done }}
-							</p>
-						</gallery-image>
-						<v-btn
-							class="ma-2 gallery-share"
-							absolute
-							plain
-							icon
-							:aria-label="$root.lang().gallery.share"
-							@click.stop="$emit('share', texture.textureID)"
-						>
-							<v-icon>mdi-share-variant</v-icon>
-						</v-btn>
-					</template>
-
-					<gallery-tooltip
-						:mojang="isMojang"
-						:texture="texture"
-						:contributions="loadedContributions"
-						:pack="pack"
-						:discordIDtoName="discordIDtoName"
+	<div class="gallery-textures-container mx-auto" :style="gridStyles">
+		<!-- sort method in key ensures rerenders change the image (this took me an hour to figure out) -->
+		<div
+			v-for="texture in displayedTextures"
+			:key="sort + texture.textureID"
+			class="gallery-texture-in-container"
+			@click.exact.stop="$emit('open', texture.textureID)"
+			@click.exact.middle.stop="$emit('openNewTab', texture.textureID)"
+			@click.exact.meta.stop="$emit('openNewTab', texture.textureID)"
+		>
+			<tippy-component :to="texture.id" placement="right-start" maxWidth="350px">
+				<template #trigger>
+					<gallery-image
+						:src="texture.url"
+						:textureID="texture.textureID"
 						:ignoreList="ignoreList"
-					/>
-				</tippy-component>
-			</div>
+						:animated="animated"
+						:animatedTextures="animatedTextures"
+					>
+						<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
+						<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
+						<p :style="missingTextStyles.message">
+							{{ $root.lang().gallery.error_message.texture_not_done }}
+						</p>
+					</gallery-image>
+					<v-btn
+						class="ma-2 gallery-share"
+						absolute
+						plain
+						icon
+						:aria-label="$root.lang().gallery.share"
+						@click.stop="$emit('share', texture.textureID)"
+					>
+						<v-icon>mdi-share-variant</v-icon>
+					</v-btn>
+				</template>
+
+				<gallery-tooltip
+					:texture="texture"
+					:mojang="isMojang"
+					:contributions="lastContributions"
+					:discordIDtoName="discordIDtoName"
+					:ignoreList="ignoreList"
+				/>
+			</tippy-component>
 		</div>
 
 		<!-- already a scroll listener here so we can reuse it -->
 		<v-btn v-show="scrollY > 500" fab class="go-up-btn" @click="toTop">
 			<v-icon large>mdi-chevron-up</v-icon>
 		</v-btn>
-
 		<div ref="bottomElement" />
-	</v-list>
+	</div>
 </template>
 
 <script>
@@ -82,23 +71,19 @@ export default {
 		TippyComponent,
 	},
 	props: {
-		value: {
-			type: Number,
+		textures: {
+			type: Array,
 			required: true,
 		},
-		loading: {
-			type: Boolean,
+		pack: {
+			type: String,
 			required: true,
 		},
 		animated: {
 			type: Boolean,
 			required: true,
 		},
-		textures: {
-			type: Array,
-			required: true,
-		},
-		pack: {
+		sort: {
 			type: String,
 			required: true,
 		},
@@ -111,25 +96,15 @@ export default {
 			type: Function,
 			required: true,
 		},
-		sort: {
-			type: String,
-			required: true,
-		},
-		maxColumns: {
+		shownColumns: {
 			type: Number,
 			required: true,
-		},
-		error: {
-			type: String,
-			required: false,
-			default: null,
 		},
 	},
 	data() {
 		return {
+			width: 0,
 			loadedContributions: {},
-			lastContributions: {},
-			columns: 7,
 			// number of displayed results
 			displayedResults: 1,
 			// go to the top arrow
@@ -146,17 +121,6 @@ export default {
 			});
 			// prevents page becoming really slow from too many displayed results after going up
 			this.displayedResults = this.pageLength;
-		},
-		getLastContributions(pack) {
-			if (this.isMojang) return this.loadedContributions;
-
-			// faster than map and fromEntries
-			const acc = {};
-			for (const [key, contrib] of Object.entries(this.loadedContributions[pack])) {
-				acc[key] = contrib.sort((a, b) => b.date - a.date)?.[0];
-			}
-
-			return acc;
 		},
 		isScrolledIntoView(el, margin = 0) {
 			const rect = el.getBoundingClientRect();
@@ -191,9 +155,6 @@ export default {
 				},
 			};
 		},
-		shownColumns() {
-			return Math.min(this.columns, this.maxColumns);
-		},
 		// how much to increment shown results by when scrolling
 		pageLength() {
 			return this.shownColumns * MIN_ROW_DISPLAYED;
@@ -211,7 +172,7 @@ export default {
 			const CONTAINER_PADDING = 20; // .container padding (12px) + .v-list.main-container padding (8px)
 
 			// double padding for each side
-			const gridWidth = this.$el.clientWidth - CONTAINER_PADDING * 2;
+			const gridWidth = this.width - CONTAINER_PADDING * 2;
 			const imgWidth = gridWidth / this.shownColumns;
 
 			// arbitrary scaling factor, seems to look pretty good
@@ -223,21 +184,9 @@ export default {
 				message: { fontSize: `${fontSize * 1.2}px` },
 			};
 		},
-	},
-	watch: {
-		pack(n, o) {
-			if (n === o || !Object.keys(this.loadedContributions).length) return;
-			this.lastContributions = this.getLastContributions(n);
-		},
-		value: {
-			handler(newValue) {
-				this.columns = newValue;
-			},
-			// load from localStorage as soon as possible
-			immediate: true,
-		},
-		columns(n) {
-			this.$emit("input", n);
+		lastContributions() {
+			if (this.isMojang) return undefined;
+			return this.loadedContributions[this.pack];
 		},
 	},
 	created() {
@@ -246,20 +195,16 @@ export default {
 		});
 
 		axios.get(`${this.$root.apiURL}/contributions/raw`).then((res) => {
-			this.loadedContributions = Object.values(res.data)
-				.filter((contribution) => contribution.pack && contribution.texture)
-				.reduce((acc, cur) => {
-					if (!acc[cur.pack]) acc[cur.pack] = {};
-					if (!acc[cur.pack][cur.texture]) acc[cur.pack][cur.texture] = [];
+			this.loadedContributions = Object.values(res.data).reduce((acc, cur) => {
+				if (!cur.date) console.log(cur);
+				acc[cur.pack] ||= {};
+				const existing = acc[cur.pack][cur.texture];
 
-					acc[cur.pack][cur.texture].push({
-						authors: cur.authors,
-						date: cur.date,
-					});
+				// newer date wins
+				if (existing === undefined || existing?.date < cur.date) acc[cur.pack][cur.texture] = cur;
 
-					return acc;
-				}, {});
-			this.lastContributions = this.getLastContributions(this.pack);
+				return acc;
+			}, {});
 		});
 
 		this.displayedResults = this.pageLength;
@@ -274,6 +219,14 @@ export default {
 			// add more results when near bottom
 			this.displayedResults += this.pageLength;
 		});
+
+		// this can only be done on mount since $el doesn't exist otherwise
+		window.addEventListener("resize", () => {
+			this.width = this.$el.clientWidth;
+		});
+
+		// start calculation
+		window.dispatchEvent(new Event("resize"));
 	},
 };
 </script>
