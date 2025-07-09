@@ -125,16 +125,13 @@ export default {
 				return this.$emit("close");
 			}
 
-			let method = "put";
-			let pathId = "";
-			if (this.add) {
-				data.use = this.useID;
-				method = "post";
-			} else {
-				pathId = this.formData.id;
-			}
+			if (this.add) data.use = this.useID;
 
-			axios[method](`${this.$root.apiURL}/paths/${pathId}`, data, this.$root.apiOptions)
+			const requestPromise = this.add
+				? axios.post(`${this.$root.apiURL}/paths`, data, this.$root.apiOptions)
+				: axios.put(`${this.$root.apiURL}/paths/${this.formData.id}`, data, this.$root.apiOptions);
+
+			requestPromise
 				.then(() => {
 					this.$root.showSnackBar(this.$root.lang().global.ends_success, "success");
 					this.$emit("close", true);
