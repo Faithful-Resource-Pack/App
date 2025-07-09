@@ -25,7 +25,7 @@ export function formatTag(tag) {
  */
 export function sortTags(input) {
 	// remove duplicates/null items and alphabetically sort
-	let arr = [...new Set(input.filter((i) => i))].sort();
+	let arr = Array.from(new Set(input.filter((i) => i))).sort();
 	// shift broader tags to start
 	if (arr.includes("Realms")) arr = ["Realms", ...arr.filter((i) => i !== "Realms")];
 	if (arr.includes("Modded")) arr = ["Modded", ...arr.filter((i) => i !== "Modded")];

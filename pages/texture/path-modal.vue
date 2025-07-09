@@ -152,9 +152,10 @@ export default {
 				: this.$root.lang().database.textures.paths.change_path;
 		},
 		sortedVersions() {
-			return (
-				settings.versions[this.edition] || [...settings.versions.java, ...settings.versions.bedrock]
-			).sort(versionSorter);
+			const versions = this.edition
+				? Array.from(settings.versions[this.edition])
+				: Object.values(settings.versions).flat();
+			return versions.sort(versionSorter).reverse();
 		},
 	},
 	watch: {
