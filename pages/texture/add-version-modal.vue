@@ -2,6 +2,8 @@
 	<modal-form
 		v-model="modalOpened"
 		:title="$root.lang().database.textures.add_version.title"
+		:disabled="!form.newVersion"
+		danger
 		@close="$emit('close')"
 		@submit="send"
 	>
