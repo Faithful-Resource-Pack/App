@@ -1,9 +1,9 @@
 <template>
 	<v-list rounded two-line class="main-container">
 		<v-row>
-			<v-col v-for="(results, index) in splitResults" :key="index" :cols="12 / columnCount" xs="1">
-				<v-list-item v-for="res in results" :key="res[track]">
-					<slot :item="res" />
+			<v-col v-for="item in results" :key="item[track]" :cols="12 / columnCount" xs="1">
+				<v-list-item>
+					<slot :item="item" />
 				</v-list-item>
 			</v-col>
 		</v-row>
@@ -64,10 +64,12 @@ export default {
 	methods: {
 		showMore() {
 			this.displayedResults += RESULT_INCREMENT;
-			this.$emit("showMore", false);
 		},
 	},
 	computed: {
+		results() {
+			return this.items.slice(0, this.displayedResults);
+		},
 		columnCount() {
 			let columns = 1;
 
@@ -80,22 +82,6 @@ export default {
 
 			if (this.items.length === 1) columns = 1;
 			return Math.min(columns, this.maxColumns);
-		},
-		splitResults() {
-			const res = [];
-
-			const len = this.items.length;
-
-			for (let col = 0; col < this.columnCount; ++col) res.push([]);
-
-			let arrayIndex = 0;
-
-			for (let i = 0; i < Math.min(this.displayedResults, len); ++i) {
-				res[arrayIndex].push(this.items[i]);
-				arrayIndex = (arrayIndex + 1) % this.columnCount;
-			}
-
-			return res;
 		},
 		loadMoreStyle() {
 			const width = this.$vuetify.breakpoint.xs ? 100 : 50;
