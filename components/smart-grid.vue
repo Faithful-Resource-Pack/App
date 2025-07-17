@@ -1,7 +1,7 @@
 <template>
 	<v-list rounded two-line class="main-container">
 		<v-row>
-			<v-col v-for="(results, index) in splitResults" :key="index" :cols="12 / listColumns" xs="1">
+			<v-col v-for="(results, index) in splitResults" :key="index" :cols="12 / columnCount" xs="1">
 				<v-list-item v-for="res in results" :key="res[track]">
 					<slot :item="res" />
 				</v-list-item>
@@ -10,13 +10,15 @@
 
 		<v-btn
 			v-if="displayedResults < items.length"
-			:style="{ margin: 'auto', 'min-width': '250px !important' }"
+			class="my-2 mx-auto"
 			:color="pageColor"
-			:class="[textColor, 'my-2']"
+			:class="textColor"
+			:style="loadMoreStyle"
 			block
 			@click="showMore"
 		>
 			{{ $root.lang().global.btn.load_more }}
+			<v-icon right>mdi-plus</v-icon>
 		</v-btn>
 	</v-list>
 </template>
@@ -66,7 +68,7 @@ export default {
 		},
 	},
 	computed: {
-		listColumns() {
+		columnCount() {
 			let columns = 1;
 
 			if (this.$vuetify.breakpoint.mdAndUp && this.displayedResults >= 6) {
@@ -77,27 +79,29 @@ export default {
 			}
 
 			if (this.items.length === 1) columns = 1;
-
-			// for pack page where only two columns allowed
-			if (columns > this.maxColumns) columns = this.maxColumns;
-
-			return columns;
+			return Math.min(columns, this.maxColumns);
 		},
 		splitResults() {
 			const res = [];
 
 			const len = this.items.length;
 
-			for (let col = 0; col < this.listColumns; ++col) res.push([]);
+			for (let col = 0; col < this.columnCount; ++col) res.push([]);
 
 			let arrayIndex = 0;
 
 			for (let i = 0; i < Math.min(this.displayedResults, len); ++i) {
 				res[arrayIndex].push(this.items[i]);
-				arrayIndex = (arrayIndex + 1) % this.listColumns;
+				arrayIndex = (arrayIndex + 1) % this.columnCount;
 			}
 
 			return res;
+		},
+		loadMoreStyle() {
+			const width = this.$vuetify.breakpoint.xs ? 100 : 50;
+			return {
+				"min-width": `${width}% !important`,
+			};
 		},
 	},
 };
