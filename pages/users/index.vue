@@ -49,7 +49,7 @@
 		<!-- results -->
 		<div class="my-2 text-h5">{{ $root.lang().database.users.user_result }}</div>
 		<div v-if="loading" class="text-center">
-			<v-progress-circular indeterminate :color="pageColor" />
+			<v-progress-circular :size="70" :width="7" indeterminate :color="pageColor" />
 		</div>
 		<smart-grid
 			v-else-if="users.length"
@@ -190,8 +190,8 @@ export default {
 				});
 		},
 		update(success = true) {
-			this.getRoles();
 			if (success) this.getUsers();
+			this.getRoles();
 		},
 		clearSearch() {
 			this.search = "";
@@ -228,7 +228,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.getRoles();
+		this.update(true);
 		updatePageStyles(this);
 	},
 };

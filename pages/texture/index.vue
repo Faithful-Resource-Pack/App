@@ -88,8 +88,11 @@
 		</div>
 
 		<div class="my-2 text-h5">{{ $root.lang().database.textures.texture_result }}</div>
+		<div v-if="loading" class="text-center">
+			<v-progress-circular :size="70" :width="7" indeterminate :color="pageColor" />
+		</div>
 		<smart-grid
-			v-if="Object.keys(textures).length"
+			v-else-if="Object.keys(textures).length"
 			:pageColor="pageColor"
 			:textColor="textColorOnPage"
 			:items="Object.values(textures)"
@@ -161,6 +164,7 @@ export default {
 			tags: [],
 			textures: {},
 			search: "",
+			loading: false,
 			renameVersionModalOpen: false,
 			mergeModalOpen: false,
 			editModal: {
@@ -244,6 +248,7 @@ export default {
 				});
 		},
 		getTextures() {
+			this.loading = true;
 			const url = new URL(`${this.$root.apiURL}/textures/search`);
 			const { tag, name } = this.$route.params;
 			if (tag && tag !== "all") url.searchParams.set("tag", tag);
@@ -253,10 +258,13 @@ export default {
 				.then((res) => {
 					this.textures = res.data;
 				})
-				.catch((err) => console.error(err));
+				.catch((err) => console.error(err))
+				.finally(() => {
+					this.loading = false;
+				});
 		},
-		update(textures = true) {
-			if (textures) this.getTextures();
+		update(success = true) {
+			if (success) this.getTextures();
 			this.getTags();
 		},
 		async removeTexture(data) {
@@ -291,7 +299,7 @@ export default {
 		},
 	},
 	mounted() {
-		this.update();
+		this.update(true);
 		updatePageStyles(this);
 	},
 };
