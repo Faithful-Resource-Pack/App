@@ -160,10 +160,12 @@ export default {
 			// object of pack id -> pack display name
 			packToName: {},
 			// for legacy url support
-			resToPack: {
+			legacyPackIDs: {
 				"16x": "default",
 				"32x": "faithful_32x",
 				"64x": "faithful_64x",
+				"classic_faithful_32x_progart": "classic_faithful_32x",
+				"classic_faithful_64x_progart": "classic_faithful_64x",
 			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},
@@ -330,8 +332,8 @@ export default {
 				this.current.search = params.search;
 
 				// convert legacy urls to modern format
-				if (Object.keys(this.resToPack).includes(params.pack)) {
-					this.current.pack = this.resToPack[params.pack];
+				if (Object.keys(this.legacyPackIDs).includes(params.pack)) {
+					this.current.pack = this.legacyPackIDs[params.pack];
 					this.updateRoute();
 				} else this.current.pack = params.pack;
 
