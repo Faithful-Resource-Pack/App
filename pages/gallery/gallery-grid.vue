@@ -144,19 +144,20 @@ export default {
 		},
 		sortMethods() {
 			// needs to be computed because we're using outer data for a closure
-			return {
+			const methods = {
 				nameDesc: (a, b) => b.name.localeCompare(a.name),
 				nameAsc: (a, b) => a.name.localeCompare(b.name),
 				idDesc: (a, b) => Number(b.textureID) - Number(a.textureID),
 				idAsc: (a, b) => Number(a.textureID) - Number(b.textureID),
 				contribDesc: (a, b) => {
-					if (!this.lastContributions) return 0;
+					if (!this.lastContributions) return methods.nameAsc(a, b);
 					// later date wins (if the pack has no contributions put them at end)
 					const aContrib = this.lastContributions[a.textureID]?.date || 0;
 					const bContrib = this.lastContributions[b.textureID]?.date || 0;
 					return bContrib - aContrib;
 				},
 			};
+			return methods;
 		},
 		// how much to increment shown results by when scrolling
 		pageLength() {
