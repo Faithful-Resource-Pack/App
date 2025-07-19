@@ -49,10 +49,10 @@ If you're using Apache to serve the site, make sure to set `FallbackResource` to
 </VirtualHost>
 ```
 
-## API Reference:
+## API Reference
 
 This project is heavily developed around our public API. Check out our API documentation at https://api.faithfulpack.net/docs for more information about endpoints and making requests.
 
-## Translating:
+## Translating
 
 Many messages shown throughout the site can be translated into users' native languages for easier usage. Our translation service is powered by Crowdin, [and you can start translating there](https://faithful.crowdin.com/webapp) by clicking on your language in the list. Please contact us on our Discord server if a language you want to translate isn't listed.
