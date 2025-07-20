@@ -19,12 +19,12 @@
 		/>
 
 		<v-row no-gutters class="py-0 mb-0" align="center">
-			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
+			<v-col cols="12" sm="6">
 				<div class="text-h4 py-4">
 					{{ $root.lang().database.packs.title }}
 				</div>
 			</v-col>
-			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
+			<v-col cols="12" sm="6">
 				<v-btn block :color="pageColor" @click="openModal()">
 					{{ $root.lang().database.packs.modal.add_pack }}<v-icon right dark>mdi-plus</v-icon>
 				</v-btn>

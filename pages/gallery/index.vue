@@ -1,9 +1,13 @@
 <template>
 	<v-container :style="stretched ? 'max-width: 100% !important' : ''">
 		<v-row no-gutters>
-			<v-col cols="12" sm="6" class="text-h4 my-4">{{ $root.lang().gallery.title }}</v-col>
+			<v-col cols="12" sm="6" class="text-h4 my-4">
+				{{ $root.lang().gallery.title }}
+			</v-col>
 			<v-col v-if="$root.isAdmin" class="ml-auto my-4" cols="12" sm="6">
-				<v-btn block @click="clearCache">{{ $root.lang().gallery.clear_cache }}</v-btn>
+				<v-btn block @click="clearCache">
+					{{ $root.lang().gallery.clear_cache }}
+				</v-btn>
 			</v-col>
 		</v-row>
 

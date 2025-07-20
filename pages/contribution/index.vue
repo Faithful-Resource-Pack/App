@@ -15,15 +15,16 @@
 			@close="closeDeleteModal"
 		/>
 
-		<v-row no-gutters class="py-0 mb-0" align="center">
-			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
+		<v-row no-gutters class="py-0 my-0" align="center">
+			<v-col cols="12" sm="6">
 				<div class="text-h4 py-4">
 					{{ $root.lang().database.contributions.title }}
 				</div>
 			</v-col>
-			<v-col cols="12" sm="6" class="mt-4 py-sm-0">
+			<v-col cols="12" sm="6">
 				<v-btn block color="primary" @click="addContribution">
-					{{ $root.lang().database.contributions.add_manually }}<v-icon right dark>mdi-plus</v-icon>
+					{{ $root.lang().database.contributions.add_manually }}
+					<v-icon right>mdi-plus</v-icon>
 				</v-btn>
 			</v-col>
 		</v-row>
