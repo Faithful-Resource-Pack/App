@@ -95,7 +95,7 @@ import UserRemoveConfirm from "./user-remove-confirm.vue";
 import SmartGrid from "@components/smart-grid.vue";
 import SearchBox from "@components/search-box.vue";
 
-import { updatePageStyles } from "@helpers/colors.js";
+import { generatePageStyles } from "@helpers/colors.js";
 
 export default {
 	name: "users-page",
@@ -229,7 +229,7 @@ export default {
 	},
 	mounted() {
 		this.update(true);
-		updatePageStyles(this);
+		this.pageStyles = generatePageStyles(this, this.pageColor);
 	},
 };
 </script>

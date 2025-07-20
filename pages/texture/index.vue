@@ -140,7 +140,7 @@ import AddVersionModal from "./add-version-modal.vue";
 import MergeTextureModal from "./merge-texture-modal.vue";
 import TextureRemoveConfirm from "./texture-remove-confirm.vue";
 
-import { updatePageStyles } from "@helpers/colors.js";
+import { generatePageStyles } from "@helpers/colors.js";
 
 export default {
 	name: "texture-page",
@@ -300,7 +300,7 @@ export default {
 	},
 	mounted() {
 		this.update(true);
-		updatePageStyles(this);
+		this.pageStyles = generatePageStyles(this, this.pageColor);
 	},
 };
 </script>

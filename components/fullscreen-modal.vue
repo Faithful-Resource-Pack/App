@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { updatePageStyles } from "@helpers/colors.js";
+import { generatePageStyles } from "@helpers/colors.js";
 
 export default {
 	name: "fullscreen-modal",
@@ -65,7 +65,7 @@ export default {
 		},
 	},
 	mounted() {
-		updatePageStyles(this);
+		this.pageStyles = generatePageStyles(this, this.pageColor);
 	},
 	watch: {
 		value: {

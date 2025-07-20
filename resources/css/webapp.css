@@ -162,10 +162,6 @@ div.tooltip.vue-tooltip-theme {
 	background: transparent;
 }
 
-.selected {
-	background-color: #22202c;
-}
-
 #bottom {
 	background: transparent;
 	align-items: center;
