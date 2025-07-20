@@ -1,9 +1,11 @@
 <template>
 	<v-container>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="styles" v-html="pageStyles" />
 		<div class="text-h4 py-4">
 			{{ $root.lang().settings.title }}
 		</div>
-		<v-btn color="primary mt-2" :disabled="jsonIsNotValid" block append-icon @click="save">
+		<v-btn :color="pageColor" :disabled="jsonIsNotValid" block append-icon @click="save">
 			{{ $root.lang().global.btn.save }} <v-icon right>mdi-content-save</v-icon>
 		</v-btn>
 		<div class="my-5 text-h5">{{ $root.lang().settings.label.edit_raw }}</div>
@@ -22,6 +24,7 @@ import axios from "axios";
 import Prism from "prismjs";
 
 import { PrismEditor } from "vue-prism-editor";
+import { generatePageStyles } from "@helpers/colors";
 
 export default {
 	name: "settings-page",
@@ -30,7 +33,8 @@ export default {
 	},
 	data() {
 		return {
-			panels: 1,
+			pageColor: "blue-grey lighten-1",
+			pageStyles: "",
 			jsonText: "{}",
 			json: {},
 		};
@@ -88,6 +92,9 @@ export default {
 				console.error(err);
 				this.$root.showSnackBar(err, "error");
 			});
+	},
+	mounted() {
+		this.pageStyles = generatePageStyles(this, this.pageColor);
 	},
 };
 </script>
