@@ -407,7 +407,7 @@ const app = new Vue({
 		},
 		monochromeLogo() {
 			const filename = this.isDark ? "white" : "black";
-			return `https://database.faithfulpack.net/images/branding/logos/transparent/hd/${filename}.png`;
+			return `https://database.faithfulpack.net/images/branding/logos/transparent/original/${filename}.png`;
 		},
 	},
 	watch: {
