@@ -110,7 +110,7 @@ export default {
 	},
 	data() {
 		return {
-			pageColor: "amber accent-4",
+			pageColor: "purple lighten-1",
 			pageStyles: "",
 			search: "",
 			textColorOnPage: "white--text",

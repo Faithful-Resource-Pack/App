@@ -164,8 +164,8 @@ export default {
 				"16x": "default",
 				"32x": "faithful_32x",
 				"64x": "faithful_64x",
-				"classic_faithful_32x_progart": "classic_faithful_32x",
-				"classic_faithful_64x_progart": "classic_faithful_64x",
+				classic_faithful_32x_progart: "classic_faithful_32x",
+				classic_faithful_64x_progart: "classic_faithful_64x",
 			},
 			// json of ignored textures (used in gallery images for fallbacks)
 			ignoredTextures: {},

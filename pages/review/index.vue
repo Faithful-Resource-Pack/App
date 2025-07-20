@@ -126,7 +126,7 @@ export default {
 	mixins: [searchMixin],
 	data() {
 		return {
-			pageColor: "deep-purple lighten-2",
+			pageColor: "yellow darken-3",
 			pageStyles: "",
 			textColorOnPage: "white--text",
 			colors: {

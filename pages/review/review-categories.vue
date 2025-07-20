@@ -10,10 +10,10 @@
 			<v-card
 				:class="['py-2 px-4 d-flex align-center rounded-lg overflow-hidden', classes[cat_i]]"
 				elevation="2"
-				@click="() => onClick(cat.value)"
+				@click="() => $emit('input', cat.value)"
 			>
 				<v-badge inline dot left :color="cat.color" style="margin-left: -4px">
-					<div class="subtitle-1 text--secondary" style="margin-left: 5px">{{ cat.label }}</div>
+					<div class="subtitle-1" style="margin-left: 5px">{{ cat.label }}</div>
 				</v-badge>
 				<h4 class="h4 ml-auto" style="margin-left: 5px">{{ cat.count || "" }}</h4>
 			</v-card>
@@ -36,16 +36,6 @@ export default {
 		activeColor: {
 			type: String,
 			required: true,
-		},
-	},
-	data() {
-		return {
-			content: {},
-		};
-	},
-	methods: {
-		onClick(val) {
-			this.$emit("input", val);
 		},
 	},
 	computed: {
