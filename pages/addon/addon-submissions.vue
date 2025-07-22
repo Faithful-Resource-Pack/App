@@ -1,5 +1,7 @@
 <template>
 	<v-container>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="styles" v-html="pageStyles" />
 		<div class="text-h4 py-4">
 			{{ $root.lang().addons.titles.submissions }}
 			<v-progress-circular v-if="loading" indeterminate />
@@ -51,6 +53,8 @@ import axios from "axios";
 import AddonRemoveConfirm from "./addon-remove-confirm.vue";
 import CardGrid from "@components/card-grid.vue";
 
+import { generatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "addon-submissions",
 	components: {
@@ -59,6 +63,8 @@ export default {
 	},
 	data() {
 		return {
+			pageColor: "yellow darken-3",
+			pageStyles: "",
 			addons: [],
 			remove: {
 				open: false,
@@ -106,6 +112,7 @@ export default {
 	},
 	mounted() {
 		this.getAddons(this.$root.user.id);
+		this.pageStyles = generatePageStyles(this, this.pageColor);
 	},
 };
 </script>

@@ -996,12 +996,11 @@ body .database-list-avatar {
 	background: transparent;
 }
 
-.theme--light #review-addons .selected {
-	color: white;
+.theme--light.v-application .yellow.darken-3, .v-application .yellow.darken-3, .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled).yellow.darken-3 {
+  color: rgba(0,0,0,0.87);
 }
-
-.theme--light #review-addons .selected .text--secondary, .theme--light #review-addons .selected .v-list-item__subtitle {
-	color: rgba(255, 255, 255,.6) !important;
+.theme--dark.v-list-item:not(.v-list-item--disabled).yellow.darken-3 .v-list-item__subtitle {
+	color: rgba(0,0,0,0.6);
 }
 
 #empty > * > * {

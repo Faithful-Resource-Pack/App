@@ -1,6 +1,6 @@
 <template>
 	<v-sheet rounded>
-		<v-tabs v-model="tab" dense>
+		<v-tabs v-model="tab" dense :color="activeColor">
 			<v-tab style="text-transform: uppercase">
 				{{ $root.lang().global.text_field_tabs.write }}
 			</v-tab>
@@ -44,6 +44,11 @@ export default {
 			type: Object,
 			required: false,
 			default: () => ({}),
+		},
+		activeColor: {
+			type: String,
+			required: false,
+			default: ''
 		},
 	},
 	data() {

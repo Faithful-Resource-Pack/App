@@ -1,5 +1,7 @@
 <template>
 	<div class="container">
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="styles" v-html="pageStyles" />
 		<h4 class="text-h4 py-4">
 			<v-btn large icon class="ml-4" to="/addons/submissions">
 				<v-icon>mdi-chevron-left</v-icon>
@@ -44,6 +46,8 @@ import axios from "axios";
 import AddonForm from "./addon-form.vue";
 import ModalForm from "@components/modal-form.vue";
 
+import { generatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "edit-addon-form",
 	components: {
@@ -52,6 +56,8 @@ export default {
 	},
 	data() {
 		return {
+			pageColor: "yellow darken-3",
+			pageStyles: "",
 			hidisabled: false,
 			reasonModalOpen: false,
 			reasonData: undefined,
@@ -278,5 +284,8 @@ export default {
 				this.$root.showSnackBar(err, "error");
 			});
 	},
+	mounted() {
+		this.pageStyles = generatePageStyles(this, this.pageColor);
+	}
 };
 </script>

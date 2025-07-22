@@ -1,5 +1,7 @@
 <template>
 	<div class="container">
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="styles" v-html="pageStyles" />
 		<h4 class="text-h4 py-4">{{ $root.lang().addons.titles.submit }}</h4>
 		<addon-form
 			addon-new
@@ -17,6 +19,8 @@ import axios from "axios";
 
 import AddonForm from "./addon-form.vue";
 
+import { generatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "new-addon-form",
 	components: {
@@ -24,6 +28,8 @@ export default {
 	},
 	data() {
 		return {
+			pageColor: "yellow darken-3",
+			pageStyles: "",
 			header: undefined,
 			screenshots: [],
 			screenshotIds: [],
@@ -134,5 +140,8 @@ export default {
 			}
 		},
 	},
+	mounted() {
+		this.pageStyles = generatePageStyles(this, this.pageColor);
+	}
 };
 </script>

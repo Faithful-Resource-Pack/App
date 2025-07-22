@@ -1,10 +1,12 @@
 <template>
 	<v-container>
+		<!-- eslint-disable-next-line vue/no-v-html -->
+		<div class="styles" v-html="pageStyles" />
 		<fullscreen-preview v-model="previewOpen" :src="header" />
 
 		<div v-if="loading" class="text-center">
 			<h2 class="mb-5">{{ $root.lang().addons.general.loading_addon }}</h2>
-			<v-progress-circular :size="70" :width="7" color="primary" indeterminate />
+			<v-progress-circular :size="70" :width="7" :color="pageColor" indeterminate />
 		</div>
 		<v-list
 			v-else
@@ -142,6 +144,7 @@
 						hint: $root.lang().addons.info.description.hint,
 						placeholder: $root.lang().addons.info.description.placeholder,
 					}"
+					:active-color="pageColor"
 				/>
 
 				<!-- Embed description -->
@@ -298,6 +301,8 @@ import FullscreenPreview from "@components/fullscreen-preview.vue";
 import DropZone from "@components/drop-zone.vue";
 import TabbedTextField from "@components/tabbed-text-field.vue";
 
+import { generatePageStyles } from "@helpers/colors.js";
+
 export default {
 	name: "addon-form",
 	components: {
@@ -346,6 +351,8 @@ export default {
 	},
 	data() {
 		return {
+			pageColor: "yellow darken-3",
+			pageStyles: "",
 			form: {
 				files: {
 					header: {
@@ -718,5 +725,8 @@ export default {
 		this.getUsers();
 		this.submittedForm.authors = [this.$root.user.id];
 	},
+	mount() {
+		this.pageStyles = generatePageStyles(this, this.pageColor);
+	}
 };
 </script>
