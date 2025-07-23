@@ -31,7 +31,7 @@
 							:aspect-ratio="16 / 9"
 							style="border-radius: 5px"
 							alt="Header not found!"
-							class="image-fullscreen-thumb"
+							class="cursor-pointer"
 							@click.stop="openHeader"
 						>
 							<template #placeholder>
@@ -42,7 +42,7 @@
 									style="background-color: rgba(255, 255, 255, 0.1)"
 								>
 									<v-progress-circular
-										v-if="addonInPanelHeaderURL != null"
+										v-if="addonInPanelHeaderURL !== null"
 										indeterminate
 										color="grey lighten-5"
 									/>

@@ -9,7 +9,7 @@
 					style="display: inline-block"
 				>
 					<v-img
-						class="rounded image-fullscreen-thumb"
+						class="rounded cursor-pointer"
 						:src="url"
 						height="150"
 						:width="(150 * 16) / 9"

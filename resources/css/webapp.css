@@ -38,6 +38,14 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 0;
 }
 
+/**
+ * Hide default rendered content when the page is loading (looks bad)
+ * browser treats v-app as a native web element until vue loads so we target that
+ */
+v-app {
+	display: none;
+}
+
 /* force footer to bottom of page even if the page isn't long enough */
 .v-main__wrap {
 	display: flex;
@@ -97,11 +105,6 @@ html::-webkit-scrollbar-thumb, html *::-webkit-scrollbar-thumb {
 }
 .theme--light .card-text-shadow {
 	text-shadow: 2px 2px rgba(0,0,0,.2);
-}
-
-/* Used to hide the content when the page is loading */
-v-app {
-	display: none;
 }
 
 a {
@@ -210,12 +213,6 @@ div.tooltip.vue-tooltip-theme {
 img.texture-img {
 	object-fit: contain;
 	image-rendering: pixelated;
-}
-
-.texture-background > .v-image__image {
-	image-rendering: pixelated;
-	background-repeat: repeat;
-	background-size: auto;
 }
 
 .texture-tooltip {
@@ -337,19 +334,6 @@ img.texture-img {
 
 .router-link:hover {
 	background-color: rgba(255, 255, 255, 0.3);
-}
-
-blockquote {
-	margin-left: 15px;
-	border-left: 5px solid rgba(255, 255, 255, 0.3);
-	padding-left: 10px;
-}
-
-.profileList {
-	background-color: #0000 !important;
-	border-radius: 3px !important;
-	margin-bottom: 10px;
-	padding: 30px 5px 20px 5px;
 }
 
 .v-input__control {
@@ -492,56 +476,6 @@ code {
 	background-color: transparent !important;
 }
 
-.upload-file-input .v-card,
-.upload-file-input .v-card * {
-	transition: all 0.25s ease;
-}
-.upload-file-input .v-card,
-.upload-file-input .v-card.error {
-	background: transparent !important;
-}
-.upload-file-input .v-card {
-	border: 2px dashed #eee;
-	border-radius: 5px;
-}
-.upload-file-input .v-card .v-icon {
-	cursor: pointer;
-}
-.upload-file-input .v-card .d-flex .v-icon {
-	margin-top: 16px;
-	margin-bottom: 0;
-}
-.upload-file-input .v-card.dragover {
-	border-color: currentColor;
-}
-
-.upload-file-input .v-card .upload-reset-button {
-	padding-left: 0;
-	padding-right: 0;
-	width: 0;
-	overflow: hidden;
-	transition: all 1s ease;
-}
-.upload-file-input .v-card .upload-reset-button.clear {
-	width: auto;
-	padding-left: 12px;
-	padding-right: 12px;
-	overflow: initial;
-}
-
-.upload-file-input .v-messages {
-	line-height: 1;
-	min-height: auto;
-}
-
-.upload-file-input .v-card.dragover .d-flex .v-icon {
-	margin-top: 10px;
-	margin-bottom: 6px;
-}
-.upload-file-input .v-card.dragover .upload-label {
-	color: white;
-}
-
 .drop-zone {
 	display: flex;
 	flex-grow: 1;
@@ -643,18 +577,14 @@ code {
 	margin-bottom: 0;
 }
 
-.gallery-texture-background,
 .gallery-texture-image {
 	position: absolute;
+	top: 0;
+	left: 0;
 	height: 100%;
 	width: 100%;
 	object-fit: contain;
 	image-rendering: pixelated;
-}
-
-.gallery-texture-image {
-	top: 0;
-	left: 0;
 }
 
 .gallery-texture-image:hover,
@@ -664,12 +594,6 @@ code {
 
 .gallery-animated-image {
 	aspect-ratio: 1;
-}
-
-.gallery-texture-background > .v-image__image {
-	image-rendering: pixelated;
-	background-repeat: repeat;
-	background-size: auto;
 }
 
 .gallery-modal-container {
@@ -727,23 +651,6 @@ code {
 	z-index: 202;
 }
 
-#addon-description-preview {
-	margin-bottom: 1.5vh;
-}
-
-#addon-description-preview,
-#addon-description-preview > pre {
-	white-space: inherit;
-}
-
-#addon-description-preview pre:not(:last-child) {
-	margin-bottom: 16px;
-}
-
-#addon-description-preview code {
-	box-decoration-break: clone;
-}
-
 .list-item-inline {
 	padding-left: 0;
 	padding-right: 0;
@@ -767,6 +674,7 @@ code {
 	min-width: 64px !important;
 }
 
+/* stylized pill button paths */
 .v-list-item__action.merged {
 	margin-top: 4px;
 	margin-bottom: 4px;
@@ -774,7 +682,6 @@ code {
 	align-self: center;
 }
 
-/* stylized pill button paths */
 .v-list-item__action.merged .v-btn {
 	display: inline-block;
 	border-radius: 0;
@@ -821,6 +728,7 @@ body .database-list-avatar {
 .theme--dark .main-container, .theme--dark #dashboard-page .dashboard-card {
 	background-color: rgba(255,255,255,.05);
 }
+
 .theme--dark .main-container {
 	color: rgba(255, 255, 255, 0.87);
 }
