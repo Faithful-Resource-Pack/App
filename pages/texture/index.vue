@@ -68,12 +68,7 @@
 					</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn
-						block
-						:color="pageColor"
-						:class="textColorOnPage"
-						@click="openRenameVersionModal"
-					>
+					<v-btn block :color="pageColor" :class="textColorOnPage" @click="openRenameVersionModal">
 						{{ $root.lang().database.textures.rename_version.title }}
 						<v-icon right>mdi-pencil</v-icon>
 					</v-btn>

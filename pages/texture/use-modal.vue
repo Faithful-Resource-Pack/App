@@ -61,7 +61,7 @@
 			/>
 			<h2 class="title">{{ $root.lang().database.textures.paths.title }}</h2>
 			<v-list v-if="Object.keys(formData.paths).length">
-				<v-list-item v-for="(path, index) in formData.paths" :key="index" class="list-item-inline">
+				<v-list-item v-for="(path, index) in formData.paths" :key="index" class="px-0">
 					<v-list-item-content>
 						<v-list-item-title :title="path.name">{{ path.name }}</v-list-item-title>
 						<v-list-item-subtitle :title="(path.versions || []).join(', ')">

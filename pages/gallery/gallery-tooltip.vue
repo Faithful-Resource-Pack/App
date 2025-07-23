@@ -13,7 +13,7 @@
 						</p>
 						<p>
 							<v-icon small>mdi-clock-outline</v-icon>
-							{{ timestampToDate(lastContribution.date) }}
+							{{ date }}
 						</p>
 					</template>
 					<!-- even in 16x the modded textures aren't by mojang -->
@@ -73,11 +73,6 @@ export default {
 			required: true,
 		},
 	},
-	methods: {
-		timestampToDate(t) {
-			return moment(new Date(t)).format("ll");
-		},
-	},
 	computed: {
 		lastContribution() {
 			return this.contributions[this.texture.textureID];
@@ -90,6 +85,9 @@ export default {
 					.map((d) => this.discordIDtoName(d).replace(/\s/gm, "\u00A0"))
 					.join(", ")
 			);
+		},
+		date() {
+			return moment(new Date(this.lastContribution.date)).format("ll");
 		},
 		icon() {
 			if (this.lastContribution.authors.length === 1) return "mdi-account";
