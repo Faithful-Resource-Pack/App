@@ -53,7 +53,7 @@
 		<div class="my-6">
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openNewTextureModal">
+					<v-btn block :color="pageColor" :class="textColorOnPage" @click="openNewTextureModal">
 						{{ $root.lang().database.textures.add_multiple }}
 						<v-icon right>mdi-plus</v-icon>
 					</v-btn>
@@ -62,7 +62,7 @@
 			<br />
 			<v-row>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openAddVersionModal">
+					<v-btn block :color="pageColor" :class="textColorOnPage" @click="openAddVersionModal">
 						{{ $root.lang().database.textures.add_version.title }}
 						<v-icon right>mdi-pencil-plus</v-icon>
 					</v-btn>
@@ -71,7 +71,7 @@
 					<v-btn
 						block
 						:color="pageColor"
-						:class="[textColorOnPage]"
+						:class="textColorOnPage"
 						@click="openRenameVersionModal"
 					>
 						{{ $root.lang().database.textures.rename_version.title }}
@@ -79,7 +79,7 @@
 					</v-btn>
 				</v-col>
 				<v-col>
-					<v-btn block :color="pageColor" :class="[textColorOnPage]" @click="openMergeModal">
+					<v-btn block :color="pageColor" :class="textColorOnPage" @click="openMergeModal">
 						{{ $root.lang().database.textures.merge_textures.title }}
 						<v-icon right>mdi-merge</v-icon>
 					</v-btn>

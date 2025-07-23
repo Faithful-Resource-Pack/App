@@ -351,10 +351,6 @@ img.texture-img {
 	border-top-right-radius: 3px !important;
 }
 
-.height-90 {
-	max-height: 90px !important;
-}
-
 .transparent-input > .v-input__control > .v-input__slot {
 	-webkit-backdrop-filter: none !important;
 	backdrop-filter: none !important;
@@ -374,10 +370,6 @@ img.texture-img {
 
 .selector .v-btn--active::before {
 	opacity: 0;
-}
-
-.small-app-bar > * {
-	justify-content: space-between;
 }
 
 /* required class */
