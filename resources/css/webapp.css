@@ -38,6 +38,19 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 0;
 }
 
+/* force footer to bottom of page even if the page isn't long enough */
+.v-main__wrap {
+	display: flex;
+	flex-flow: column nowrap;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.v-main__wrap:first-child {
+	flex-grow: 1;
+}
+
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
 * {
@@ -160,11 +173,6 @@ div.tooltip .number {
 
 div.tooltip.vue-tooltip-theme {
 	background: transparent;
-}
-
-#bottom {
-	background: transparent;
-	align-items: center;
 }
 
 .clean-shadow {
