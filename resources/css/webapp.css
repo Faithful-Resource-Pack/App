@@ -38,6 +38,16 @@ input[type=number]::-webkit-outer-spin-button {
 	margin: 0;
 }
 
+pre {
+	background-color: hsla(0, 0%, 100%, 0.1);
+	color: currentColor;
+	border-radius: 2px;
+}
+
+code {
+	background-color: transparent !important;
+}
+
 /**
  * Hide default rendered content when the page is loading (looks bad)
  * browser treats v-app as a native web element until vue loads so we target that
@@ -427,53 +437,6 @@ img.texture-img {
 .thin-text {
 	font-weight: 300;
 	opacity: 0.7;
-}
-
-.markdown > h1 {
-	font-size: 1.3em;
-	padding-bottom: 8px;
-}
-.markdown > h2 {
-	font-size: 1.2em;
-	padding-bottom: 6px;
-}
-.markdown > h3 {
-	font-size: 1.1em;
-	padding-bottom: 5px;
-}
-.markdown > h4 {
-	font-size: 1em;
-	padding-bottom: 4px;
-}
-.markdown > h5 {
-	font-size: 0.9em;
-	padding-bottom: 3px;
-}
-.markdown > h6 {
-	font-size: 0.8em;
-	padding-bottom: 2px;
-}
-.markdown > p,
-.markdown > blockquote > p,
-.markdown > * > li,
-.markdown > table > * > * > * {
-	font-size: 0.7em;
-	line-height: 1.5em !important;
-}
-.markdown > blockquote {
-	margin-left: 7.5px;
-	border-left: 2.5px solid rgba(255, 255, 255, 0.3);
-	padding-left: 5px;
-}
-
-pre {
-	background-color: hsla(0, 0%, 100%, 0.1);
-	color: currentColor;
-	border-radius: 2px;
-}
-
-code {
-	background-color: transparent !important;
 }
 
 .drop-zone {
