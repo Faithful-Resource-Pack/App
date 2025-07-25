@@ -56,17 +56,15 @@ v-app {
 	display: none;
 }
 
-/* force footer to bottom of page even if the page isn't long enough */
+/* force footer to bottom of page if the page isn't long enough */
 .v-main__wrap {
 	display: flex;
 	flex-flow: column nowrap;
-	align-items: center;
-	justify-content: space-between;
-	width: 100%;
 }
 
+/* grow main content to fill available space */
 .v-main__wrap:first-child {
-	flex-grow: 1;
+	flex: 1;
 }
 
 /* ===== Scrollbar CSS ===== */
