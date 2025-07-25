@@ -862,6 +862,7 @@ img.texture-img {
 	z-index: 1;
 	background-size: cover;
 	min-height: 100vh;
+	width: 100%;
 }
 
 /**
