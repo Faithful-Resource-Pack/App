@@ -565,13 +565,13 @@ const app = new Vue({
 			dark: true,
 			themes: {
 				dark: {
-					primary: "#76C945",
-					accent: "#5e3631",
+					primary: "#76c945",
+					accent: "#00a2ff",
 					success: "#22a831",
 				},
 				light: {
-					primary: "#76C945",
-					accent: "#af0b51",
+					primary: "#76c945",
+					accent: "#00a2ff",
 					success: "#22a831",
 				},
 			},
