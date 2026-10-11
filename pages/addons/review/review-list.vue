@@ -90,7 +90,7 @@ export default {
 	},
 	watch: {
 		// focus and reset search
-		items() {
+		"$route.query.status"() {
 			this.search = null;
 			this.$refs.reviewSearch?.focus();
 		},
