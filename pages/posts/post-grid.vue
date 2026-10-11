@@ -38,7 +38,7 @@
 						v-if="post.published"
 						right
 						color="blue"
-						:href="`https://faithfulpack.net/${post.permalink}`"
+						:href="`https://faithfulpack.net${post.permalink}`"
 						target="_blank"
 						rel="noopener noreferrer"
 						:title="$root.lang().posts.go_to_post"
