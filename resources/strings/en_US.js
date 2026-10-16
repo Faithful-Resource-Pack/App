@@ -363,7 +363,7 @@ export default {
 				bounds: "Update reason must be between %s and %s characters long",
 			},
 			authors: {
-				label: "Select authors for the add-on",
+				label: "Add-on authors",
 				hint: "Any author can modify the add-on once it is submitted! | If you can't find someone in the list, contact a manager or developer",
 			},
 		},
