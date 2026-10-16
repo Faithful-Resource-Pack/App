@@ -73,6 +73,18 @@
 				</v-col>
 			</v-row>
 
+			<!-- only on already-existing addons -->
+			<v-text-field
+				v-if="!addonNew"
+				v-model="submittedForm.slug"
+				clearable
+				disabled
+				:label="$root.lang().addons.general.slug.label"
+				:hint="$root.lang().addons.general.slug.hint"
+				:rules="form.slug.rules"
+				:counter="form.slug.counter.max"
+			/>
+
 			<h2 class="text-h5 my-3">
 				{{ $root.lang().addons.images.title }}
 			</h2>
@@ -121,17 +133,6 @@
 				:hint="$root.lang().addons.info.embed_description.hint"
 				:counter="form.embed_description.counter.max"
 				persistent-hint
-			/>
-
-			<!-- only visible to admins on already-existing addons -->
-			<v-text-field
-				v-if="$root.isAdmin && !addonNew"
-				v-model="submittedForm.slug"
-				clearable
-				:label="$root.lang().addons.general.slug.label"
-				:hint="$root.lang().addons.general.slug.hint"
-				:rules="form.slug.rules"
-				:counter="form.slug.counter.max"
 			/>
 
 			<h2 class="text-h5 mb-3">{{ $root.lang().addons.compatibility.title }}</h2>
