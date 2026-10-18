@@ -37,7 +37,7 @@ export default {
 		},
 		footer: {
 			credits: "This website was made using the %Vuetify% component framework.",
-			source: "View the source %here%!",
+			source: "View the source code %here%!",
 			copyright: "© %d Faithful Resource Pack",
 		},
 		themes: {
