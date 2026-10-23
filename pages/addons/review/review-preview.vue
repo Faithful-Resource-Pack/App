@@ -2,7 +2,12 @@
 	<div class="review-preview d-flex flex-column">
 		<template v-if="addon">
 			<v-card class="main-container flex-grow-1 overflow-y-auto overflow-x-hidden">
-				<addon-panel :addon="addon" :files="files" :authors="authors" />
+				<addon-panel
+					:addon="addon"
+					:files="files"
+					:authors="authors"
+					@delete="$emit('review', addon.id, 'deleted')"
+				/>
 			</v-card>
 			<v-card class="main-container mt-2">
 				<addon-status

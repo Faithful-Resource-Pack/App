@@ -335,6 +335,8 @@ export default {
 		remove: {
 			title: "Delete add-on",
 			description: '"%s" will be deleted forever. This can\'t be undone.',
+			review_title: "Please only delete obvious spam or joke submissions!",
+			review_description: "Prefer archiving or denying add-ons when possible.",
 		},
 		general: {
 			loading_addon: "Loading add-on…",

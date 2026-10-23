@@ -9,10 +9,6 @@
 			</h1>
 			<v-spacer />
 			<v-list-item-action class="my-0 merged-actions">
-				<!-- I'm used to the pencil on the left, could probably be argued in either direction -->
-				<v-btn :to="`/addons/edit/${addon.id}`" :title="$root.lang().global.btn.edit" icon>
-					<v-icon>mdi-pencil</v-icon>
-				</v-btn>
 				<v-btn
 					:href="`https://faithfulpack.net/addons/${addon.slug}`"
 					target="_blank"
@@ -22,6 +18,12 @@
 					icon
 				>
 					<v-icon color="blue">mdi-open-in-new</v-icon>
+				</v-btn>
+				<v-btn :to="`/addons/edit/${addon.id}`" :title="$root.lang().global.btn.edit" icon>
+					<v-icon>mdi-pencil</v-icon>
+				</v-btn>
+				<v-btn icon :title="$root.lang().global.btn.delete" @click="openRemoveModal">
+					<v-icon color="red lighten-1">mdi-delete</v-icon>
 				</v-btn>
 			</v-list-item-action>
 		</v-card-title>
@@ -125,6 +127,14 @@
 				{{ name }}
 			</v-btn>
 		</v-card-text>
+
+		<!-- logic reused across mobile/desktop so we only need one modal if it's here -->
+		<addon-remove-confirm
+			v-model="removeModalOpen"
+			:data="addon"
+			review
+			@close="(success) => success && $emit('delete')"
+		/>
 	</article>
 </template>
 
@@ -132,6 +142,7 @@
 import EmittingImage from "@components/emitting-image.vue";
 import FullscreenPreview from "@components/fullscreen-preview.vue";
 import ImagePreviewer from "../image-previewer.vue";
+import AddonRemoveConfirm from "../addon-remove-confirm.vue";
 
 export default {
 	name: "addon-panel",
@@ -139,6 +150,7 @@ export default {
 		EmittingImage,
 		FullscreenPreview,
 		ImagePreviewer,
+		AddonRemoveConfirm,
 	},
 	props: {
 		addon: {
@@ -159,12 +171,16 @@ export default {
 	data() {
 		return {
 			previewOpen: false,
-			addonInPanelHeaderURL: "",
+			removeModalOpen: false,
 		};
 	},
+	emits: ["delete"],
 	methods: {
 		openHeader() {
 			this.previewOpen = true;
+		},
+		openRemoveModal() {
+			this.removeModalOpen = true;
 		},
 		checked(option) {
 			return option ? "mdi-checkbox-marked-outline" : "mdi-checkbox-blank-outline";

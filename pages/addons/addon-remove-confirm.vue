@@ -6,6 +6,10 @@
 		@close="$emit('close')"
 		@submit="deleteAddon"
 	>
+		<v-alert v-if="review" type="warning" outlined dense>
+			<h3>{{ $root.lang().addons.remove.review_title }}</h3>
+			{{ $root.lang().addons.remove.review_description }}
+		</v-alert>
 		<p>{{ $root.lang().addons.remove.description.replace("%s", data.name) }}</p>
 	</modal-form>
 </template>
@@ -27,6 +31,11 @@ export default {
 		data: {
 			type: Object,
 			required: true,
+		},
+		review: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
 	},
 	emits: ["input", "close"],

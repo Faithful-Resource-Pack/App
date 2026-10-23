@@ -6,9 +6,7 @@
 		hide-actions
 	>
 		<v-alert type="warning" outlined dense>
-			<h3 v-if="categorize" class="font-weight-black mb-1">
-				{{ $root.lang().posts.changelog_generator.categorize_warning }}
-			</h3>
+			<h3 v-if="categorize">{{ $root.lang().posts.changelog_generator.categorize_warning }}</h3>
 			{{ $root.lang().posts.changelog_generator.warning }}
 		</v-alert>
 		<v-form>

@@ -17,7 +17,14 @@
 			</v-expansion-panel-header>
 			<v-expansion-panel-content>
 				<v-divider class="my-4" />
-				<addon-panel v-if="addon" class="ma-n4" :addon="addon" :files="files" :authors="authors" />
+				<addon-panel
+					v-if="addon"
+					class="ma-n4"
+					:addon="addon"
+					:files="files"
+					:authors="authors"
+					@delete="$emit('review', addon.id, 'deleted')"
+				/>
 				<v-divider class="my-4" />
 				<addon-status
 					v-if="addon"

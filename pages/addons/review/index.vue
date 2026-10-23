@@ -145,6 +145,9 @@ export default {
 	},
 	methods: {
 		changeStatus(id, status) {
+			// cool trick to reuse the same event when deleting addons
+			if (status === "deleted") return this.reloadAddons();
+
 			switch (status) {
 				case "approved":
 					return this.reviewAddon(id, status);
@@ -162,12 +165,7 @@ export default {
 				.wrapSnackbar(
 					axios.put(`${this.$root.apiURL}/addons/${id}/review`, data, this.$root.apiOptions),
 				)
-				.then(() => {
-					this.loading = true;
-					// focused addon is no longer in the same status list so remove the param and reload
-					this.searchDelete("id");
-					this.getAddons();
-				});
+				.then(() => this.reloadAddons());
 		},
 		openReasonModal(addon, reasonType = "denied") {
 			this.reasonType = reasonType;
@@ -176,6 +174,12 @@ export default {
 		},
 		closeReasonModal(success = false, reason) {
 			if (success) this.reviewAddon(this.reasonModalId, this.reasonType, reason);
+		},
+		reloadAddons() {
+			this.loading = true;
+			// focused addon is no longer in the same status list so remove the param and reload
+			this.searchDelete("id");
+			this.getAddons();
 		},
 		async getAddons() {
 			const res = await axios.get(`${this.$root.apiURL}/addons/raw`, this.$root.apiOptions);

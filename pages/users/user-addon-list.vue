@@ -17,10 +17,6 @@
 				</v-list-item-subtitle>
 			</v-list-item-content>
 			<v-list-item-action class="merged-actions">
-				<!-- I'm used to the pencil on the left, could probably be argued in either direction -->
-				<v-btn :to="`/addons/edit/${addon.id}`" :title="$root.lang().global.btn.edit" icon>
-					<v-icon>mdi-pencil</v-icon>
-				</v-btn>
 				<v-btn
 					:href="`https://faithfulpack.net/addons/${addon.slug}`"
 					target="_blank"
@@ -30,6 +26,9 @@
 					icon
 				>
 					<v-icon color="blue">mdi-open-in-new</v-icon>
+				</v-btn>
+				<v-btn :to="`/addons/edit/${addon.id}`" :title="$root.lang().global.btn.edit" icon>
+					<v-icon>mdi-pencil</v-icon>
 				</v-btn>
 			</v-list-item-action>
 		</v-list-item>
