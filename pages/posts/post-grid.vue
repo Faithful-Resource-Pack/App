@@ -70,7 +70,11 @@
 			</template>
 		</card-grid>
 
-		<post-remove-confirm v-model="removeOpen" :post="removeData" @close="getPosts" />
+		<post-remove-confirm
+			v-model="removeOpen"
+			:post="removeData"
+			@close="(success) => success && getPosts()"
+		/>
 	</v-container>
 </template>
 

@@ -32,7 +32,7 @@
 				<v-card-title class="d-block" style="word-break: break-word">
 					{{ addon.name }}
 					<v-btn
-						v-if="addon.approval.status == 'approved'"
+						v-if="addon.approval.status === 'approved'"
 						right
 						color="blue"
 						:href="`https://faithfulpack.net/addons/${addon.slug}`"
@@ -69,14 +69,14 @@
 					<v-btn text :to="`/addons/edit/${addon.id}`">
 						{{ $root.lang().global.btn.edit }}
 					</v-btn>
-					<v-btn color="red" text @click="deleteAddon(addon)">
+					<v-btn color="red" text @click="openRemoveModal(addon)">
 						{{ $root.lang().global.btn.delete }}
 					</v-btn>
 				</v-card-actions>
 			</template>
 		</card-grid>
 
-		<addon-remove-confirm v-model="remove.open" :data="remove.data" @close="getAddons" />
+		<addon-remove-confirm v-model="remove.open" :data="remove.data" @close="(success) => success && getAddons()" />
 	</v-container>
 </template>
 
@@ -118,7 +118,7 @@ export default {
 		};
 	},
 	methods: {
-		deleteAddon(addon) {
+		openRemoveModal(addon) {
 			this.remove.data = addon;
 			this.remove.open = true;
 		},
