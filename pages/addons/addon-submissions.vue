@@ -76,7 +76,11 @@
 			</template>
 		</card-grid>
 
-		<addon-remove-confirm v-model="remove.open" :data="remove.data" @close="(success) => success && getAddons()" />
+		<addon-remove-confirm
+			v-model="remove.open"
+			:data="remove.data"
+			@close="(success) => success && getAddons()"
+		/>
 	</v-container>
 </template>
 

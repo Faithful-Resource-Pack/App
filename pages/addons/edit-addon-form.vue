@@ -30,16 +30,17 @@
 		<modal-form
 			v-model="reasonModalOpen"
 			button-type="submit"
-			:title="$root.lang().addons.general.reason.title"
+			:title="$root.lang().addons.reason_modal.titles.pending"
+			:disabled="!validForm"
 			@close="handleReasonModal(false)"
 			@submit="handleReasonModal(true)"
 		>
 			<v-form ref="reasonForm" v-model="validForm" lazy-validation>
-				<p>{{ $root.lang().addons.general.reason.text }}</p>
+				<p>{{ $root.lang().addons.reason_modal.description_author }}</p>
 				<v-textarea
 					v-model="reason"
 					:autofocus="!$vuetify.breakpoint.mobile"
-					:label="$root.lang().addons.general.reason.title"
+					:placeholder="$root.lang().addons.reason_modal.placeholder"
 					required
 					:rules="reasonRules"
 					:counter="reasonCounter.max"
@@ -67,13 +68,13 @@ export default {
 			reasonData: undefined,
 			reasonRules: [
 				() =>
-					!!(this.reason && this.reason.trim()) || this.$root.lang().addons.general.reason.required,
+					!!(this.reason && this.reason.trim()) || this.$root.lang().addons.reason_modal.required,
 				() =>
 					this.reason.trim().length < this.reasonCounter.min ||
 					this.reason.trim().length > this.reasonCounter.max
 						? this.$root
 								.lang()
-								.addons.general.reason.bounds.replace("%s", this.reasonCounter.min)
+								.addons.reason_modal.bounds.replace("%s", this.reasonCounter.min)
 								.replace("%s", this.reasonCounter.max)
 						: true,
 			],

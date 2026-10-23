@@ -8,14 +8,15 @@
 		@submit="interacted(true)"
 	>
 		<v-alert type="warning" outlined dense>
-			{{ $root.lang().review.reason_modal.warning }}
+			{{ $root.lang().addons.reason_modal.warning }}
 		</v-alert>
+		<p>{{ $root.lang().addons.reason_modal.description_reviewer }}</p>
 		<v-textarea
 			v-model="reason"
 			:autofocus="!$vuetify.breakpoint.mobile"
 			:color="color"
 			required
-			:label="$root.lang().review.reason_modal.label"
+			:placeholder="$root.lang().addons.reason_modal.placeholder"
 		/>
 	</modal-form>
 </template>
@@ -60,15 +61,7 @@ export default {
 	},
 	computed: {
 		title() {
-			const strings = this.$root.lang().review.reason_modal;
-			switch (this.type) {
-				case "archived":
-					return strings.archive_title;
-				case "denied":
-					return strings.deny_title;
-			}
-			// todo: add better fallback
-			return strings.deny_title;
+			return this.$root.lang().addons.reason_modal.titles[this.type].replace("%s", this.type);
 		},
 	},
 	watch: {

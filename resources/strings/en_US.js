@@ -358,12 +358,6 @@ export default {
 				label: "Add-on slug",
 				hint: "Changing this will break old links!",
 			},
-			reason: {
-				title: "Update reason",
-				text: "Please be as specific as possible to make reviewing your add-on easier!",
-				required: "An update reason is required",
-				bounds: "Update reason must be between %s and %s characters long",
-			},
 			authors: {
 				label: "Add-on authors",
 				hint: "Any author can modify the add-on once it is submitted! | If you can't find someone in the list, contact a manager or developer",
@@ -453,6 +447,21 @@ export default {
 				rule: "URL must be valid",
 			},
 		},
+		reason_modal: {
+			titles: {
+				pending: "Update reason",
+				approved: "Approve add-on",
+				denied: "Deny add-on",
+				archived: "Archive add-on",
+				unknown: "Changing add-on to status %s",
+			},
+			description_author: "Please be as specific as possible to make reviewing your add-on easier!",
+			description_reviewer: "Please be as specific as possible to make updating the add-on easier!",
+			warning: "All add-on authors can see this reason!",
+			placeholder: "Write a reason…",
+			bounds: "Update reason must be between %s and %s characters long",
+			required: "An update reason is required",
+		},
 	},
 	review: {
 		titles: {
@@ -461,12 +470,6 @@ export default {
 			denied: "Denied",
 			approved: "Approved",
 			archived: "Archived",
-		},
-		reason_modal: {
-			deny_title: "Deny add-on",
-			archive_title: "Archive add-on",
-			warning: "All add-on authors can see this reason!",
-			label: "Write a reason…",
 		},
 		labels: {
 			pending: "There are currently no pending add-ons!",
@@ -490,6 +493,7 @@ export default {
 			},
 			labels: {
 				optifine: "Requires OptiFine",
+				update_reason: "Update reason",
 				approved_by: "Approved by %s",
 				denied_by: "Denied by %s",
 				archived_by: "Archived by %s",

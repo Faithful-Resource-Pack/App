@@ -85,7 +85,7 @@ export default {
 		title() {
 			switch (this.status) {
 				case "pending":
-					return this.$root.lang().addons.general.reason.title;
+					return this.$root.lang().review.addon.labels.update_reason;
 				case "approved":
 					return this.$root.lang().review.addon.labels.approved_by;
 				case "denied":
