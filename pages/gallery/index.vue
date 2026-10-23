@@ -83,10 +83,14 @@ import GalleryGrid from "./gallery-grid.vue";
 import GalleryModal from "./modal/index.vue";
 import SearchBox from "@components/search-box.vue";
 import LoadingPage from "@layouts/loading-page.vue";
+import {
+	ANIMATED_KEY,
+	COLUMN_KEY,
+	STRETCHED_KEY,
+	loadDisplayOptions,
+	maxGalleryColumns,
+} from "@helpers/gallery";
 
-const COLUMN_KEY = "gallery_columns";
-const STRETCHED_KEY = "gallery_stretched";
-const ANIMATED_KEY = "gallery_animated";
 const SORT_KEY = "gallery_sort";
 
 const IGNORED_TEXTURES_URL =
@@ -109,14 +113,7 @@ export default {
 			// string error extracted
 			error: undefined,
 			// pretty much all gallery state
-			display: {
-				// whether the page should be stretched to the full width
-				stretched: localStorage.getItem(STRETCHED_KEY) === "true",
-				// whether to show animated textures
-				animated: localStorage.getItem(ANIMATED_KEY) !== "false",
-				// number of columns you want to display
-				columns: Number(localStorage.getItem(COLUMN_KEY) || 8),
-			},
+			display: loadDisplayOptions(),
 			search: {
 				pack: "default",
 				tag: "all",
@@ -268,15 +265,7 @@ export default {
 			return this.$route.query.show;
 		},
 		maxColumns() {
-			const { xs, sm, md, lg } = this.$vuetify.breakpoint;
-
-			// mostly arbitrary values, feel free to change these
-			// based on https://v2.vuetifyjs.com/en/features/breakpoints/
-			if (xs) return 4; // mobile
-			if (sm) return 8;
-			if (md) return 12;
-			if (lg) return 16;
-			return 20;
+			return maxGalleryColumns(this.$vuetify.breakpoint);
 		},
 		shownColumns() {
 			return Math.min(this.display.columns, this.maxColumns);

@@ -52,51 +52,20 @@
 			</v-col>
 		</v-row>
 
-		<v-row class="my-2">
-			<v-col cols="12" sm="6">
-				<v-slider
-					v-model="currentDisplay.columns"
-					:title="$root.lang().gallery.max_items_per_row"
-					step="1"
-					min="1"
-					:max="maxColumns"
-					ticks="always"
-					tick-size="3"
-					thumb-label
-					hide-details
-				>
-					<!-- need to apply label colors so we manually add icons -->
-					<template #prepend>
-						<v-icon class="v-label">mdi-grid-large</v-icon>
-					</template>
-					<template #append>
-						<v-icon class="v-label">mdi-grid</v-icon>
-					</template>
-				</v-slider>
-			</v-col>
-			<v-col v-if="stretchable" cols="12" sm="3">
-				<v-switch
-					v-model="currentDisplay.stretched"
-					:label="$root.lang().gallery.stretched_switcher"
-					hide-details
-				/>
-			</v-col>
-			<v-col cols="12" :sm="stretchable ? 3 : 6">
-				<v-switch
-					v-model="currentDisplay.animated"
-					:label="$root.lang().gallery.animated_switcher"
-					hide-details
-				/>
-			</v-col>
-		</v-row>
+		<gallery-display-options v-model="currentDisplay" :maxColumns="maxColumns" />
 	</div>
 </template>
 
 <script>
 import axios from "axios";
 
+import GalleryDisplayOptions from "./gallery-display-options.vue";
+
 export default {
 	name: "gallery-options",
+	components: {
+		GalleryDisplayOptions,
+	},
 	props: {
 		search: {
 			type: Object,
@@ -188,10 +157,6 @@ export default {
 					}))
 			);
 		},
-		// hide the stretched switcher when the screen is smaller than the size when not stretched
-		stretchable() {
-			return this.$vuetify.breakpoint.lgAndUp;
-		},
 	},
 	created() {
 		// saves a request
@@ -243,10 +208,6 @@ export default {
 				}
 			},
 			immediate: true,
-		},
-		stretchable(n) {
-			// turn off stretching if screen doesn't support it
-			if (!n) this.stretched = false;
 		},
 	},
 };
