@@ -24,7 +24,8 @@
 				:ignoreList="ignoreList"
 			/>
 
-			<div class="flex-grow-1 pa-2">
+			<!-- basis 0 so wide tab content (like the author tables) doesn't push the column under the images -->
+			<div class="flex-grow-1 pa-2" style="flex-basis: 0; min-width: min(100%, 360px)">
 				<v-alert v-if="isIgnored" type="info" color="secondary">
 					{{ $root.lang().gallery.modal.ignored }}
 				</v-alert>
@@ -215,43 +216,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.gallery-modal-container {
-	display: flex;
-	flex-flow: row wrap;
-	justify-content: space-between;
-	align-items: flex-start;
-}
-
-$modal-image-size: 160px;
-
-.gallery-modal-texture {
-	height: $modal-image-size;
-	width: $modal-image-size;
-	position: relative;
-	background-size: cover;
-	background-position: center;
-}
-
-.gallery-modal-caption,
-.skeleton-caption {
-	max-width: $modal-image-size;
-	height: 48px;
-	font-size: 1em;
-}
-
-// roughly the average pack length
-.skeleton-caption .v-skeleton-loader__bone {
-	max-width: 70%;
-}
-
-.theme--dark .gallery-modal-texture {
-	background: url(/resources/transparency.png) center;
-}
-
-.gallery-modal-texture > * {
-	position: absolute;
-	height: $modal-image-size;
-	width: $modal-image-size;
-}
-</style>
+<style lang="scss" src="./modal.scss"></style>

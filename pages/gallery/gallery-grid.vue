@@ -1,87 +1,64 @@
 <template>
-	<infinite-scroller
-		class="gallery-textures-container mx-auto"
-		:style="gridStyles"
-		@more="showMore"
+	<texture-grid
+		:items="sortedTextures"
+		:itemKey="(texture) => sort + texture.textureID"
+		:columns="shownColumns"
+		:tooltipTarget="(texture) => texture.id"
+		@click="(texture) => $emit('open', texture.textureID)"
+		@clickNewTab="(texture) => $emit('openNewTab', texture.textureID)"
 	>
-		<!-- sort method in key ensures rerenders change the image (this took me an hour to figure out) -->
-		<div
-			v-for="texture in displayedTextures"
-			:key="sort + texture.textureID"
-			class="gallery-texture-in-container"
-			@click.exact.stop="$emit('open', texture.textureID)"
-			@click.exact.middle.stop="$emit('openNewTab', texture.textureID)"
-			@click.exact.meta.stop="$emit('openNewTab', texture.textureID)"
-		>
-			<tippy-component :to="texture.id" placement="right-start" maxWidth="350px">
-				<template #trigger>
-					<gallery-image
-						:src="texture.url"
-						:alt="texture.name"
-						:textureID="texture.textureID"
-						:ignoreList="ignoreList"
-						:animated="animated"
-						:animatedTextures="animatedTextures"
-					>
-						<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
-						<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
-						<p :style="missingTextStyles.message">
-							{{ $root.lang().gallery.error_message.texture_not_done }}
-						</p>
-					</gallery-image>
-					<v-btn
-						class="ma-2 gallery-share"
-						absolute
-						plain
-						icon
-						:title="$root.lang().gallery.share"
-						@click.stop="$emit('share', texture.textureID)"
-					>
-						<v-icon>mdi-share-variant</v-icon>
-					</v-btn>
-				</template>
+		<template #item="{ item: texture, missingTextStyles }">
+			<gallery-image
+				:src="texture.url"
+				:alt="texture.name"
+				:textureID="texture.textureID"
+				:ignoreList="ignoreList"
+				:animated="animated"
+				:animatedTextures="animatedTextures"
+			>
+				<h1 :style="missingTextStyles.texture_id">#{{ texture.textureID }}</h1>
+				<h3 :style="missingTextStyles.texture_name">{{ texture.name }}</h3>
+				<p :style="missingTextStyles.message">
+					{{ $root.lang().gallery.error_message.texture_not_done }}
+				</p>
+			</gallery-image>
+			<v-btn
+				class="ma-2 gallery-share"
+				absolute
+				plain
+				icon
+				:title="$root.lang().gallery.share"
+				@click.stop="$emit('share', texture.textureID)"
+			>
+				<v-icon>mdi-share-variant</v-icon>
+			</v-btn>
+		</template>
 
-				<gallery-tooltip
-					:texture="texture"
-					:mojang="isMojang"
-					:contributions="lastContributions"
-					:discordIDtoName="discordIDtoName"
-					:ignoreList="ignoreList"
-				/>
-			</tippy-component>
-		</div>
-
-		<!-- already a scroll listener here so we can reuse it -->
-		<v-btn
-			v-show="scrollY > 500"
-			fab
-			class="go-up-btn"
-			:title="$root.lang().gallery.to_top"
-			@click="toTop"
-		>
-			<v-icon large>mdi-chevron-up</v-icon>
-		</v-btn>
-	</infinite-scroller>
+		<template #tooltip="{ item: texture }">
+			<gallery-tooltip
+				:texture="texture"
+				:mojang="isMojang"
+				:contributions="lastContributions"
+				:discordIDtoName="discordIDtoName"
+				:ignoreList="ignoreList"
+			/>
+		</template>
+	</texture-grid>
 </template>
 
 <script>
 import axios from "axios";
 
-import InfiniteScroller from "@layouts/infinite-scroller.vue";
+import TextureGrid from "@components/texture-grid.vue";
 import GalleryTooltip from "./gallery-tooltip.vue";
 import GalleryImage from "./gallery-image.vue";
-import { TippyComponent } from "vue-tippy";
-
-// how many rows to add on scroll
-const ROW_INCREMENT = 5;
 
 export default {
 	name: "gallery-grid",
 	components: {
-		InfiniteScroller,
+		TextureGrid,
 		GalleryTooltip,
 		GalleryImage,
-		TippyComponent,
 	},
 	props: {
 		textures: {
@@ -117,30 +94,10 @@ export default {
 	emits: ["open", "openNewTab", "share"],
 	data() {
 		return {
-			width: 0,
 			loadedContributions: {},
-			// number of displayed results
-			displayedResults: 1,
-			// go to the top arrow
-			scrollY: 0,
 			// list of animated textures ids
 			animatedTextures: [],
-			// must maintain static references to listeners for unmounting
-			resizeListener: () => {},
 		};
-	},
-	methods: {
-		toTop() {
-			document.getElementById("main").scrollTo({
-				top: 0,
-				behavior: "smooth",
-			});
-			// prevents page becoming really slow from too many displayed results after going up
-			this.displayedResults = this.pageLength;
-		},
-		showMore() {
-			this.displayedResults += this.pageLength;
-		},
 	},
 	computed: {
 		isMojang() {
@@ -148,9 +105,6 @@ export default {
 		},
 		sortedTextures() {
 			return Array.from(this.textures).sort(this.sortMethods[this.sort]);
-		},
-		displayedTextures() {
-			return this.sortedTextures.slice(0, this.displayedResults);
 		},
 		sortMethods() {
 			// needs to be computed because we're using outer data for a closure
@@ -168,36 +122,6 @@ export default {
 				},
 			};
 			return methods;
-		},
-		// how much to increment shown results by when scrolling
-		pageLength() {
-			return this.shownColumns * ROW_INCREMENT;
-		},
-		gridStyles() {
-			// bigger images -> smaller gaps
-			const gap = this.$vuetify.breakpoint.mobile ? 8 : Math.round(100 / this.shownColumns);
-
-			return {
-				gap: `${gap}px`,
-				gridTemplateColumns: `repeat(${this.shownColumns}, 1fr)`,
-			};
-		},
-		missingTextStyles() {
-			// .container padding (12px) + v-card .pa-2 padding (8px)
-			const CONTAINER_PADDING = 20;
-
-			// double padding for each side
-			const gridWidth = this.width - CONTAINER_PADDING * 2;
-			const imgWidth = gridWidth / this.shownColumns;
-
-			// arbitrary scaling factor, seems to look pretty good
-			const fontSize = imgWidth / 20;
-
-			return {
-				texture_id: { fontSize: `${fontSize * 4}px` },
-				texture_name: { fontSize: `${fontSize * 2}px` },
-				message: { fontSize: `${fontSize * 1.2}px` },
-			};
 		},
 		lastContributions() {
 			if (this.isMojang) return undefined;
@@ -222,38 +146,11 @@ export default {
 				return acc;
 			}, {});
 		});
-
-		// start off with more results
-		this.displayedResults = this.pageLength * 3;
-	},
-	mounted() {
-		// initialize callback references (they need to be the same for unmounting)
-		this.resizeListener = () => {
-			this.width = this.$el.clientWidth;
-		};
-
-		window.addEventListener("resize", this.resizeListener);
-		this.resizeListener();
-	},
-	destroyed() {
-		window.removeEventListener("resize", this.resizeListener);
 	},
 };
 </script>
 
 <style lang="scss">
-.gallery-textures-container {
-	display: grid;
-}
-
-.gallery-texture-in-container {
-	text-align: center;
-	position: relative;
-	background-size: cover;
-	background-position: center;
-	aspect-ratio: 1 !important;
-}
-
 .gallery-texture-in-container .gallery-share {
 	top: 0;
 	right: 0;
@@ -263,17 +160,5 @@ export default {
 
 .gallery-texture-in-container:hover .gallery-share {
 	opacity: 1;
-}
-
-.theme--dark .gallery-texture-in-container {
-	background-size: cover !important;
-	background: url(/resources/transparency.png);
-}
-
-.go-up-btn {
-	position: fixed;
-	bottom: 64px;
-	right: 64px;
-	z-index: 202;
 }
 </style>
