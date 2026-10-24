@@ -69,7 +69,7 @@
 			/>
 			<h2 class="text-h6">{{ $root.lang().database.packs.modal.github.title }}</h2>
 			<p class="text-caption">{{ $root.lang().database.packs.modal.github.title_hint }}</p>
-			<div v-for="edition in editions" :key="edition">
+			<div v-for="edition in githubEditions" :key="edition">
 				<p class="text-body-1">{{ edition.toTitleCase() }}</p>
 				<v-row>
 					<v-col>
@@ -264,6 +264,10 @@ export default {
 		},
 	},
 	computed: {
+		githubEditions() {
+			// the modded repository is only managed by admins
+			return this.$root.isAdmin ? [...this.editions, "modded"] : this.editions;
+		},
 		modalTitle() {
 			return this.add
 				? this.$root.lang().database.packs.modal.add_pack
