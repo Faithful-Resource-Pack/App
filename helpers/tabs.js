@@ -16,6 +16,10 @@ import UsersPage from "../pages/users/index.vue";
 import TexturePage from "../pages/textures/index.vue";
 import VersionPage from "../pages/versions/index.vue";
 import PackPage from "../pages/packs/index.vue";
+import ModGalleryPage from "../pages/mods/index.vue";
+import ModPickerPage from "../pages/mods/picker.vue";
+import ModsAdminPage from "../pages/mods/admin.vue";
+import ModContributionsPage from "../pages/mods/contributions.vue";
 import SettingsPage from "../pages/settings/index.vue";
 
 /** @type {import("../resources/types.d.ts").SidebarTab[]} */
@@ -60,6 +64,60 @@ export default [
 						path: "/gallery/:edition/:pack/:version/:tag/:search*",
 						component: GalleryPage,
 						name: "Gallery",
+					},
+				],
+			},
+		],
+	},
+	{
+		id: "mods",
+		subtabs: [
+			{
+				id: "gallery",
+				icon: "mdi-puzzle",
+				public: true,
+				routes: [
+					{
+						cleanPath: "/mods",
+						path: "/mods/:slug?/:version?",
+						component: ModGalleryPage,
+						name: "Mods Gallery",
+					},
+				],
+			},
+			{
+				id: "picker",
+				icon: "mdi-package-variant",
+				public: true,
+				routes: [
+					{
+						path: "/mod-picker",
+						component: ModPickerPage,
+						name: "Mod Picker",
+					},
+				],
+			},
+			{
+				id: "catalog",
+				icon: "mdi-puzzle-edit",
+				roles: ["Administrator"],
+				routes: [
+					{
+						path: "/mods-admin",
+						component: ModsAdminPage,
+						name: "Mods Catalog",
+					},
+				],
+			},
+			{
+				id: "contributions",
+				icon: "mdi-puzzle-plus",
+				roles: ["Administrator"],
+				routes: [
+					{
+						path: "/mods-contributions",
+						component: ModContributionsPage,
+						name: "Mods Contributions",
 					},
 				],
 			},

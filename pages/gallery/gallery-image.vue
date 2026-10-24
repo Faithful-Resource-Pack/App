@@ -1,21 +1,21 @@
 <template>
 	<div
 		:class="{ 'gallery-modal-texture': modal }"
-		:style="!exists && { background: 'rgba(0,0,0,0.3)' }"
+		:style="!present && { background: 'rgba(0,0,0,0.3)' }"
 	>
 		<!-- send click events back to caller -->
 		<gallery-animation
-			v-if="animated && exists && hasAnimation"
+			v-if="animated && present && hasAnimation"
 			ref="animation"
 			class="gallery-texture-image"
 			:src="imageURL"
 			:mcmeta="animation"
-			:isTiled="imageURL.includes('_flow')"
+			:isTiled="tiled || imageURL.includes('_flow')"
 			@click="$emit('click')"
 			@loaded="(val) => $emit('loaded', val)"
 		/>
 		<img
-			v-if="exists"
+			v-if="present"
 			v-show="!hasAnimation || !animated"
 			ref="imageRef"
 			class="gallery-texture-image gallery-animated-image"
@@ -44,7 +44,14 @@ export default {
 	props: {
 		src: {
 			type: String,
-			required: true,
+			required: false,
+			default: "",
+		},
+		// the texture is known to not exist, shows the placeholder without loading anything
+		missing: {
+			type: Boolean,
+			required: false,
+			default: false,
 		},
 		alt: {
 			type: String,
@@ -76,6 +83,24 @@ export default {
 			required: false,
 			default: () => [],
 		},
+		// where to read the mcmeta from, defaults to the textures api
+		mcmetaURL: {
+			type: String,
+			required: false,
+			default: "",
+		},
+		// set to false if the texture is known to have no mcmeta to avoid a request
+		fetchMcmeta: {
+			type: Boolean,
+			required: false,
+			default: true,
+		},
+		// force the tiled animation, for urls that don't contain the texture name
+		tiled: {
+			type: Boolean,
+			required: false,
+			default: false,
+		},
 		// used to determine if the texture is animated
 		animatedTextures: {
 			type: Array,
@@ -94,6 +119,21 @@ export default {
 		};
 	},
 	methods: {
+		init() {
+			this.imageURL = this.src;
+			this.exists = true;
+			this.hasAnimation = false;
+			if (this.missing) return this.$emit("loaded", false);
+
+			const image = new Image();
+
+			image.src = this.src;
+			image.onload = () => void this.fetchAnimation();
+			image.onerror = () => void this.textureNotFound();
+
+			// always emit loaded if not animated
+			if (!this.animated || !this.exists || !this.hasAnimation) this.$emit("loaded", false);
+		},
 		textureNotFound() {
 			// fall back to default if ignored (simulates default behavior)
 			// + fetch animation if it exists
@@ -114,13 +154,18 @@ export default {
 				return;
 			}
 
+			if (!this.fetchMcmeta) {
+				this.hasAnimation = false;
+				return;
+			}
+
 			if (this.animatedTextures.length && !this.animatedTextures.includes(this.textureID)) {
 				this.hasAnimation = false;
 				return;
 			}
 
 			axios
-				.get(`${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
+				.get(this.mcmetaURL || `${this.$root.apiURL}/textures/${this.textureID}/mcmeta`)
 				.then((res) => {
 					if (res.data.animation) {
 						this.hasAnimation = true;
@@ -139,6 +184,9 @@ export default {
 		},
 	},
 	computed: {
+		present() {
+			return this.exists && !this.missing;
+		},
 		isIgnored() {
 			return this.ignoreList.some((el) => this.src.includes(el));
 		},
@@ -147,16 +195,16 @@ export default {
 		animatedTextures() {
 			this.fetchAnimation();
 		},
+		// the image can be provided after the component is created (ex: contributions loaded later)
+		src() {
+			this.init();
+		},
+		missing() {
+			this.init();
+		},
 	},
 	created() {
-		const image = new Image();
-
-		image.src = this.src;
-		image.onload = () => void this.fetchAnimation();
-		image.onerror = () => void this.textureNotFound();
-
-		// always emit loaded if not animated
-		if (!this.animated || !this.exists || !this.hasAnimation) this.$emit("loaded", false);
+		this.init();
 	},
 };
 </script>

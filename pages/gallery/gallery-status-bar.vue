@@ -13,7 +13,7 @@
 				color="text--secondary"
 				dense
 				hide-details
-				:items="sortMethods"
+				:items="shownSortMethods"
 				item-text="label"
 				item-value="value"
 			/>
@@ -37,6 +37,12 @@ export default {
 			type: Number,
 			required: true,
 		},
+		// restrict the sort methods shown (all by default)
+		methods: {
+			type: Array,
+			required: false,
+			default: () => [],
+		},
 		loading: {
 			type: Boolean,
 			required: false,
@@ -58,6 +64,10 @@ export default {
 		};
 	},
 	computed: {
+		shownSortMethods() {
+			if (!this.methods.length) return this.sortMethods;
+			return this.sortMethods.filter((m) => this.methods.includes(m.value));
+		},
 		requestTime() {
 			if (!this.timer.end || !this.timer.start) return;
 			const seconds = (this.timer.end - this.timer.start) / 1000;
